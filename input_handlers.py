@@ -1,6 +1,5 @@
 def handle_keys(user_input):
     # Movement events
-    print(user_input, user_input.alt)
     if user_input.key == 'UP':
         return {'move': (0, -1)}
     elif user_input.key == 'DOWN':
