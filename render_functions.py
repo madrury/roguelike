@@ -5,7 +5,7 @@ def render_all(con, entities, game_map, fov_recompute,
         redraw_walls(con, game_map, colors) 
     # Draw Entities.
     for entity in entities:
-        draw_entity(con, entity)
+        draw_entity(con, entity, game_map.fov)
     # Commit changes.
     root_console.blit(con, 0, 0, screen_width, screen_height, 0, 0)
 
@@ -17,7 +17,8 @@ def redraw_walls(con, game_map, colors):
                 con.draw_char(x, y, None, fg=None, bg=colors.get('light_wall'))
             else:
                 con.draw_char(x, y, None, fg=None, bg=colors.get('light_ground'))
-        else:
+            game_map.explored[x, y] = True
+        elif game_map.explored[x, y]:
             if wall:
                 con.draw_char(x, y, None, fg=None, bg=colors.get('dark_wall'))
             else:
@@ -27,8 +28,9 @@ def clear_all(con, entities):
     for entity in entities:
         clear_entity(con, entity)
 
-def draw_entity(con, entity):
-    con.draw_char(entity.x, entity.y, entity.char, entity.color, bg=None)
+def draw_entity(con, entity, fov):
+    if fov[entity.x, entity.y]:
+        con.draw_char(entity.x, entity.y, entity.char, entity.color, bg=None)
 
 def clear_entity(con, entity):
     con.draw_char(entity.x, entity.y, ' ', entity.color, bg=None)

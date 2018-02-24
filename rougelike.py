@@ -1,7 +1,7 @@
 import tdl
 from input_handlers import handle_keys
 from render_functions import clear_all, render_all
-from map_utils import make_map
+from map_utils import GameMap, make_map
 from entity import Entity
 
 def main():
@@ -39,7 +39,7 @@ def main():
                  '@', (255, 255, 0))
     entities = [player, npc]
 
-    game_map = tdl.map.Map(map_width, map_height)
+    game_map = GameMap(map_width, map_height)
     make_map(game_map, max_rooms, room_min_size, room_max_size, 
              map_width, map_height, player)
     

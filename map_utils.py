@@ -1,4 +1,7 @@
+from tdl.map import Map
+import numpy as np
 from random import randint
+
 
 class Rectangle:
 
@@ -17,6 +20,11 @@ class Rectangle:
     def intersect(self, other):
         return (self.x1 <= other.x2 and self.x2 >= other.x1 and
                 self.y1 <= other.y2 and self.y2 >= other.y1)
+
+class GameMap(Map):
+    def __init__(self, width, height):
+        super().__init__(width, height)
+        self.explored = np.zeros((width, height)).astype(bool)
 
 
 def create_room(game_map, room):
