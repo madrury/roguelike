@@ -1,7 +1,7 @@
 import tdl
 from input_handlers import handle_keys
 from render_functions import clear_all, render_all
-from map_utils import GameMap, make_map
+from map_utils import GameMap, make_map, generate_monsters
 from entity import Entity
 
 def main():
@@ -14,7 +14,8 @@ def main():
         'height': 45,
         'room_max_size': 15,
         'room_min_size': 6,
-        'max_rooms': 30
+        'max_rooms': 30,
+        'max_monsters_per_room': 3
     }
 
     fov_config = {
@@ -39,14 +40,15 @@ def main():
        title='Rougelike Tutorial Game')
     con = tdl.Console(screen_width, screen_height)
 
-    player = Entity(int(screen_width / 2), int(screen_height / 2),
-                    '@', (255, 255, 255))
-    npc = Entity(int(screen_width / 2 - 5), int(screen_height / 2),
-                 '@', (255, 255, 0))
-    entities = [player, npc]
+    player = Entity(0, 0, '@', (255, 255, 255))
+    entities = [player]
 
     game_map = GameMap(map_config['width'], map_config['height'])
-    make_map(game_map, map_config, player)
+    rooms = make_map(
+        game_map, map_config, player)
+    monsters = generate_monsters(
+        game_map, rooms, player, map_config, colors)
+    entities.extend(monsters)
     
     fov_recompute = True
 

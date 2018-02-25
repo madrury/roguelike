@@ -58,6 +58,24 @@ def make_map(game_map, map_config, player):
             prev_room = rooms[num_rooms - 1] 
             add_tunnel(game_map, new_room, prev_room) 
         rooms.append(new_room)
+    return rooms
+
+def generate_monsters(game_map, rooms, player, map_config, colors):
+    max_monsters_per_room = map_config['max_monsters_per_room']
+    monsters = []
+    for room in rooms:
+        number_of_monsters = randint(0, max_monsters_per_room)
+        for _ in range(number_of_monsters):
+            x = randint(room.x1 + 1, room.x2 - 1)
+            y = randint(room.y1 + 1, room.y2 - 1)
+            player_at_position = (player.x == x and player.y == y)
+            monster_at_position = any(
+                monster for monster in monsters if monster.x == x and monster.y == y)
+            if (game_map.walkable[x, y] 
+                and (not player_at_position or monster_at_position)):
+                monster = make_random_monster(x, y, colors)
+            monsters.append(monster)
+    return monsters
 
 def create_room(game_map, room):
     for x in range(room.x1 + 1, room.x2):
@@ -87,3 +105,11 @@ def create_v_tunnel(game_map, y1, y2, x):
     y1, y2 = min(y1, y2), max(y1, y2)
     for y in range(y1, y2 + 1):
         make_transparent_and_walkable(game_map, x, y)
+
+def make_random_monster(x, y, colors):
+    if randint(0, 100) < 80:
+        monster = Entity(x, y, 'O', colors['desaturated_green'])
+    else:
+        monster = Entity(x, y, 'T', colors['darker_green'])
+    return monster
+
