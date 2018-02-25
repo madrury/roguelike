@@ -3,6 +3,7 @@ from input_handlers import handle_keys
 from render_functions import clear_all, render_all
 from map_utils import GameMap, make_map, generate_monsters
 from entity import Entity, get_blocking_entity_at_location
+from game_states import GameStates
 
 def main():
 
@@ -51,7 +52,9 @@ def main():
         game_map, rooms, player, map_config, colors)
     entities.extend(monsters)
     
+    # Initial values for game states
     fov_recompute = True
+    game_state = GameStates.PLAYER_TURN
 
     while not tdl.event.is_window_closed():
 
@@ -85,7 +88,7 @@ def main():
 
         # Handle player actions
         move = action.get('move')
-        if move:
+        if move and game_state == GameStates.PLAYER_TURN:
             dx, dy = move
             destination_x, destination_y = player.x + dx, player.y + dy
             if game_map.walkable[destination_x, destination_y]:
@@ -96,10 +99,16 @@ def main():
                 else:
                     player.move(dx, dy)
                     fov_recompute = True
+                game_state = GameStates.ENEMY_TURN
 
         exit = action.get('exit')
         if exit:
             return True
+
+        if game_state == GameStates.ENEMY_TURN:
+            for entity in (x for x in entities if x != player):
+                print('The ' + entity.name + ' ponders thier existence...')
+            game_state = GameStates.PLAYER_TURN
 
         fullscreen = action.get('fullscreen')
         if fullscreen:
