@@ -8,16 +8,20 @@ def main():
 
     screen_width = 80
     screen_height = 50
-    map_width = 80
-    map_height = 45
 
-    room_max_size = 15
-    room_min_size = 6
-    max_rooms = 30
+    map_config = {
+        'width': 80,
+        'height': 45,
+        'room_max_size': 15,
+        'room_min_size': 6,
+        'max_rooms': 30
+    }
 
-    fov_algorithm = 'BASIC'
-    fov_light_walls = True
-    fov_radius = 10
+    fov_config = {
+        "algorithm": 'BASIC',
+        "light_walls": True,
+        "radius": 10
+    }
 
     colors = {
         'dark_wall': (0, 0, 100),
@@ -39,9 +43,8 @@ def main():
                  '@', (255, 255, 0))
     entities = [player, npc]
 
-    game_map = GameMap(map_width, map_height)
-    make_map(game_map, max_rooms, room_min_size, room_max_size, 
-             map_width, map_height, player)
+    game_map = GameMap(map_config['width'], map_config['height'])
+    make_map(game_map, map_config, player)
     
     fov_recompute = True
 
@@ -50,7 +53,9 @@ def main():
         if fov_recompute:
             game_map.compute_fov(
                 player.x, player.y,
-                fov=fov_algorithm, radius=fov_radius, light_walls=fov_light_walls)
+                fov=fov_config["algorithm"],
+                radius=fov_config["radius"],
+                light_walls=fov_config["light_walls"])
 
         render_all(
             con, entities, game_map, fov_recompute,
