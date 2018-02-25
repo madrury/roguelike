@@ -112,7 +112,7 @@ def main():
 
         if game_state == GameStates.ENEMY_TURN:
             for entity in (x for x in entities if x.ai):
-                entity.ai.take_turn()
+                entity.ai.take_turn(player, game_map, entities)
             game_state = GameStates.PLAYER_TURN
 
         fullscreen = action.get('fullscreen')
