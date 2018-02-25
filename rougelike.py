@@ -1,4 +1,7 @@
 import tdl
+
+from components.fighter import Fighter
+
 from input_handlers import handle_keys
 from render_functions import clear_all, render_all
 from map_utils import GameMap, make_map, generate_monsters
@@ -42,7 +45,9 @@ def main():
        title='Rougelike Tutorial Game')
     con = tdl.Console(screen_width, screen_height)
 
-    player = Entity(0, 0, '@', colors['white'], 'Player', blocks=True)
+    player = Entity(0, 0, '@', colors['white'], 'Player', 
+                    fighter=Fighter(hp=30, defense=2, power=5),
+                    blocks=True)
     entities = [player]
 
     game_map = GameMap(map_config['width'], map_config['height'])
@@ -106,8 +111,8 @@ def main():
             return True
 
         if game_state == GameStates.ENEMY_TURN:
-            for entity in (x for x in entities if x != player):
-                print('The ' + entity.name + ' ponders thier existence...')
+            for entity in (x for x in entities if x.ai):
+                entity.ai.take_turn()
             game_state = GameStates.PLAYER_TURN
 
         fullscreen = action.get('fullscreen')
@@ -117,4 +122,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-                             

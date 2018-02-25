@@ -3,6 +3,8 @@ import numpy as np
 from random import randint
 
 from entity import Entity
+from components.ai import BasicMonster
+from components.fighter import Fighter
 
 
 class Rectangle:
@@ -109,9 +111,15 @@ def create_v_tunnel(game_map, y1, y2, x):
 def make_random_monster(x, y, colors):
     if randint(0, 100) < 80:
         monster = Entity(
-            x, y, 'O', colors['desaturated_green'], 'Orc', blocks=True)
+            x, y, 'O', colors['desaturated_green'], 'Orc', 
+            fighter=Fighter(hp=10, defense=0, power=3),
+            ai=BasicMonster(),
+            blocks=True)
     else:
         monster = Entity(
-            x, y, 'T', colors['darker_green'], 'Troll', blocks=True)
+            x, y, 'T', colors['darker_green'], 'Troll', 
+            fighter=Fighter(hp=16, defense=1, power=4),
+            ai=BasicMonster(),
+            blocks=True)
     return monster
 
