@@ -2,7 +2,7 @@ import tdl
 from input_handlers import handle_keys
 from render_functions import clear_all, render_all
 from map_utils import GameMap, make_map, generate_monsters
-from entity import Entity
+from entity import Entity, get_blocking_entity_at_location
 
 def main():
 
@@ -25,6 +25,7 @@ def main():
     }
 
     colors = {
+        'white': (255, 255, 255),
         'dark_wall': (0, 0, 100),
         'dark_ground': (50, 50, 150),
         'light_wall': (130, 110, 50),
@@ -40,7 +41,7 @@ def main():
        title='Rougelike Tutorial Game')
     con = tdl.Console(screen_width, screen_height)
 
-    player = Entity(0, 0, '@', (255, 255, 255))
+    player = Entity(0, 0, '@', colors['white'], 'Player', blocks=True)
     entities = [player]
 
     game_map = GameMap(map_config['width'], map_config['height'])
@@ -54,6 +55,7 @@ def main():
 
     while not tdl.event.is_window_closed():
 
+        # If needed, recompute the player's field of view.
         if fov_recompute:
             game_map.compute_fov(
                 player.x, player.y,
@@ -61,13 +63,16 @@ def main():
                 radius=fov_config["radius"],
                 light_walls=fov_config["light_walls"])
 
+        # Render and display the dungeon and its inhabitates.
         render_all(con, entities, game_map, fov_recompute, colors)
         root_console.blit(con, 0, 0, screen_width, screen_height, 0, 0)
         tdl.flush()
         clear_all(con, entities)
 
-        fov_recompute = False
+        # Unless the player moves, we do not need to recompute the fov.
+        fov_recompute = False 
 
+        # Get input from the player.
         for event in tdl.event.get():
             if event.type == 'KEYDOWN':
                 user_input = event
@@ -76,21 +81,27 @@ def main():
             user_input = None
         if not user_input:
             continue
-
         action = handle_keys(user_input)
-        move = action.get('move')
-        exit = action.get('exit')
-        fullscreen = action.get('fullscreen')
 
+        # Handle player actions
+        move = action.get('move')
         if move:
             dx, dy = move
-            if game_map.walkable[player.x + dx, player.y + dy]:
-                player.move(dx, dy)
-                fov_recompute = True
+            destination_x, destination_y = player.x + dx, player.y + dy
+            if game_map.walkable[destination_x, destination_y]:
+                blocker = get_blocking_entity_at_location(
+                    entities, destination_x, destination_y)
+                if blocker:
+                    print('You kick the ' + blocker.name + ' in the BALLS!')
+                else:
+                    player.move(dx, dy)
+                    fov_recompute = True
 
+        exit = action.get('exit')
         if exit:
             return True
 
+        fullscreen = action.get('fullscreen')
         if fullscreen:
             tdl.set_fullscreen(not tdl.get_fullscreen())
 

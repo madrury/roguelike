@@ -74,7 +74,7 @@ def generate_monsters(game_map, rooms, player, map_config, colors):
             if (game_map.walkable[x, y] 
                 and (not player_at_position or monster_at_position)):
                 monster = make_random_monster(x, y, colors)
-            monsters.append(monster)
+                monsters.append(monster)
     return monsters
 
 def create_room(game_map, room):
@@ -108,8 +108,10 @@ def create_v_tunnel(game_map, y1, y2, x):
 
 def make_random_monster(x, y, colors):
     if randint(0, 100) < 80:
-        monster = Entity(x, y, 'O', colors['desaturated_green'])
+        monster = Entity(
+            x, y, 'O', colors['desaturated_green'], 'Orc', blocks=True)
     else:
-        monster = Entity(x, y, 'T', colors['darker_green'])
+        monster = Entity(
+            x, y, 'T', colors['darker_green'], 'Troll', blocks=True)
     return monster
 
