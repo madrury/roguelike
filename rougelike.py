@@ -27,7 +27,9 @@ def main():
         'dark_wall': (0, 0, 100),
         'dark_ground': (50, 50, 150),
         'light_wall': (130, 110, 50),
-        'light_ground': (200, 180, 50)
+        'light_ground': (200, 180, 50),
+        'desaturated_green': (63, 127, 63),
+        'darker_green': (0, 127, 0)
     }
 
     tdl.set_font('arial10x10.png', greyscale=True, altLayout=True)
@@ -57,9 +59,8 @@ def main():
                 radius=fov_config["radius"],
                 light_walls=fov_config["light_walls"])
 
-        render_all(
-            con, entities, game_map, fov_recompute,
-            root_console, screen_width, screen_height, colors)
+        render_all(con, entities, game_map, fov_recompute, colors)
+        root_console.blit(con, 0, 0, screen_width, screen_height, 0, 0)
         tdl.flush()
         clear_all(con, entities)
 

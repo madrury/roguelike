@@ -2,6 +2,8 @@ from tdl.map import Map
 import numpy as np
 from random import randint
 
+from entity import Entity
+
 
 class Rectangle:
 
@@ -22,9 +24,11 @@ class Rectangle:
                 self.y1 <= other.y2 and self.y2 >= other.y1)
 
 class GameMap(Map):
+
     def __init__(self, width, height):
         super().__init__(width, height)
         self.explored = np.zeros((width, height)).astype(bool)
+
 
 def make_map(game_map, map_config, player):
     # Destructure the map_config dictionary into local variables.
@@ -83,8 +87,3 @@ def create_v_tunnel(game_map, y1, y2, x):
     y1, y2 = min(y1, y2), max(y1, y2)
     for y in range(y1, y2 + 1):
         make_transparent_and_walkable(game_map, x, y)
-
-
-            
-            
-
