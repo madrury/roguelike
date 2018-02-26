@@ -91,8 +91,12 @@ def main():
             continue
         action = handle_keys(user_input)
 
-        # Handle player actions
+        #---------------------------------------------------------------------
+        # Handle player move actions
+        #---------------------------------------------------------------------
+        # Get move action and check ccheck consequences.
         move = action.get('move')
+        player_turn_results = []
         if move and game_state == GameStates.PLAYER_TURN:
             dx, dy = move
             destination_x, destination_y = player.x + dx, player.y + dy
@@ -100,24 +104,58 @@ def main():
                 blocker = get_blocking_entity_at_location(
                     entities, destination_x, destination_y)
                 if blocker:
-                    player.fighter.attack(blocker)
+                    attack_results = player.fighter.attack(blocker)
+                    player_turn_results.extend(attack_results)
                 else:
-                    player.move(dx, dy)
-                    fov_recompute = True
+                    player_turn_results.append({'move': (dx, dy)})
                 game_state = GameStates.ENEMY_TURN
+        # Process possible results of move action
+        for player_turn_result in player_turn_results:
+            move = player_turn_result.get('move')
+            if move:
+                player.move(*move)
+                fov_recompute = True
+            message = player_turn_result.get('message')
+            if message:
+                print(message)
+            dead_entity = player_turn_result.get('dead')
+            if dead_entity:
+                print('Something died!')
 
+        #---------------------------------------------------------------------
+        # Handle enemy actions
+        #---------------------------------------------------------------------
+        enemy_turn_results = []
+        if game_state == GameStates.ENEMY_TURN:
+            for entity in (x for x in entities if x.ai):
+                enemy_turn_results.extend(entity.ai.take_turn(
+                    player, game_map))
+            game_state = GameStates.PLAYER_TURN
+        # Process all result actions of enemy turns
+        for result in enemy_turn_results:
+            move_towards = result.get('move_towards')
+            if move_towards:
+               monster, target_x, target_y = move_towards
+               monster.move_towards(target_x, target_y, game_map, entities)
+            message = result.get('message')
+            if message:
+                print(message)
+            dead_entity = result.get('dead')
+            if dead_entity:
+                print('Something Died!')
+
+
+        #---------------------------------------------------------------------
+        # Handle meta actions
+        #---------------------------------------------------------------------
         exit = action.get('exit')
         if exit:
             return True
-
-        if game_state == GameStates.ENEMY_TURN:
-            for entity in (x for x in entities if x.ai):
-                entity.ai.take_turn(player, game_map, entities)
-            game_state = GameStates.PLAYER_TURN
-
         fullscreen = action.get('fullscreen')
+
         if fullscreen:
             tdl.set_fullscreen(not tdl.get_fullscreen())
+            
 
 
 if __name__ == '__main__':
