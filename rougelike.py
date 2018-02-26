@@ -100,7 +100,7 @@ def main():
                 blocker = get_blocking_entity_at_location(
                     entities, destination_x, destination_y)
                 if blocker:
-                    print('You kick the ' + blocker.name + ' in the BALLS!')
+                    player.fighter.attack(blocker)
                 else:
                     player.move(dx, dy)
                     fov_recompute = True
