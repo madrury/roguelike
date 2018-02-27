@@ -7,6 +7,7 @@ from render_functions import clear_all, render_all
 from map_utils import GameMap, make_map, generate_monsters
 from entity import Entity, get_blocking_entity_at_location
 from game_states import GameStates
+from death_functions import kill_monster, kill_player
 
 def main():
 
@@ -35,7 +36,8 @@ def main():
         'light_wall': (130, 110, 50),
         'light_ground': (200, 180, 50),
         'desaturated_green': (63, 127, 63),
-        'darker_green': (0, 127, 0)
+        'darker_green': (0, 127, 0),
+        'dark_red': (191, 0, 0)
     }
 
     tdl.set_font('arial10x10.png', greyscale=True, altLayout=True)
@@ -110,7 +112,8 @@ def main():
                     player_turn_results.append({'move': (dx, dy)})
                 game_state = GameStates.ENEMY_TURN
         # Process possible results of move action
-        for player_turn_result in player_turn_results:
+        while player_turn_results != []:
+            player_turn_result = player_turn_results.pop()
             move = player_turn_result.get('move')
             if move:
                 player.move(*move)
@@ -119,8 +122,12 @@ def main():
             if message:
                 print(message)
             dead_entity = player_turn_result.get('dead')
-            if dead_entity:
-                print('Something died!')
+            if dead_entity == player:
+                player_turn_results.extend(kill_player(player, colors))
+                game_state = GameStates.PLAYER_DEAD 
+            elif dead_entity:
+                player_turn_results.extend(
+                    kill_monster(dead_entity, colors))
 
         #---------------------------------------------------------------------
         # Handle enemy actions
@@ -132,7 +139,8 @@ def main():
                     player, game_map))
             game_state = GameStates.PLAYER_TURN
         # Process all result actions of enemy turns
-        for result in enemy_turn_results:
+        while enemy_turn_results != []:
+            result = enemy_turn_results.pop()
             move_towards = result.get('move_towards')
             if move_towards:
                monster, target_x, target_y = move_towards
@@ -141,9 +149,18 @@ def main():
             if message:
                 print(message)
             dead_entity = result.get('dead')
-            if dead_entity:
-                print('Something Died!')
+            if dead_entity == player:
+                player_turn_results.extend(kill_player(player, colors))
+                game_state = GameStates.PLAYER_DEAD 
+            elif dead_entity:
+                player_turn_results.extend(
+                    kill_monster(dead_entity, colors))
 
+        #---------------------------------------------------------------------
+        # If the player is dead, the game is over.
+        #---------------------------------------------------------------------
+        if game_state = GameStates.PLAYER_DEAD:
+            break
 
         #---------------------------------------------------------------------
         # Handle meta actions
@@ -152,10 +169,8 @@ def main():
         if exit:
             return True
         fullscreen = action.get('fullscreen')
-
         if fullscreen:
             tdl.set_fullscreen(not tdl.get_fullscreen())
-            
 
 
 if __name__ == '__main__':
