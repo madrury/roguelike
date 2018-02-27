@@ -48,7 +48,7 @@ def main():
     con = tdl.Console(screen_width, screen_height)
 
     player = Entity(0, 0, '@', colors['white'], 'Player', 
-                    fighter=Fighter(hp=30, defense=2, power=5),
+                    fighter=Fighter(hp=20, defense=2, power=5),
                     blocks=True)
     entities = [player]
 
@@ -113,21 +113,36 @@ def main():
                 game_state = GameStates.ENEMY_TURN
         # Process possible results of move action
         while player_turn_results != []:
-            player_turn_result = player_turn_results.pop()
-            move = player_turn_result.get('move')
+            result = player_turn_results.pop()
+            move = result.get('move')
+            message = result.get('message')
+            damage = result.get('damage')
+            dead_entity = result.get('dead')
+            death_message = result.get('death_message')
+            # Handle movement.
             if move:
                 player.move(*move)
                 fov_recompute = True
-            message = player_turn_result.get('message')
+            # Handle Messages
             if message:
                 print(message)
-            dead_entity = player_turn_result.get('dead')
+            # Handle damage dealt.
+            if damage:
+                target, amount = damage
+                damage_result = target.fighter.take_damage(amount)
+                player_turn_results.extend(damage_result)
+            # Handle death
             if dead_entity == player:
                 player_turn_results.extend(kill_player(player, colors))
                 game_state = GameStates.PLAYER_DEAD 
             elif dead_entity:
                 player_turn_results.extend(
                     kill_monster(dead_entity, colors))
+            # Handle a death message.  Death messages are special in that
+            # they immediately break out of the game loop.
+            if death_message:
+                print(death_message)
+                break
 
         #---------------------------------------------------------------------
         # Handle enemy actions
@@ -142,24 +157,39 @@ def main():
         while enemy_turn_results != []:
             result = enemy_turn_results.pop()
             move_towards = result.get('move_towards')
+            message = result.get('message')
+            damage = result.get('damage')
+            dead_entity = result.get('dead')
+            death_message = result.get('death_message')
+            # Handle a move towards action.  Move towards a target.
             if move_towards:
                monster, target_x, target_y = move_towards
                monster.move_towards(target_x, target_y, game_map, entities)
-            message = result.get('message')
+            # Handle a simple message.
             if message:
                 print(message)
-            dead_entity = result.get('dead')
+            # Handle damage dealt.
+            if damage:
+                target, amount = damage
+                damage_result = target.fighter.take_damage(amount)
+                enemy_turn_results.extend(damage_result)
+            # Handle death.
             if dead_entity == player:
-                player_turn_results.extend(kill_player(player, colors))
+                enemy_turn_results.extend(kill_player(player, colors))
                 game_state = GameStates.PLAYER_DEAD 
             elif dead_entity:
-                player_turn_results.extend(
+                enemy_turn_results.extend(
                     kill_monster(dead_entity, colors))
+            # Handle a death message.  Death messages are special in that
+            # they immediately break out of the game loop.
+            if death_message:
+                print(death_message)
+                break
 
         #---------------------------------------------------------------------
         # If the player is dead, the game is over.
         #---------------------------------------------------------------------
-        if game_state = GameStates.PLAYER_DEAD:
+        if game_state == GameStates.PLAYER_DEAD:
             break
 
         #---------------------------------------------------------------------
