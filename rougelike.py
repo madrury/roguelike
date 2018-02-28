@@ -3,7 +3,7 @@ import tdl
 from components.fighter import Fighter
 
 from input_handlers import handle_keys
-from render_functions import clear_all, render_all
+from render_functions import clear_all, render_all, render_panel
 from map_utils import GameMap, make_map, generate_monsters
 from entity import Entity, get_blocking_entity_at_location
 from game_states import GameStates
@@ -16,12 +16,18 @@ def main():
 
     map_config = {
         'width': 80,
-        'height': 45,
+        'height': 43,
         'room_max_size': 15,
         'room_min_size': 6,
         'max_rooms': 30,
         'max_monsters_per_room': 3
     }
+
+    panel_config = {
+        'bar_width': 20,
+        'panel_height': 7,
+    }
+    panel_config['panel_y'] = screen_height - panel_config['panel_height']
 
     fov_config = {
         "algorithm": 'BASIC',
@@ -30,14 +36,20 @@ def main():
     }
 
     colors = {
-        'white': (255, 255, 255),
         'dark_wall': (0, 0, 100),
         'dark_ground': (50, 50, 150),
         'light_wall': (130, 110, 50),
         'light_ground': (200, 180, 50),
         'desaturated_green': (63, 127, 63),
         'darker_green': (0, 127, 0),
-        'dark_red': (191, 0, 0)
+        'dark_red': (191, 0, 0),
+        'white': (255, 255, 255),
+        'black': (0, 0, 0),
+        'red': (255, 0, 0),
+        'orange': (255, 127, 0),
+        'light_red': (255, 144, 144),
+        'darker_red': (127, 0, 0)
+        
     }
 
     tdl.set_font('arial10x10.png', greyscale=True, altLayout=True)
@@ -46,6 +58,7 @@ def main():
        screen_width, screen_height,
        title='Rougelike Tutorial Game')
     con = tdl.Console(screen_width, screen_height)
+    panel = tdl.Console(screen_width, panel_config['panel_height'])
 
     player = Entity(0, 0, '@', colors['white'], 'Player', 
                     fighter=Fighter(hp=20, defense=2, power=5),
@@ -76,6 +89,10 @@ def main():
         # Render and display the dungeon and its inhabitates.
         render_all(con, entities, game_map, fov_recompute, colors)
         root_console.blit(con, 0, 0, screen_width, screen_height, 0, 0)
+        render_panel(panel, player, panel_config, colors)
+        root_console.blit(panel, 0, panel_config['panel_y'],
+                          screen_width, screen_height, 0, 0)
+
         tdl.flush()
         clear_all(con, entities)
 
@@ -187,12 +204,6 @@ def main():
                 break
 
         #---------------------------------------------------------------------
-        # If the player is dead, the game is over.
-        #---------------------------------------------------------------------
-        if game_state == GameStates.PLAYER_DEAD:
-            break
-
-        #---------------------------------------------------------------------
         # Handle meta actions
         #---------------------------------------------------------------------
         exit = action.get('exit')
@@ -201,6 +212,12 @@ def main():
         fullscreen = action.get('fullscreen')
         if fullscreen:
             tdl.set_fullscreen(not tdl.get_fullscreen())
+
+        #---------------------------------------------------------------------
+        # If the player is dead, the game is over.
+        #---------------------------------------------------------------------
+        if game_state == GameStates.PLAYER_DEAD:
+            continue
 
 
 if __name__ == '__main__':
