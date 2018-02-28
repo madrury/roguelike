@@ -6,6 +6,7 @@ from input_handlers import handle_keys
 from render_functions import clear_all, render_all, render_panel
 from map_utils import GameMap, make_map, generate_monsters
 from entity import Entity, get_blocking_entity_at_location
+from game_messages import MessageLog
 from game_states import GameStates
 from death_functions import kill_monster, kill_player
 
@@ -25,9 +26,15 @@ def main():
 
     panel_config = {
         'bar_width': 20,
-        'panel_height': 7,
+        'height': 7,
     }
-    panel_config['panel_y'] = screen_height - panel_config['panel_height']
+    panel_config['y'] = screen_height - panel_config['panel_height']
+
+    message_config = {
+        'x': panel_config['bar_width'] + 2,
+        'width': screen_width - panel_config['bar_width'] - 2,
+        'height': panel_config['height'] - 1
+    }
 
     fov_config = {
         "algorithm": 'BASIC',
@@ -58,7 +65,7 @@ def main():
        screen_width, screen_height,
        title='Rougelike Tutorial Game')
     con = tdl.Console(screen_width, screen_height)
-    panel = tdl.Console(screen_width, panel_config['panel_height'])
+    panel = tdl.Console(screen_width, panel_config['height'])
 
     player = Entity(0, 0, '@', colors['white'], 'Player', 
                     fighter=Fighter(hp=20, defense=2, power=5),
@@ -71,6 +78,8 @@ def main():
     monsters = generate_monsters(
         game_map, rooms, player, map_config, colors)
     entities.extend(monsters)
+
+    message_log = MessageLog(message_config)
     
     # Initial values for game states
     fov_recompute = True
@@ -90,7 +99,7 @@ def main():
         render_all(con, entities, game_map, fov_recompute, colors)
         root_console.blit(con, 0, 0, screen_width, screen_height, 0, 0)
         render_panel(panel, player, panel_config, colors)
-        root_console.blit(panel, 0, panel_config['panel_y'],
+        root_console.blit(panel, 0, panel_config['y'],
                           screen_width, screen_height, 0, 0)
 
         tdl.flush()
@@ -142,7 +151,7 @@ def main():
                 fov_recompute = True
             # Handle Messages
             if message:
-                print(message)
+                message_log.add_message(message)
             # Handle damage dealt.
             if damage:
                 target, amount = damage
@@ -158,7 +167,7 @@ def main():
             # Handle a death message.  Death messages are special in that
             # they immediately break out of the game loop.
             if death_message:
-                print(death_message)
+                message_log.add_message(message)
                 break
 
         #---------------------------------------------------------------------
