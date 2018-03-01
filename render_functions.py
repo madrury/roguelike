@@ -1,22 +1,32 @@
 def render_all(con, entities, game_map, fov_recompute, colors):
     # Draw walls.
     if fov_recompute:
-        draw_walls(con, game_map, colors) 
+        _draw_walls(con, game_map, colors) 
     # Draw Entities.
     for entity in entities:
-        draw_entity(con, entity, game_map.fov)
+        _draw_entity(con, entity, game_map.fov)
 
-def render_panel(panel, player, panel_config, colors):
+def render_health_bars(panel, player, panel_config, colors):
     panel.clear(fg=colors['white'], bg=colors['black'])
     hp_bar_colors = {
         'bar_color': colors['light_red'],
         'back_color': colors['darker_red'],
         'string_color': colors['white']}
-    render_bar(panel, 'HP', 1, 1, panel_config['bar_width'], 
+    _render_bar(panel, 'HP', 1, 1, panel_config['bar_width'], 
                player.fighter.hp, player.fighter.max_hp,
                hp_bar_colors)
 
-def render_bar(panel, name, x, y, total_width, value, maximum, bar_colors):
+def render_messages(panel, message_log):
+    for y, message in enumerate(message_log.messages, start=1):
+        panel.draw_str(
+            message_log.x, y, message.text, bg=None, fg=message.color)
+
+def clear_all(con, entities):
+    for entity in entities:
+        _clear_entity(con, entity)
+
+
+def _render_bar(panel, name, x, y, total_width, value, maximum, bar_colors):
     bar_color = bar_colors['bar_color']
     back_color = bar_colors['back_color']
     string_color = bar_colors['string_color']
@@ -28,7 +38,7 @@ def render_bar(panel, name, x, y, total_width, value, maximum, bar_colors):
     x_centered = x + int((total_width - len(text)) / 2)
     panel.draw_str(x_centered, y, text, fg=string_color, bg=None)
 
-def draw_walls(con, game_map, colors):
+def _draw_walls(con, game_map, colors):
     for x, y in game_map:
         wall = not game_map.transparent[x, y]
         if game_map.fov[x, y]:
@@ -43,13 +53,10 @@ def draw_walls(con, game_map, colors):
             else:
                 con.draw_char(x, y, None, fg=None, bg=colors.get('dark_ground'))
 
-def draw_entity(con, entity, fov):
+def _draw_entity(con, entity, fov):
     if fov[entity.x, entity.y]:
         con.draw_char(entity.x, entity.y, entity.char, entity.color, bg=None)
 
-def clear_all(con, entities):
-    for entity in entities:
-        clear_entity(con, entity)
 
-def clear_entity(con, entity):
+def _clear_entity(con, entity):
     con.draw_char(entity.x, entity.y, ' ', entity.color, bg=None)

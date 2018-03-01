@@ -3,12 +3,13 @@ import tdl
 from components.fighter import Fighter
 
 from input_handlers import handle_keys
-from render_functions import clear_all, render_all, render_panel
 from map_utils import GameMap, make_map, generate_monsters
 from entity import Entity, get_blocking_entity_at_location
 from game_messages import MessageLog
 from game_states import GameStates
 from death_functions import kill_monster, kill_player
+from render_functions import (
+    clear_all, render_all, render_health_bars, render_messages)
 
 def main():
 
@@ -28,7 +29,7 @@ def main():
         'bar_width': 20,
         'height': 7,
     }
-    panel_config['y'] = screen_height - panel_config['panel_height']
+    panel_config['y'] = screen_height - panel_config['height']
 
     message_config = {
         'x': panel_config['bar_width'] + 2,
@@ -64,8 +65,8 @@ def main():
     root_console = tdl.init(
        screen_width, screen_height,
        title='Rougelike Tutorial Game')
-    con = tdl.Console(screen_width, screen_height)
-    panel = tdl.Console(screen_width, panel_config['height'])
+    map_console = tdl.Console(screen_width, screen_height)
+    panel_console = tdl.Console(screen_width, panel_config['height'])
 
     player = Entity(0, 0, '@', colors['white'], 'Player', 
                     fighter=Fighter(hp=20, defense=2, power=5),
@@ -96,14 +97,15 @@ def main():
                 light_walls=fov_config["light_walls"])
 
         # Render and display the dungeon and its inhabitates.
-        render_all(con, entities, game_map, fov_recompute, colors)
-        root_console.blit(con, 0, 0, screen_width, screen_height, 0, 0)
-        render_panel(panel, player, panel_config, colors)
-        root_console.blit(panel, 0, panel_config['y'],
+        render_all(map_console, entities, game_map, fov_recompute, colors)
+        root_console.blit(map_console, 0, 0, screen_width, screen_height, 0, 0)
+        render_health_bars(panel_console, player, panel_config, colors)
+        render_messages(panel_console, message_log)
+        root_console.blit(panel_console, 0, panel_config['y'],
                           screen_width, screen_height, 0, 0)
 
         tdl.flush()
-        clear_all(con, entities)
+        clear_all(map_console, entities)
 
         # Unless the player moves, we do not need to recompute the fov.
         fov_recompute = False 
@@ -167,7 +169,7 @@ def main():
             # Handle a death message.  Death messages are special in that
             # they immediately break out of the game loop.
             if death_message:
-                message_log.add_message(message)
+                message_log.add_message(death_message)
                 break
 
         #---------------------------------------------------------------------
@@ -193,7 +195,7 @@ def main():
                monster.move_towards(target_x, target_y, game_map, entities)
             # Handle a simple message.
             if message:
-                print(message)
+                message_log.add_message(message)
             # Handle damage dealt.
             if damage:
                 target, amount = damage
@@ -209,7 +211,7 @@ def main():
             # Handle a death message.  Death messages are special in that
             # they immediately break out of the game loop.
             if death_message:
-                print(death_message)
+                message_log.add_message(death_message)
                 break
 
         #---------------------------------------------------------------------
