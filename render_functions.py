@@ -1,9 +1,20 @@
+from enum import Enum
+
+
+class RenderOrder(Enum):
+    CORPSE = 1
+    ITEM = 2
+    ACTOR = 3
+
+
 def render_all(con, entities, game_map, fov_recompute, colors):
     # Draw walls.
     if fov_recompute:
         _draw_walls(con, game_map, colors) 
     # Draw Entities.
-    for entity in entities:
+    entities_in_render_order = sorted(
+        entities, key=lambda x: x.render_order.value)
+    for entity in entities_in_render_order:
         _draw_entity(con, entity, game_map.fov)
 
 def render_health_bars(panel, player, panel_config, colors):

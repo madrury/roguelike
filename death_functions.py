@@ -1,5 +1,6 @@
 from game_states import GameStates
 from game_messages import Message
+from render_functions import RenderOrder
 
 def kill_player(player, colors):
     player.char = '%'
@@ -14,4 +15,5 @@ def kill_monster(monster, colors):
     monster.fighter = None
     monster.ai = None
     monster.name = 'Remains of ' + monster.name
+    monster.render_order = RenderOrder.CORPSE
     return [{'death_message': Message(message, colors['orange'])}]

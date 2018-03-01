@@ -9,7 +9,8 @@ from game_messages import MessageLog
 from game_states import GameStates
 from death_functions import kill_monster, kill_player
 from render_functions import (
-    clear_all, render_all, render_health_bars, render_messages)
+    RenderOrder, clear_all, render_all, render_health_bars, 
+    render_messages)
 
 def main():
 
@@ -70,7 +71,8 @@ def main():
 
     player = Entity(0, 0, '@', colors['white'], 'Player', 
                     fighter=Fighter(hp=20, defense=2, power=5),
-                    blocks=True)
+                    blocks=True,
+                    render_order=RenderOrder.ACTOR)
     entities = [player]
 
     game_map = GameMap(map_config['width'], map_config['height'])

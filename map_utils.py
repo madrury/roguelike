@@ -5,6 +5,7 @@ from random import randint
 from entity import Entity
 from components.ai import BasicMonster
 from components.fighter import Fighter
+from render_functions import RenderOrder
 
 
 class Rectangle:
@@ -114,12 +115,14 @@ def make_random_monster(x, y, colors):
             x, y, 'O', colors['desaturated_green'], 'Orc', 
             fighter=Fighter(hp=10, defense=0, power=3),
             ai=BasicMonster(),
-            blocks=True)
+            blocks=True,
+            render_order=RenderOrder.ACTOR)
     else:
         monster = Entity(
             x, y, 'T', colors['darker_green'], 'Troll', 
             fighter=Fighter(hp=16, defense=1, power=4),
             ai=BasicMonster(),
-            blocks=True)
+            blocks=True,
+            render_order=RenderOrder.ACTOR)
     return monster
 
