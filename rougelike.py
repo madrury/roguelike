@@ -3,7 +3,7 @@ import tdl
 from components.fighter import Fighter
 
 from input_handlers import handle_keys
-from map_utils import GameMap, make_map, generate_monsters
+from map_utils import GameMap, make_map, generate_monsters, generate_items
 from entity import Entity, get_blocking_entity_at_location
 from game_messages import MessageLog
 from game_states import GameStates
@@ -23,7 +23,8 @@ def main():
         'room_max_size': 15,
         'room_min_size': 6,
         'max_rooms': 30,
-        'max_monsters_per_room': 3
+        'max_monsters_per_room': 3,
+        'max_items_per_room': 2
     }
 
     panel_config = {
@@ -57,37 +58,47 @@ def main():
         'red': (255, 0, 0),
         'orange': (255, 127, 0),
         'light_red': (255, 144, 144),
-        'darker_red': (127, 0, 0)
-        
+        'darker_red': (127, 0, 0),
+        'violet': (127, 0, 255),    
+        'yellow': (255, 255, 0),
+        'blue': (0, 0, 255),
+        'green': (0, 255, 0)
     }
 
     tdl.set_font('arial10x10.png', greyscale=True, altLayout=True)
 
+    # Setup playscreen with two consoles:
+    #  - A place to draw the playscreen with the map and entities.
+    #  - A console with the player's health bar, and a message log.
     root_console = tdl.init(
        screen_width, screen_height,
        title='Rougelike Tutorial Game')
     map_console = tdl.Console(screen_width, screen_height)
     panel_console = tdl.Console(screen_width, panel_config['height'])
+    message_log = MessageLog(message_config)
 
+    # This is you.  Kill some Orcs.
     player = Entity(0, 0, '@', colors['white'], 'Player', 
                     fighter=Fighter(hp=20, defense=2, power=5),
                     blocks=True,
                     render_order=RenderOrder.ACTOR)
     entities = [player]
-
+ 
+    # Generate the map and place player, monsters, and items.
     game_map = GameMap(map_config['width'], map_config['height'])
-    rooms = make_map(
-        game_map, map_config, player)
-    monsters = generate_monsters(
-        game_map, rooms, player, map_config, colors)
+    rooms = make_map(game_map, map_config, player)
+    monsters = generate_monsters(game_map, rooms, [player], map_config, colors)
     entities.extend(monsters)
-
-    message_log = MessageLog(message_config)
+    items = generate_items( game_map, rooms, entities, map_config, colors)
+    entities.extend(items)
     
     # Initial values for game states
     fov_recompute = True
     game_state = GameStates.PLAYER_TURN
 
+    #-------------------------------------------------------------------------
+    # Main Game Loop.
+    #-------------------------------------------------------------------------
     while not tdl.event.is_window_closed():
 
         # If needed, recompute the player's field of view.
