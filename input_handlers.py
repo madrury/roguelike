@@ -17,6 +17,8 @@ def handle_keys(user_input):
         return {'move': (-1, 1)}
     elif key_char == 'n':
         return {'move': (1, 1)}
+    elif key_char == 'z':
+        return {'move': (0, 0)}
     # Meta Events
     if user_input.key == 'ENTER' and user_input.alt:
         return {'fullscreen': True}

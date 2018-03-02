@@ -146,7 +146,9 @@ def main():
             if game_map.walkable[destination_x, destination_y]:
                 blocker = get_blocking_entity_at_location(
                     entities, destination_x, destination_y)
-                if blocker:
+                # If you attempted to walk into a square occupied by an entity,
+                # and that entity is not yourself.
+                if blocker and blocker != player:
                     attack_results = player.fighter.attack(blocker)
                     player_turn_results.extend(attack_results)
                 else:
