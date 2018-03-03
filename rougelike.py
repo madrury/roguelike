@@ -9,6 +9,7 @@ from map_utils import GameMap, make_map, generate_monsters, generate_items
 from entity import Entity, get_blocking_entity_at_location
 from game_messages import MessageLog
 from game_states import GameStates
+from menus import invetory_menu
 from death_functions import kill_monster, kill_player
 from render_functions import (
     RenderOrder, clear_all, render_all, render_health_bars, 
@@ -98,6 +99,7 @@ def main():
     # Initial values for game states
     fov_recompute = True
     game_state = GameStates.PLAYER_TURN
+    previous_game_state = game_state
 
     #-------------------------------------------------------------------------
     # Main Game Loop.
@@ -119,6 +121,14 @@ def main():
         render_messages(panel_console, message_log)
         root_console.blit(panel_console, 0, panel_config['y'],
                           screen_width, screen_height, 0, 0)
+        # Render any menus.
+        if game_state == GameStates.SHOW_INVETORY:
+            invetory_message = "Press the letter next to the item to use it.\n"
+            menu_console, menu_x, menu_y = invetory_menu(
+                invetory_message, player.inventory, 50,
+                screen_width, screen_height)
+            root_console.blit(menu_console, menu_x, menu_y,
+                              screen_width, screen_height, 0, 0)
 
         tdl.flush()
         clear_all(map_console, entities)
@@ -252,9 +262,18 @@ def main():
         #---------------------------------------------------------------------
         # Handle meta actions
         #---------------------------------------------------------------------
+        show_invetory = action.get('show_invetory')
+        if game_state == GameStates.PLAYER_TURN and show_invetory:
+            previous_game_state = game_state
+            game_state = GameStates.SHOW_INVETORY
+
         exit = action.get('exit')
         if exit:
-            return True
+            if game_state == GameStates.SHOW_INVETORY:
+                game_state = previous_game_state
+            else:
+                return True
+
         fullscreen = action.get('fullscreen')
         if fullscreen:
             tdl.set_fullscreen(not tdl.get_fullscreen())

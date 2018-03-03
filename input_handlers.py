@@ -25,6 +25,8 @@ def handle_keys(user_input):
         return {'pickup': True}
 
     # Meta Events
+    if key_char == 'i':
+        return {'show_invetory': True}
     if user_input.key == 'ENTER' and user_input.alt:
         return {'fullscreen': True}
     elif user_input.key == 'ESCAPE':
