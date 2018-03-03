@@ -3,10 +3,11 @@ import numpy as np
 from random import randint
 
 from entity import Entity
-from components.ai import BasicMonster
-from components.fighter import Fighter
 from render_functions import RenderOrder
 
+from components.ai import BasicMonster
+from components.fighter import Fighter
+from components.item import Item
 
 class Rectangle:
 
@@ -144,5 +145,6 @@ def _make_random_monster(x, y, colors):
 
 def _make_random_item(x, y, colors):
     return Entity(x, y, '!', colors['violet'], 'Healing Potion',
-                  render_order=RenderOrder.ITEM)
+                  render_order=RenderOrder.ITEM,
+                  item=Item())
 

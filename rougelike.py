@@ -1,8 +1,10 @@
 import tdl
 
 from components.fighter import Fighter
+from components.inventory import Inventory
 
 from input_handlers import handle_keys
+from game_messages import Message
 from map_utils import GameMap, make_map, generate_monsters, generate_items
 from entity import Entity, get_blocking_entity_at_location
 from game_messages import MessageLog
@@ -79,9 +81,10 @@ def main():
 
     # This is you.  Kill some Orcs.
     player = Entity(0, 0, '@', colors['white'], 'Player', 
-                    fighter=Fighter(hp=20, defense=2, power=5),
                     blocks=True,
-                    render_order=RenderOrder.ACTOR)
+                    render_order=RenderOrder.ACTOR,
+                    fighter=Fighter(hp=20, defense=2, power=5),
+                    inventory=Inventory(26))
     entities = [player]
  
     # Generate the map and place player, monsters, and items.
@@ -139,6 +142,7 @@ def main():
         #---------------------------------------------------------------------
         # Get move action and check ccheck consequences.
         move = action.get('move')
+        pickup = action.get('pickup')
         player_turn_results = []
         if move and game_state == GameStates.PLAYER_TURN:
             dx, dy = move
@@ -154,11 +158,24 @@ def main():
                 else:
                     player_turn_results.append({'move': (dx, dy)})
                 game_state = GameStates.ENEMY_TURN
-        # Process possible results of move action
+        elif pickup and game_state == GameStates.PLAYER_TURN:
+            for entity in entities:
+                if (entity.item
+                    and entity.x == player.x and entity.y == player.y):
+                    pickup_results = player.inventory.pickup_item(entity)
+                    player_turn_results.extend(pickup_results)
+                    break
+            else:
+                player_turn_results.append({
+                    'message': Message("There is nothing to pick up!")})
+            game_state = GameStates.ENEMY_TURN
+
+        # Process possible results of a player action
         while player_turn_results != []:
             result = player_turn_results.pop()
             move = result.get('move')
             message = result.get('message')
+            item_added = result.get('item_added')
             damage = result.get('damage')
             dead_entity = result.get('dead')
             death_message = result.get('death_message')
@@ -169,6 +186,9 @@ def main():
             # Handle Messages
             if message:
                 message_log.add_message(message)
+            if item_added:
+                player.inventory.items.append(item_added)
+                entities.remove(item_added)
             # Handle damage dealt.
             if damage:
                 target, amount = damage

@@ -1,11 +1,20 @@
 import math
 from render_functions import RenderOrder
 
+from components.item import Item
+from components.inventory import Inventory
+
+
 class Entity:
 
     def __init__(self, x, y, char, color, name, 
                  render_order=RenderOrder.CORPSE,
-                 blocks=False, fighter=None, ai=None):
+                 blocks=False, 
+                 fighter=None, 
+                 ai=None,
+                 item=None, 
+                 inventory=None):
+
         self.x = x
         self.y = y
         self.char = char
@@ -13,12 +22,19 @@ class Entity:
         self.name = name
         self.blocks = blocks
         self.render_order = render_order
+        # Set components.
         self.fighter = fighter
         if self.fighter:
             self.fighter.owner = self
         self.ai = ai
         if self.ai:
             self.ai.owner = self
+        self.item = item
+        if self.item:
+            self.item.owner = self
+        self.inventory = inventory
+        if self.inventory:
+            self.inventory.owner = self
 
     def move(self, dx, dy):
         self.x += dx
