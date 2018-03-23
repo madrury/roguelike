@@ -121,6 +121,7 @@ def main():
         render_messages(panel_console, message_log)
         root_console.blit(panel_console, 0, panel_config['y'],
                           screen_width, screen_height, 0, 0)
+
         # Render any menus.
         if game_state == GameStates.SHOW_INVETORY:
             invetory_message = "Press the letter next to the item to use it.\n"
@@ -136,7 +137,9 @@ def main():
         # Unless the player moves, we do not need to recompute the fov.
         fov_recompute = False 
 
-        # Get input from the player.
+        #---------------------------------------------------------------------
+        # Get key input from the player.
+        #---------------------------------------------------------------------
         for event in tdl.event.get():
             if event.type == 'KEYDOWN':
                 user_input = event
@@ -147,11 +150,19 @@ def main():
             continue
         action = handle_keys(user_input, game_state)
 
-        #---------------------------------------------------------------------
-        # Handle player move actions
-        #---------------------------------------------------------------------
+        #----------------------------------------------------------------------
+        # Handle player actions.
+        #......................................................................
+        # Here we process the consequences of input from the player that
+        # affect the game state.  These consequences are added to a queue for
+        # later processing.  This allows consequences to have further 
+        # consequences, which are then also added to the queue.  The messages
+        # on the queue are constantly popped and dealt with until the queue is
+        # empty, after which we pass the turn.
+        #----------------------------------------------------------------------
         move = action.get('move')
         pickup = action.get('pickup')
+        inventory_index = action.get('inventory_index')
         player_turn_results = []
         if move and game_state == GameStates.PLAYER_TURN:
             dx, dy = move
@@ -178,8 +189,17 @@ def main():
                 player_turn_results.append({
                     'message': Message("There is nothing to pick up!")})
             game_state = GameStates.ENEMY_TURN
+        elif (game_state == GameStates.SHOW_INVETORY
+            and inventory_index is not None
+            and inventory_index <= len(player.inventory.items)
+            and previous_game_state != GameStates.PLAYER_DEAD):
+            item = player.inventory.items[inventory_index]
+            print(item)
+            game_state, previous_game_state = previous_game_state, game_state
 
-        # Process possible results of a player action
+        #----------------------------------------------------------------------
+        # Process the results queue 
+        #----------------------------------------------------------------------
         while player_turn_results != []:
             result = player_turn_results.pop()
             move = result.get('move')
@@ -266,13 +286,6 @@ def main():
             previous_game_state = game_state
             game_state = GameStates.SHOW_INVETORY
 
-        inventory_index = action.get('inventory_index')
-        if (game_state == GameStates.SHOW_INVETORY
-            and inventory_index is not None
-            and inventory_index <= len(player.inventory.items)
-            and previous_game_state != GameStates.PLAYER_DEAD):
-            item = player.inventory.items[inventory_index]
-            print(item)
 
         exit = action.get('exit')
         if exit:
