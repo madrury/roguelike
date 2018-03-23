@@ -3,6 +3,26 @@ import textwrap
 import string
 
 def menu(header, options, width, screen_width, screen_height):
+    """Draw a generic menu with a header and options for selection.
+
+    Arguments
+    ---------
+    
+    header: str
+      A text string to print at the top of a menu for description.
+
+    options: list[str]
+      A list of options for the user to select.
+
+    width: int
+      The width of the menu.
+
+    screen_width: int
+      The width of the screen into which the menu will be drawn.
+
+    screen_height: int
+      The height of the screen into which the menu will be drawn.
+    """
     if len(options) > 26:
         raise ValueError('Cannot have a menu with more than 26 options.')
     header_wrapped = textwrap.wrap(header, width)
