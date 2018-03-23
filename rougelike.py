@@ -145,12 +145,11 @@ def main():
             user_input = None
         if not user_input:
             continue
-        action = handle_keys(user_input)
+        action = handle_keys(user_input, game_state)
 
         #---------------------------------------------------------------------
         # Handle player move actions
         #---------------------------------------------------------------------
-        # Get move action and check ccheck consequences.
         move = action.get('move')
         pickup = action.get('pickup')
         player_turn_results = []
@@ -266,6 +265,14 @@ def main():
         if game_state == GameStates.PLAYER_TURN and show_invetory:
             previous_game_state = game_state
             game_state = GameStates.SHOW_INVETORY
+
+        inventory_index = action.get('inventory_index')
+        if (game_state == GameStates.SHOW_INVETORY
+            and inventory_index is not None
+            and inventory_index <= len(player.inventory.items)
+            and previous_game_state != GameStates.PLAYER_DEAD):
+            item = player.inventory.items[inventory_index]
+            print(item)
 
         exit = action.get('exit')
         if exit:
