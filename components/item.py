@@ -8,6 +8,7 @@ class Item:
 class HealthPotion:
 
     def __init__(self, healing=5):
+        self.name = "healing potion"
         self.use_on_player = True
         self.healing = healing
 

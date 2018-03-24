@@ -15,6 +15,7 @@ from render_functions import (
     RenderOrder, clear_all, render_all, render_health_bars, 
     render_messages)
 
+
 def main():
 
     screen_width = 80
@@ -123,8 +124,11 @@ def main():
                           screen_width, screen_height, 0, 0)
 
         # Render any menus.
-        if game_state == GameStates.SHOW_INVETORY:
-            invetory_message = "Press the letter next to the item to use it.\n"
+        if game_state in (GameStates.SHOW_INVETORY, GameStates.DROP_INVENTORY):
+            if game_state == GameStates.SHOW_INVETORY:
+                invetory_message = "Press the letter next to the item to use it.\n"
+            elif game_state == GameStates.DROP_INVENTORY:
+                invetory_message = "Press the letter next to the item to drop it.\n"
             menu_console, menu_x, menu_y = invetory_menu(
                 invetory_message, player.inventory, 50,
                 screen_width, screen_height)
@@ -162,6 +166,7 @@ def main():
         #----------------------------------------------------------------------
         move = action.get('move')
         pickup = action.get('pickup')
+        drop = action.get('drop')
         inventory_index = action.get('inventory_index')
         player_turn_results = []
         if move and game_state == GameStates.PLAYER_TURN:
@@ -189,13 +194,16 @@ def main():
                 player_turn_results.append({
                     'message': Message("There is nothing to pick up!")})
             game_state = GameStates.ENEMY_TURN
-        elif (game_state == GameStates.SHOW_INVETORY
+        elif (game_state in (GameStates.SHOW_INVETORY, GameStates.DROP_INVENTORY)
             and inventory_index is not None
             and inventory_index <= len(player.inventory.items)
             and previous_game_state != GameStates.PLAYER_DEAD):
             entity = player.inventory.items[inventory_index]
-            if entity.item.use_on_player:
-                player_turn_results.extend(entity.item.use(player, colors))
+            if game_state == GameStates.SHOW_INVETORY:
+                if entity.item.use_on_player:
+                    player_turn_results.extend(entity.item.use(player, colors))
+            elif game_state == GameStates.DROP_INVENTORY:
+                player_turn_results.extend(player.inventory.drop(entity))
             game_state, previous_game_state = previous_game_state, game_state
 
         #----------------------------------------------------------------------
@@ -208,6 +216,7 @@ def main():
             item_added = result.get('item_added')
             damage = result.get('damage')
             item_consumed = result.get('item_consumed')
+            item_dropped = result.get('item_dropped')
             heal = result.get('heal')
             dead_entity = result.get('dead')
             death_message = result.get('death_message')
@@ -233,6 +242,13 @@ def main():
                     player.inventory.remove(item)
                     game_state, previous_game_state = (
                         GameStates.ENEMY_TURN, game_state)
+            # Remove dropped items from inventory and place on the map
+            if item_dropped:
+                player.inventory.remove(item_dropped)
+                item_dropped.x, item_dropped.y = player.x, player.y
+                entities.append(item_dropped)
+                game_state, previous_game_state = (
+                    GameStates.ENEMY_TURN, game_state)
             # Heal an entity
             if heal:
                 target, amount = heal
@@ -301,12 +317,18 @@ def main():
             previous_game_state = game_state
             game_state = GameStates.SHOW_INVETORY
 
+        drop = action.get('drop_inventory')
+        if game_state == GameStates.PLAYER_TURN and drop:
+            previous_game_state = game_state
+            game_state = GameStates.DROP_INVENTORY
 
         exit = action.get('exit')
         if exit:
-            if game_state == GameStates.SHOW_INVETORY:
+            if game_state in (
+                GameStates.SHOW_INVETORY, GameStates.DROP_INVENTORY):
                 game_state = previous_game_state
             else:
+                # Hard exit the game.
                 return True
 
         fullscreen = action.get('fullscreen')

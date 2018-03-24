@@ -17,6 +17,14 @@ class Inventory:
                 'message': Message('You pick up the {0}.'.format(item.name))})
         return results
 
+    def drop(self, item):
+        results = []
+        message = Message(f'You dropped the {item.name}')
+        results.append({
+            'item_dropped': item,
+            'message': message})
+        return results
+
     def add(self, item):
         self.items.append(item)
 

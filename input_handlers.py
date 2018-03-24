@@ -25,7 +25,7 @@ def handle_keys(user_input, game_state):
         return handle_player_turn_keys(user_input)
     elif game_state == GameStates.PLAYER_DEAD:
         return handle_player_dead_keys(user_input)
-    elif game_state == GameStates.SHOW_INVETORY:
+    elif game_state in (GameStates.SHOW_INVETORY, GameStates.DROP_INVENTORY):
         return handle_inventory_keys(user_input)
     else:
         return {}
@@ -58,6 +58,8 @@ def handle_player_turn_keys(user_input):
     # Meta Events
     if key_char == 'i':
         return {'show_invetory': True}
+    if key_char == 'd':
+        return {'drop_inventory': True}
     return handle_generic_keys(user_input)
 
 def handle_player_dead_keys(user_input):
