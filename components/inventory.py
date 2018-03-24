@@ -6,7 +6,7 @@ class Inventory:
         self.capacity = capacity
         self.items = []
 
-    def pickup_item(self, item):
+    def pickup(self, item):
         results = []
         if len(self.items) >= self.capacity:
             results.append({
@@ -16,3 +16,9 @@ class Inventory:
                 'item_added': item,
                 'message': Message('You pick up the {0}.'.format(item.name))})
         return results
+
+    def add(self, item):
+        self.items.append(item)
+
+    def remove(self, item):
+        self.items.remove(item)

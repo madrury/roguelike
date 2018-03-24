@@ -182,7 +182,7 @@ def main():
             for entity in entities:
                 if (entity.item
                     and entity.x == player.x and entity.y == player.y):
-                    pickup_results = player.inventory.pickup_item(entity)
+                    pickup_results = player.inventory.pickup(entity)
                     player_turn_results.extend(pickup_results)
                     break
             else:
@@ -219,7 +219,7 @@ def main():
             if message:
                 message_log.add_message(message)
             if item_added:
-                player.inventory.items.append(item_added)
+                player.inventory.add(item_added)
                 entities.remove(item_added)
             # Handle damage dealt.
             if damage:
@@ -230,7 +230,7 @@ def main():
             if item_consumed:
                 consumed, item = item_consumed
                 if consumed:
-                    player.inventory.items.remove(item)
+                    player.inventory.remove(item)
                     game_state, previous_game_state = (
                         GameStates.ENEMY_TURN, game_state)
             # Heal an entity
