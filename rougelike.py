@@ -193,8 +193,9 @@ def main():
             and inventory_index is not None
             and inventory_index <= len(player.inventory.items)
             and previous_game_state != GameStates.PLAYER_DEAD):
-            item = player.inventory.items[inventory_index]
-            print(item)
+            entity = player.inventory.items[inventory_index]
+            if entity.item.use_on_player:
+                player_turn_results.extend(entity.item.use(player, colors))
             game_state, previous_game_state = previous_game_state, game_state
 
         #----------------------------------------------------------------------
@@ -206,6 +207,8 @@ def main():
             message = result.get('message')
             item_added = result.get('item_added')
             damage = result.get('damage')
+            item_consumed = result.get('item_consumed')
+            heal = result.get('heal')
             dead_entity = result.get('dead')
             death_message = result.get('death_message')
             # Handle movement.
@@ -223,6 +226,15 @@ def main():
                 target, amount = damage
                 damage_result = target.fighter.take_damage(amount)
                 player_turn_results.extend(damage_result)
+            # Remove consumed items from inventory
+            if item_consumed:
+                consumed, item = item_consumed
+                if consumed:
+                    player.inventory.items.remove(item)
+            if heal:
+                target, amount = heal
+                target.fighter.hp += min(
+                    amount, target.fighter.max_hp - target.fighter.hp)
             # Handle death
             if dead_entity == player:
                 player_turn_results.extend(kill_player(player, colors))
