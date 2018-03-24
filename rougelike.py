@@ -169,6 +169,15 @@ def main():
         drop = action.get('drop')
         inventory_index = action.get('inventory_index')
         player_turn_results = []
+
+        #----------------------------------------------------------------------
+        # Player Move Action
+        #......................................................................
+        # The player has entered a move action.  Chack if the space in that
+        # direction is movable, and if so put a move result on the queue.  If
+        # if not, attack the blocking entity by putting an attack action on the
+        # queue.
+        #----------------------------------------------------------------------
         if move and game_state == GameStates.PLAYER_TURN:
             dx, dy = move
             destination_x, destination_y = player.x + dx, player.y + dy
@@ -183,6 +192,13 @@ def main():
                 else:
                     player_turn_results.append({'move': (dx, dy)})
                 game_state = GameStates.ENEMY_TURN
+
+        #----------------------------------------------------------------------
+        # Player Pickup
+        #......................................................................
+        # The player has attempted to pickup an item.  If there is an item in
+        # the players space, put a pickup action on the queue.
+        #----------------------------------------------------------------------
         elif pickup and game_state == GameStates.PLAYER_TURN:
             for entity in entities:
                 if (entity.item
@@ -194,6 +210,14 @@ def main():
                 player_turn_results.append({
                     'message': Message("There is nothing to pick up!")})
             game_state = GameStates.ENEMY_TURN
+
+        #----------------------------------------------------------------------
+        # Player Inventory use / drop
+        #......................................................................
+        # The player has attempted to use or drop an item from the inventory.
+        # Check which state we are in (using or dropping) and put an
+        # instruction on the queue.
+        #----------------------------------------------------------------------
         elif (game_state in (GameStates.SHOW_INVETORY, GameStates.DROP_INVENTORY)
             and inventory_index is not None
             and inventory_index <= len(player.inventory.items)
@@ -208,6 +232,15 @@ def main():
 
         #----------------------------------------------------------------------
         # Process the results queue 
+        #......................................................................
+        # We are done processing player inputs, and may have some results on
+        # the player turn queue.  Process the queue by popping off the top
+        # result from the queue.  There are many different possible results,
+        # so handle each with a dedicated handler.
+        #
+        # Note: Handling a result may result in other results being added to
+        # the queue, so we continually process the results queue until it is
+        # empty.
         #----------------------------------------------------------------------
         while player_turn_results != []:
             result = player_turn_results.pop()
