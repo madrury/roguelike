@@ -231,6 +231,9 @@ def main():
                 consumed, item = item_consumed
                 if consumed:
                     player.inventory.items.remove(item)
+                    game_state, previous_game_state = (
+                        GameStates.ENEMY_TURN, game_state)
+            # Heal an entity
             if heal:
                 target, amount = heal
                 target.fighter.hp += min(
