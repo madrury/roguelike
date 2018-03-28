@@ -48,7 +48,6 @@ class Entity:
     inventory: Inventory object.
       Contains logic for managing an inventory.
     """
-
     def __init__(self, x, y, char, color, name, 
                  render_order=RenderOrder.CORPSE,
                  blocks=False, 
@@ -56,7 +55,6 @@ class Entity:
                  ai=None,
                  item=None, 
                  inventory=None):
-
         self.x = x
         self.y = y
         self.char = char
@@ -64,19 +62,19 @@ class Entity:
         self.name = name
         self.blocks = blocks
         self.render_order = render_order
-        # Set components.
-        self.fighter = fighter
-        if self.fighter:
-            self.fighter.owner = self
-        self.ai = ai
-        if self.ai:
-            self.ai.owner = self
-        self.item = item
-        if self.item:
-            self.item.owner = self
-        self.inventory = inventory
-        if self.inventory:
-            self.inventory.owner = self
+
+        self.add_component(fighter, "fighter")
+        self.add_component(ai, "ai")
+        self.add_component(item, "item")
+        self.add_component(inventory, "inventory")
+
+    def add_component(self, component, component_name):
+        """Add a component as an attribute of the current object, and set the
+        owner of the component to the current object.
+        """
+        if component:
+            component.owner = self
+        setattr(self, component_name, component)
 
     def move(self, dx, dy):
         self.x += dx
