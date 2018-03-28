@@ -18,10 +18,10 @@ from render_functions import (
 
 def main():
 
-    screen_width = 80
-    screen_height = 50
+    SCREEN_WIDTH = 80
+    SCREEN_HEIGHT = 50
 
-    map_config = {
+    MAP_CONFIG = {
         'width': 80,
         'height': 43,
         'room_max_size': 15,
@@ -31,25 +31,25 @@ def main():
         'max_items_per_room': 2
     }
 
-    panel_config = {
+    PANEL_CONFIG = {
         'bar_width': 20,
         'height': 7,
     }
-    panel_config['y'] = screen_height - panel_config['height']
+    PANEL_CONFIG['y'] = SCREEN_HEIGHT - PANEL_CONFIG['height']
 
     message_config = {
-        'x': panel_config['bar_width'] + 2,
-        'width': screen_width - panel_config['bar_width'] - 2,
-        'height': panel_config['height'] - 1
+        'x': PANEL_CONFIG['bar_width'] + 2,
+        'width': SCREEN_WIDTH - PANEL_CONFIG['bar_width'] - 2,
+        'height': PANEL_CONFIG['height'] - 1
     }
 
-    fov_config = {
+    FOV_CONFIG = {
         "algorithm": 'BASIC',
         "light_walls": True,
         "radius": 10
     }
 
-    colors = {
+    COLORS = {
         'dark_wall': (0, 0, 100),
         'dark_ground': (50, 50, 150),
         'light_wall': (130, 110, 50),
@@ -75,14 +75,14 @@ def main():
     #  - A place to draw the playscreen with the map and entities.
     #  - A console with the player's health bar, and a message log.
     root_console = tdl.init(
-       screen_width, screen_height,
+       SCREEN_WIDTH, SCREEN_HEIGHT,
        title='Rougelike Tutorial Game')
-    map_console = tdl.Console(screen_width, screen_height)
-    panel_console = tdl.Console(screen_width, panel_config['height'])
+    map_console = tdl.Console(SCREEN_WIDTH, SCREEN_HEIGHT)
+    panel_console = tdl.Console(SCREEN_WIDTH, PANEL_CONFIG['height'])
     message_log = MessageLog(message_config)
 
     # This is you.  Kill some Orcs.
-    player = Entity(0, 0, '@', colors['white'], 'Player', 
+    player = Entity(0, 0, '@', COLORS['white'], 'Player', 
                     blocks=True,
                     render_order=RenderOrder.ACTOR,
                     fighter=Fighter(hp=20, defense=2, power=5),
@@ -90,11 +90,11 @@ def main():
     entities = [player]
  
     # Generate the map and place player, monsters, and items.
-    game_map = GameMap(map_config['width'], map_config['height'])
-    rooms = make_map(game_map, map_config, player)
-    monsters = generate_monsters(game_map, rooms, [player], map_config, colors)
+    game_map = GameMap(MAP_CONFIG['width'], MAP_CONFIG['height'])
+    rooms = make_map(game_map, MAP_CONFIG, player)
+    monsters = generate_monsters(game_map, rooms, [player], MAP_CONFIG, COLORS)
     entities.extend(monsters)
-    items = generate_items( game_map, rooms, entities, map_config, colors)
+    items = generate_items( game_map, rooms, entities, MAP_CONFIG, COLORS)
     entities.extend(items)
     
     # Initial values for game states
@@ -111,17 +111,17 @@ def main():
         if fov_recompute:
             game_map.compute_fov(
                 player.x, player.y,
-                fov=fov_config["algorithm"],
-                radius=fov_config["radius"],
-                light_walls=fov_config["light_walls"])
+                fov=FOV_CONFIG["algorithm"],
+                radius=FOV_CONFIG["radius"],
+                light_walls=FOV_CONFIG["light_walls"])
 
         # Render and display the dungeon and its inhabitates.
-        render_all(map_console, entities, game_map, fov_recompute, colors)
-        root_console.blit(map_console, 0, 0, screen_width, screen_height, 0, 0)
-        render_health_bars(panel_console, player, panel_config, colors)
+        render_all(map_console, entities, game_map, fov_recompute, COLORS)
+        root_console.blit(map_console, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
+        render_health_bars(panel_console, player, PANEL_CONFIG, COLORS)
         render_messages(panel_console, message_log)
-        root_console.blit(panel_console, 0, panel_config['y'],
-                          screen_width, screen_height, 0, 0)
+        root_console.blit(panel_console, 0, PANEL_CONFIG['y'],
+                          SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
 
         # Render any menus.
         if game_state in (GameStates.SHOW_INVETORY, GameStates.DROP_INVENTORY):
@@ -131,9 +131,9 @@ def main():
                 invetory_message = "Press the letter next to the item to drop it.\n"
             menu_console, menu_x, menu_y = invetory_menu(
                 invetory_message, player.inventory, 50,
-                screen_width, screen_height)
+                SCREEN_WIDTH, SCREEN_HEIGHT)
             root_console.blit(menu_console, menu_x, menu_y,
-                              screen_width, screen_height, 0, 0)
+                              SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
 
         tdl.flush()
         clear_all(map_console, entities)
@@ -225,7 +225,7 @@ def main():
             entity = player.inventory.items[inventory_index]
             if game_state == GameStates.SHOW_INVETORY:
                 if entity.item.use_on_player:
-                    player_turn_results.extend(entity.item.use(player, colors))
+                    player_turn_results.extend(entity.item.use(player, COLORS))
             elif game_state == GameStates.DROP_INVENTORY:
                 player_turn_results.extend(player.inventory.drop(entity))
             game_state, previous_game_state = previous_game_state, game_state
@@ -289,11 +289,11 @@ def main():
                     amount, target.fighter.max_hp - target.fighter.hp)
             # Handle death
             if dead_entity == player:
-                player_turn_results.extend(kill_player(player, colors))
+                player_turn_results.extend(kill_player(player, COLORS))
                 game_state = GameStates.PLAYER_DEAD 
             elif dead_entity:
                 player_turn_results.extend(
-                    kill_monster(dead_entity, colors))
+                    kill_monster(dead_entity, COLORS))
             # Handle a death message.  Death messages are special in that
             # they immediately break out of the game loop.
             if death_message:
@@ -331,11 +331,11 @@ def main():
                 enemy_turn_results.extend(damage_result)
             # Handle death.
             if dead_entity == player:
-                enemy_turn_results.extend(kill_player(player, colors))
+                enemy_turn_results.extend(kill_player(player, COLORS))
                 game_state = GameStates.PLAYER_DEAD 
             elif dead_entity:
                 enemy_turn_results.extend(
-                    kill_monster(dead_entity, colors))
+                    kill_monster(dead_entity, COLORS))
             # Handle a death message.  Death messages are special in that
             # they immediately break out of the game loop.
             if death_message:
