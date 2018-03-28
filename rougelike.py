@@ -220,7 +220,7 @@ def main():
         #----------------------------------------------------------------------
         elif (game_state in (GameStates.SHOW_INVETORY, GameStates.DROP_INVENTORY)
             and inventory_index is not None
-            and inventory_index <= len(player.inventory.items)
+            and inventory_index < len(player.inventory.items)
             and previous_game_state != GameStates.PLAYER_DEAD):
             entity = player.inventory.items[inventory_index]
             if game_state == GameStates.SHOW_INVETORY:
