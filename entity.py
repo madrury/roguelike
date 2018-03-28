@@ -6,6 +6,48 @@ from components.inventory import Inventory
 
 
 class Entity:
+    """Represents a game entity, i.e. anything that should be drawn on the map.
+
+    Attributes
+    ----------
+    x: int
+      The x position of the entity on the map.
+
+    y: int
+      The y position of the entity on the map.
+
+    char: one character string.
+      The symbol used to represent the entity on the map.
+
+    color: Three tuple of integers. 
+      The RGB color to draw the entity on the map.
+
+    name: str
+      The name of the entity.
+
+    block: bool
+      Does the entity block movement?
+
+    render_order: int
+      In which order shoudl the entity be rendered.  For example, the player
+      should be rendered after corpses and items.
+
+    Optional Attributes
+    -------------------
+    These optional attributes add custom behaviour to entities.
+
+    fighter: Fighter object
+      Manages entities HP and attack attributes.
+
+    ai: AI object.
+      Contains AI logic for monsters.
+
+    item: Item object
+      Contains logic for using as an item.
+
+    inventory: Inventory object.
+      Contains logic for managing an inventory.
+    """
 
     def __init__(self, x, y, char, color, name, 
                  render_order=RenderOrder.CORPSE,
@@ -41,6 +83,7 @@ class Entity:
         self.y += dy
 
     def move_towards(self, target_x, target_y, game_map, entities):
+        # TODO: Maybe the game map should own this logic?
         path = game_map.compute_path(self.x, self.y, target_x, target_y)
         dx, dy = path[0][0] - self.x, path[0][1] - self.y
         is_walkable = game_map.walkable[path[0]]

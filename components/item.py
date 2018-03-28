@@ -5,7 +5,8 @@ class Item:
     def __init__(self):
         pass
 
-class HealthPotion:
+
+class HealthPotion(Item):
 
     def __init__(self, healing=5):
         self.name = "healing potion"
