@@ -1,23 +1,18 @@
 from game_messages import Message
 
-class Fighter:
+class Attacker:
 
-    def __init__(self, hp, defense, power):
-        self.max_hp = hp
-        self.hp = hp
-        self.defense = defense
+    def __init__(self, power):
         self.power = power
-
-    def take_damage(self, amount):
-        results = []
-        self.hp -= amount
-        if self.hp <= 0:
-            results.append({'dead': self.owner})
-        return results
 
     def attack(self, target):
         results = []
-        damage = self.power - target.fighter.defense
+        if target.harmable is None:
+            message = Message('{0} attacks {1}, but it does nothing.'.format(
+                self.owner.name.capitalize(), target.name))
+            results.append({'message': message})
+            return results
+        damage = self.power - target.harmable.defense
         if damage > 0:
             attack_message = Message('{0} atacks {1} for {2} HP.'.format(
                 self.owner.name.capitalize(), target.name, damage))

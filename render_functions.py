@@ -24,8 +24,8 @@ def render_health_bars(panel, player, panel_config, colors):
         'back_color': colors['darker_red'],
         'string_color': colors['white']}
     _render_bar(panel, 'HP', 1, 1, panel_config['bar_width'], 
-               player.fighter.hp, player.fighter.max_hp,
-               hp_bar_colors)
+                player.harmable.hp, player.harmable.max_hp,
+                hp_bar_colors)
 
 def render_messages(panel, message_log):
     for y, message in enumerate(message_log.messages, start=1):

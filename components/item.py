@@ -15,7 +15,7 @@ class HealthPotion(Item):
 
     def use(self, player, colors):
         results = []
-        if player.fighter.hp == player.fighter.max_hp:
+        if player.harmable.hp == player.harmable.max_hp:
             message = Message('You are already at full health.', 
                               colors.get('white'))
             results.append({'item_consumed': (False, self.owner), 

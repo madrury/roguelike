@@ -1,9 +1,6 @@
 import math
 from render_functions import RenderOrder
 
-from components.item import Item
-from components.inventory import Inventory
-
 
 class Entity:
     """Represents a game entity, i.e. anything that should be drawn on the map.
@@ -51,7 +48,8 @@ class Entity:
     def __init__(self, x, y, char, color, name, 
                  render_order=RenderOrder.CORPSE,
                  blocks=False, 
-                 fighter=None, 
+                 attacker=None,
+                 harmable=None,
                  ai=None,
                  item=None, 
                  inventory=None):
@@ -63,7 +61,8 @@ class Entity:
         self.blocks = blocks
         self.render_order = render_order
 
-        self.add_component(fighter, "fighter")
+        self.add_component(attacker, "attacker")
+        self.add_component(harmable, "harmable")
         self.add_component(ai, "ai")
         self.add_component(item, "item")
         self.add_component(inventory, "inventory")

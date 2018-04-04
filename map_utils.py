@@ -6,7 +6,8 @@ from entity import Entity
 from render_functions import RenderOrder
 
 from components.ai import BasicMonster
-from components.fighter import Fighter
+from components.attacker import Attacker
+from components.harmable import Harmable
 from components.item import HealthPotion
 
 class Rectangle:
@@ -130,14 +131,16 @@ def _make_random_monster(x, y, colors):
     if randint(0, 100) < 80:
         monster = Entity(
             x, y, 'O', colors['desaturated_green'], 'Orc', 
-            fighter=Fighter(hp=10, defense=0, power=3),
+            attacker=Attacker(power=3),
+            harmable=Harmable(hp=10, defense=0),
             ai=BasicMonster(),
             blocks=True,
             render_order=RenderOrder.ACTOR)
     else:
         monster = Entity(
             x, y, 'T', colors['darker_green'], 'Troll', 
-            fighter=Fighter(hp=16, defense=1, power=4),
+            attacker=Attacker(power=4),
+            harmable=Harmable(hp=16, defense=1),
             ai=BasicMonster(),
             blocks=True,
             render_order=RenderOrder.ACTOR)
@@ -147,4 +150,3 @@ def _make_random_item(x, y, colors):
     return Entity(x, y, '!', colors['violet'], 'Healing Potion',
                   render_order=RenderOrder.ITEM,
                   item=HealthPotion())
-

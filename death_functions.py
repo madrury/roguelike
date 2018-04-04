@@ -12,7 +12,8 @@ def kill_monster(monster, colors):
     monster.char = '%'
     monster.color = colors.get('dark_red')
     monster.blocks = False
-    monster.fighter = None
+    monster.attacker = None
+    monster.harmable = None
     monster.ai = None
     monster.name = 'Remains of ' + monster.name
     monster.render_order = RenderOrder.CORPSE

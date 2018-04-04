@@ -1,6 +1,7 @@
 import tdl
 
-from components.fighter import Fighter
+from components.attacker import Attacker
+from components.harmable import Harmable
 from components.inventory import Inventory
 
 from input_handlers import handle_keys
@@ -85,7 +86,8 @@ def main():
     player = Entity(0, 0, '@', COLORS['white'], 'Player', 
                     blocks=True,
                     render_order=RenderOrder.ACTOR,
-                    fighter=Fighter(hp=20, defense=2, power=5),
+                    attacker=Attacker(power=5),
+                    harmable=Harmable(hp=20, defense=2),
                     inventory=Inventory(26))
     entities = [player]
  
@@ -187,7 +189,7 @@ def main():
                 # If you attempted to walk into a square occupied by an entity,
                 # and that entity is not yourself.
                 if blocker and blocker != player:
-                    attack_results = player.fighter.attack(blocker)
+                    attack_results = player.attacker.attack(blocker)
                     player_turn_results.extend(attack_results)
                 else:
                     player_turn_results.append({'move': (dx, dy)})
@@ -266,7 +268,7 @@ def main():
             # Handle damage dealt.
             if damage:
                 target, amount = damage
-                damage_result = target.fighter.take_damage(amount)
+                damage_result = target.harmable.take_damage(amount)
                 player_turn_results.extend(damage_result)
             # Remove consumed items from inventory
             if item_consumed:
@@ -285,8 +287,8 @@ def main():
             # Heal an entity
             if heal:
                 target, amount = heal
-                target.fighter.hp += min(
-                    amount, target.fighter.max_hp - target.fighter.hp)
+                target.harmable.hp += min(
+                    amount, target.harmable.max_hp - target.harmable.hp)
             # Handle death
             if dead_entity == player:
                 player_turn_results.extend(kill_player(player, COLORS))
@@ -327,7 +329,7 @@ def main():
             # Handle damage dealt.
             if damage:
                 target, amount = damage
-                damage_result = target.fighter.take_damage(amount)
+                damage_result = target.harmable.take_damage(amount)
                 enemy_turn_results.extend(damage_result)
             # Handle death.
             if dead_entity == player:
