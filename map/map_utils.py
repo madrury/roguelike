@@ -5,6 +5,8 @@ from random import randint
 from entity import Entity
 from render_functions import RenderOrder
 
+from room import PinnedDungeonRoom, random_dungeon_room
+
 from components.ai import BasicMonster
 from components.attacker import Attacker
 from components.harmable import Harmable
