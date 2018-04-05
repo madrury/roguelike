@@ -4,9 +4,10 @@ from components.attacker import Attacker
 from components.harmable import Harmable
 from components.inventory import Inventory
 
+from map.map_utils import GameMap, make_map, generate_monsters, generate_items
+
 from input_handlers import handle_keys
 from game_messages import Message
-from map_utils import GameMap, make_map, generate_monsters, generate_items
 from entity import Entity, get_blocking_entity_at_location
 from game_messages import MessageLog
 from game_states import GameStates
