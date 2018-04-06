@@ -4,7 +4,7 @@ from components.attacker import Attacker
 from components.harmable import Harmable
 from components.inventory import Inventory
 
-from map.map_utils import GameMap
+from map.map import GameMap
 from map.floor import make_floor
 
 from input_handlers import handle_keys
