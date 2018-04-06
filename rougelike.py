@@ -26,13 +26,13 @@ def main():
     FLOOR_CONFIG = {
         'width': 80,
         'height': 43,
-        'max_rooms': 10,
+        'max_rooms': 20,
     }
 
     ROOM_CONFIG = {
-        'width': 14,
-        'height': 14,
-        'max_rectangles': 8,
+        'width': 10,
+        'height': 10,
+        'max_rectangles': 1,
         'max_rectangle_width': 6,
         'max_rectangle_height': 6,
     }

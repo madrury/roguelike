@@ -15,8 +15,8 @@ def random_dungeon_floor(width=80,
     for n in range(n_rooms_to_try):
         room = random_dungeon_room(**room_config)
         for _ in range(n_room_placement_trys):
-            x_pin = random.randint(0, width - room.width)
-            y_pin = random.randint(0, height - room.height)
+            x_pin = random.randint(1, width - room.width - 1)
+            y_pin = random.randint(1, height - room.height - 1)
             pinned_room = PinnedDungeonRoom(room, (x_pin, y_pin))
             if n == 0:
                 floor.add_pinned_room(pinned_room)
