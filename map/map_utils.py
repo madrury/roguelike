@@ -1,11 +1,11 @@
 from tdl.map import Map
 import numpy as np
-from random import randint
+from random import randint, choice
 
 from entity import Entity
 from render_functions import RenderOrder
 
-from room import PinnedDungeonRoom, random_dungeon_room
+from .floor import random_dungeon_floor
 
 from components.ai import BasicMonster
 from components.attacker import Attacker
@@ -20,37 +20,26 @@ class GameMap(Map):
         self.explored = np.zeros((width, height)).astype(bool)
 
 
-def make_map(game_map, map_config, player):
-    # Destructure the map_config dictionary into local variables.
-    map_config_keys = [
-        'width', 'height', 'room_min_size', 'room_max_size', 'max_rooms']
-    map_width, map_height, room_min_size, room_max_size, max_rooms = [
-        map_config[key] for key in map_config_keys]
-    rooms = []
-    for r in range(max_rooms):
-        # Create a new random room and add it to the map.
-        width = randint(room_min_size, room_max_size)
-        height = randint(room_min_size, room_max_size)
-        x = randint(0, map_width - width - 1)
-        y = randint(0, map_height - height - 1)
-        new_room = Rectangle(x, y, width, height)
-        for other_room in rooms:
-            if new_room.intersect(other_room):
-                break
-        else:
-            _create_room(game_map, new_room)
-        num_rooms = len(rooms)
-        # Place player in the center of the first room.
-        if num_rooms == 0:
-            player.x, player.y = new_room.center
-        # Create a tunnel connecting the new room to the previous room.
-        else:
-            prev_room = rooms[num_rooms - 1] 
-            _add_tunnel(game_map, new_room, prev_room) 
-        rooms.append(new_room)
-    return rooms
-
-
+def make_floor(game_map, floor_config, player):
+    # Destructure the floor_config dictionary into local variables.
+    floor_config_keys = ['width', 'height', 'max_rooms']
+    floor_width, floor_height, max_rooms = [
+        floor_config[key] for key in floor_config_keys]
+    floor = random_dungeon_floor(floor_width, floor_height, max_rooms)
+    for room in floor.rooms:
+        for x, y in room:
+            _make_transparent_and_walkable(game_map, x, y)
+    # Place the player at a random place in a room
+    start_room = choice(floor.rooms)
+    player.x, player.y = start_room.random_point()
+#        if num_rooms == 0:
+#            player.x, player.y = new_room.center
+#        # Create a tunnel connecting the new room to the previous room.
+#        else:
+#            prev_room = rooms[num_rooms - 1] 
+#            _add_tunnel(game_map, new_room, prev_room) 
+#        rooms.append(new_room)
+    return floor
 
 def generate_monsters(game_map, rooms, enitities, map_config, colors):
     return _generate_entities(
@@ -83,11 +72,6 @@ def _generate_entities(game_map, rooms, entities, max_new_entities_per_room,
                 new_entities.append(new_entity)
     return new_entities
                          
-def _create_room(game_map, room):
-    for x in range(room.x1 + 1, room.x2):
-        for y in range(room.y1 + 1, room.y2):
-            _make_transparent_and_walkable(game_map, x, y)
-
 def _make_transparent_and_walkable(game_map, x, y):
     game_map.walkable[x, y] = True
     game_map.transparent[x, y] = True

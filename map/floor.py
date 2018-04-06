@@ -1,7 +1,7 @@
 import random
 import numpy as np
 
-from room import PinnedDungeonRoom
+from .room import PinnedDungeonRoom, random_dungeon_room
 
 def random_dungeon_floor(width=80, 
                          height=43, 

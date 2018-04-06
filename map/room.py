@@ -145,7 +145,7 @@ class DungeonRoom:
         
         Each point is yielded by the iterator exactly one time.
         """
-        seen = {}
+        seen = set() 
         for r in self.rectangles:
             for x, y in r:
                 if (x, y) not in seen:
@@ -212,7 +212,7 @@ class Rectangle:
     def random_point(self):
         """Draw a random point uniformly from a rectangle."""
         return (random.randint(self.x1, self.x2 - 1),
-                random.choice(self.y1, self.y2 - 1))
+                random.randint(self.y1, self.y2 - 1))
 
     @property
     def center(self):

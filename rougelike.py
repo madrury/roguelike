@@ -4,7 +4,7 @@ from components.attacker import Attacker
 from components.harmable import Harmable
 from components.inventory import Inventory
 
-from map.map_utils import GameMap, make_map, generate_monsters, generate_items
+from map.map_utils import GameMap, make_floor#, generate_monsters, generate_items
 
 from input_handlers import handle_keys
 from game_messages import Message
@@ -23,12 +23,21 @@ def main():
     SCREEN_WIDTH = 80
     SCREEN_HEIGHT = 50
 
-    MAP_CONFIG = {
+    FLOOR_CONFIG = {
         'width': 80,
         'height': 43,
-        'room_max_size': 15,
-        'room_min_size': 6,
-        'max_rooms': 30,
+        'max_rooms': 10,
+    }
+
+    ROOM_CONFIG = {
+        'width': 14,
+        'height': 14,
+        'max_rectangles': 8,
+        'max_rectangle_width': 6,
+        'max_rectangle_height': 6,
+    }
+
+    MAP_CONFIG = {
         'max_monsters_per_room': 3,
         'max_items_per_room': 2
     }
@@ -93,12 +102,12 @@ def main():
     entities = [player]
  
     # Generate the map and place player, monsters, and items.
-    game_map = GameMap(MAP_CONFIG['width'], MAP_CONFIG['height'])
-    rooms = make_map(game_map, MAP_CONFIG, player)
-    monsters = generate_monsters(game_map, rooms, [player], MAP_CONFIG, COLORS)
-    entities.extend(monsters)
-    items = generate_items( game_map, rooms, entities, MAP_CONFIG, COLORS)
-    entities.extend(items)
+    game_map = GameMap(FLOOR_CONFIG['width'], FLOOR_CONFIG['height'])
+    floor = make_floor(game_map, FLOOR_CONFIG, player)
+    #monsters = generate_monsters(game_map, rooms, [player], MAP_CONFIG, COLORS)
+    #entities.extend(monsters)
+    #items = generate_items( game_map, rooms, entities, MAP_CONFIG, COLORS)
+    #entities.extend(items)
     
     # Initial values for game states
     fov_recompute = True
