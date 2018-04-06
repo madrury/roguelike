@@ -20,12 +20,13 @@ class GameMap(Map):
         self.explored = np.zeros((width, height)).astype(bool)
 
 
-def make_floor(game_map, floor_config, player):
+def make_floor(game_map, floor_config, room_config, player):
     # Destructure the floor_config dictionary into local variables.
     floor_config_keys = ['width', 'height', 'max_rooms']
     floor_width, floor_height, max_rooms = [
         floor_config[key] for key in floor_config_keys]
-    floor = random_dungeon_floor(floor_width, floor_height, max_rooms)
+    floor = random_dungeon_floor(floor_width, floor_height, max_rooms,
+                                 room_config=room_config)
     for room in floor.rooms:
         for x, y in room:
             _make_transparent_and_walkable(game_map, x, y)

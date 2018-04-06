@@ -30,11 +30,11 @@ def main():
     }
 
     ROOM_CONFIG = {
-        'width': 10,
-        'height': 10,
-        'max_rectangles': 1,
-        'max_rectangle_width': 6,
-        'max_rectangle_height': 6,
+        'width': 20,
+        'height': 20,
+        'max_rectangles': 20,
+        'max_rectangle_width': 5,
+        'max_rectangle_height': 5,
     }
 
     MAP_CONFIG = {
@@ -103,7 +103,7 @@ def main():
  
     # Generate the map and place player, monsters, and items.
     game_map = GameMap(FLOOR_CONFIG['width'], FLOOR_CONFIG['height'])
-    floor = make_floor(game_map, FLOOR_CONFIG, player)
+    floor = make_floor(game_map, FLOOR_CONFIG, ROOM_CONFIG, player)
     #monsters = generate_monsters(game_map, rooms, [player], MAP_CONFIG, COLORS)
     #entities.extend(monsters)
     #items = generate_items( game_map, rooms, entities, MAP_CONFIG, COLORS)
