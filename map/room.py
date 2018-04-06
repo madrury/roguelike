@@ -2,52 +2,6 @@ import random
 import numpy as np
 
 
-def random_dungeon_floor(width=80, 
-                         height=43, 
-                         max_rooms=25,
-                         n_rooms_to_try=50,
-                         n_room_placement_trys=25,
-                         room_config=None):
-    if room_config == None:
-        room_config = {}
-    floor = DungeonFloor(width, height)
-    for n in range(n_rooms_to_try):
-        room = random_dungeon_room(**room_config)
-        for _ in range(n_room_placement_trys):
-            x_pin = random.randint(0, width - room.width)
-            y_pin = random.randint(0, height - room.height)
-            pinned_room = PinnedDungeonRoom(room, (x_pin, y_pin))
-            if n == 0:
-                floor.add_pinned_room(pinned_room)
-                break
-            elif not any(pinned_room.intersect(pr) for pr in floor.rooms):
-                floor.add_pinned_room(pinned_room)
-                break
-        if len(floor.rooms) >= max_rooms:
-            break
-    return floor
-
-
-class DungeonFloor:
-
-    def __init__(self, width=80, height=43):
-        self.width = width
-        self.height = height
-        self.rooms = []
-        self.tunnels = []
-        self.floor = np.zeros((width, height)).astype(bool)
-
-    def add_pinned_room(self, pinned_room):
-        for x, y in pinned_room:
-            self.floor[x, y] = True
-        self.rooms.append(pinned_room)
-
-    def print_floor(self):
-        arr = np.array(['.', '#'])[self.floor.astype(int)].T
-        for row in arr:
-            print(''.join(row))
-
-
 def random_dungeon_room(width=18, 
                         height=18, 
                         max_rectangles=20,
@@ -74,7 +28,38 @@ def random_dungeon_room(width=18,
 
 
 class PinnedDungeonRoom:
-    """A DungeonRoom pinned onto a position in a larger map."""
+    """A DungeonRoom pinned onto a position in a larger map.
+    
+    A room comes with a coordinate system local to that room, as explained
+    below.  Objects of this class are rooms that are pinned onto a larger
+    coordinate system, usualy a dungeon floor.
+
+      A Dungeon Floor.
+    +-----------------------------------------------+
+    |                                               |
+    |    |The local coordinates are pinned on here. |
+    |    |                                          |
+    |    V A Room's Coordinate System.              |
+    |    +----------------------+                   |
+    |    |                      |                   |
+    |    |   ####               |                   |
+    |    |   ##########         |                   |
+    |    |   #### #####         |                   |
+    |    |        #####         |                   |
+    |    +----------------------+                   |
+    |                                               |
+    |                                               |
+    |                                               |
+    +-----------------------------------------------+
+
+    Attributes
+    ----------
+    x, y: ints
+      The poisting the room is pinned in the enclosing coordinate system.
+
+    room:
+      The room.
+    """
     def __init__(self, room, position):
         self.x, self.y = position
         self.room = room
@@ -106,6 +91,48 @@ class DungeonRoom:
 
     A DungeonRooom is made up of a collection of rectangles, and comes
     with its own local coordinate system.
+
+    Example
+    -------
+    In [1]: r = DungeonRoom(15, 15)
+
+    In [2]: r.add_rectangle(Rectangle(2, 2, 6, 6))
+
+    In [3]: r.add_rectangle(Rectangle(6, 6, 6, 6))
+
+    In [4]: r.print_room()
+      v Coordinates (0, 0)
+    ['.' '.' '.' '.' '.' '.' '.' '.' '.' '.' '.' '.' '.' '.' '.']
+    ['.' '.' '.' '.' '.' '.' '.' '.' '.' '.' '.' '.' '.' '.' '.']
+    ['.' '.' '#' '#' '#' '#' '#' '#' '.' '.' '.' '.' '.' '.' '.']
+    ['.' '.' '#' '#' '#' '#' '#' '#' '.' '.' '.' '.' '.' '.' '.']
+    ['.' '.' '#' '#' '#' '#' '#' '#' '.' '.' '.' '.' '.' '.' '.']
+    ['.' '.' '#' '#' '#' '#' '#' '#' '.' '.' '.' '.' '.' '.' '.']
+    ['.' '.' '#' '#' '#' '#' '#' '#' '#' '#' '#' '#' '.' '.' '.']
+    ['.' '.' '#' '#' '#' '#' '#' '#' '#' '#' '#' '#' '.' '.' '.']
+    ['.' '.' '.' '.' '.' '.' '#' '#' '#' '#' '#' '#' '.' '.' '.']
+    ['.' '.' '.' '.' '.' '.' '#' '#' '#' '#' '#' '#' '.' '.' '.']
+    ['.' '.' '.' '.' '.' '.' '#' '#' '#' '#' '#' '#' '.' '.' '.']
+    ['.' '.' '.' '.' '.' '.' '#' '#' '#' '#' '#' '#' '.' '.' '.']
+    ['.' '.' '.' '.' '.' '.' '.' '.' '.' '.' '.' '.' '.' '.' '.']
+    ['.' '.' '.' '.' '.' '.' '.' '.' '.' '.' '.' '.' '.' '.' '.']
+    ['.' '.' '.' '.' '.' '.' '.' '.' '.' '.' '.' '.' '.' '.' '.']
+
+
+    Attributes
+    ----------
+    height: int
+      The height of the coordinate system containing the room.
+
+    width: int
+      The width of the coordinate system containing the room.
+
+    rectangles: list of Rectangles
+      The rectangles composing the room.
+
+    room: np.array of bools
+      A mask defining the room.  An entry is True if a point is in the room,
+      False otherwise.
     """
     def __init__(self, width, height):
         self.height = height
@@ -114,23 +141,38 @@ class DungeonRoom:
         self.room = np.zeros((self.width, self.height)).astype(bool)
 
     def __iter__(self):
+        """Iterate through all the points in a room.
+        
+        Each point is yielded by the iterator exactly one time.
+        """
+        seen = {}
         for r in self.rectangles:
             for x, y in r:
-                yield x, y
+                if (x, y) not in seen:
+                    seen.add((x, y))
+                    yield x, y
 
     def add_rectangle(self, rectangle):
+        """Add a rectangle to a room."""
         for point in rectangle:
             self.room[point[0], point[1]] = True
         self.rectangles.append(rectangle)
 
     def intersect(self, other):
+        """Do two rooms intersect?
+
+        Rooms intersect when at least one rectangle from the first room
+        intersects with a rectangle from the second room.
+        """
         rectangle_pairs = zip(self.rectangles, other.rectangles)
         return any(r1.intersect(r2) for r1, r2 in rectangle_pairs)
 
     def intersect_rectangle(self, rectangle):
+        """Does a room intersect a rectangle."""
         return any(r.intersect(rectangle) for r in self.rectangles)
 
     def __contains__(self, point):
+        """Is a point in a room."""
         return any(point in r for r in self.rectangles)
 
     def print_room(self):
@@ -157,24 +199,33 @@ class Rectangle:
         self.y2 = y + h
 
     def __iter__(self):
+        """Iterate through the points contained in a rectangle."""
         for i in range(self.x1, self.x2):
             for j in range(self.y1, self.y2):
                 yield i, j
 
     def __contains__(self, point):
+        """Is a point inside a rectangle."""
         return (self.x1 <= point[0] < self.x2 and
                 self.y1 <= point[1] < self.y2)
 
     def random_point(self):
+        """Draw a random point uniformly from a rectangle."""
         return (random.randint(self.x1, self.x2 - 1),
                 random.choice(self.y1, self.y2 - 1))
 
     @property
     def center(self):
+        """The center of a rectangle.
+
+        When a dimesnsion of the rectangle is odd, the center is rounded down
+        to the nearest integer.
+        """
         center_x = int((self.x1 + self.x2) / 2)
         center_y = int((self.y1 + self.y2) / 2)
         return center_x, center_y
 
     def intersect(self, other):
+        """Do two rectangles intersect?"""
         return (self.x1 < other.x2 and self.x2 > other.x1 and
                 self.y1 < other.y2 and self.y2 > other.y1)
