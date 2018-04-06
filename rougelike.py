@@ -4,7 +4,8 @@ from components.attacker import Attacker
 from components.harmable import Harmable
 from components.inventory import Inventory
 
-from map.map_utils import GameMap, make_floor#, generate_monsters, generate_items
+from map.map_utils import GameMap
+from map.floor import make_floor
 
 from input_handlers import handle_keys
 from game_messages import Message
@@ -103,7 +104,9 @@ def main():
  
     # Generate the map and place player, monsters, and items.
     game_map = GameMap(FLOOR_CONFIG['width'], FLOOR_CONFIG['height'])
-    floor = make_floor(game_map, FLOOR_CONFIG, ROOM_CONFIG, player)
+    floor = make_floor(FLOOR_CONFIG, ROOM_CONFIG)
+    floor.place_player(player)
+    floor.write_to_game_map(game_map)
     #monsters = generate_monsters(game_map, rooms, [player], MAP_CONFIG, COLORS)
     #entities.extend(monsters)
     #items = generate_items( game_map, rooms, entities, MAP_CONFIG, COLORS)
