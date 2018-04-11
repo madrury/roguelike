@@ -55,6 +55,7 @@ def _generate_entities(game_map, rooms, entities, max_new_entities_per_room,
                 new_entity = entity_generator(x, y, colors)
                 new_entities.append(new_entity)
     return new_entities
+
 def _make_random_monster(x, y, colors):
     if randint(0, 100) < 80:
         monster = Entity(

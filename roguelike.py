@@ -27,15 +27,15 @@ def main():
     FLOOR_CONFIG = {
         'width': 80,
         'height': 43,
-        'max_rooms': 20,
+        'max_rooms': 50,
     }
 
     ROOM_CONFIG = {
-        'width': 20,
-        'height': 20,
-        'max_rectangles': 20,
-        'max_rectangle_width': 5,
-        'max_rectangle_height': 5,
+        'width': 10,
+        'height': 10,
+        'max_rectangles': 5,
+        'max_rectangle_width': 3,
+        'max_rectangle_height': 3,
     }
 
     MAP_CONFIG = {

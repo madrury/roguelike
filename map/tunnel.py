@@ -11,6 +11,7 @@ def random_tunnel_between_pinned_rooms(r1, r2):
             Tunnel('vertical', (p1x, p1y), (p1x, p2y)),
             Tunnel('horizontal', (p1x, p2y), (p2x, p2y)))
 
+
 class Tunnel:
 
     def __init__(self, kind, p1, p2):

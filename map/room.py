@@ -83,7 +83,10 @@ class PinnedDungeonRoom:
 
     def random_point(self):
         room_point = self.room.random_point()
-        return (self.x + room_point[0], self.y + room_point[1])
+        return self.absolute_coordinates(room_point)
+
+    def absolute_coordinates(self, point):
+        return (self.x + point[0], self.y + point[1])
 
 
 class DungeonRoom:
