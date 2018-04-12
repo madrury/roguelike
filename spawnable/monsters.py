@@ -4,7 +4,7 @@ import numpy as np
 from entity import Entity
 from render_functions import RenderOrder
 
-from monsters.spawnable import Spawnable
+from spawnable.spawnable import Spawnable
 from etc.colors import COLORS
 from components.ai import BasicMonster
 from components.attacker import Attacker

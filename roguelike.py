@@ -10,8 +10,8 @@ from components.harmable import Harmable
 from components.inventory import Inventory
 from map.map import GameMap
 from map.floor import make_floor
-from monsters.monsters import MONSTER_SCHEDULE, MONSTER_GROUPS
-from monsters.spawnable import spawn_entities
+from spawnable.monsters import MONSTER_SCHEDULE, MONSTER_GROUPS
+from spawnable.spawnable import spawn_entities
 
 from input_handlers import handle_keys
 from game_messages import Message
