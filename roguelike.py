@@ -1,5 +1,7 @@
 import tdl
 
+from etc.colors import COLORS
+
 from components.attacker import Attacker
 from components.harmable import Harmable
 from components.inventory import Inventory
@@ -50,7 +52,7 @@ def main():
     }
     PANEL_CONFIG['y'] = SCREEN_HEIGHT - PANEL_CONFIG['height']
 
-    message_config = {
+    MESSAGE_CONFIG = {
         'x': PANEL_CONFIG['bar_width'] + 2,
         'width': SCREEN_WIDTH - PANEL_CONFIG['bar_width'] - 2,
         'height': PANEL_CONFIG['height'] - 1
@@ -60,26 +62,6 @@ def main():
         "algorithm": 'BASIC',
         "light_walls": True,
         "radius": 10
-    }
-
-    COLORS = {
-        'dark_wall': (0, 0, 100),
-        'dark_ground': (50, 50, 150),
-        'light_wall': (130, 110, 50),
-        'light_ground': (200, 180, 50),
-        'desaturated_green': (63, 127, 63),
-        'darker_green': (0, 127, 0),
-        'dark_red': (191, 0, 0),
-        'white': (255, 255, 255),
-        'black': (0, 0, 0),
-        'red': (255, 0, 0),
-        'orange': (255, 127, 0),
-        'light_red': (255, 144, 144),
-        'darker_red': (127, 0, 0),
-        'violet': (127, 0, 255),    
-        'yellow': (255, 255, 0),
-        'blue': (0, 0, 255),
-        'green': (0, 255, 0)
     }
 
     tdl.set_font('arial10x10.png', greyscale=True, altLayout=True)
@@ -92,7 +74,7 @@ def main():
        title='Rougelike Tutorial Game')
     map_console = tdl.Console(SCREEN_WIDTH, SCREEN_HEIGHT)
     panel_console = tdl.Console(SCREEN_WIDTH, PANEL_CONFIG['height'])
-    message_log = MessageLog(message_config)
+    message_log = MessageLog(MESSAGE_CONFIG)
 
     # This is you.  Kill some Orcs.
     player = Entity(0, 0, '@', COLORS['white'], 'Player', 
