@@ -10,7 +10,8 @@ from components.harmable import Harmable
 from components.inventory import Inventory
 from map.map import GameMap
 from map.floor import make_floor
-from monsters.monsters import MONSTER_SCHEDULE, spawn_monsters
+from monsters.monsters import MONSTER_SCHEDULE, MONSTER_GROUPS
+from monsters.spawnable import spawn_entities
 
 from input_handlers import handle_keys
 from game_messages import Message
@@ -52,7 +53,7 @@ def main():
     floor = make_floor(FLOOR_CONFIG, ROOM_CONFIG)
     floor.place_player(player)
     floor.write_to_game_map(game_map)
-    spawn_monsters(MONSTER_SCHEDULE, floor, entities)
+    spawn_entities(MONSTER_SCHEDULE, MONSTER_GROUPS, floor, entities)
     #monsters = generate_monsters(game_map, rooms, [player], MAP_CONFIG, COLORS)
     #entities.extend(monsters)
     #items = generate_items( game_map, rooms, entities, MAP_CONFIG, COLORS)

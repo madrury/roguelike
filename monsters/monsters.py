@@ -4,8 +4,8 @@ import numpy as np
 from entity import Entity
 from render_functions import RenderOrder
 
+from monsters.spawnable import Spawnable
 from etc.colors import COLORS
-from utils.utils import choose_from_list_of_tuples
 from components.ai import BasicMonster
 from components.attacker import Attacker
 from components.harmable import Harmable
@@ -20,33 +20,8 @@ class MonsterGroups(Enum):
     KRUTHIK_SQARM = auto()
 
 
-def spawn_monsters(monster_schedule, floor, entities):
-    for room in floor.rooms:
-        monster_group = choose_from_list_of_tuples(MONSTER_SCHEDULE)
-        spawn_monster_group(monster_group, room, entities)
 
-def spawn_monster_group(monster_group, room, entities):
-    for monster_type in MONSTER_GROUPS[monster_group]:
-        monster = monster_type.spawn(room, entities)
-        if monster is not None:
-            entities.append(monster)
-
-
-class Monster:
-
-    @classmethod
-    def spawn(cls, room, entities, max_tries=25):
-        for _ in range(max_tries):
-            x, y = room.random_point()
-            if not any((x, y) == (entity.x, entity.y) for entity in entities):
-                monster = cls.make(x, y)
-                break
-        else:
-            monster = None
-        return monster
-
-
-class Kruthik(Monster):
+class Kruthik(Spawnable):
     
     @staticmethod
     def make(x, y):
@@ -59,7 +34,7 @@ class Kruthik(Monster):
             render_order=RenderOrder.ACTOR)
 
 
-class Orc(Monster):
+class Orc(Spawnable):
     
     @staticmethod
     def make(x, y):
@@ -72,7 +47,7 @@ class Orc(Monster):
             render_order=RenderOrder.ACTOR)
 
 
-class Troll(Monster):
+class Troll(Spawnable):
          
     @staticmethod
     def make(x, y):
