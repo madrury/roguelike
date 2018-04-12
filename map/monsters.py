@@ -4,6 +4,7 @@ import numpy as np
 from entity import Entity
 from render_functions import RenderOrder
 
+from utils.utils import choose_from_list_of_tuples
 from components.ai import BasicMonster
 from components.attacker import Attacker
 from components.harmable import Harmable
@@ -29,10 +30,6 @@ COLORS = {
     'green': (0, 255, 0)
 }
 
-class Monsters(Enum):
-    ORC = auto() 
-    TROLL = auto()
-
 
 class MonsterGroups(Enum):
     NONE = auto()
@@ -43,15 +40,9 @@ class MonsterGroups(Enum):
 
 
 def spawn_monsters(monster_schedule, floor, entities):
-
-    def choose_from_list_of_tuples(list_of_tuples):
-        probs, choices = zip(*list_of_tuples)
-        return np.random.choice(choices, size=1, p=probs)[0]
-
     for room in floor.rooms:
         monster_group = choose_from_list_of_tuples(MONSTER_SCHEDULE)
         spawn_monster_group(monster_group, room, entities)
-
 
 def spawn_monster_group(monster_group, room, entities):
     for monster_type in MONSTER_GROUPS[monster_group]:
