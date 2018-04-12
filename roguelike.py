@@ -8,10 +8,9 @@ from etc.config import (
 from components.attacker import Attacker
 from components.harmable import Harmable
 from components.inventory import Inventory
-
 from map.map import GameMap
 from map.floor import make_floor
-from map.monsters import MONSTER_SCHEDULE, spawn_monsters
+from monsters.monsters import MONSTER_SCHEDULE, spawn_monsters
 
 from input_handlers import handle_keys
 from game_messages import Message
