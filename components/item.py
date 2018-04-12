@@ -1,12 +1,10 @@
 from game_messages import Message
 
-class Item:
 
-    def __init__(self):
-        pass
+class ItemComponent:
+    pass
 
-
-class HealthPotion(Item):
+class HealthPotionComponent(ItemComponent):
 
     def __init__(self, healing=5):
         self.name = "healing potion"
