@@ -11,6 +11,7 @@ from components.inventory import Inventory
 from map.map import GameMap
 from map.floor import make_floor
 from spawnable.monsters import MONSTER_SCHEDULE, MONSTER_GROUPS
+from spawnable.items import ITEM_SCHEDULE, ITEM_GROUPS
 from spawnable.spawnable import spawn_entities
 
 from input_handlers import handle_keys
@@ -54,6 +55,7 @@ def main():
     floor.place_player(player)
     floor.write_to_game_map(game_map)
     spawn_entities(MONSTER_SCHEDULE, MONSTER_GROUPS, floor, entities)
+    spawn_entities(ITEM_SCHEDULE, ITEM_GROUPS, floor, entities)
     #monsters = generate_monsters(game_map, rooms, [player], MAP_CONFIG, COLORS)
     #entities.extend(monsters)
     #items = generate_items( game_map, rooms, entities, MAP_CONFIG, COLORS)

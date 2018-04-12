@@ -11,9 +11,3 @@ class GameMap(Map):
     def make_transparent_and_walkable(self, x, y):
         self.walkable[x, y] = True
         self.transparent[x, y] = True
-
-# TODO Transition to its own file.
-#def _make_random_item(x, y, colors):
-#    return Entity(x, y, '!', colors['violet'], 'Healing Potion',
-#                  render_order=RenderOrder.ITEM,
-#                  item=HealthPotion())

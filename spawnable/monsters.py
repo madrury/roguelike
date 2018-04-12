@@ -1,5 +1,4 @@
 from enum import Enum, auto
-import numpy as np
 
 from entity import Entity
 from render_functions import RenderOrder
@@ -20,9 +19,8 @@ class MonsterGroups(Enum):
     KRUTHIK_SQARM = auto()
 
 
-
 class Kruthik(Spawnable):
-    
+
     @staticmethod
     def make(x, y):
         return Entity(
