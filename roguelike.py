@@ -56,10 +56,6 @@ def main():
     floor.write_to_game_map(game_map)
     spawn_entities(MONSTER_SCHEDULE, MONSTER_GROUPS, floor, entities)
     spawn_entities(ITEM_SCHEDULE, ITEM_GROUPS, floor, entities)
-    #monsters = generate_monsters(game_map, rooms, [player], MAP_CONFIG, COLORS)
-    #entities.extend(monsters)
-    #items = generate_items( game_map, rooms, entities, MAP_CONFIG, COLORS)
-    #entities.extend(items)
     
     # Initial values for game states
     fov_recompute = True
@@ -277,6 +273,7 @@ def main():
         while enemy_turn_results != []:
             result = enemy_turn_results.pop()
             move_towards = result.get('move_towards')
+            move_random_adjacent = result.get('move_random_adjacent')
             message = result.get('message')
             damage = result.get('damage')
             dead_entity = result.get('dead')
@@ -285,6 +282,11 @@ def main():
             if move_towards:
                monster, target_x, target_y = move_towards
                monster.move_towards(target_x, target_y, game_map, entities)
+            # Handle a move random adjacent action.  Move to a random adjacent
+            # square.
+            if move_random_adjacent:
+               monster = move_random_adjacent
+               monster.move_to_random_adjacent(game_map, entities)
             # Handle a simple message.
             if message:
                 message_log.add_message(message)

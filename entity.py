@@ -1,4 +1,5 @@
 import math
+import random
 from render_functions import RenderOrder
 
 
@@ -80,12 +81,22 @@ class Entity:
         self.y += dy
 
     def move_towards(self, target_x, target_y, game_map, entities):
-        # TODO: Maybe the game map should own this logic?
         path = game_map.compute_path(self.x, self.y, target_x, target_y)
         dx, dy = path[0][0] - self.x, path[0][1] - self.y
-        is_walkable = game_map.walkable[path[0]]
+        self._move_if_able(dx, dy, game_map, entities)
+
+    def move_to_random_adjacent(self, game_map, entities):
+        dx, dy = random.choice([
+            (-1, 1), (0, 1), (1, 1),
+            (-1, 0),         (1, 0),
+            (-1, -1), (0, -1), (1, -1)]) 
+        self._move_if_able(dx, dy, game_map, entities)
+
+    def _move_if_able(self, dx, dy, game_map, entities):
+        target_location = (self.x + dx, self.y + dy)
+        is_walkable = game_map.walkable[target_location]
         is_blocked = get_blocking_entity_at_location(
-            entities, self.x + dx, self.y + dy)
+            entities, target_location[0], target_location[1])
         if is_walkable and not is_blocked:
             self.move(dx, dy)
 

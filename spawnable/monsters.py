@@ -5,7 +5,7 @@ from render_functions import RenderOrder
 
 from spawnable.spawnable import Spawnable
 from etc.colors import COLORS
-from components.ai import BasicMonster
+from components.ai import BasicMonster, HuntingMonster, SkitteringMonster
 from components.attacker import Attacker
 from components.harmable import Harmable
 
@@ -27,7 +27,7 @@ class Kruthik(Spawnable):
             x, y, 'k', COLORS['desaturated_green'], 'Kruthik', 
             attacker=Attacker(power=1),
             harmable=Harmable(hp=1, defense=0),
-            ai=BasicMonster(),
+            ai=SkitteringMonster(),
             blocks=True,
             render_order=RenderOrder.ACTOR)
 
@@ -53,7 +53,7 @@ class Troll(Spawnable):
             x, y, 'T', COLORS['darker_green'], 'Troll', 
             attacker=Attacker(power=4),
             harmable=Harmable(hp=16, defense=1),
-            ai=BasicMonster(),
+            ai=HuntingMonster(),
             blocks=True,
             render_order=RenderOrder.ACTOR)
             
