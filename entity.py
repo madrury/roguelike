@@ -1,7 +1,7 @@
 import math
 import random
-from enum import Enum, auto
-from render_functions import RenderOrder
+
+from etc.enum import EntityTypes, RenderOrder
 
 
 class Entity:

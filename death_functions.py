@@ -1,7 +1,5 @@
-from entity import EntityTypes
-from game_states import GameStates
+from etc.enum import EntityTypes, GameStates, RenderOrder
 from game_messages import Message
-from render_functions import RenderOrder
 
 def kill_player(player, colors):
     player.char = '%'

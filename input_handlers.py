@@ -1,4 +1,4 @@
-from game_states import GameStates
+from etc.enum import GameStates
 
 def handle_keys(user_input, game_state):
     """Consider user input and return a consequent action.

@@ -1,10 +1,8 @@
-from enum import Enum, auto
-
-from entity import Entity, EntityTypes
-from render_functions import RenderOrder
+from entity import Entity
 
 from spawnable.spawnable import Spawnable
 from etc.colors import COLORS
+from etc.enum import RenderOrder, EntityTypes, MonsterGroups
 from components.ai import BasicMonster, HuntingMonster, SkitteringMonster
 from components.attacker import Attacker
 from components.harmable import Harmable

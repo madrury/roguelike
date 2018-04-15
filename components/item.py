@@ -1,6 +1,6 @@
 from game_messages import Message
-from entity import EntityTypes
 from etc.colors import COLORS
+from etc.enum import EntityTypes, ItemTargeting
 
 
 class HealthPotionComponent:

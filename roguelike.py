@@ -4,11 +4,11 @@ from etc.colors import COLORS
 from etc.config import (
    SCREEN_WIDTH, SCREEN_HEIGHT, FLOOR_CONFIG, ROOM_CONFIG,
    MAP_CONFIG, PANEL_CONFIG, MESSAGE_CONFIG, FOV_CONFIG)
+from etc.enum import EntityTypes, GameStates, ItemTargeting, RenderOrder
 
 from components.attacker import Attacker
 from components.harmable import Harmable
 from components.inventory import Inventory
-from components.item import ItemTargeting
 from map.map import GameMap
 from map.floor import make_floor
 from spawnable.monsters import MONSTER_SCHEDULE, MONSTER_GROUPS
@@ -19,12 +19,10 @@ from input_handlers import handle_keys
 from game_messages import Message
 from entity import Entity, get_blocking_entity_at_location
 from game_messages import MessageLog
-from game_states import GameStates
 from menus import invetory_menu
 from death_functions import kill_monster, kill_player
-from render_functions import (
-    RenderOrder, clear_all, render_all, render_health_bars, 
-    render_messages)
+from render_functions import (clear_all, render_all, render_health_bars, 
+                              render_messages)
 
 
 def main():

@@ -1,8 +1,8 @@
-from entity import Entity, EntityTypes
-from render_functions import RenderOrder
+from entity import Entity
 
 from spawnable.spawnable import Spawnable
 from etc.colors import COLORS
+from etc.enum import EntityTypes, RenderOrder, ItemGroups
 from components.item import HealthPotionComponent, MagicMissileComponent
 
 
