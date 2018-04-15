@@ -1,6 +1,6 @@
 from enum import Enum, auto
 
-from entity import Entity
+from entity import Entity, EntityTypes
 from render_functions import RenderOrder
 
 from spawnable.spawnable import Spawnable
@@ -25,6 +25,7 @@ class Kruthik(Spawnable):
     def make(x, y):
         return Entity(
             x, y, 'k', COLORS['desaturated_green'], 'Kruthik', 
+            entity_type=EntityTypes.MONSTER,
             attacker=Attacker(power=1),
             harmable=Harmable(hp=1, defense=0),
             ai=SkitteringMonster(),
@@ -38,6 +39,7 @@ class Orc(Spawnable):
     def make(x, y):
         return Entity(
             x, y, 'O', COLORS['desaturated_green'], 'Orc', 
+            entity_type=EntityTypes.MONSTER,
             attacker=Attacker(power=3),
             harmable=Harmable(hp=10, defense=0),
             ai=BasicMonster(),
@@ -51,6 +53,7 @@ class Troll(Spawnable):
     def make(x, y):
         return Entity(
             x, y, 'T', COLORS['darker_green'], 'Troll', 
+            entity_type=EntityTypes.MONSTER,
             attacker=Attacker(power=4),
             harmable=Harmable(hp=16, defense=1),
             ai=HuntingMonster(),

@@ -1,7 +1,12 @@
 import math
 import random
+from enum import Enum, auto
 from render_functions import RenderOrder
 
+class EntityTypes(Enum):
+    PLAYER = auto()
+    MONSTER = auto()
+    ITEM = auto()
 
 class Entity:
     """Represents a game entity, i.e. anything that should be drawn on the map.
@@ -23,7 +28,10 @@ class Entity:
     name: str
       The name of the entity.
 
-    block: bool
+    entity_type: EntityTypes object
+      The type of entity.
+
+    blocks: bool
       Does the entity block movement?
 
     render_order: int
@@ -34,8 +42,11 @@ class Entity:
     -------------------
     These optional attributes add custom behaviour to entities.
 
-    fighter: Fighter object
-      Manages entities HP and attack attributes.
+    attacker: Attacker object
+      Manages entities attack attributes.
+
+    harmable: Harmable object
+      Manages entities HP attributes.
 
     ai: AI object.
       Contains AI logic for monsters.
@@ -47,6 +58,7 @@ class Entity:
       Contains logic for managing an inventory.
     """
     def __init__(self, x, y, char, color, name, 
+                 entity_type=None,
                  render_order=RenderOrder.CORPSE,
                  blocks=False, 
                  attacker=None,
@@ -59,6 +71,7 @@ class Entity:
         self.char = char
         self.color = color
         self.name = name
+        self.entity_type = entity_type
         self.blocks = blocks
         self.render_order = render_order
 
@@ -105,8 +118,25 @@ class Entity:
         dy = other.y - self.y
         return math.sqrt(dx*dx + dy*dy)
 
+    def get_closest_entity_of_type(entities, entity_type):
+        """Get the closest entity of a given type from a list of entities."""
+        closest = None
+        closest_distance = math.inf
+        for entity in entities:
+            distance_to = self.distance_to(entity)
+            if (entity.entity_type == entity_type and
+                distance_to <closest_distance):
+                closest = entity
+                closest_distance = distance_to
+        return closest
+
+
 def get_blocking_entity_at_location(entities, x, y):
+    """Get a blocking entity at a location, if any, from a list of entities."""
     for entity in entities:
         if entity.blocks and entity.x == x and entity.y == y:
             return entity
     return None
+
+
+

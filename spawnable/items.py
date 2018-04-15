@@ -1,6 +1,6 @@
 from enum import Enum, auto
 
-from entity import Entity
+from entity import Entity, EntityTypes
 from render_functions import RenderOrder
 
 from spawnable.spawnable import Spawnable
@@ -19,8 +19,9 @@ class HealthPotion(Spawnable):
     @staticmethod
     def make(x, y):
         return Entity(x, y, '!', COLORS['violet'], 'Health Potion',
-                     render_order=RenderOrder.ITEM,
-                     item=HealthPotionComponent())
+                      entity_type=EntityTypes.ITEM,
+                      render_order=RenderOrder.ITEM,
+                      item=HealthPotionComponent())
 
 
 ITEM_GROUPS = {
