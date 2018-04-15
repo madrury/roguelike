@@ -1,12 +1,3 @@
-from enum import Enum
-
-
-class RenderOrder(Enum):
-    CORPSE = 1
-    ITEM = 2
-    ACTOR = 3
-
-
 def render_all(con, entities, game_map, fov_recompute, colors):
     # Draw walls.
     if fov_recompute:

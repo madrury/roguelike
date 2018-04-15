@@ -10,14 +10,6 @@ from components.attacker import Attacker
 from components.harmable import Harmable
 
 
-class MonsterGroups(Enum):
-    NONE = auto()
-    SINGLE_ORC = auto() 
-    THREE_ORCS = auto() 
-    SINGLE_TROLL = auto() 
-    TWO_ORCS_AND_TROLL = auto()
-    KRUTHIK_SQARM = auto()
-
 
 class Kruthik(Spawnable):
 

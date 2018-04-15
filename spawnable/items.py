@@ -1,18 +1,9 @@
-from enum import Enum, auto
-
 from entity import Entity, EntityTypes
 from render_functions import RenderOrder
 
 from spawnable.spawnable import Spawnable
 from etc.colors import COLORS
 from components.item import HealthPotionComponent, MagicMissileComponent
-
-
-class ItemGroups(Enum):
-    NONE = auto()
-    ONE_HEALTH_POTION = auto()
-    TWO_HEALTH_POTIONS = auto()
-    MAGIC_MISSILE_SCROLL = auto()
 
 
 class HealthPotion(Spawnable):

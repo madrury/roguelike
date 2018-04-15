@@ -3,11 +3,6 @@ import random
 from enum import Enum, auto
 from render_functions import RenderOrder
 
-class EntityTypes(Enum):
-    PLAYER = auto()
-    MONSTER = auto()
-    ITEM = auto()
-    CORPSE = auto()
 
 class Entity:
     """Represents a game entity, i.e. anything that should be drawn on the map.

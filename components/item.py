@@ -1,13 +1,6 @@
-from enum import Enum, auto
-
 from game_messages import Message
 from entity import EntityTypes
 from etc.colors import COLORS
-
-
-class ItemTargeting(Enum):
-    PLAYER = auto()
-    CLOSEST_MONSTER = auto()
 
 
 class HealthPotionComponent:
