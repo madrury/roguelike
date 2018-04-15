@@ -8,6 +8,7 @@ from etc.config import (
 from components.attacker import Attacker
 from components.harmable import Harmable
 from components.inventory import Inventory
+from components.item import ItemTargeting
 from map.map import GameMap
 from map.floor import make_floor
 from spawnable.monsters import MONSTER_SCHEDULE, MONSTER_GROUPS
@@ -184,7 +185,7 @@ def main():
             and previous_game_state != GameStates.PLAYER_DEAD):
             entity = player.inventory.items[inventory_index]
             if game_state == GameStates.SHOW_INVETORY:
-                if entity.item.use_on_player:
+                if entity.item.targeting == ItemTargeting.PLAYER:
                     player_turn_results.extend(entity.item.use(player))
             elif game_state == GameStates.DROP_INVENTORY:
                 player_turn_results.extend(player.inventory.drop(entity))

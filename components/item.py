@@ -1,6 +1,12 @@
-from game_messages import Message
+from enum import Enum, auto
 
+from game_messages import Message
 from etc.colors import COLORS
+
+
+class ItemTargeting(Enum):
+    PLAYER = auto()
+    CLOSEST_MONSTER = auto()
 
 
 class ItemComponent:
@@ -10,7 +16,7 @@ class HealthPotionComponent(ItemComponent):
 
     def __init__(self, healing=5):
         self.name = "healing potion"
-        self.use_on_player = True
+        self.targeting = ItemTargeting.PLAYER
         self.healing = healing
 
     def use(self, player):
