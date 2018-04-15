@@ -7,6 +7,7 @@ class EntityTypes(Enum):
     PLAYER = auto()
     MONSTER = auto()
     ITEM = auto()
+    CORPSE = auto()
 
 class Entity:
     """Represents a game entity, i.e. anything that should be drawn on the map.
@@ -118,14 +119,14 @@ class Entity:
         dy = other.y - self.y
         return math.sqrt(dx*dx + dy*dy)
 
-    def get_closest_entity_of_type(entities, entity_type):
+    def get_closest_entity_of_type(self, entities, entity_type):
         """Get the closest entity of a given type from a list of entities."""
         closest = None
         closest_distance = math.inf
         for entity in entities:
             distance_to = self.distance_to(entity)
             if (entity.entity_type == entity_type and
-                distance_to <closest_distance):
+                distance_to < closest_distance):
                 closest = entity
                 closest_distance = distance_to
         return closest

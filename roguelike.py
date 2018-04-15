@@ -46,7 +46,7 @@ def main():
                     blocks=True,
                     render_order=RenderOrder.ACTOR,
                     attacker=Attacker(power=5),
-                    harmable=Harmable(hp=20, defense=2),
+                    harmable=Harmable(hp=2000, defense=2),
                     inventory=Inventory(26))
     entities = [player]
  
@@ -186,7 +186,11 @@ def main():
             entity = player.inventory.items[inventory_index]
             if game_state == GameStates.SHOW_INVETORY:
                 if entity.item.targeting == ItemTargeting.PLAYER:
-                    player_turn_results.extend(entity.item.use(player))
+                    player_turn_results.extend(
+                        entity.item.use(player))
+                if entity.item.targeting == ItemTargeting.CLOSEST_MONSTER:
+                    player_turn_results.extend(
+                        entity.item.use(player, entities))
             elif game_state == GameStates.DROP_INVENTORY:
                 player_turn_results.extend(player.inventory.drop(entity))
             game_state, previous_game_state = previous_game_state, game_state

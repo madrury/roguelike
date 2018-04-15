@@ -1,3 +1,4 @@
+from entity import EntityTypes
 from game_states import GameStates
 from game_messages import Message
 from render_functions import RenderOrder
@@ -9,9 +10,10 @@ def kill_player(player, colors):
 
 def kill_monster(monster, colors):
     message = '{} is dead!'.format(monster.name.capitalize())
-    monster.char = '%'
+    monster.char = '#'
     monster.color = colors.get('dark_red')
     monster.blocks = False
+    monster.entity_type = EntityTypes.CORPSE
     monster.attacker = None
     monster.harmable = None
     monster.ai = None
