@@ -35,7 +35,7 @@ ITEM_GROUPS = {
 
 ITEM_SCHEDULE = [
     (0.5, ItemGroups.NONE),
-    (0.5*0.5, ItemGroups.ONE_HEALTH_POTION),
-    (0.5*0.1, ItemGroups.TWO_HEALTH_POTIONS),
-    (0.5*0.4, ItemGroups.MAGIC_MISSILE_SCROLL)
+    (0.5*0.0, ItemGroups.ONE_HEALTH_POTION),
+    (0.5*0.0, ItemGroups.TWO_HEALTH_POTIONS),
+    (0.5*1.0, ItemGroups.MAGIC_MISSILE_SCROLL)
 ]

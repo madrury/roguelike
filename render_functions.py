@@ -59,6 +59,5 @@ def _draw_entity(con, entity, fov):
     if fov[entity.x, entity.y]:
         con.draw_char(entity.x, entity.y, entity.char, entity.color, bg=None)
 
-
 def _clear_entity(con, entity):
     con.draw_char(entity.x, entity.y, ' ', entity.color, bg=None)

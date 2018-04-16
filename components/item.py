@@ -1,6 +1,6 @@
 from game_messages import Message
 from etc.colors import COLORS
-from etc.enum import EntityTypes, ItemTargeting
+from etc.enum import EntityTypes, ItemTargeting, Animations
 
 
 class HealthPotionComponent:
@@ -51,7 +51,9 @@ class MagicMissileComponent:
             message = Message(text, COLORS.get('white'))
             results.append({'item_consumed': (True, self.owner),
                             'damage': (closest_monster, self.damage),
-                            'message': message})
+                            'message': message,
+                            'animation': (
+                                Animations.MAGIC_MISSILE, closest_monster)})
         else:
             message = Message(
                 "A shining magic missile streaks into the darkness.",

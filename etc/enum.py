@@ -1,11 +1,12 @@
 from enum import Enum, auto
 
 class GameStates(Enum):
-    PLAYER_TURN = 1
-    ENEMY_TURN = 2
-    PLAYER_DEAD = 3
-    SHOW_INVETORY = 4
-    DROP_INVENTORY = 5
+    PLAYER_TURN = auto() 
+    ENEMY_TURN = auto() 
+    PLAYER_DEAD = auto()
+    SHOW_INVETORY = auto()
+    DROP_INVENTORY = auto()
+    ANIMATION = auto()
 
 
 class EntityTypes(Enum):
@@ -21,9 +22,9 @@ class ItemTargeting(Enum):
 
 
 class RenderOrder(Enum):
-    CORPSE = 1
-    ITEM = 2
-    ACTOR = 3
+    CORPSE = auto()
+    ITEM = auto()
+    ACTOR = auto()
 
 
 class ItemGroups(Enum):
@@ -40,3 +41,7 @@ class MonsterGroups(Enum):
     SINGLE_TROLL = auto() 
     TWO_ORCS_AND_TROLL = auto()
     KRUTHIK_SQARM = auto()
+
+
+class Animations(Enum):
+    MAGIC_MISSILE = auto()

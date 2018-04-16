@@ -4,7 +4,8 @@ from etc.colors import COLORS
 from etc.config import (
    SCREEN_WIDTH, SCREEN_HEIGHT, FLOOR_CONFIG, ROOM_CONFIG,
    MAP_CONFIG, PANEL_CONFIG, MESSAGE_CONFIG, FOV_CONFIG)
-from etc.enum import EntityTypes, GameStates, ItemTargeting, RenderOrder
+from etc.enum import (
+    EntityTypes, GameStates, ItemTargeting, RenderOrder, Animations)
 
 from components.attacker import Attacker
 from components.harmable import Harmable
@@ -14,6 +15,7 @@ from map.floor import make_floor
 from spawnable.monsters import MONSTER_SCHEDULE, MONSTER_GROUPS
 from spawnable.items import ITEM_SCHEDULE, ITEM_GROUPS
 from spawnable.spawnable import spawn_entities
+from animations.animations import MagicMissileAnimation
 
 from input_handlers import handle_keys
 from game_messages import Message
@@ -57,9 +59,14 @@ def main():
     spawn_entities(ITEM_SCHEDULE, ITEM_GROUPS, floor, entities)
     
     # Initial values for game states
-    fov_recompute = True
     game_state = GameStates.PLAYER_TURN
     previous_game_state = game_state
+    # We only want to recompute the fov when needed.  For example, if the
+    # player just used an item and has not moved, the fov will be the same.
+    fov_recompute = True
+    # Data needed to play an animation.
+    current_animation = None
+    animation_data = None
 
     #-------------------------------------------------------------------------
     # Main Game Loop.
@@ -207,15 +214,16 @@ def main():
         #----------------------------------------------------------------------
         while player_turn_results != []:
             result = player_turn_results.pop()
-            move = result.get('move')
-            message = result.get('message')
-            item_added = result.get('item_added')
+            animation = result.get('animation')
             damage = result.get('damage')
-            item_consumed = result.get('item_consumed')
-            item_dropped = result.get('item_dropped')
-            heal = result.get('heal')
             dead_entity = result.get('dead')
             death_message = result.get('death_message')
+            heal = result.get('heal')
+            item_added = result.get('item_added')
+            item_consumed = result.get('item_consumed')
+            item_dropped = result.get('item_dropped')
+            message = result.get('message')
+            move = result.get('move')
             # Handle movement.
             if move:
                 player.move(*move)
@@ -262,6 +270,12 @@ def main():
             if death_message:
                 message_log.add_message(death_message)
                 break
+            # Play an animation.
+            if animation:
+                current_animation = animation[0]
+                animation_data = animation
+                game_state, previous_game_state = (
+                    GameStates.ANIMATION, game_state)
 
         #---------------------------------------------------------------------
         # Handle enemy actions
@@ -336,6 +350,22 @@ def main():
         fullscreen = action.get('fullscreen')
         if fullscreen:
             tdl.set_fullscreen(not tdl.get_fullscreen())
+
+        #---------------------------------------------------------------------
+        # Play animations
+        #---------------------------------------------------------------------
+        if game_state == GameStates.ANIMATION:
+            if current_animation == Animations.MAGIC_MISSILE:
+                animation_player = MagicMissileAnimation(
+                    root_console, map_console, game_map, 
+                    (player.x, player.y), 
+                    (animation_data[1].x, animation_data[1].y))
+            # Now play the animatin
+            animation_finished = False
+            while not animation_finished:
+                animation_finished = animation_player.next_frame()
+            game_state, previous_game_state = previous_game_state, game_state
+            current_animation, animation_data = None, None
 
         #---------------------------------------------------------------------
         # If the player is dead, the game is over.
