@@ -301,7 +301,7 @@ def main():
             # they immediately break out of the game loop.
             if death_message:
                 message_log.add_message(death_message)
-                break
+                #break
             # Play an animation.
             if animation:
                 animation_type = animation[0]

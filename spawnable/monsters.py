@@ -63,9 +63,9 @@ MONSTER_GROUPS = {
 
 MONSTER_SCHEDULE = [
     (0.7, MonsterGroups.NONE),
-    (0.3*1.0, MonsterGroups.SINGLE_ORC),
+    (0.3*0.5, MonsterGroups.SINGLE_ORC),
     (0.0*0.0, MonsterGroups.THREE_ORCS),
     (0.0*0.0, MonsterGroups.SINGLE_TROLL),
     (0.0*0.0, MonsterGroups.TWO_ORCS_AND_TROLL),
-    (0.0*0.0, MonsterGroups.KRUTHIK_SQARM),
+    (0.3*0.5, MonsterGroups.KRUTHIK_SQARM),
 ]
