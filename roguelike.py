@@ -1,4 +1,5 @@
 import tdl
+from time import sleep
 
 from etc.colors import COLORS
 from etc.config import (
@@ -65,8 +66,7 @@ def main():
     # player just used an item and has not moved, the fov will be the same.
     fov_recompute = True
     # Data needed to play an animation.
-    current_animation = None
-    animation_data = None
+    animation_player = None
 
     #-------------------------------------------------------------------------
     # Main Game Loop.
@@ -101,8 +101,19 @@ def main():
             root_console.blit(menu_console, menu_x, menu_y,
                               SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
 
+        #---------------------------------------------------------------------
+        # Play any animations
+        #---------------------------------------------------------------------
+        if game_state == GameStates.ANIMATION_PLAYING:
+            # Now play the animatin
+            sleep(0.05)
+            animation_finished = animation_player.next_frame()
+            if animation_finished:
+                game_state, previous_game_state = previous_game_state, game_state
+
         tdl.flush()
         clear_all(map_console, entities)
+        print(game_state)
 
         # Unless the player moves, we do not need to recompute the fov.
         fov_recompute = False 
@@ -110,13 +121,15 @@ def main():
         #---------------------------------------------------------------------
         # Get key input from the player.
         #---------------------------------------------------------------------
+        input_states = (
+            GameStates.PLAYER_TURN, GameStates.SHOW_INVETORY, GameStates.DROP_INVENTORY)
         for event in tdl.event.get():
             if event.type == 'KEYDOWN':
                 user_input = event
                 break
         else:
             user_input = None
-        if not user_input:
+        if game_state in input_states and not user_input:
             continue
         action = handle_keys(user_input, game_state)
 
@@ -272,10 +285,14 @@ def main():
                 break
             # Play an animation.
             if animation:
-                current_animation = animation[0]
-                animation_data = animation
+                animation_type = animation[0]
+                if animation_type == Animations.MAGIC_MISSILE:
+                    animation_player = MagicMissileAnimation(
+                        map_console, game_map, 
+                        (player.x, player.y), 
+                        (animation[1].x, animation[1].y))
                 game_state, previous_game_state = (
-                    GameStates.ANIMATION, game_state)
+                    GameStates.ANIMATION_PLAYING, game_state)
 
         #---------------------------------------------------------------------
         # Handle enemy actions
@@ -351,21 +368,6 @@ def main():
         if fullscreen:
             tdl.set_fullscreen(not tdl.get_fullscreen())
 
-        #---------------------------------------------------------------------
-        # Play animations
-        #---------------------------------------------------------------------
-        if game_state == GameStates.ANIMATION:
-            if current_animation == Animations.MAGIC_MISSILE:
-                animation_player = MagicMissileAnimation(
-                    root_console, map_console, game_map, 
-                    (player.x, player.y), 
-                    (animation_data[1].x, animation_data[1].y))
-            # Now play the animatin
-            animation_finished = False
-            while not animation_finished:
-                animation_finished = animation_player.next_frame()
-            game_state, previous_game_state = previous_game_state, game_state
-            current_animation, animation_data = None, None
 
         #---------------------------------------------------------------------
         # If the player is dead, the game is over.

@@ -6,7 +6,8 @@ class GameStates(Enum):
     PLAYER_DEAD = auto()
     SHOW_INVETORY = auto()
     DROP_INVENTORY = auto()
-    ANIMATION = auto()
+    ANIMATION_PLAYING = auto()
+    ANIMATION_FINISHED = auto()
 
 
 class EntityTypes(Enum):
