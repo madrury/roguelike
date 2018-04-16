@@ -7,14 +7,16 @@ def kill_player(player, colors):
     return [{'death_message': Message('You died!', colors['red'])}]
 
 def kill_monster(monster, colors):
-    message = '{} is dead!'.format(monster.name.capitalize())
-    monster.char = '#'
-    monster.color = colors.get('dark_red')
     monster.blocks = False
-    monster.entity_type = EntityTypes.CORPSE
     monster.attacker = None
     monster.harmable = None
     monster.ai = None
+    message = '{} is dead!'.format(monster.name.capitalize())
+    return [{'death_message': Message(message, colors['orange'])}]
+
+def make_corpse(monster, colors):
+    monster.char = '#'
+    monster.color = colors.get('dark_red')
+    monster.entity_type = EntityTypes.CORPSE
     monster.name = 'Remains of ' + monster.name
     monster.render_order = RenderOrder.CORPSE
-    return [{'death_message': Message(message, colors['orange'])}]

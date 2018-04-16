@@ -23,7 +23,7 @@ from game_messages import Message
 from entity import Entity, get_blocking_entity_at_location
 from game_messages import MessageLog
 from menus import invetory_menu
-from death_functions import kill_monster, kill_player
+from death_functions import kill_monster, kill_player, make_corpse
 from render_functions import (clear_all, render_all, render_health_bars, 
                               render_messages)
 
@@ -67,6 +67,9 @@ def main():
     fov_recompute = True
     # Data needed to play an animation.
     animation_player = None
+    # A list of recently dead enemies.  We need this to defer drawing thier
+    # corpses until *after* any animations have finished.
+    dead_entities = []
 
     #-------------------------------------------------------------------------
     # Main Game Loop.
@@ -106,14 +109,13 @@ def main():
         #---------------------------------------------------------------------
         if game_state == GameStates.ANIMATION_PLAYING:
             # Now play the animatin
-            sleep(0.05)
             animation_finished = animation_player.next_frame()
+            sleep(0.05)
             if animation_finished:
                 game_state, previous_game_state = previous_game_state, game_state
 
         tdl.flush()
         clear_all(map_console, entities)
-        print(game_state)
 
         # Unless the player moves, we do not need to recompute the fov.
         fov_recompute = False 
@@ -278,6 +280,7 @@ def main():
             elif dead_entity:
                 player_turn_results.extend(
                     kill_monster(dead_entity, COLORS))
+                dead_entities.append(dead_entity)
             # Handle a death message.  Death messages are special in that
             # they immediately break out of the game loop.
             if death_message:
@@ -368,6 +371,15 @@ def main():
         if fullscreen:
             tdl.set_fullscreen(not tdl.get_fullscreen())
 
+
+        #---------------------------------------------------------------------
+        # Once an animation is finished that results in a dead monster, draw it
+        # as a corpse.
+        #---------------------------------------------------------------------
+        if not game_state == GameStates.ANIMATION_PLAYING:
+            while dead_entities:
+                dead_entity = dead_entities.pop()
+                make_corpse(dead_entity, COLORS)
 
         #---------------------------------------------------------------------
         # If the player is dead, the game is over.

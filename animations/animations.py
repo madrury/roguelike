@@ -15,8 +15,6 @@ class MagicMissileAnimation:
         self.current_frame = 0
 
     def next_frame(self):
-
-        print("Playing animation frame ", self.current_frame)
         missile_location = self.path[self.current_frame]
         if self.current_frame >= 1:
             missile_prior_location = self.path[self.current_frame - 1]
@@ -27,7 +25,6 @@ class MagicMissileAnimation:
             return True
         self.map_console.draw_char(
             missile_location[0], missile_location[1], 
-            '*', COLORS.get('yellow'), bg=None)
-
+            '*', COLORS.get('yellow'), bg=COLORS.get('yellow'))
         self.current_frame += 1
         return False
