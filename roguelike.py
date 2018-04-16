@@ -76,7 +76,9 @@ def main():
     #-------------------------------------------------------------------------
     while not tdl.event.is_window_closed():
 
+        #---------------------------------------------------------------------
         # If needed, recompute the player's field of view.
+        #---------------------------------------------------------------------
         if fov_recompute:
             game_map.compute_fov(
                 player.x, player.y,
@@ -84,7 +86,9 @@ def main():
                 radius=FOV_CONFIG["radius"],
                 light_walls=FOV_CONFIG["light_walls"])
 
+        #---------------------------------------------------------------------
         # Render and display the dungeon and its inhabitates.
+        #---------------------------------------------------------------------
         render_all(map_console, entities, game_map, fov_recompute, COLORS)
         root_console.blit(map_console, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
         render_health_bars(panel_console, player, PANEL_CONFIG, COLORS)
@@ -92,7 +96,9 @@ def main():
         root_console.blit(panel_console, 0, PANEL_CONFIG['y'],
                           SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
 
+        #---------------------------------------------------------------------
         # Render any menus.
+        #---------------------------------------------------------------------
         if game_state in (GameStates.SHOW_INVETORY, GameStates.DROP_INVENTORY):
             if game_state == GameStates.SHOW_INVETORY:
                 invetory_message = "Press the letter next to the item to use it.\n"
@@ -105,7 +111,7 @@ def main():
                               SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
 
         #---------------------------------------------------------------------
-        # Play any animations
+        # Advance the frame of any animations.
         #---------------------------------------------------------------------
         if game_state == GameStates.ANIMATION_PLAYING:
             # Now play the animatin
