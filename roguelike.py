@@ -17,7 +17,7 @@ from spawnable.monsters import MONSTER_SCHEDULE, MONSTER_GROUPS
 from spawnable.items import ITEM_SCHEDULE, ITEM_GROUPS
 from spawnable.spawnable import spawn_entities
 from spawnable.items import HealthPotion, MagicMissileScroll
-from animations.animations import MagicMissileAnimation
+from animations.animations import MagicMissileAnimation, HealthPotionAnimation
 
 from input_handlers import handle_keys
 from game_messages import Message
@@ -305,6 +305,9 @@ def main():
                         map_console, game_map, 
                         (player.x, player.y), 
                         (animation[1].x, animation[1].y))
+                elif animation_type == Animations.HEALTH_POTION:
+                    animation_player = HealthPotionAnimation(
+                        map_console, game_map, player)
                 game_state, previous_game_state = (
                     GameStates.ANIMATION_PLAYING, game_state)
 

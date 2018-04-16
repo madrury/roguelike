@@ -4,12 +4,30 @@ import random
 
 from etc.config import SCREEN_WIDTH, SCREEN_HEIGHT, PANEL_CONFIG
 from etc.colors import COLORS
+from animations.colors import COLOR_PATHS, random_yellow
 
 
-def random_yellow():
-    rg = int(random.uniform(220, 226))
-    return (rg, rg, int(random.uniform(0, 256)))
+class HealthPotionAnimation:
 
+    def __init__(self, map_console, game_map, target):
+        self.map_console = map_console
+        self.game_map = game_map
+        self.target = target
+        self.color_iter = iter(COLOR_PATHS['dark_to_light_green'])
+
+    def next_frame(self):
+        try:
+            self.map_console.draw_char(
+                self.target.x, self.target.y, self.target.char, self.target.color,
+                bg=COLORS['light_ground'])
+            color = next(self.color_iter)
+        except StopIteration:
+            return True
+        self.map_console.draw_char(
+            self.target.x, self.target.y, self.target.char, self.target.color,
+            bg=color)
+        return False
+        
 
 class MagicMissileAnimation:
 

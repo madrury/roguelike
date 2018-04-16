@@ -25,7 +25,8 @@ class HealthPotionComponent:
                               COLORS.get('green'))
             results.append({'item_consumed': (True, self.owner),
                             'heal': (player, self.healing),
-                            'message': message})
+                            'message': message,
+                            'animation': (Animations.HEALTH_POTION, player)})
         return results
 
 

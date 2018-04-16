@@ -45,4 +45,5 @@ class MonsterGroups(Enum):
 
 
 class Animations(Enum):
+    HEALTH_POTION = auto()
     MAGIC_MISSILE = auto()
