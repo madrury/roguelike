@@ -11,12 +11,12 @@ def kill_monster(monster, colors):
     monster.attacker = None
     monster.harmable = None
     monster.ai = None
-    message = '{} is dead!'.format(monster.name.capitalize())
+    message = 'The {} is dead!'.format(monster.name.capitalize())
     return [{'death_message': Message(message, colors['orange'])}]
 
 def make_corpse(monster, colors):
     monster.char = '#'
     monster.color = colors.get('dark_red')
     monster.entity_type = EntityTypes.CORPSE
-    monster.name = 'Remains of ' + monster.name
+    monster.name = 'Remains of the' + monster.name.capitalize()
     monster.render_order = RenderOrder.CORPSE
