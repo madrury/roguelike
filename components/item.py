@@ -34,7 +34,7 @@ class MagicMissileComponent:
 
     This targets the closest enemy, and deals an amount of damage.
     """
-    def __init__(self, damage=6, spell_range=10):
+    def __init__(self, damage=6, spell_range=12):
         self.name = "magic missile"
         self.targeting = ItemTargeting.CLOSEST_MONSTER
         self.damage = damage
@@ -59,6 +59,5 @@ class MagicMissileComponent:
                 "A shining magic missile streaks into the darkness.",
                 COLORS.get('white'))
             results.append({'item_consumed': (True, self.owner),
-                            'damage': (closest_monster, self.damage),
                             'message': message})
         return results
