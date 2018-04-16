@@ -126,6 +126,16 @@ class Entity:
                 closest_distance = distance_to
         return closest
 
+    def get_all_entities_of_type_within_radius(
+        self, entities, entity_type, radius):
+        """Get all the entities of a given type within a given range."""
+        within_radius = []
+        for entity in entities:
+            if (self.distance_to(entity) <= radius and 
+                entity.entity_type == entity_type):
+                within_radius.append(entity)
+        return within_radius
+
 
 def get_blocking_entity_at_location(entities, x, y):
     """Get a blocking entity at a location, if any, from a list of entities."""
