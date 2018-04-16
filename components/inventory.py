@@ -28,5 +28,8 @@ class Inventory:
     def add(self, item):
         self.items.append(item)
 
+    def extend(self, items):
+        self.items.extend(items)
+
     def remove(self, item):
         self.items.remove(item)
