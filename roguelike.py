@@ -16,7 +16,8 @@ from map.floor import make_floor
 from spawnable.monsters import MONSTER_SCHEDULE, MONSTER_GROUPS
 from spawnable.items import ITEM_SCHEDULE, ITEM_GROUPS
 from spawnable.spawnable import spawn_entities
-from spawnable.items import HealthPotion, MagicMissileScroll
+from spawnable.items import (
+    HealthPotion, MagicMissileScroll, FireblastScroll)
 from animations.animations import MagicMissileAnimation, HealthPotionAnimation
 
 from input_handlers import handle_keys
@@ -55,6 +56,7 @@ def main():
     # Setup Initial Inventory, for testing.
     player.inventory.extend([HealthPotion.make(0, 0) for _ in range(5)])
     player.inventory.extend([MagicMissileScroll.make(0, 0) for _ in range(5)])
+    player.inventory.extend([FireblastScroll.make(0, 0) for _ in range(5)])
  
     # Generate the map and place player, monsters, and items.
     game_map = GameMap(FLOOR_CONFIG['width'], FLOOR_CONFIG['height'])
@@ -220,6 +222,9 @@ def main():
                     player_turn_results.extend(
                         entity.item.use(player))
                 if entity.item.targeting == ItemTargeting.CLOSEST_MONSTER:
+                    player_turn_results.extend(
+                        entity.item.use(player, entities))
+                if entity.item.targeting == ItemTargeting.WITHIN_RADIUS:
                     player_turn_results.extend(
                         entity.item.use(player, entities))
             elif game_state == GameStates.DROP_INVENTORY:

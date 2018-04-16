@@ -41,12 +41,12 @@ class MagicMissileComponent:
         self.damage = damage
         self.spell_range = spell_range
 
-    def use(self, player, entities):
+    def use(self, source, entities):
         results = []
-        closest_monster = player.get_closest_entity_of_type(
+        closest_monster = source.get_closest_entity_of_type(
             entities, EntityTypes.MONSTER)
         if (closest_monster and 
-            player.distance_to(closest_monster) <= self.spell_range):
+            source.distance_to(closest_monster) <= self.spell_range):
             text = 'A shining magic missile pierces the {}'.format(
                 closest_monster.name)
             message = Message(text, COLORS.get('white'))
@@ -61,4 +61,26 @@ class MagicMissileComponent:
                 COLORS.get('white'))
             results.append({'item_consumed': (True, self.owner),
                             'message': message})
+        return results
+
+
+class FireblastComponent:
+
+    def __init__(self, damage=10, radius=4):
+        self.name = "fireblast"
+        self.targeting = ItemTargeting.WITHIN_RADIUS
+        self.damage = damage
+        self.radius = radius
+
+    def use(self, source, entities):
+        results = []
+        monsters_within_radius = source.get_all_entities_of_type_within_radius(
+            entities, EntityTypes.MONSTER, self.radius)
+        for monster in monsters_within_radius:
+            text = "The {} is caught in the fireblast!".format(
+                monster.name)
+            message = Message(text, COLORS.get('white'))
+            results.append({'damage': (monster, self.damage),
+                            'message': message})
+        results.append({'item_consumed': (True, self.owner)})
         return results

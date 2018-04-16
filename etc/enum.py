@@ -20,6 +20,7 @@ class EntityTypes(Enum):
 class ItemTargeting(Enum):
     PLAYER = auto()
     CLOSEST_MONSTER = auto()
+    WITHIN_RADIUS = auto()
 
 
 class RenderOrder(Enum):
@@ -33,6 +34,7 @@ class ItemGroups(Enum):
     ONE_HEALTH_POTION = auto()
     TWO_HEALTH_POTIONS = auto()
     MAGIC_MISSILE_SCROLL = auto()
+    FIREBLAST_SCROLL = auto()
 
 
 class MonsterGroups(Enum):
