@@ -30,12 +30,12 @@ ITEM_GROUPS = {
     ItemGroups.NONE: [],
     ItemGroups.ONE_HEALTH_POTION: [HealthPotion],
     ItemGroups.TWO_HEALTH_POTIONS: [HealthPotion]*2,
-    ItemGroups.MAGIC_MISSILE_SCROLL: [MagicMissileScroll]*5,
+    ItemGroups.MAGIC_MISSILE_SCROLL: [MagicMissileScroll],
 }
 
 ITEM_SCHEDULE = [
-    (0.0, ItemGroups.NONE),
-    (0.5*0.0, ItemGroups.ONE_HEALTH_POTION),
-    (0.5*0.0, ItemGroups.TWO_HEALTH_POTIONS),
-    (1.0*1.0, ItemGroups.MAGIC_MISSILE_SCROLL)
+    (0.6, ItemGroups.NONE),
+    (0.4*0.6, ItemGroups.ONE_HEALTH_POTION),
+    (0.4*0.1, ItemGroups.TWO_HEALTH_POTIONS),
+    (0.4*0.3, ItemGroups.MAGIC_MISSILE_SCROLL)
 ]
