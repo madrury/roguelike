@@ -12,7 +12,7 @@ class HealthPotion(Spawnable):
 
     @staticmethod
     def make(x, y):
-        return Entity(x, y, '!', COLORS['violet'], 'Health Potion',
+        return Entity(x, y, '!', COLORS['violet'], 'Potion of Health',
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
                       item=HealthPotionComponent())
@@ -22,7 +22,7 @@ class MagicMissileScroll(Spawnable):
 
     @staticmethod
     def make(x, y):
-        return Entity(x, y, '%', COLORS['violet'], 'Magic Missile Scroll',
+        return Entity(x, y, '%', COLORS['violet'], 'Scroll of Magic Missile',
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
                       item=MagicMissileComponent())
@@ -32,7 +32,7 @@ class FireblastScroll(Spawnable):
 
     @staticmethod
     def make(x, y):
-        return Entity(x, y, '%', COLORS['violet'], 'Fireblast Missile Scroll',
+        return Entity(x, y, '%', COLORS['violet'], 'Scroll of Fireblast',
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
                       item=FireblastComponent())

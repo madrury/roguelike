@@ -5,7 +5,7 @@ import random
 from utils.utils import coordinates_within_circle
 from etc.config import SCREEN_WIDTH, SCREEN_HEIGHT, PANEL_CONFIG
 from etc.colors import COLORS
-from animations.colors import COLOR_PATHS, random_yellow, random_red
+from animations.colors import COLOR_PATHS, random_yellow, random_red_or_yellow
 
 
 class HealthPotionAnimation:
@@ -93,5 +93,5 @@ class FireblastAnimation:
         for x, y in blast_coordinates:
             if self.game_map.fov[x, y] and self.game_map.walkable[x, y]:
                 self.map_console.draw_char(
-                    x, y, '^', random_red(), random_red())
+                    x, y, '^', random_red_or_yellow(), random_red_or_yellow())
         return False
