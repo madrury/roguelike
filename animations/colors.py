@@ -8,3 +8,6 @@ COLOR_PATHS = {
 def random_yellow():
     rg = int(random.uniform(220, 226))
     return (rg, rg, int(random.uniform(0, 256)))
+
+def random_red():
+    return (255, 0, 0)

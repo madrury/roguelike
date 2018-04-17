@@ -82,5 +82,7 @@ class FireblastComponent:
             message = Message(text, COLORS.get('white'))
             results.append({'damage': (monster, self.damage),
                             'message': message})
-        results.append({'item_consumed': (True, self.owner)})
+        results.append({'item_consumed': (True, self.owner),
+                        'animation': (
+                             Animations.FIREBLAST, source, self.radius)})
         return results

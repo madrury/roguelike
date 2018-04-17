@@ -18,7 +18,8 @@ from spawnable.items import ITEM_SCHEDULE, ITEM_GROUPS
 from spawnable.spawnable import spawn_entities
 from spawnable.items import (
     HealthPotion, MagicMissileScroll, FireblastScroll)
-from animations.animations import MagicMissileAnimation, HealthPotionAnimation
+from animations.animations import (
+    MagicMissileAnimation, HealthPotionAnimation, FireblastAnimation)
 
 from input_handlers import handle_keys
 from game_messages import Message
@@ -313,6 +314,9 @@ def main():
                 elif animation_type == Animations.HEALTH_POTION:
                     animation_player = HealthPotionAnimation(
                         map_console, game_map, player)
+                elif animation_type == Animations.FIREBLAST:
+                    animation_player = FireblastAnimation(
+                        map_console, game_map, player, animation[2])
                 game_state, previous_game_state = (
                     GameStates.ANIMATION_PLAYING, game_state)
 

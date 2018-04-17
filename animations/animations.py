@@ -2,9 +2,10 @@ import tdl
 from time import sleep
 import random
 
+from utils.utils import coordinates_within_circle
 from etc.config import SCREEN_WIDTH, SCREEN_HEIGHT, PANEL_CONFIG
 from etc.colors import COLORS
-from animations.colors import COLOR_PATHS, random_yellow
+from animations.colors import COLOR_PATHS, random_yellow, random_red
 
 
 class HealthPotionAnimation:
@@ -42,6 +43,7 @@ class MagicMissileAnimation:
 
     def next_frame(self):
         missile_location = self.path[self.current_frame]
+        # Clear the previous frame's missile.
         if self.current_frame >= 1:
             missile_prior_location = self.path[self.current_frame - 1]
             if self.game_map.fov[
@@ -49,8 +51,10 @@ class MagicMissileAnimation:
                 self.map_console.draw_char(
                     missile_prior_location[0], missile_prior_location[1], 
                     ' ', COLORS.get('light_ground'), bg=COLORS.get('light_ground'))
+        # If the missile has reached the target, the animation is done.
         if missile_location == self.target:
             return True
+        # Draw the missile in a random yellow color.
         color = random_yellow()
         if self.game_map.fov[missile_location[0], missile_location[1]]:
             self.map_console.draw_char(
@@ -58,3 +62,33 @@ class MagicMissileAnimation:
                 '*', color, color)
         self.current_frame += 1
         return False
+
+
+class FireblastAnimation:
+
+    def __init__(self, map_console, game_map, source, radius=4):
+        self.map_console = map_console
+        self.game_map = game_map
+        self.source = source
+        self.radius = radius
+        self.radius_iter = iter(range(radius + 1))
+
+    def next_frame(self):
+        try:
+            blast_radius = next(self.radius_iter)
+        # Clear the drawing of the blast, the animation has finished.
+        except StopIteration:
+            clear_coordinates = coordinates_within_circle(
+                (self.source.x, self.source.y), self.radius)
+            for x, y in clear_coordinates:
+                self.map_console.draw_char(x, y, ' ', 
+                    COLORS.get('light_ground'), bg=COLORS.get('light_ground'))
+            return True
+        # Draw a red circle centered at `source`.
+        blast_coordinates = coordinates_within_circle(
+            (self.source.x, self.source.y), blast_radius)
+        for x, y in blast_coordinates:
+            self.map_console.draw_char(x, y, '^', random_red(), random_red())
+        return False
+           
+        
