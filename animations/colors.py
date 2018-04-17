@@ -10,4 +10,5 @@ def random_yellow():
     return (rg, rg, int(random.uniform(0, 256)))
 
 def random_red():
-    return (255, 0, 0)
+    red = int(random.uniform(100, 255))
+    return (red, 0, 0)

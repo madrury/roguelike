@@ -124,7 +124,7 @@ def main():
         if game_state == GameStates.ANIMATION_PLAYING:
             # Now play the animatin
             animation_finished = animation_player.next_frame()
-            sleep(0.05)
+            sleep(0.50)
             if animation_finished:
                 game_state, previous_game_state = previous_game_state, game_state
 
