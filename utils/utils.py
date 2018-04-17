@@ -21,6 +21,6 @@ def coordinates_on_circle(center, radius):
 
 def coordinates_within_circle(center, radius):
     circle = set()
-    for r in range(0, radius + 1):
+    for r in range(0, radius + 2):
         circle.update(coordinates_on_circle(center, r))
     return circle
