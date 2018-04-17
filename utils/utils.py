@@ -9,14 +9,18 @@ def choose_from_list_of_tuples(list_of_tuples):
 
 def coordinates_on_circle(center, radius):
     circle = set()
-    circle.update((radius - i, i) for i in range(0, radius + 1))
-    circle.update((-radius + i, -i) for i in range(0, radius + 1))
-    circle.update((-radius + i, i) for i in range(0, radius + 1))
-    circle.update((radius - i, -i) for i in range(0, radius + 1))
+    circle.update((center[0] + radius - i, center[1] + i) 
+        for i in range(0, radius + 1))
+    circle.update((center[0] - radius + i, center[1] - i) 
+        for i in range(0, radius + 1))
+    circle.update((center[0] - radius + i, center[1] + i) 
+        for i in range(0, radius + 1))
+    circle.update((center[0] + radius - i, center[1] - i) 
+        for i in range(0, radius + 1))
     return circle
 
 def coordinates_within_circle(center, radius):
     circle = set()
-    for r in range(radius + 1):
-        circle.update(coordinates_on_circle(center, radius))
+    for r in range(0, radius + 1):
+        circle.update(coordinates_on_circle(center, r))
     return circle

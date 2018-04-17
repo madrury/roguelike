@@ -81,14 +81,17 @@ class FireblastAnimation:
             clear_coordinates = coordinates_within_circle(
                 (self.source.x, self.source.y), self.radius)
             for x, y in clear_coordinates:
-                self.map_console.draw_char(x, y, ' ', 
-                    COLORS.get('light_ground'), bg=COLORS.get('light_ground'))
+                if self.game_map.fov[x, y]:
+                    self.map_console.draw_char(
+                        x, y, ' ', 
+                        COLORS.get('light_ground'), 
+                        bg=COLORS.get('light_ground'))
             return True
         # Draw a red circle centered at `source`.
         blast_coordinates = coordinates_within_circle(
             (self.source.x, self.source.y), blast_radius)
         for x, y in blast_coordinates:
-            self.map_console.draw_char(x, y, '^', random_red(), random_red())
+            if self.game_map.fov[x, y]:
+                self.map_console.draw_char(
+                    x, y, '^', random_red(), random_red())
         return False
-           
-        
