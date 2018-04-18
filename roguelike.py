@@ -108,8 +108,8 @@ def main():
         #---------------------------------------------------------------------
         # Render any menus.
         #---------------------------------------------------------------------
-        if game_state in (GameStates.SHOW_INVETORY, GameStates.DROP_INVENTORY):
-            if game_state == GameStates.SHOW_INVETORY:
+        if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
+            if game_state == GameStates.SHOW_INVENTORY:
                 invetory_message = "Press the letter next to the item to use it.\n"
             elif game_state == GameStates.DROP_INVENTORY:
                 invetory_message = "Press the letter next to the item to drop it.\n"
@@ -139,7 +139,7 @@ def main():
         # Get key input from the player.
         #---------------------------------------------------------------------
         input_states = (
-            GameStates.PLAYER_TURN, GameStates.SHOW_INVETORY, GameStates.DROP_INVENTORY)
+            GameStates.PLAYER_TURN, GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY)
         for event in tdl.event.get():
             if event.type == 'KEYDOWN':
                 user_input = event
@@ -161,9 +161,9 @@ def main():
         # empty, after which we pass the turn.
         #----------------------------------------------------------------------
         move = action.get(ResultTypes.MOVE)
-        pickup = action.get('pickup')
-        drop = action.get('drop')
-        inventory_index = action.get('inventory_index')
+        pickup = action.get(ResultTypes.PICKUP)
+        drop = action.get(ResultTypes.DROP)
+        inventory_index = action.get(ResultTypes.INVENTORY_INDEX)
         player_turn_results = []
 
         #----------------------------------------------------------------------
@@ -214,12 +214,12 @@ def main():
         # Check which state we are in (using or dropping) and put an
         # instruction on the queue.
         #----------------------------------------------------------------------
-        elif (game_state in (GameStates.SHOW_INVETORY, GameStates.DROP_INVENTORY)
+        elif (game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY)
             and inventory_index is not None
             and inventory_index < len(player.inventory.items)
             and previous_game_state != GameStates.PLAYER_DEAD):
             entity = player.inventory.items[inventory_index]
-            if game_state == GameStates.SHOW_INVETORY:
+            if game_state == GameStates.SHOW_INVENTORY:
                 if entity.item.targeting == ItemTargeting.PLAYER:
                     player_turn_results.extend(
                         entity.item.use(player))
@@ -375,26 +375,26 @@ def main():
         #---------------------------------------------------------------------
         # Handle meta actions
         #---------------------------------------------------------------------
-        show_invetory = action.get('show_invetory')
+        show_invetory = action.get(ResultTypes.SHOW_INVENTORY)
         if game_state == GameStates.PLAYER_TURN and show_invetory:
             previous_game_state = game_state
-            game_state = GameStates.SHOW_INVETORY
+            game_state = GameStates.SHOW_INVENTORY
 
-        drop = action.get('drop_inventory')
+        drop = action.get(ResultTypes.DROP_INVENTORY)
         if game_state == GameStates.PLAYER_TURN and drop:
             previous_game_state = game_state
             game_state = GameStates.DROP_INVENTORY
 
-        exit = action.get('exit')
+        exit = action.get(ResultTypes.EXIT)
         if exit:
             if game_state in (
-                GameStates.SHOW_INVETORY, GameStates.DROP_INVENTORY):
+                GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
                 game_state = previous_game_state
             else:
                 # Hard exit the game.
                 return True
 
-        fullscreen = action.get('fullscreen')
+        fullscreen = action.get(ResultTypes.FULLSCREEN)
         if fullscreen:
             tdl.set_fullscreen(not tdl.get_fullscreen())
 

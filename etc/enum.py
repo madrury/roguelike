@@ -7,7 +7,7 @@ class GameStates(Enum):
     ENEMY_TURN = auto() 
     PLAYER_DEAD = auto()
     PLAYER_TURN = auto() 
-    SHOW_INVETORY = auto()
+    SHOW_INVENTORY = auto()
 
 
 class ResultTypes(Enum):
@@ -21,6 +21,13 @@ class ResultTypes(Enum):
     ITEM_DROPPED = auto()
     MESSAGE = auto()
     MOVE = auto()
+    PICKUP = auto()
+    DROP = auto()
+    INVENTORY_INDEX = auto()
+    SHOW_INVENTORY = auto()
+    DROP_INVENTORY = auto()
+    FULLSCREEN = auto()
+    EXIT = auto()
 
 
 class EntityTypes(Enum):
