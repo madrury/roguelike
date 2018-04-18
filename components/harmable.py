@@ -1,4 +1,5 @@
 from game_messages import Message
+from etc.enum import ResultTypes
 
 class Harmable:
 
@@ -11,5 +12,5 @@ class Harmable:
         results = []
         self.hp -= amount
         if self.hp <= 0:
-            results.append({'dead': self.owner})
+            results.append({ResultTypes.DEAD_ENTITY: self.owner})
         return results

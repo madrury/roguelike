@@ -1,6 +1,6 @@
 from game_messages import Message
 from etc.colors import COLORS
-from etc.enum import EntityTypes, ItemTargeting, Animations
+from etc.enum import EntityTypes, ItemTargeting, ResultTypes, Animations
 
 
 class HealthPotionComponent:
@@ -18,15 +18,16 @@ class HealthPotionComponent:
         if player.harmable.hp == player.harmable.max_hp:
             message = Message('You are already at full health.', 
                               COLORS.get('white'))
-            results.append({'item_consumed': (False, self.owner), 
-                            'message': message})
+            results.append({ResultTypes.ITEM_CONSUMED: (False, self.owner), 
+                            ResultTypes.MESSAGE: message})
         else:
             message = Message('You wounds start to heal.', 
                               COLORS.get('green'))
-            results.append({'item_consumed': (True, self.owner),
-                            'heal': (player, self.healing),
-                            'message': message,
-                            'animation': (Animations.HEALTH_POTION, player)})
+            results.append({ResultTypes.ITEM_CONSUMED: (True, self.owner),
+                            ResultTypes.HEAL: (player, self.healing),
+                            ResultTypes.MESSAGE: message,
+                            ResultTypes.ANIMATION: (
+                                Animations.HEALTH_POTION, player)})
         return results
 
 
@@ -50,17 +51,17 @@ class MagicMissileComponent:
             text = 'A shining magic missile pierces the {}'.format(
                 closest_monster.name)
             message = Message(text, COLORS.get('white'))
-            results.append({'item_consumed': (True, self.owner),
-                            'damage': (closest_monster, self.damage),
-                            'message': message,
-                            'animation': (
+            results.append({ResultTypes.ITEM_CONSUMED: (True, self.owner),
+                            ResultTypes.DAMAGE: (closest_monster, self.damage),
+                            ResultTypes.MESSAGE: message,
+                            ResultTypes.ANIMATION: (
                                 Animations.MAGIC_MISSILE, closest_monster)})
         else:
             message = Message(
                 "A shining magic missile streaks into the darkness.",
                 COLORS.get('white'))
-            results.append({'item_consumed': (True, self.owner),
-                            'message': message})
+            results.append({ResultTypes.ITEM_CONSUMED: (True, self.owner),
+                            ResultTypes.MESSAGE: message})
         return results
 
 
@@ -80,9 +81,9 @@ class FireblastComponent:
             text = "The {} is caught in the fireblast!".format(
                 monster.name)
             message = Message(text, COLORS.get('white'))
-            results.append({'damage': (monster, self.damage),
-                            'message': message})
-        results.append({'item_consumed': (True, self.owner),
-                        'animation': (
+            results.append({ResultTypes.DAMAGE: (monster, self.damage),
+                            ResultTypes.MESSAGE: message})
+        results.append({ResultTypes.ITEM_CONSUMED: (True, self.owner),
+                        ResultTypes.ANIMATION: (
                              Animations.FIREBLAST, source, self.radius)})
         return results

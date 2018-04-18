@@ -1,32 +1,51 @@
 from enum import Enum, auto
 
 class GameStates(Enum):
-    PLAYER_TURN = auto() 
+    ANIMATION_FINISHED = auto()
+    ANIMATION_PLAYING = auto()
+    DROP_INVENTORY = auto()
     ENEMY_TURN = auto() 
     PLAYER_DEAD = auto()
+    PLAYER_TURN = auto() 
     SHOW_INVETORY = auto()
-    DROP_INVENTORY = auto()
-    ANIMATION_PLAYING = auto()
-    ANIMATION_FINISHED = auto()
+
+
+class ResultTypes(Enum):
+    ANIMATION = auto()
+    DAMAGE = auto()
+    DEAD_ENTITY = auto()
+    DEATH_MESSAGE = auto()
+    HEAL = auto()
+    ITEM_ADDED = auto()
+    ITEM_CONSUMED = auto()
+    ITEM_DROPPED = auto()
+    MESSAGE = auto()
+    MOVE = auto()
 
 
 class EntityTypes(Enum):
-    PLAYER = auto()
-    MONSTER = auto()
-    ITEM = auto()
-    CORPSE = auto()
+    PLAYER = 1
+    MONSTER = 2
+    ITEM = 3
+    CORPSE = 4
 
 
-class ItemTargeting(Enum):
-    PLAYER = auto()
-    CLOSEST_MONSTER = auto()
-    WITHIN_RADIUS = auto()
+class Animations(Enum):
+    HEALTH_POTION = auto()
+    MAGIC_MISSILE = auto()
+    FIREBLAST = auto()
 
 
 class RenderOrder(Enum):
     CORPSE = auto()
     ITEM = auto()
     ACTOR = auto()
+
+
+class ItemTargeting(Enum):
+    PLAYER = auto()
+    CLOSEST_MONSTER = auto()
+    WITHIN_RADIUS = auto()
 
 
 class ItemGroups(Enum):
@@ -44,9 +63,3 @@ class MonsterGroups(Enum):
     SINGLE_TROLL = auto() 
     TWO_ORCS_AND_TROLL = auto()
     KRUTHIK_SQARM = auto()
-
-
-class Animations(Enum):
-    HEALTH_POTION = auto()
-    MAGIC_MISSILE = auto()
-    FIREBLAST = auto()

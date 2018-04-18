@@ -6,7 +6,8 @@ from etc.config import (
    SCREEN_WIDTH, SCREEN_HEIGHT, FLOOR_CONFIG, ROOM_CONFIG,
    MAP_CONFIG, PANEL_CONFIG, MESSAGE_CONFIG, FOV_CONFIG)
 from etc.enum import (
-    EntityTypes, GameStates, ItemTargeting, RenderOrder, Animations)
+    EntityTypes, GameStates, ItemTargeting, RenderOrder, Animations, 
+    ResultTypes)
 
 from components.attacker import Attacker
 from components.harmable import Harmable
@@ -159,7 +160,7 @@ def main():
         # on the queue are constantly popped and dealt with until the queue is
         # empty, after which we pass the turn.
         #----------------------------------------------------------------------
-        move = action.get('move')
+        move = action.get(ResultTypes.MOVE)
         pickup = action.get('pickup')
         drop = action.get('drop')
         inventory_index = action.get('inventory_index')
@@ -185,7 +186,7 @@ def main():
                     attack_results = player.attacker.attack(blocker)
                     player_turn_results.extend(attack_results)
                 else:
-                    player_turn_results.append({'move': (dx, dy)})
+                    player_turn_results.append({ResultTypes.MOVE: (dx, dy)})
                 game_state = GameStates.ENEMY_TURN
 
         #----------------------------------------------------------------------
@@ -203,7 +204,7 @@ def main():
                     break
             else:
                 player_turn_results.append({
-                    'message': Message("There is nothing to pick up!")})
+                    ResultTypes.MESSAGE: Message("There is nothing to pick up!")})
             game_state = GameStates.ENEMY_TURN
 
         #----------------------------------------------------------------------
@@ -246,16 +247,16 @@ def main():
         #----------------------------------------------------------------------
         while player_turn_results != []:
             result = player_turn_results.pop()
-            animation = result.get('animation')
-            damage = result.get('damage')
-            dead_entity = result.get('dead')
-            death_message = result.get('death_message')
-            heal = result.get('heal')
-            item_added = result.get('item_added')
-            item_consumed = result.get('item_consumed')
-            item_dropped = result.get('item_dropped')
-            message = result.get('message')
-            move = result.get('move')
+            animation = result.get(ResultTypes.ANIMATION)
+            damage = result.get(ResultTypes.DAMAGE)
+            dead_entity = result.get(ResultTypes.DEAD_ENTITY)
+            death_message = result.get(ResultTypes.DEATH_MESSAGE)
+            heal = result.get(ResultTypes.HEAL)
+            item_added = result.get(ResultTypes.ITEM_ADDED)
+            item_consumed = result.get(ResultTypes.ITEM_CONSUMED)
+            item_dropped = result.get(ResultTypes.ITEM_DROPPED)
+            message = result.get(ResultTypes.MESSAGE)
+            move = result.get(ResultTypes.MOVE)
             # Handle movement.
             if move:
                 player.move(*move)
@@ -321,7 +322,7 @@ def main():
                     GameStates.ANIMATION_PLAYING, game_state)
 
         #---------------------------------------------------------------------
-        # Handle enemy actions
+        # All enemies take thier turns.
         #---------------------------------------------------------------------
         enemy_turn_results = []
         if game_state == GameStates.ENEMY_TURN:
@@ -329,15 +330,18 @@ def main():
                 enemy_turn_results.extend(entity.ai.take_turn(
                     player, game_map))
             game_state = GameStates.PLAYER_TURN
-        # Process all result actions of enemy turns
+
+        #---------------------------------------------------------------------
+        # Process all result actions of enemy turns.
+        #---------------------------------------------------------------------
         while enemy_turn_results != []:
             result = enemy_turn_results.pop()
             move_towards = result.get('move_towards')
             move_random_adjacent = result.get('move_random_adjacent')
-            message = result.get('message')
-            damage = result.get('damage')
-            dead_entity = result.get('dead')
-            death_message = result.get('death_message')
+            message = result.get(ResultTypes.MESSAGE)
+            damage = result.get(ResultTypes.DAMAGE)
+            dead_entity = result.get(ResultTypes.DEAD_ENTITY)
+            death_message = result.get(ResultTypes.DEATH_MESSAGE)
             # Handle a move towards action.  Move towards a target.
             if move_towards:
                monster, target_x, target_y = move_towards

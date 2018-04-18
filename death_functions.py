@@ -1,10 +1,10 @@
-from etc.enum import EntityTypes, GameStates, RenderOrder
+from etc.enum import EntityTypes, GameStates, RenderOrder, ResultTypes
 from game_messages import Message
 
 def kill_player(player, colors):
     player.char = '%'
     player.color = colors.get('dark_red')
-    return [{'death_message': Message('You died!', colors['red'])}]
+    return [{ResultTypes.DEATH_MESSAGE: Message('You died!', colors['red'])}]
 
 def kill_monster(monster, colors):
     monster.blocks = False
@@ -12,7 +12,7 @@ def kill_monster(monster, colors):
     monster.harmable = None
     monster.ai = None
     message = 'The {} is dead!'.format(monster.name.capitalize())
-    return [{'death_message': Message(message, colors['orange'])}]
+    return [{ResultTypes.DEATH_MESSAGE: Message(message, colors['orange'])}]
 
 def make_corpse(monster, colors):
     monster.char = '#'
