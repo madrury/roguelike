@@ -81,7 +81,9 @@ class FireblastAnimation:
             clear_coordinates = coordinates_within_circle(
                 (self.source.x, self.source.y), self.radius)
             for x, y in clear_coordinates:
-                if self.game_map.fov[x, y] and self.game_map.walkable[x, y]:
+                if (self.game_map.within_bounds(x, y) and 
+                    self.game_map.fov[x, y] and 
+                    self.game_map.walkable[x, y]):
                     self.map_console.draw_char(
                         x, y, ' ', 
                         COLORS.get('light_ground'), 
@@ -91,7 +93,9 @@ class FireblastAnimation:
         blast_coordinates = coordinates_within_circle(
             (self.source.x, self.source.y), blast_radius)
         for x, y in blast_coordinates:
-            if self.game_map.fov[x, y] and self.game_map.walkable[x, y]:
+            if (self.game_map.within_bounds(x, y) and 
+                self.game_map.fov[x, y] and 
+                self.game_map.walkable[x, y]):
                 self.map_console.draw_char(
                     x, y, '^', random_red_or_yellow(), random_red_or_yellow())
         return False
