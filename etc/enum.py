@@ -14,6 +14,7 @@ class GameStates(Enum):
 
 class ResultTypes(Enum):
     ANIMATION = auto()
+    CURSOR_MODE = auto()
     DAMAGE = auto()
     DEAD_ENTITY = auto()
     DEATH_MESSAGE = auto()

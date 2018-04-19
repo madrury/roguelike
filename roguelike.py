@@ -22,6 +22,7 @@ from spawnable.items import (
 from animations.animations import (
     MagicMissileAnimation, HealthPotionAnimation, FireblastAnimation)
 
+from cursor import Cursor
 from input_handlers import handle_keys
 from messages import Message, MessageLog
 from entity import Entity, get_blocking_entity_at_location
@@ -105,6 +106,14 @@ def main():
                 light_walls=FOV_CONFIG["light_walls"])
 
         #---------------------------------------------------------------------
+        # Draw the selection cursor if in cursor input state.
+        #---------------------------------------------------------------------
+        if game_state == GameStates.CURSOR_INPUT:
+            cursor.draw()
+        if game_state == GameStates.CURSOR_SELECTED:
+            player_turn_results.extend(cursor.select())
+
+        #---------------------------------------------------------------------
         # Render and display the dungeon and its inhabitates.
         #---------------------------------------------------------------------
         render_all(map_console, entities, game_map, fov_recompute, COLORS)
@@ -132,12 +141,6 @@ def main():
             sleep(0.1)
             if animation_finished:
                 game_state, previous_game_state = previous_game_state, game_state
-
-        #---------------------------------------------------------------------
-        # Draw the selection cursor if in cursor input state.
-        #---------------------------------------------------------------------
-        if game_state == GameStates.CURSOR_INPUT:
-            cursor.draw()
 
         #---------------------------------------------------------------------
         # Blit the subconsoles to the main console and flush all rendering.
@@ -185,6 +188,7 @@ def main():
         move = action.get(ResultTypes.MOVE)
         pickup = action.get(ResultTypes.PICKUP)
         drop = action.get(ResultTypes.DROP)
+        cursor_select = action.get(ResultTypes.CURSOR_MODE)
         inventory_index = action.get(ResultTypes.INVENTORY_INDEX)
 
         #----------------------------------------------------------------------
@@ -254,6 +258,11 @@ def main():
                 player_turn_results.extend(player.inventory.drop(entity))
             game_state, previous_game_state = previous_game_state, game_state
 
+        if cursor_select:
+            print('Entering cursor mode.')
+            cursor = Cursor(player.x, player.y, map_console, callback=lambda x, y: [])
+            game_state, previous_game_state = GameStates.CURSOR_INPUT, game_state
+
         #----------------------------------------------------------------------
         # Process the results queue 
         #......................................................................
@@ -278,6 +287,8 @@ def main():
             item_dropped = result.get(ResultTypes.ITEM_DROPPED)
             message = result.get(ResultTypes.MESSAGE)
             move = result.get(ResultTypes.MOVE)
+
+
             # Handle movement.
             if move:
                 player.move(*move)
