@@ -1,5 +1,5 @@
 from etc.enum import EntityTypes, GameStates, RenderOrder, ResultTypes
-from game_messages import Message
+from messages import Message
 
 def kill_player(player, colors):
     player.char = '%'

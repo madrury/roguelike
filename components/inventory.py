@@ -1,4 +1,4 @@
-from game_messages import Message
+from messages import Message
 from etc.enum import ResultTypes
 
 class Inventory:

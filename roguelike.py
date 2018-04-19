@@ -23,9 +23,8 @@ from animations.animations import (
     MagicMissileAnimation, HealthPotionAnimation, FireblastAnimation)
 
 from input_handlers import handle_keys
-from game_messages import Message
+from messages import Message, MessageLog
 from entity import Entity, get_blocking_entity_at_location
-from game_messages import MessageLog
 from menus import invetory_menu
 from death_functions import kill_monster, kill_player, make_corpse
 from render_functions import (clear_all, render_all, render_health_bars, 

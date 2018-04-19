@@ -1,4 +1,4 @@
-from game_messages import Message
+from messages import Message
 from etc.colors import COLORS
 from etc.enum import EntityTypes, ItemTargeting, ResultTypes, Animations
 
