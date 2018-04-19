@@ -108,11 +108,8 @@ def main():
         # Render and display the dungeon and its inhabitates.
         #---------------------------------------------------------------------
         render_all(map_console, entities, game_map, fov_recompute, COLORS)
-        root_console.blit(map_console, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
         render_health_bars(panel_console, player, PANEL_CONFIG, COLORS)
         render_messages(panel_console, message_log)
-        root_console.blit(panel_console, 0, PANEL_CONFIG['y'],
-                          SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
 
         #---------------------------------------------------------------------
         # Render any menus.
@@ -125,8 +122,6 @@ def main():
             menu_console, menu_x, menu_y = invetory_menu(
                 invetory_message, player.inventory, 50,
                 SCREEN_WIDTH, SCREEN_HEIGHT)
-            root_console.blit(menu_console, menu_x, menu_y,
-                              SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
 
         #---------------------------------------------------------------------
         # Advance the frame of any animations.
@@ -144,8 +139,19 @@ def main():
         if game_state == GameStates.CURSOR_INPUT:
             cursor.draw()
 
-
+        #---------------------------------------------------------------------
+        # Blit the subconsoles to the main console and flush all rendering.
+        #---------------------------------------------------------------------
+        root_console.blit(map_console, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
+        root_console.blit(panel_console, 0, PANEL_CONFIG['y'],
+                          SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
+        if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
+            root_console.blit(menu_console, menu_x, menu_y,
+                              SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
         tdl.flush()
+
+        # Clear all the entities drawn to the consoles, else we will re-draw
+        # them in the same positions next game loop.
         clear_all(map_console, entities)
 
         # Unless the player moves, we do not need to recompute the fov.
