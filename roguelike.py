@@ -4,7 +4,7 @@ from time import sleep
 from etc.colors import COLORS
 from etc.config import (
    SCREEN_WIDTH, SCREEN_HEIGHT, FLOOR_CONFIG, ROOM_CONFIG,
-   MAP_CONFIG, PANEL_CONFIG, MESSAGE_CONFIG, FOV_CONFIG)
+   PANEL_CONFIG, MESSAGE_CONFIG, FOV_CONFIG)
 from etc.enum import (
     EntityTypes, GameStates, ItemTargeting, RenderOrder, Animations, 
     ResultTypes)
@@ -27,8 +27,8 @@ from messages import Message, MessageLog
 from entity import Entity, get_blocking_entity_at_location
 from menus import invetory_menu
 from death_functions import kill_monster, kill_player, make_corpse
-from render_functions import (clear_all, render_all, render_health_bars, 
-                              render_messages)
+from rendering import (
+    clear_all, render_all, render_health_bars, render_messages)
 
 
 def main():
@@ -105,11 +105,8 @@ def main():
         # Render and display the dungeon and its inhabitates.
         #---------------------------------------------------------------------
         render_all(map_console, entities, game_map, fov_recompute, COLORS)
-        root_console.blit(map_console, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
         render_health_bars(panel_console, player, PANEL_CONFIG, COLORS)
         render_messages(panel_console, message_log)
-        root_console.blit(panel_console, 0, PANEL_CONFIG['y'],
-                          SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
 
         #---------------------------------------------------------------------
         # Render any menus.
@@ -122,8 +119,6 @@ def main():
             menu_console, menu_x, menu_y = invetory_menu(
                 invetory_message, player.inventory, 50,
                 SCREEN_WIDTH, SCREEN_HEIGHT)
-            root_console.blit(menu_console, menu_x, menu_y,
-                              SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
 
         #---------------------------------------------------------------------
         # Advance the frame of any animations.
@@ -135,7 +130,19 @@ def main():
             if animation_finished:
                 game_state, previous_game_state = previous_game_state, game_state
 
+        #---------------------------------------------------------------------
+        # Blit the subconsoles to the main console and flush all rendering.
+        #---------------------------------------------------------------------
+        root_console.blit(map_console, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
+        root_console.blit(panel_console, 0, PANEL_CONFIG['y'],
+                          SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
+        if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
+            root_console.blit(menu_console, menu_x, menu_y,
+                              SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
         tdl.flush()
+
+        # Clear all the entities drawn to the consoles, else we will re-draw
+        # them in the same positions next game loop.
         clear_all(map_console, entities)
 
         # Unless the player moves, we do not need to recompute the fov.

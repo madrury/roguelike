@@ -4,20 +4,15 @@ SCREEN_HEIGHT = 50
 FLOOR_CONFIG = {
     'width': 80,
     'height': 43,
-    'max_rooms': 50,
+    'max_rooms': 15,
 }
 
 ROOM_CONFIG = {
-    'width': 10,
-    'height': 10,
-    'max_rectangles': 5,
-    'max_rectangle_width': 3,
-    'max_rectangle_height': 3,
-}
-
-MAP_CONFIG = {
-    'max_monsters_per_room': 3,
-    'max_items_per_room': 2
+    'width': 15,
+    'height': 15,
+    'max_rectangles': 3,
+    'max_rectangle_width': 8,
+    'max_rectangle_height': 8,
 }
 
 PANEL_CONFIG = {
