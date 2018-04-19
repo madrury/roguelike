@@ -164,7 +164,8 @@ def main():
         # Get key input from the player.
         #---------------------------------------------------------------------
         input_states = (
-            GameStates.PLAYER_TURN, GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY)
+            GameStates.PLAYER_TURN, GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY,
+            GameStates.CURSOR_INPUT)
         for event in tdl.event.get():
             if event.type == 'KEYDOWN':
                 user_input = event
@@ -258,6 +259,15 @@ def main():
                 player_turn_results.extend(player.inventory.drop(entity))
             game_state, previous_game_state = previous_game_state, game_state
 
+        #----------------------------------------------------------------------
+        # Handle cursor movement.
+        #----------------------------------------------------------------------
+        if move and game_state == GameStates.CURSOR_INPUT:
+            cursor.move(*move)
+
+        #----------------------------------------------------------------------
+        # Enter cursor mode.
+        #----------------------------------------------------------------------
         if cursor_select:
             print('Entering cursor mode.')
             cursor = Cursor(player.x, player.y, map_console, callback=lambda x, y: [])
@@ -287,7 +297,6 @@ def main():
             item_dropped = result.get(ResultTypes.ITEM_DROPPED)
             message = result.get(ResultTypes.MESSAGE)
             move = result.get(ResultTypes.MOVE)
-
 
             # Handle movement.
             if move:
@@ -398,7 +407,7 @@ def main():
                     kill_monster(dead_entity, COLORS))
 
         #---------------------------------------------------------------------
-        # Handle meta actions
+        # Handle meta actions,
         #---------------------------------------------------------------------
         show_invetory = action.get(ResultTypes.SHOW_INVENTORY)
         if game_state == GameStates.PLAYER_TURN and show_invetory:

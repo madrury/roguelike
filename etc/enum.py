@@ -29,7 +29,6 @@ class ResultTypes(Enum):
     ITEM_DROPPED = auto()
     MESSAGE = auto()
     MOVE = auto()
-    MOVE_CURSOR = auto()
     PICKUP = auto()
     RESULT_CURSOR = auto()
     SHOW_INVENTORY = auto()

@@ -27,6 +27,8 @@ def handle_keys(user_input, game_state):
         return handle_player_dead_keys(user_input)
     elif game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
         return handle_inventory_keys(user_input)
+    elif game_state == GameStates.CURSOR_INPUT:
+        return handle_cursor_keys(user_input)
     else:
         return {}
 
@@ -77,6 +79,28 @@ def handle_inventory_keys(user_input):
     index = ord(user_input.char) - ord('a')
     if index >= 0:
         return {ResultTypes.INVENTORY_INDEX: index}
+    return handle_generic_keys(user_input)
+
+def handle_cursor_keys(user_input):
+    key_char = user_input.char
+    if user_input.key == 'UP' or key_char == 'k':
+        return {ResultTypes.MOVE: (0, -1)}
+    elif user_input.key == 'DOWN' or key_char == 'j':
+        return {ResultTypes.MOVE: (0, 1)}
+    elif user_input.key == 'LEFT' or key_char == 'h':
+        return {ResultTypes.MOVE: (-1, 0)}
+    elif user_input.key == 'RIGHT' or key_char == 'l':
+        return {ResultTypes.MOVE: (1, 0)}
+    elif key_char == 'y':
+        return {ResultTypes.MOVE: (-1, -1)}
+    elif key_char == 'u':
+        return {ResultTypes.MOVE: (1, -1)}
+    elif key_char == 'b':
+        return {ResultTypes.MOVE: (-1, 1)}
+    elif key_char == 'n':
+        return {ResultTypes.MOVE: (1, 1)}
+    elif key_char == 'z':
+        return {ResultTypes.MOVE: (0, 0)}
     return handle_generic_keys(user_input)
 
 def handle_generic_keys(user_input):
