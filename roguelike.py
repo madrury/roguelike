@@ -270,7 +270,8 @@ def main():
         #----------------------------------------------------------------------
         if cursor_select:
             print('Entering cursor mode.')
-            cursor = Cursor(player.x, player.y, map_console, callback=lambda x, y: [])
+            cursor = Cursor(
+                player.x, player.y, map_console, game_map, callback=lambda x, y: [])
             game_state, previous_game_state = GameStates.CURSOR_INPUT, game_state
 
         #----------------------------------------------------------------------
