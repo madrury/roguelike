@@ -4,7 +4,7 @@ from time import sleep
 from etc.colors import COLORS
 from etc.config import (
    SCREEN_WIDTH, SCREEN_HEIGHT, FLOOR_CONFIG, ROOM_CONFIG,
-   MAP_CONFIG, PANEL_CONFIG, MESSAGE_CONFIG, FOV_CONFIG)
+   PANEL_CONFIG, MESSAGE_CONFIG, FOV_CONFIG)
 from etc.enum import (
     EntityTypes, GameStates, ItemTargeting, RenderOrder, Animations, 
     ResultTypes)
@@ -27,8 +27,8 @@ from messages import Message, MessageLog
 from entity import Entity, get_blocking_entity_at_location
 from menus import invetory_menu
 from death_functions import kill_monster, kill_player, make_corpse
-from render_functions import (clear_all, render_all, render_health_bars, 
-                              render_messages)
+from rendering import (
+    clear_all, render_all, render_health_bars, render_messages)
 
 
 def main():
