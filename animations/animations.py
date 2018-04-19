@@ -55,11 +55,10 @@ class MagicMissileAnimation:
         if missile_location == self.target:
             return True
         # Draw the missile in a random yellow color.
-        color = random_yellow()
         if self.game_map.fov[missile_location[0], missile_location[1]]:
             self.map_console.draw_char(
                 missile_location[0], missile_location[1], 
-                '*', color, color)
+                '*', random_yellow(), random_yellow())
         self.current_frame += 1
         return False
 

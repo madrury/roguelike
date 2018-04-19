@@ -68,6 +68,10 @@ def main():
     spawn_entities(MONSTER_SCHEDULE, MONSTER_GROUPS, floor, entities)
     spawn_entities(ITEM_SCHEDULE, ITEM_GROUPS, floor, entities)
     
+
+    #-------------------------------------------------------------------------
+    # Game State Varaibles
+    #-------------------------------------------------------------------------
     # Initial values for game states
     game_state = GameStates.PLAYER_TURN
     previous_game_state = game_state
@@ -79,6 +83,9 @@ def main():
     # A list of recently dead enemies.  We need this to defer drawing thier
     # corpses until *after* any animations have finished.
     dead_entities = []
+    # Stacks for holding the results of player and enemy turns.
+    player_turn_results = []
+    enemy_turn_results = []
 
     #-------------------------------------------------------------------------
     # Main Game Loop.
@@ -164,7 +171,6 @@ def main():
         pickup = action.get(ResultTypes.PICKUP)
         drop = action.get(ResultTypes.DROP)
         inventory_index = action.get(ResultTypes.INVENTORY_INDEX)
-        player_turn_results = []
 
         #----------------------------------------------------------------------
         # Player Move Action
@@ -324,7 +330,6 @@ def main():
         #---------------------------------------------------------------------
         # All enemies take thier turns.
         #---------------------------------------------------------------------
-        enemy_turn_results = []
         if game_state == GameStates.ENEMY_TURN:
             for entity in (x for x in entities if x.ai):
                 enemy_turn_results.extend(entity.ai.take_turn(

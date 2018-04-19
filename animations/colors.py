@@ -7,7 +7,7 @@ COLOR_PATHS = {
 
 def random_yellow():
     rg = int(random.uniform(220, 226))
-    return (rg, rg, int(random.uniform(0, 256)))
+    return (rg, rg, int(random.uniform(150, 200)))
 
 def random_red():
     red = int(random.uniform(100, 255))
