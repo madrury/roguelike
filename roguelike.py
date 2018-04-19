@@ -79,12 +79,15 @@ def main():
     fov_recompute = True
     # Data needed to play an animation.
     animation_player = None
+    # A cursor object for allowing the user to select a space on the map.
+    cursor = None
     # A list of recently dead enemies.  We need this to defer drawing thier
     # corpses until *after* any animations have finished.
     dead_entities = []
     # Stacks for holding the results of player and enemy turns.
     player_turn_results = []
     enemy_turn_results = []
+
 
     #-------------------------------------------------------------------------
     # Main Game Loop.
@@ -134,6 +137,13 @@ def main():
             sleep(0.1)
             if animation_finished:
                 game_state, previous_game_state = previous_game_state, game_state
+
+        #---------------------------------------------------------------------
+        # Draw the selection cursor if in cursor input state.
+        #---------------------------------------------------------------------
+        if game_state == GameStates.CURSOR_INPUT:
+            cursor.draw()
+
 
         tdl.flush()
         clear_all(map_console, entities)
