@@ -299,11 +299,11 @@ def main():
                 player_turn_results.extend(
                     kill_monster(dead_entity, COLORS))
                 dead_entities.append(dead_entity)
-            # Handle a death message.  Death messages are special in that
-            # they immediately break out of the game loop.
+            # Handle a player death message.  Death messages are special in
+            # that they immediately break out of the game loop.
             if death_message:
                 message_log.add_message(death_message)
-                #break
+                break
             # Play an animation.
             if animation:
                 animation_type = animation[0]
@@ -341,7 +341,6 @@ def main():
             message = result.get(ResultTypes.MESSAGE)
             damage = result.get(ResultTypes.DAMAGE)
             dead_entity = result.get(ResultTypes.DEAD_ENTITY)
-            death_message = result.get(ResultTypes.DEATH_MESSAGE)
             # Handle a move towards action.  Move towards a target.
             if move_towards:
                monster, target_x, target_y = move_towards
@@ -366,11 +365,6 @@ def main():
             elif dead_entity:
                 enemy_turn_results.extend(
                     kill_monster(dead_entity, COLORS))
-            # Handle a death message.  Death messages are special in that
-            # they immediately break out of the game loop.
-            if death_message:
-                message_log.add_message(death_message)
-                break
 
         #---------------------------------------------------------------------
         # Handle meta actions

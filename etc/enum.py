@@ -44,9 +44,9 @@ class Animations(Enum):
 
 
 class RenderOrder(Enum):
-    CORPSE = auto()
-    ITEM = auto()
-    ACTOR = auto()
+    CORPSE = 1
+    ITEM = 2
+    ACTOR = 3
 
 
 class ItemTargeting(Enum):

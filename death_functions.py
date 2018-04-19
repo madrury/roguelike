@@ -12,7 +12,7 @@ def kill_monster(monster, colors):
     monster.harmable = None
     monster.ai = None
     message = 'The {} is dead!'.format(monster.name.capitalize())
-    return [{ResultTypes.DEATH_MESSAGE: Message(message, colors['orange'])}]
+    return [{ResultTypes.MESSAGE: Message(message, colors['orange'])}]
 
 def make_corpse(monster, colors):
     monster.char = '#'
