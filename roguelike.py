@@ -110,8 +110,6 @@ def main():
         #---------------------------------------------------------------------
         if game_state == GameStates.CURSOR_INPUT:
             cursor.draw()
-        if game_state == GameStates.CURSOR_SELECTED:
-            player_turn_results.extend(cursor.select())
 
         #---------------------------------------------------------------------
         # Render and display the dungeon and its inhabitates.
