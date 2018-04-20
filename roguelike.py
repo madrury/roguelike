@@ -184,7 +184,6 @@ def main():
         # on the queue are constantly popped and dealt with until the queue is
         # empty, after which we pass the turn.
         #----------------------------------------------------------------------
-        cursor_mode = action.get(ResultTypes.CURSOR_MODE)
         cursor_select = action.get(ResultTypes.CURSOR_SELECT)
         drop = action.get(ResultTypes.DROP)
         inventory_index = action.get(ResultTypes.INVENTORY_INDEX)

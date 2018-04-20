@@ -62,8 +62,6 @@ def handle_player_turn_keys(user_input):
         return {ResultTypes.SHOW_INVENTORY: True}
     if key_char == 'd':
         return {ResultTypes.DROP_INVENTORY: True}
-    if key_char == 'c':
-        return {ResultTypes.CURSOR_MODE: True}
     return handle_generic_keys(user_input)
 
 def handle_player_dead_keys(user_input):
