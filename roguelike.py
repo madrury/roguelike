@@ -189,7 +189,8 @@ def main():
         move = action.get(ResultTypes.MOVE)
         pickup = action.get(ResultTypes.PICKUP)
         drop = action.get(ResultTypes.DROP)
-        cursor_select = action.get(ResultTypes.CURSOR_MODE)
+        cursor_select = action.get(ResultTypes.CURSOR_SELECT)
+        cursor_mode = action.get(ResultTypes.CURSOR_MODE)
         inventory_index = action.get(ResultTypes.INVENTORY_INDEX)
 
         #----------------------------------------------------------------------
@@ -264,14 +265,19 @@ def main():
         #----------------------------------------------------------------------
         if move and game_state == GameStates.CURSOR_INPUT:
             cursor.move(*move)
+        if cursor_select and game_state == GameStates.CURSOR_INPUT:
+            player_turn_results.extend(cursor.select())
+            game_state, previous_game_state = previous_game_state, game_state
+            cursor = None
 
         #----------------------------------------------------------------------
         # Enter cursor mode.
         #----------------------------------------------------------------------
-        if cursor_select:
+        if cursor_mode:
             print('Entering cursor mode.')
             cursor = Cursor(
-                player.x, player.y, map_console, game_map, callback=lambda x, y: [])
+                player.x, player.y, map_console, game_map, 
+                callback=lambda x, y: [{ResultTypes.MOVE: (1, 1)}])
             game_state, previous_game_state = GameStates.CURSOR_INPUT, game_state
 
         #----------------------------------------------------------------------

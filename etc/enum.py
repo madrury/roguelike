@@ -30,7 +30,7 @@ class ResultTypes(Enum):
     MESSAGE = auto()
     MOVE = auto()
     PICKUP = auto()
-    RESULT_CURSOR = auto()
+    CURSOR_SELECT = auto()
     SHOW_INVENTORY = auto()
 
 
