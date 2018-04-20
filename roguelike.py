@@ -18,7 +18,7 @@ from spawnable.monsters import MONSTER_SCHEDULE, MONSTER_GROUPS
 from spawnable.items import ITEM_SCHEDULE, ITEM_GROUPS
 from spawnable.spawnable import spawn_entities
 from spawnable.items import (
-    HealthPotion, MagicMissileScroll, FireblastScroll)
+    HealthPotion, MagicMissileScroll, FireblastScroll, ThrowingKnife)
 from animations.animations import (
     MagicMissileAnimation, HealthPotionAnimation, FireblastAnimation)
 
@@ -56,7 +56,7 @@ def main():
     entities = [player]
 
     # Setup Initial Inventory, for testing.
-    player.inventory.extend([HealthPotion.make(0, 0) for _ in range(5)])
+    player.inventory.extend([ThrowingKnife.make(0, 0) for _ in range(5)])
     player.inventory.extend([MagicMissileScroll.make(0, 0) for _ in range(5)])
     player.inventory.extend([FireblastScroll.make(0, 0) for _ in range(5)])
  
@@ -186,12 +186,12 @@ def main():
         # on the queue are constantly popped and dealt with until the queue is
         # empty, after which we pass the turn.
         #----------------------------------------------------------------------
+        cursor_mode = action.get(ResultTypes.CURSOR_MODE)
+        cursor_select = action.get(ResultTypes.CURSOR_SELECT)
+        drop = action.get(ResultTypes.DROP)
+        inventory_index = action.get(ResultTypes.INVENTORY_INDEX)
         move = action.get(ResultTypes.MOVE)
         pickup = action.get(ResultTypes.PICKUP)
-        drop = action.get(ResultTypes.DROP)
-        cursor_select = action.get(ResultTypes.CURSOR_SELECT)
-        cursor_mode = action.get(ResultTypes.CURSOR_MODE)
-        inventory_index = action.get(ResultTypes.INVENTORY_INDEX)
 
         #----------------------------------------------------------------------
         # Player Move Action
@@ -256,12 +256,18 @@ def main():
                 if entity.item.targeting == ItemTargeting.WITHIN_RADIUS:
                     player_turn_results.extend(
                         entity.item.use(player, entities))
+                if entity.item.targeting == ItemTargeting.CURSOR_SELECT:
+                    player_turn_results.extend(
+                        entity.item.use(player, entities))
             elif game_state == GameStates.DROP_INVENTORY:
                 player_turn_results.extend(player.inventory.drop(entity))
             game_state, previous_game_state = previous_game_state, game_state
 
         #----------------------------------------------------------------------
         # Handle cursor movement.
+        #......................................................................
+        # The player is currently in cursor select mode, where they have free
+        # control of a cursor to select and square within their visible range.
         #----------------------------------------------------------------------
         if move and game_state == GameStates.CURSOR_INPUT:
             cursor.move(*move)
@@ -270,15 +276,6 @@ def main():
             game_state, previous_game_state = previous_game_state, game_state
             cursor = None
 
-        #----------------------------------------------------------------------
-        # Enter cursor mode.
-        #----------------------------------------------------------------------
-        if cursor_mode:
-            print('Entering cursor mode.')
-            cursor = Cursor(
-                player.x, player.y, map_console, game_map, 
-                callback=lambda x, y: [{ResultTypes.MOVE: (1, 1)}])
-            game_state, previous_game_state = GameStates.CURSOR_INPUT, game_state
 
         #----------------------------------------------------------------------
         # Process the results queue 
@@ -294,7 +291,9 @@ def main():
         #----------------------------------------------------------------------
         while player_turn_results != []:
             result = player_turn_results.pop()
+
             animation = result.get(ResultTypes.ANIMATION)
+            cursor_mode = result.get(ResultTypes.CURSOR_MODE)
             damage = result.get(ResultTypes.DAMAGE)
             dead_entity = result.get(ResultTypes.DEAD_ENTITY)
             death_message = result.get(ResultTypes.DEATH_MESSAGE)
@@ -305,21 +304,22 @@ def main():
             message = result.get(ResultTypes.MESSAGE)
             move = result.get(ResultTypes.MOVE)
 
-            # Handle movement.
+            # Move the player.
             if move:
                 player.move(*move)
                 fov_recompute = True
-            # Handle Messages
+            # Add to the message log.
             if message:
                 message_log.add_message(message)
-            if item_added:
-                player.inventory.add(item_added)
-                entities.remove(item_added)
             # Handle damage dealt.
             if damage:
                 target, amount = damage
                 damage_result = target.harmable.take_damage(amount)
                 player_turn_results.extend(damage_result)
+            # Add an item to the inventory.
+            if item_added:
+                player.inventory.add(item_added)
+                entities.remove(item_added)
             # Remove consumed items from inventory
             if item_consumed:
                 consumed, item = item_consumed
@@ -337,6 +337,7 @@ def main():
             # Heal an entity
             if heal:
                 target, amount = heal
+                # TODO: This calculation should not go here.
                 target.harmable.hp += min(
                     amount, target.harmable.max_hp - target.harmable.hp)
             # Handle death
@@ -352,6 +353,14 @@ def main():
             if death_message:
                 message_log.add_message(death_message)
                 break
+            # Enter cursor select mode.
+            if cursor_mode:
+                x, y, callback = cursor_mode
+                cursor = Cursor(
+                    player.x, player.y, map_console, game_map, 
+                    callback=callback)
+                game_state, previous_game_state = (
+                    GameStates.CURSOR_INPUT, game_state)
             # Play an animation.
             if animation:
                 animation_type = animation[0]
@@ -435,10 +444,12 @@ def main():
                 # Hard exit the game.
                 return True
 
+        #---------------------------------------------------------------------
+        # Toggle fullscreen mode.
+        #---------------------------------------------------------------------
         fullscreen = action.get(ResultTypes.FULLSCREEN)
         if fullscreen:
             tdl.set_fullscreen(not tdl.get_fullscreen())
-
 
         #---------------------------------------------------------------------
         # Once an animation is finished that results in a dead monster, draw it

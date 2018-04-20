@@ -5,7 +5,7 @@ from etc.colors import COLORS
 from etc.enum import EntityTypes, RenderOrder, ItemGroups
 from components.item import (
     HealthPotionComponent, MagicMissileComponent,
-    FireblastComponent)
+    FireblastComponent, ThrowingKnifeComponent)
 
 
 class HealthPotion(Spawnable):
@@ -36,6 +36,16 @@ class FireblastScroll(Spawnable):
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
                       item=FireblastComponent())
+
+
+class ThrowingKnife(Spawnable):
+
+    @staticmethod
+    def make(x, y):
+        return Entity(x, y, chr(24), COLORS['white'], 'Throwing Knife',
+                      entity_type=EntityTypes.ITEM,
+                      render_order=RenderOrder.ITEM,
+                      item=ThrowingKnifeComponent())
 
 
 ITEM_GROUPS = {

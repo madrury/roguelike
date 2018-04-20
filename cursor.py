@@ -23,7 +23,7 @@ class Cursor:
         print('Position selected: ', self.x, self.y)
         self.map_console.draw_char(
             self.x, self.y, ' ', fg=None, bg=COLORS['light_ground'])
-        return self.callback(self.x, self.y)
+        return self.callback.execute(self.x, self.y)
 
     def draw(self):
         if self.previous_x and self.previous_y:

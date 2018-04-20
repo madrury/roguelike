@@ -1,4 +1,5 @@
 from messages import Message
+from entity import get_blocking_entity_at_location
 from etc.colors import COLORS
 from etc.enum import EntityTypes, ItemTargeting, ResultTypes, Animations
 
@@ -86,4 +87,44 @@ class FireblastComponent:
         results.append({ResultTypes.ITEM_CONSUMED: (True, self.owner),
                         ResultTypes.ANIMATION: (
                              Animations.FIREBLAST, source, self.radius)})
+        return results
+
+
+class ThrowingKnifeComponent:
+    
+    def __init__(self, damage=10):
+        self.name = "throwing knife"
+        self.targeting = ItemTargeting.CURSOR_SELECT
+        self.damage = damage
+
+    def use(self, source, entities):
+        callback = ThrowingKnifeCallback(self, entities)
+        return [
+            {ResultTypes.CURSOR_MODE: (source.x, source.y, callback)}]
+
+
+class ThrowingKnifeCallback:
+    
+    def __init__(self, owner, entities):
+        self.owner = owner
+        self.entities = entities
+
+    def execute(self, x, y):
+        results = []
+        monster = get_blocking_entity_at_location(self.entities, x, y)
+        if monster:
+            text = "The throwing knife pierces the {}'s flesh.".format(
+                monster.name)
+            results.append({
+                ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
+                ResultTypes.DAMAGE: (monster, self.owner.damage),
+                ResultTypes.ITEM_CONSUMED: (True, self.owner.owner)
+            })
+        else:
+            # Todo: Have the knife drop on the ground.
+            text = "The throwing knife clatters to the ground"
+            results.append({
+                ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
+                ResultTypes.ITEM_CONSUMED: (True, self.owner.owner)
+            })
         return results

@@ -15,6 +15,7 @@ class GameStates(Enum):
 class ResultTypes(Enum):
     ANIMATION = auto()
     CURSOR_MODE = auto()
+    CURSOR_SELECT = auto()
     DAMAGE = auto()
     DEAD_ENTITY = auto()
     DEATH_MESSAGE = auto()
@@ -30,7 +31,6 @@ class ResultTypes(Enum):
     MESSAGE = auto()
     MOVE = auto()
     PICKUP = auto()
-    CURSOR_SELECT = auto()
     SHOW_INVENTORY = auto()
 
 
@@ -57,6 +57,7 @@ class ItemTargeting(Enum):
     PLAYER = auto()
     CLOSEST_MONSTER = auto()
     WITHIN_RADIUS = auto()
+    CURSOR_SELECT = auto()
 
 
 class ItemGroups(Enum):
