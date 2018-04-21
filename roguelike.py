@@ -185,7 +185,6 @@ def main():
         # empty, after which we pass the turn.
         #----------------------------------------------------------------------
         cursor_select = action.get(ResultTypes.CURSOR_SELECT)
-        drop = action.get(ResultTypes.DROP)
         inventory_index = action.get(ResultTypes.INVENTORY_INDEX)
         move = action.get(ResultTypes.MOVE)
         pickup = action.get(ResultTypes.PICKUP)
