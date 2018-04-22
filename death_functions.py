@@ -15,7 +15,6 @@ def kill_monster(monster, colors):
     return [{ResultTypes.MESSAGE: Message(message, colors['orange'])}]
 
 def make_corpse(monster, colors):
-    print("Drawing ", monster.name, " as a corpse.")
     monster.char = '#'
     monster.color = colors.get('dark_red')
     monster.entity_type = EntityTypes.CORPSE

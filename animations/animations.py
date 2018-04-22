@@ -40,28 +40,11 @@ class MagicMissileAnimation:
         self.target = target
         self.path = game_map.compute_path(
             source[0], source[1], target[0], target[1])
+        self.char = '*'
         self.current_frame = 0
 
     def next_frame(self):
-        missile_location = self.path[self.current_frame]
-        # Clear the previous frame's missile.
-        if self.current_frame >= 1:
-            missile_prior_location = self.path[self.current_frame - 1]
-            if self.game_map.fov[
-                missile_prior_location[0], missile_prior_location[1]]:
-                self.map_console.draw_char(
-                    missile_prior_location[0], missile_prior_location[1], 
-                    ' ', COLORS.get('light_ground'), bg=COLORS.get('light_ground'))
-        # If the missile has reached the target, the animation is done.
-        if missile_location == self.target:
-            return True
-        # Draw the missile in a random yellow color.
-        if self.game_map.fov[missile_location[0], missile_location[1]]:
-            self.map_console.draw_char(
-                missile_location[0], missile_location[1], 
-                '*', random_yellow(), random_yellow())
-        self.current_frame += 1
-        return False
+        return draw_missile(self, random_yellow(), random_yellow())
 
 
 class FireblastAnimation:
