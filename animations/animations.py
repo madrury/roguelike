@@ -5,6 +5,7 @@ import random
 from utils.utils import coordinates_within_circle
 from etc.config import SCREEN_WIDTH, SCREEN_HEIGHT, PANEL_CONFIG
 from etc.colors import COLORS
+from etc.chars import CHARS
 from animations.colors import COLOR_PATHS, random_yellow, random_red_or_yellow
 
 
@@ -98,7 +99,17 @@ class ThrowingKnifeAnimation:
         self.current_frame = 0
 
     def _get_char(self):
-        return chr(24)
+        dx, dy = (self.path[1][0] - self.path[0][0],
+                  self.path[1][1] - self.path[0][1])
+        if (dx, dy) in ((-1, 1), (0, 1), (1, 1)):
+            return CHARS['down_arrow']
+        elif (dx, dy) in ((-1, -1), (0, -1), (1, -1)):
+            return CHARS['up_arrow']
+        elif (dx, dy) == (1, 0):
+            return CHARS['left_arrow']
+        else:
+            return CHARS['right_arrow']
+        raise ValueError('Path does not move away from starting position.')
 
     def next_frame(self):
         return draw_missile(self, COLORS['white'], None)
