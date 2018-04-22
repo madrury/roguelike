@@ -118,7 +118,9 @@ class ThrowingKnifeCallback:
             results.append({
                 ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
                 ResultTypes.DAMAGE: (monster, self.owner.damage),
-                ResultTypes.ITEM_CONSUMED: (True, self.owner.owner)
+                ResultTypes.ITEM_CONSUMED: (True, self.owner.owner),
+                ResultTypes.ANIMATION: (
+                    Animations.THROWING_KNIFE, monster)
             })
         else:
             # Todo: Have the knife drop on the ground.

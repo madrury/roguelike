@@ -20,7 +20,8 @@ from spawnable.spawnable import spawn_entities
 from spawnable.items import (
     HealthPotion, MagicMissileScroll, FireblastScroll, ThrowingKnife)
 from animations.animations import (
-    MagicMissileAnimation, HealthPotionAnimation, FireblastAnimation)
+    MagicMissileAnimation, HealthPotionAnimation, FireblastAnimation,
+    ThrowingKnifeAnimation)
 
 from cursor import Cursor
 from input_handlers import handle_keys
@@ -365,6 +366,11 @@ def main():
                         map_console, game_map, 
                         (player.x, player.y), 
                         (animation[1].x, animation[1].y))
+                elif animation_type == Animations.THROWING_KNIFE:
+                    animation_player = ThrowingKnifeAnimation(
+                        map_console, game_map, 
+                        (player.x, player.y), 
+                        (animation[1].x, animation[1].y))
                 elif animation_type == Animations.HEALTH_POTION:
                     animation_player = HealthPotionAnimation(
                         map_console, game_map, player)
@@ -451,7 +457,7 @@ def main():
         # Once an animation is finished that results in a dead monster, draw it
         # as a corpse.
         #---------------------------------------------------------------------
-        if not game_state == GameStates.ANIMATION_PLAYING:
+        if game_state != GameStates.ANIMATION_PLAYING:
             while dead_entities:
                 dead_entity = dead_entities.pop()
                 make_corpse(dead_entity, COLORS)
