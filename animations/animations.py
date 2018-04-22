@@ -5,11 +5,13 @@ import random
 from utils.utils import coordinates_within_circle
 from etc.config import SCREEN_WIDTH, SCREEN_HEIGHT, PANEL_CONFIG
 from etc.colors import COLORS
+from etc.chars import CHARS
 from animations.colors import COLOR_PATHS, random_yellow, random_red_or_yellow
 
 
 class HealthPotionAnimation:
 
+    # TODO: For consistency, target should be a position not an entity.
     def __init__(self, map_console, game_map, target):
         self.map_console = map_console
         self.game_map = game_map
@@ -39,32 +41,16 @@ class MagicMissileAnimation:
         self.target = target
         self.path = game_map.compute_path(
             source[0], source[1], target[0], target[1])
+        self.char = '*'
         self.current_frame = 0
 
     def next_frame(self):
-        missile_location = self.path[self.current_frame]
-        # Clear the previous frame's missile.
-        if self.current_frame >= 1:
-            missile_prior_location = self.path[self.current_frame - 1]
-            if self.game_map.fov[
-                missile_prior_location[0], missile_prior_location[1]]:
-                self.map_console.draw_char(
-                    missile_prior_location[0], missile_prior_location[1], 
-                    ' ', COLORS.get('light_ground'), bg=COLORS.get('light_ground'))
-        # If the missile has reached the target, the animation is done.
-        if missile_location == self.target:
-            return True
-        # Draw the missile in a random yellow color.
-        if self.game_map.fov[missile_location[0], missile_location[1]]:
-            self.map_console.draw_char(
-                missile_location[0], missile_location[1], 
-                '*', random_yellow(), random_yellow())
-        self.current_frame += 1
-        return False
+        return draw_missile(self, random_yellow(), random_yellow())
 
 
 class FireblastAnimation:
 
+    # TODO: For consistency, source should be a position not an entity.
     def __init__(self, map_console, game_map, source, radius=4):
         self.map_console = map_console
         self.game_map = game_map
@@ -98,3 +84,54 @@ class FireblastAnimation:
                 self.map_console.draw_char(
                     x, y, '^', random_red_or_yellow(), random_red_or_yellow())
         return False
+
+
+class ThrowingKnifeAnimation:
+
+    def __init__(self, map_console, game_map, source, target):
+        self.map_console = map_console
+        self.game_map = game_map
+        self.source = source
+        self.target = target
+        self.path = game_map.compute_path(
+            source[0], source[1], target[0], target[1])
+        self.char = self._get_char()
+        self.current_frame = 0
+
+    def _get_char(self):
+        dx, dy = (self.path[1][0] - self.path[0][0],
+                  self.path[1][1] - self.path[0][1])
+        if (dx, dy) in ((-1, 1), (0, 1), (1, 1)):
+            return CHARS['down_arrow']
+        elif (dx, dy) in ((-1, -1), (0, -1), (1, -1)):
+            return CHARS['up_arrow']
+        elif (dx, dy) == (1, 0):
+            return CHARS['left_arrow']
+        else:
+            return CHARS['right_arrow']
+        raise ValueError('Path does not move away from starting position.')
+
+    def next_frame(self):
+        return draw_missile(self, COLORS['white'], None)
+
+
+def draw_missile(animation, fg_color, bg_color):
+    missile_location = animation.path[animation.current_frame]
+    # Clear the previous frame's missile.
+    if animation.current_frame >= 1:
+        missile_prior_location = animation.path[animation.current_frame - 1]
+        if animation.game_map.fov[
+            missile_prior_location[0], missile_prior_location[1]]:
+            animation.map_console.draw_char(
+                missile_prior_location[0], missile_prior_location[1], 
+                ' ', COLORS.get('light_ground'), bg=COLORS.get('light_ground'))
+    # If the missile has reached the target, the animation is done.
+    if missile_location == animation.target:
+        return True
+    # Draw the missile.
+    if animation.game_map.fov[missile_location[0], missile_location[1]]:
+        animation.map_console.draw_char(
+            missile_location[0], missile_location[1], 
+            animation.char, fg_color, bg_color)
+    animation.current_frame += 1
+    return False

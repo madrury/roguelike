@@ -20,7 +20,8 @@ from spawnable.spawnable import spawn_entities
 from spawnable.items import (
     HealthPotion, MagicMissileScroll, FireblastScroll, ThrowingKnife)
 from animations.animations import (
-    MagicMissileAnimation, HealthPotionAnimation, FireblastAnimation)
+    MagicMissileAnimation, HealthPotionAnimation, FireblastAnimation,
+    ThrowingKnifeAnimation)
 
 from cursor import Cursor
 from input_handlers import handle_keys
@@ -362,6 +363,11 @@ def main():
                 animation_type = animation[0]
                 if animation_type == Animations.MAGIC_MISSILE:
                     animation_player = MagicMissileAnimation(
+                        map_console, game_map, 
+                        (player.x, player.y), 
+                        (animation[1].x, animation[1].y))
+                elif animation_type == Animations.THROWING_KNIFE:
+                    animation_player = ThrowingKnifeAnimation(
                         map_console, game_map, 
                         (player.x, player.y), 
                         (animation[1].x, animation[1].y))
