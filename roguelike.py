@@ -451,7 +451,7 @@ def main():
         # Once an animation is finished that results in a dead monster, draw it
         # as a corpse.
         #---------------------------------------------------------------------
-        if not game_state == GameStates.ANIMATION_PLAYING:
+        if game_state != GameStates.ANIMATION_PLAYING:
             while dead_entities:
                 dead_entity = dead_entities.pop()
                 make_corpse(dead_entity, COLORS)
