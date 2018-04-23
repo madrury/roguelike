@@ -247,15 +247,17 @@ def main():
                 if entity.item.targeting == ItemTargeting.PLAYER:
                     player_turn_results.extend(
                         entity.item.use(player))
+                # TODO: This should take the position of the player.
                 if entity.item.targeting == ItemTargeting.CLOSEST_MONSTER:
                     player_turn_results.extend(
                         entity.item.use(player, entities))
+                # TODO: This should take the position of the player.
                 if entity.item.targeting == ItemTargeting.WITHIN_RADIUS:
                     player_turn_results.extend(
                         entity.item.use(player, entities))
-                if entity.item.targeting == ItemTargeting.CURSOR_SELECT:
+                if entity.item.targeting == ItemTargeting.FIRST_ALONG_PATH_TO_CURSOR:
                     player_turn_results.extend(
-                        entity.item.use(player, entities))
+                        entity.item.use(game_map, (player.x, player.y), entities))
             elif game_state == GameStates.DROP_INVENTORY:
                 player_turn_results.extend(player.inventory.drop(entity))
             game_state, previous_game_state = previous_game_state, game_state

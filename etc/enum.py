@@ -134,7 +134,7 @@ class ItemTargeting(Enum):
     PLAYER = auto()
     CLOSEST_MONSTER = auto()
     WITHIN_RADIUS = auto()
-    CURSOR_SELECT = auto()
+    FIRST_ALONG_PATH_TO_CURSOR = auto()
 
 
 class ItemGroups(Enum):

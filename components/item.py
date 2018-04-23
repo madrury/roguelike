@@ -1,5 +1,5 @@
 from messages import Message
-from entity import get_blocking_entity_at_location
+from entity import get_first_blocking_entity_along_path
 from etc.colors import COLORS
 from etc.enum import EntityTypes, ItemTargeting, ResultTypes, Animations
 
@@ -94,24 +94,27 @@ class ThrowingKnifeComponent:
     
     def __init__(self, damage=10):
         self.name = "throwing knife"
-        self.targeting = ItemTargeting.CURSOR_SELECT
+        self.targeting = ItemTargeting.FIRST_ALONG_PATH_TO_CURSOR
         self.damage = damage
 
-    def use(self, source, entities):
-        callback = ThrowingKnifeCallback(self, entities)
+    def use(self, game_map, source, entities):
+        callback = ThrowingKnifeCallback(self, game_map, source, entities)
         return [
-            {ResultTypes.CURSOR_MODE: (source.x, source.y, callback)}]
+            {ResultTypes.CURSOR_MODE: (source[0], source[1], callback)}]
 
 
 class ThrowingKnifeCallback:
     
-    def __init__(self, owner, entities):
+    def __init__(self, owner, game_map, source, entities):
         self.owner = owner
+        self.game_map = game_map
+        self.source = source
         self.entities = entities
 
     def execute(self, x, y):
         results = []
-        monster = get_blocking_entity_at_location(self.entities, x, y)
+        monster = get_first_blocking_entity_along_path(
+            self.game_map, self.entities, self.source, (x, y))
         if monster:
             text = "The throwing knife pierces the {}'s flesh.".format(
                 monster.name)
@@ -119,6 +122,8 @@ class ThrowingKnifeCallback:
                 ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
                 ResultTypes.DAMAGE: (monster, self.owner.damage),
                 ResultTypes.ITEM_CONSUMED: (True, self.owner.owner),
+                # TODO: This should pass back the position data for the animation,
+                #       not an entity.
                 ResultTypes.ANIMATION: (
                     Animations.THROWING_KNIFE, monster)
             })
