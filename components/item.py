@@ -46,12 +46,12 @@ class MagicMissileComponent:
         self.damage = damage
         self.spell_range = spell_range
 
-    def use(self, source, entities):
+    def use(self, user, entities):
         results = []
-        closest_monster = source.get_closest_entity_of_type(
+        closest_monster = user.get_closest_entity_of_type(
             entities, EntityTypes.MONSTER)
         if (closest_monster and 
-            source.distance_to(closest_monster) <= self.spell_range):
+            user.distance_to(closest_monster) <= self.spell_range):
             text = 'A shining magic missile pierces the {}'.format(
                 closest_monster.name)
             message = Message(text, COLORS.get('white'))
@@ -60,7 +60,7 @@ class MagicMissileComponent:
                             ResultTypes.MESSAGE: message,
                             ResultTypes.ANIMATION: (
                                 Animations.MAGIC_MISSILE,
-                                (source.x, source.y),
+                                (user.x, user.y),
                                 (closest_monster.x, closest_monster.y))})
         else:
             message = Message(
@@ -102,10 +102,10 @@ class ThrowingKnifeComponent:
         self.targeting = ItemTargeting.FIRST_ALONG_PATH_TO_CURSOR
         self.damage = damage
 
-    def use(self, game_map, source, entities):
-        callback = ThrowingKnifeCallback(self, game_map, source, entities)
+    def use(self, game_map, user, entities):
+        callback = ThrowingKnifeCallback(self, game_map, user, entities)
         return [
-            {ResultTypes.CURSOR_MODE: (source[0], source[1], callback)}]
+            {ResultTypes.CURSOR_MODE: (user[0], user[1], callback)}]
 
 
 class ThrowingKnifeCallback:
