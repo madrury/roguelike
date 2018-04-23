@@ -374,8 +374,9 @@ def main():
                     animation_player = HealthPotionAnimation(
                         map_console, game_map, player)
                 elif animation_type == Animations.FIREBLAST:
+                    _, _, radius = animation
                     animation_player = FireblastAnimation(
-                        map_console, game_map, player, animation[2])
+                        map_console, game_map, (player.x, player.y), radius)
                 game_state, previous_game_state = (
                     GameStates.ANIMATION_PLAYING, game_state)
 

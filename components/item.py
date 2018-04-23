@@ -76,9 +76,9 @@ class FireblastComponent:
         self.damage = damage
         self.radius = radius
 
-    def use(self, source, entities):
+    def use(self, user, entities):
         results = []
-        monsters_within_radius = source.get_all_entities_of_type_within_radius(
+        monsters_within_radius = user.get_all_entities_of_type_within_radius(
             entities, EntityTypes.MONSTER, self.radius)
         for monster in monsters_within_radius:
             text = "The {} is caught in the fireblast!".format(
@@ -88,7 +88,7 @@ class FireblastComponent:
                             ResultTypes.MESSAGE: message})
         results.append({ResultTypes.ITEM_CONSUMED: (True, self.owner),
                         ResultTypes.ANIMATION: (
-                             Animations.FIREBLAST, source, self.radius)})
+                             Animations.FIREBLAST, (user.x, user.y), self.radius)})
         return results
 
 

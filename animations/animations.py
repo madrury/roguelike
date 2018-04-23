@@ -64,7 +64,7 @@ class FireblastAnimation:
         # Clear the drawing of the blast, the animation has finished.
         except StopIteration:
             clear_coordinates = coordinates_within_circle(
-                (self.source.x, self.source.y), self.radius)
+                (self.source[0], self.source[1]), self.radius)
             for x, y in clear_coordinates:
                 if (self.game_map.within_bounds(x, y) and 
                     self.game_map.fov[x, y] and 
@@ -76,7 +76,7 @@ class FireblastAnimation:
             return True
         # Draw a red circle centered at `source`.
         blast_coordinates = coordinates_within_circle(
-            (self.source.x, self.source.y), blast_radius)
+            (self.source[0], self.source[1]), blast_radius)
         for x, y in blast_coordinates:
             if (self.game_map.within_bounds(x, y) and 
                 self.game_map.fov[x, y] and 
