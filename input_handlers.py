@@ -82,7 +82,6 @@ def handle_inventory_keys(user_input):
 def handle_cursor_keys(user_input):
     key_char = user_input.char
     if user_input.key == 'ENTER':
-        print("Enter!")
         return {ResultTypes.CURSOR_SELECT: True}
     elif user_input.key == 'UP' or key_char == 'k':
         return {ResultTypes.MOVE: (0, -1)}

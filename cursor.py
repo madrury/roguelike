@@ -55,8 +55,7 @@ class Cursor:
             self.x, self.y = x, y
 
     def select(self):
-        self.map_console.draw_char(
-            self.x, self.y, ' ', fg=None, bg=COLORS['light_ground'])
+        self.clear()
         return self.callback.execute(self.x, self.y)
 
     def draw(self):
@@ -66,3 +65,7 @@ class Cursor:
                 fg=None, bg=COLORS['light_ground'])
         self.map_console.draw_char(
             self.x, self.y, ' ', fg=None, bg=self.color)
+
+    def clear(self):
+        self.map_console.draw_char(
+            self.x, self.y, ' ', fg=None, bg=COLORS['light_ground'])

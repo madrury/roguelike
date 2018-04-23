@@ -439,9 +439,13 @@ def main():
 
         exit = action.get(ResultTypes.EXIT)
         if exit:
+            if game_state == GameStates.CURSOR_INPUT:
+                cursor.clear()
             if game_state in (
-                GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
-                game_state = previous_game_state
+                GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY,
+                GameStates.CURSOR_INPUT):
+                game_state, previous_game_state = (
+                    previous_game_state, game_state)
             else:
                 # Hard exit the game.
                 return True
