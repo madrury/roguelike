@@ -14,9 +14,9 @@ class HealthPotionComponent:
         self.targeting = ItemTargeting.PLAYER
         self.healing = healing
 
-    def use(self, player):
+    def use(self, reciever):
         results = []
-        if player.harmable.hp == player.harmable.max_hp:
+        if reciever.harmable.hp == reciever.harmable.max_hp:
             message = Message('You are already at full health.', 
                               COLORS.get('white'))
             results.append({ResultTypes.ITEM_CONSUMED: (False, self.owner), 
@@ -25,10 +25,13 @@ class HealthPotionComponent:
             message = Message('You wounds start to heal.', 
                               COLORS.get('green'))
             results.append({ResultTypes.ITEM_CONSUMED: (True, self.owner),
-                            ResultTypes.HEAL: (player, self.healing),
+                            ResultTypes.HEAL: (reciever, self.healing),
                             ResultTypes.MESSAGE: message,
                             ResultTypes.ANIMATION: (
-                                Animations.HEALTH_POTION, player)})
+                                Animations.HEALTH_POTION, 
+                                (reciever.x, reciever.y),
+                                reciever.char,
+                                reciever.color)})
         return results
 
 

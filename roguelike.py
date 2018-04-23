@@ -371,8 +371,9 @@ def main():
                         (player.x, player.y), 
                         (animation[1].x, animation[1].y))
                 elif animation_type == Animations.HEALTH_POTION:
+                    _, target, char, color = animation
                     animation_player = HealthPotionAnimation(
-                        map_console, game_map, player)
+                        map_console, game_map, target, char, color)
                 elif animation_type == Animations.FIREBLAST:
                     _, _, radius = animation
                     animation_player = FireblastAnimation(

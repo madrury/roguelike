@@ -11,23 +11,24 @@ from animations.colors import COLOR_PATHS, random_yellow, random_red_or_yellow
 
 class HealthPotionAnimation:
 
-    # TODO: For consistency, target should be a position not an entity.
-    def __init__(self, map_console, game_map, target):
+    def __init__(self, map_console, game_map, target, char, color):
         self.map_console = map_console
         self.game_map = game_map
         self.target = target
+        self.char = char
+        self.color = color
         self.color_iter = iter(COLOR_PATHS['dark_to_light_green'])
 
     def next_frame(self):
         try:
             self.map_console.draw_char(
-                self.target.x, self.target.y, self.target.char, self.target.color,
+                self.target[0], self.target[1], self.char, self.color,
                 bg=COLORS['light_ground'])
             color = next(self.color_iter)
         except StopIteration:
             return True
         self.map_console.draw_char(
-            self.target.x, self.target.y, self.target.char, self.target.color,
+            self.target[0], self.target[1], self.char, self.color,
             bg=color)
         return False
         
@@ -50,7 +51,6 @@ class MagicMissileAnimation:
 
 class FireblastAnimation:
 
-    # TODO: For consistency, source should be a position not an entity.
     def __init__(self, map_console, game_map, source, radius=4):
         self.map_console = map_console
         self.game_map = game_map
