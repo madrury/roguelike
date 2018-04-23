@@ -212,7 +212,6 @@ def main():
                 else:
                     player_turn_results.append({ResultTypes.MOVE: (dx, dy)})
                 game_state = GameStates.ENEMY_TURN
-
         #----------------------------------------------------------------------
         # Player Pickup
         #......................................................................
@@ -230,7 +229,6 @@ def main():
                 player_turn_results.append({
                     ResultTypes.MESSAGE: Message("There is nothing to pick up!")})
             game_state = GameStates.ENEMY_TURN
-
         #----------------------------------------------------------------------
         # Player Inventory use / drop
         #......................................................................
@@ -364,10 +362,9 @@ def main():
             if animation:
                 animation_type = animation[0]
                 if animation_type == Animations.MAGIC_MISSILE:
+                    _, source, target = animation
                     animation_player = MagicMissileAnimation(
-                        map_console, game_map, 
-                        (player.x, player.y), 
-                        (animation[1].x, animation[1].y))
+                        map_console, game_map, source, target)
                 elif animation_type == Animations.THROWING_KNIFE:
                     animation_player = ThrowingKnifeAnimation(
                         map_console, game_map, 

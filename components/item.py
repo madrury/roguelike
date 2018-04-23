@@ -56,7 +56,9 @@ class MagicMissileComponent:
                             ResultTypes.DAMAGE: (closest_monster, self.damage),
                             ResultTypes.MESSAGE: message,
                             ResultTypes.ANIMATION: (
-                                Animations.MAGIC_MISSILE, closest_monster)})
+                                Animations.MAGIC_MISSILE,
+                                (source.x, source.y),
+                                (closest_monster.x, closest_monster.y))})
         else:
             message = Message(
                 "A shining magic missile streaks into the darkness.",
