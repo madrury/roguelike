@@ -105,23 +105,22 @@ class ThrowingKnifeComponent:
     def use(self, game_map, user, entities):
         callback = ThrowingKnifeCallback(self, game_map, user, entities)
         return [
-            {ResultTypes.CURSOR_MODE: (user[0], user[1], callback)}]
+            {ResultTypes.CURSOR_MODE: (user.x, user.y, callback)}]
 
 
 class ThrowingKnifeCallback:
     
-    def __init__(self, owner, game_map, source, entities):
+    def __init__(self, owner, game_map, user, entities):
         self.owner = owner
         self.game_map = game_map
-        self.source = source
+        self.user = user
         self.entities = entities
 
     def execute(self, x, y):
         results = []
         monster = get_first_blocking_entity_along_path(
-            self.game_map, self.entities, self.source, (x, y))
+            self.game_map, self.entities, (self.user.x, self.user.y), (x, y))
         if monster:
-            target = monster.x, monster.y
             text = "The throwing knife pierces the {}'s flesh.".format(
                 monster.name)
             results.append({
@@ -130,8 +129,8 @@ class ThrowingKnifeCallback:
                 ResultTypes.ITEM_CONSUMED: (True, self.owner.owner),
                 ResultTypes.ANIMATION: (
                     Animations.THROWING_KNIFE,
-                    (self.source[0], self.source[1]),
-                    (target[0], target[1]))})
+                    (self.user.x, self.user.y),
+                    (monster.x, monster.y))})
         else:
             # Todo: Have the knife drop on the ground.
             text = "The throwing knife clatters to the ground"
