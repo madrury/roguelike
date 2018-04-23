@@ -121,17 +121,17 @@ class ThrowingKnifeCallback:
         monster = get_first_blocking_entity_along_path(
             self.game_map, self.entities, self.source, (x, y))
         if monster:
+            target = monster.x, monster.y
             text = "The throwing knife pierces the {}'s flesh.".format(
                 monster.name)
             results.append({
                 ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
                 ResultTypes.DAMAGE: (monster, self.owner.damage),
                 ResultTypes.ITEM_CONSUMED: (True, self.owner.owner),
-                # TODO: This should pass back the position data for the animation,
-                #       not an entity.
                 ResultTypes.ANIMATION: (
-                    Animations.THROWING_KNIFE, monster)
-            })
+                    Animations.THROWING_KNIFE,
+                    (self.source[0], self.source[1]),
+                    (target[0], target[1]))})
         else:
             # Todo: Have the knife drop on the ground.
             text = "The throwing knife clatters to the ground"

@@ -366,10 +366,9 @@ def main():
                     animation_player = MagicMissileAnimation(
                         map_console, game_map, source, target)
                 elif animation_type == Animations.THROWING_KNIFE:
+                    _, source, target = animation
                     animation_player = ThrowingKnifeAnimation(
-                        map_console, game_map, 
-                        (player.x, player.y), 
-                        (animation[1].x, animation[1].y))
+                        map_console, game_map, source, target)
                 elif animation_type == Animations.HEALTH_POTION:
                     _, target, char, color = animation
                     animation_player = HealthPotionAnimation(
