@@ -7,7 +7,18 @@ from etc.enum import EntityTypes, ItemTargeting, ResultTypes, Animations
 class HealthPotionComponent:
     """A health component.
 
-    Used on the player themselves, this heals some amount of HP.
+    When used on an entity, heals some amount of HP.
+
+    Attributes
+    ----------
+    name: str
+      The name of this item.
+
+    targeting: ItemTargeting entry.
+      The targeting style of this item.  From the ItemTargeting enum.
+
+    healing: int
+      The amount of healing in this potion.
     """
     def __init__(self, healing=5):
         self.name = "healing potion"
@@ -15,6 +26,14 @@ class HealthPotionComponent:
         self.healing = healing
 
     def use(self, reciever):
+        """Use the health potion on a reciever.
+
+        Arguments
+        ---------
+        reciever: Entity
+          The reciever of the health potion.
+        """
+        reciever: Entity
         results = []
         if reciever.harmable.hp == reciever.harmable.max_hp:
             message = Message('You are already at full health.', 
@@ -38,7 +57,22 @@ class HealthPotionComponent:
 class MagicMissileComponent:
     """A Magic Missile spell.
 
-    This targets the closest enemy, and deals an amount of damage.
+    This targets the closest entity fo a given type, and deals a fixed amount
+    of damage.
+
+    Attributes
+    ----------
+    name: str
+      The name of this item.
+
+    targeting: ItemTargeting entry.
+      The targeting style of this item.  From the ItemTargeting enum.
+
+    damage: int
+      The amount of damage dealt by the missile.
+
+    spell_range:
+      The maximum distance to an entity able to be targeted.
     """
     def __init__(self, damage=6, spell_range=12):
         self.name = "magic missile"
@@ -46,10 +80,23 @@ class MagicMissileComponent:
         self.damage = damage
         self.spell_range = spell_range
 
-    def use(self, user, entities):
+    def use(self, user, entities, target_type=EntityTypes.MONSTER):
+        """Cast the magic missile spell.
+
+        Arguments
+        ---------
+        user: Entity
+          The entity casting the spell.
+
+        entities: list[Entity]
+          A list of all entities in the current game state.
+
+        target_type: EntityTypes entry
+          The type of target for the spell to seek.
+        """
         results = []
         closest_monster = user.get_closest_entity_of_type(
-            entities, EntityTypes.MONSTER)
+            entities, target_type)
         if (closest_monster and 
             user.distance_to(closest_monster) <= self.spell_range):
             text = 'A shining magic missile pierces the {}'.format(
