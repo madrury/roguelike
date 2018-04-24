@@ -4,8 +4,8 @@ import string
 
 from etc.colors import COLORS
 
-def menu(header, options, width, screen_width, screen_height,
-         header_buffer=1, border_buffer=1):
+
+def menu(header, options, width, screen_width, screen_height):
     """Draw a generic menu with a header and options for selection.
 
     Arguments
@@ -35,16 +35,25 @@ def menu(header, options, width, screen_width, screen_height,
         raise ValueError('Cannot have a menu with more than 26 options.')
     header_wrapped = textwrap.wrap(header, width)
     header_height = len(header_wrapped)
-    height = len(options) + header_height + header_height + 4*border_buffer
-
+    # The amount of whitespace:
+    #  - header_buffer: Between the header and the first option.
+    #  - For the border and any surrounding whitespace.
+    #  - Between the left and right boundries and the text.
+    header_buffer, border_buffer, edge_buffer = 1, 2, 2
+    height = len(options) + header_height + header_buffer + 2*border_buffer
+    
     window = tdl.Console(width, height)
+    # Draw background and display frame.
     window.draw_rect(0, 0, width, height, None, fg=COLORS['white'], bg=None)
     window.draw_frame(0, 0, width, height, '~', fg=None, bg=COLORS['darker_red'])
+    # Write the menu header.
     for i, line in enumerate(header_wrapped):
-        window.draw_str(2, i+2, header_wrapped[i])
-    for i, (y, option) in enumerate(enumerate(options, start=header_height + 3)):
+        window.draw_str(edge_buffer, i + border_buffer, header_wrapped[i])
+    # Write ll the options.
+    options_buffer = border_buffer + header_height + header_buffer
+    for i, (y, option) in enumerate(enumerate(options, start=options_buffer)):
         text = '(' + string.ascii_lowercase[i] + ') ' + option
-        window.draw_str(2, y, text)
+        window.draw_str(edge_buffer, y, text)
     # Return the position to blit the new console
     return window, screen_width // 2 - width // 2, screen_height //2 - height // 2
 
