@@ -273,15 +273,15 @@ def main():
 
 
         #----------------------------------------------------------------------
-        # Process the results queue 
+        # Process the results stack
         #......................................................................
         # We are done processing player inputs, and may have some results on
-        # the player turn queue.  Process the queue by popping off the top
+        # the player turn stack.  Process the stack by popping off the top
         # result from the queue.  There are many different possible results,
-        # so handle each with a dedicated handler.
+        # so each is handled with a dedicated handler.
         #
         # Note: Handling a result may result in other results being added to
-        # the queue, so we continually process the results queue until it is
+        # the stack, so we continually process the results stack until it is
         # empty.
         #----------------------------------------------------------------------
         while player_turn_results != []:
