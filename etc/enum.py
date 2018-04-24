@@ -143,6 +143,7 @@ class ItemGroups(Enum):
     TWO_HEALTH_POTIONS = auto()
     MAGIC_MISSILE_SCROLL = auto()
     FIREBLAST_SCROLL = auto()
+    THROWING_KNIFE = auto()
 
 
 class MonsterGroups(Enum):
