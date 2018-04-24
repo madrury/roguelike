@@ -3,6 +3,10 @@ COLORS = {
     'dark_ground': (60, 60, 60),
     'light_wall': (110, 110, 110),
     'light_ground': (200, 200, 200),
+
+    'cursor': (255, 215, 0),
+    'cursor_tail': (220, 180, 0), 
+
     'desaturated_green': (63, 127, 63),
     'darker_green': (0, 127, 0),
     'dark_red': (191, 0, 0),

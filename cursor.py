@@ -39,16 +39,19 @@ class Cursor:
       the player turn results stack.
     """
     def __init__(self, x, y, map_console, game_map, callback):
+        self.source = (x, y)
         self.x = x
         self.y = y
         self.previous_x = None
         self.previous_y = None
-        self.color = COLORS['yellow']
+        self.color = COLORS['cursor']
+        self.path_color = COLORS['cursor_tail']
         self.map_console = map_console
         self.game_map = game_map
         self.callback = callback
 
     def move(self, dx, dy):
+        self.clear()
         x, y, = self.x + dx, self.y + dy
         if self.game_map.walkable[x, y] and self.game_map.fov[x, y]:
             self.previous_x, self.previous_y = self.x, self.y
@@ -59,13 +62,17 @@ class Cursor:
         return self.callback.execute(self.x, self.y)
 
     def draw(self):
-        if self.previous_x and self.previous_y:
-            self.map_console.draw_char(
-                self.previous_x, self.previous_y, ' ',
-                fg=None, bg=COLORS['light_ground'])
-        self.map_console.draw_char(
-            self.x, self.y, ' ', fg=None, bg=self.color)
+        self._draw_path(self.path_color, self.color)
 
     def clear(self):
+        self._draw_path(COLORS['light_ground'], COLORS['light_ground'])
+
+    def _draw_path(self, path_color, cursor_color):
+        path = self.game_map.compute_path(
+            self.source[0], self.source[1], self.x, self.y)
+        for x, y in path[:-1]:
+            self.map_console.draw_char(x, y, ' ', fg=None, bg=path_color)
         self.map_console.draw_char(
-            self.x, self.y, ' ', fg=None, bg=COLORS['light_ground'])
+            self.x, self.y, ' ', fg=None, bg=cursor_color)
+
+
