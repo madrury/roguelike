@@ -53,15 +53,11 @@ def menu(header, options, width, screen_width, screen_height, highlight):
     options_buffer = border_buffer + header_height + header_buffer
     options_highlight = zip(options, highlight)
     iter_options = enumerate(enumerate(options_highlight, start=options_buffer))
-    for i, (y, (option, highlight)) in iter_options:
+    for i, (y, (option, color)) in iter_options:
         #print(i, y, option, highlight)
         text = '(' + string.ascii_lowercase[i] + ') ' + option
-        if highlight:
-            window.draw_str(edge_buffer, y, text)
-        else:
-            window.draw_str(edge_buffer, y, text, fg=COLORS['yellow']) 
+        window.draw_str(edge_buffer, y, text, fg=color) 
     # Return the position to blit the new console
-    print('returning')
     return window, screen_width // 2 - width // 2, screen_height //2 - height // 2
 
 
@@ -69,13 +65,15 @@ def invetory_menu(header, inventory, inventory_width,
                   screen_width, screen_height, highlight_attr=None):
     if len(inventory.items) == 0:
         options = ['Invetory is Empty']
-        highlight = [True]
+        highlight = [COLORS['white']]
     else:
         options = [item.name for item in inventory.items]
         if highlight_attr:
             highlight = [
-                getattr(item.item, highlight_attr) for item in inventory.items]
+                COLORS['white'] if getattr(item.item, highlight_attr) 
+                else COLORS['medium_grey'] 
+                for item in inventory.items]
         else:
-            highlight = [True for _ in inventory.items]
+            highlight = [COLORS['white'] for item in inventory.items]
     return menu(header, options, inventory_width,
                 screen_width, screen_height, highlight=highlight)
