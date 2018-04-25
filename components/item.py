@@ -23,6 +23,7 @@ class HealthPotionComponent:
     def __init__(self, healing=5):
         self.name = "healing potion"
         self.targeting = ItemTargeting.PLAYER
+        self.throwable = True
         self.healing = healing
 
     def use(self, reciever):
@@ -77,6 +78,7 @@ class MagicMissileComponent:
     def __init__(self, damage=6, spell_range=12):
         self.name = "magic missile"
         self.targeting = ItemTargeting.CLOSEST_MONSTER
+        self.throwable = False
         self.damage = damage
         self.spell_range = spell_range
 
@@ -123,6 +125,7 @@ class FireblastComponent:
     def __init__(self, damage=10, radius=4):
         self.name = "fireblast"
         self.targeting = ItemTargeting.WITHIN_RADIUS
+        self.throwable = False
         self.damage = damage
         self.radius = radius
 
@@ -147,6 +150,7 @@ class ThrowingKnifeComponent:
     def __init__(self, damage=10):
         self.name = "throwing knife"
         self.targeting = ItemTargeting.FIRST_ALONG_PATH_TO_CURSOR
+        self.throwable = True
         self.damage = damage
 
     def use(self, game_map, user, entities):

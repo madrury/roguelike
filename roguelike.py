@@ -122,14 +122,25 @@ def main():
         #---------------------------------------------------------------------
         # Render any menus.
         #---------------------------------------------------------------------
-        if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
+        menu_states = (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY, 
+                       GameStates.THROW_INVENTORY)
+        if game_state in menu_states:
             if game_state == GameStates.SHOW_INVENTORY:
                 invetory_message = "Press the letter next to the item to use it.\n"
+                highlight_attr = None
             elif game_state == GameStates.DROP_INVENTORY:
                 invetory_message = "Press the letter next to the item to drop it.\n"
+                highlight_attr = None
+            elif game_state == GameStates.THROW_INVENTORY:
+                invetory_message = "Press the letter next to the item to throw it.\n"
+                highlight_attr = "throwable"
             menu_console, menu_x, menu_y = invetory_menu(
-                invetory_message, player.inventory, 50,
-                SCREEN_WIDTH, SCREEN_HEIGHT)
+                invetory_message, player.inventory, 
+                # TODO: Remove this magic number.
+                inventory_width=50,
+                screen_width=SCREEN_WIDTH, 
+                screen_height=SCREEN_HEIGHT,
+                highlight_attr=highlight_attr)
 
         #---------------------------------------------------------------------
         # Advance the frame of any animations.
@@ -147,7 +158,8 @@ def main():
         root_console.blit(map_console, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
         root_console.blit(panel_console, 0, PANEL_CONFIG['y'],
                           SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
-        if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
+        if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY, 
+                          GameStates.THROW_INVENTORY):
             root_console.blit(menu_console, menu_x, menu_y,
                               SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
         tdl.flush()
@@ -163,7 +175,8 @@ def main():
         # Get key input from the player.
         #---------------------------------------------------------------------
         input_states = (
-            GameStates.PLAYER_TURN, GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY,
+            GameStates.PLAYER_TURN, GameStates.SHOW_INVENTORY,
+            GameStates.DROP_INVENTORY, GameStates.THROW_INVENTORY, 
             GameStates.CURSOR_INPUT)
         for event in tdl.event.get():
             if event.type == 'KEYDOWN':
@@ -236,7 +249,8 @@ def main():
         # Check which state we are in (using or dropping) and put an
         # instruction on the queue.
         #----------------------------------------------------------------------
-        elif (game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY)
+        elif (game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY,
+                             GameStates.THROW_INVENTORY)
             and inventory_index is not None
             and inventory_index < len(player.inventory.items)
             and previous_game_state != GameStates.PLAYER_DEAD):
@@ -430,10 +444,15 @@ def main():
             previous_game_state = game_state
             game_state = GameStates.SHOW_INVENTORY
 
-        drop = action.get(ResultTypes.DROP_INVENTORY)
-        if game_state == GameStates.PLAYER_TURN and drop:
+        drop_inventory = action.get(ResultTypes.DROP_INVENTORY)
+        if game_state == GameStates.PLAYER_TURN and drop_inventory:
             previous_game_state = game_state
             game_state = GameStates.DROP_INVENTORY
+
+        throw_inventory = action.get(ResultTypes.THROW_INVENTORY)
+        if game_state == GameStates.PLAYER_TURN and throw_inventory:
+            previous_game_state = game_state
+            game_state = GameStates.THROW_INVENTORY
 
         exit = action.get(ResultTypes.EXIT)
         if exit:
@@ -441,7 +460,7 @@ def main():
                 cursor.clear()
             if game_state in (
                 GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY,
-                GameStates.CURSOR_INPUT):
+                GameStates.THROW_INVENTORY, GameStates.CURSOR_INPUT):
                 game_state, previous_game_state = (
                     previous_game_state, game_state)
             else:
