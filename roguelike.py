@@ -57,9 +57,10 @@ def main():
     entities = [player]
 
     # Setup Initial Inventory, for testing.
-    player.inventory.extend([ThrowingKnife.make(0, 0) for _ in range(5)])
-    player.inventory.extend([MagicMissileScroll.make(0, 0) for _ in range(5)])
-    player.inventory.extend([FireblastScroll.make(0, 0) for _ in range(5)])
+    player.inventory.extend([HealthPotion.make(0, 0) for _ in range(3)])
+    player.inventory.extend([ThrowingKnife.make(0, 0) for _ in range(3)])
+    player.inventory.extend([MagicMissileScroll.make(0, 0) for _ in range(3)])
+    player.inventory.extend([FireblastScroll.make(0, 0) for _ in range(3)])
  
     # Generate the map and place player, monsters, and items.
     game_map = GameMap(FLOOR_CONFIG['width'], FLOOR_CONFIG['height'])
@@ -270,6 +271,15 @@ def main():
                         entity.item.use(game_map, player, entities))
             elif game_state == GameStates.DROP_INVENTORY:
                 player_turn_results.extend(player.inventory.drop(entity))
+            elif game_state == GameStates.THROW_INVENTORY:
+                if entity.item.throwable:
+                    player_turn_results.extend(
+                        entity.item.throw(game_map, player, entities))
+                else:
+                    message = Message(
+                        "You cannot throw the {}".format(entity.name),
+                        COLORS['white'])
+                    player_turn_results.append({ResultTypes.MESSAGE: message})
             game_state, previous_game_state = previous_game_state, game_state
 
         #----------------------------------------------------------------------

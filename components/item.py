@@ -54,6 +54,10 @@ class HealthPotionComponent:
                                 reciever.color)})
         return results
 
+    def throw(self, game_map, thrower, entities):
+        print("You throw the potion!")
+        return [{}]
+
 
 class MagicMissileComponent:
     """A Magic Missile spell.
@@ -157,6 +161,9 @@ class ThrowingKnifeComponent:
         callback = ThrowingKnifeCallback(self, game_map, user, entities)
         return [
             {ResultTypes.CURSOR_MODE: (user.x, user.y, callback)}]
+
+    def throw(self, game_map, user, entities):
+        return self.use(game_map, user, entities)
 
 
 class ThrowingKnifeCallback:
