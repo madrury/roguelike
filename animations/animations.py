@@ -32,7 +32,36 @@ def construct_animation(animation_data, map_console, game_map):
         _, _, radius = animation_data
         animation_player = FireblastAnimation(
             map_console, game_map, (player.x, player.y), radius)
+    elif animation_type == Animations.CONCATINATED:
+        animation_player = ConcatinatedAnimation.construct(
+            map_console, game_map, animation_data[1])
     return animation_player
+
+
+class ConcatinatedAnimation:
+
+    def __init__(self, *animations):
+        self.animations = animations
+        self.n_animations = len(animations)
+        self.current_animation = 0
+
+    def next_frame(self):
+        current_animation = self.animations[self.current_animation]
+        result = current_animation.next_frame()
+        if result and self.current_animation != self.n_animations - 1:
+            self.current_animation += 1
+            return False
+        elif result and self.current_animation == self.n_animations - 1:
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def construct(map_console, game_map, animation_data):
+        animations = []
+        for datum in animation_data:
+            animations.append(construct_animation(datum, map_console, game_map))
+        return ConcatinatedAnimation(*animations)
 
 
 class HealthPotionAnimation:

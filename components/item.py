@@ -83,19 +83,19 @@ class HealthPotionCallback:
                 ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
                 ResultTypes.HEAL: (target, self.owner.healing),
                 ResultTypes.ITEM_CONSUMED: (True, self.owner.owner)}),
-
         else:
-            # Todo: Have the knife drop on the ground.
             text = "The health potion splashes on the ground."
             results.append({
                 ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
-                ResultTypes.ITEM_CONSUMED: (True, self.owner.owner),
-                ResultTypes.ANIMATION: (
-                    Animations.HEALTH_POTION, (x, y), ' ', None)})
+                ResultTypes.ITEM_CONSUMED: (True, self.owner.owner)})
+
+            throw_animation = (
+                Animations.THROW_POTION, (self.user.x, self.user.y), (x, y))
+            spill_animation = (Animations.HEALTH_POTION, (x, y), ' ', None)
             results.append({ResultTypes.ANIMATION: (
-                Animations.THROW_POTION,
-                    (self.user.x, self.user.y),
-                    (x, y))})
+                Animations.CONCATINATED, (
+                    throw_animation, spill_animation))})
+
         return results
 
 

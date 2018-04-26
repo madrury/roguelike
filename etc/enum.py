@@ -120,6 +120,7 @@ class EntityTypes(Enum):
 
 
 class Animations(Enum):
+    CONCATINATED = auto()
     HEALTH_POTION = auto()
     MAGIC_MISSILE = auto()
     FIREBLAST = auto()
