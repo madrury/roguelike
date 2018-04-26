@@ -146,7 +146,6 @@ def main():
         #---------------------------------------------------------------------
         if game_state == GameStates.ANIMATION_PLAYING:
             # Now play the animatin
-            print(animation_player)
             animation_finished = animation_player.next_frame()
             sleep(0.1)
             if animation_finished:
@@ -321,8 +320,6 @@ def main():
             item_dropped = result.get(ResultTypes.ITEM_DROPPED)
             message = result.get(ResultTypes.MESSAGE)
             move = result.get(ResultTypes.MOVE)
-
-            print(animation)
 
             # Move the player.
             if move:
