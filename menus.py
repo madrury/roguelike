@@ -5,7 +5,7 @@ import string
 from etc.colors import COLORS
 
 
-def menu(header, options, width, screen_width, screen_height):
+def menu(header, options, width, screen_width, screen_height, highlight):
     """Draw a generic menu with a header and options for selection.
 
     Arguments
@@ -49,19 +49,31 @@ def menu(header, options, width, screen_width, screen_height):
     # Write the menu header.
     for i, line in enumerate(header_wrapped):
         window.draw_str(edge_buffer, i + border_buffer, header_wrapped[i])
-    # Write ll the options.
+    # Write all the options.
     options_buffer = border_buffer + header_height + header_buffer
-    for i, (y, option) in enumerate(enumerate(options, start=options_buffer)):
+    options_highlight = zip(options, highlight)
+    iter_options = enumerate(enumerate(options_highlight, start=options_buffer))
+    for i, (y, (option, color)) in iter_options:
+        #print(i, y, option, highlight)
         text = '(' + string.ascii_lowercase[i] + ') ' + option
-        window.draw_str(edge_buffer, y, text)
+        window.draw_str(edge_buffer, y, text, fg=color) 
     # Return the position to blit the new console
     return window, screen_width // 2 - width // 2, screen_height //2 - height // 2
 
-def invetory_menu(header, inventory, invetory_width, 
-                  screen_width, screen_height):
+
+def invetory_menu(header, inventory, inventory_width, 
+                  screen_width, screen_height, highlight_attr=None):
     if len(inventory.items) == 0:
         options = ['Invetory is Empty']
+        highlight = [COLORS['white']]
     else:
         options = [item.name for item in inventory.items]
-    return menu(header, options, invetory_width,
-                screen_width, screen_height)
+        if highlight_attr:
+            highlight = [
+                COLORS['white'] if getattr(item.item, highlight_attr) 
+                else COLORS['medium_grey'] 
+                for item in inventory.items]
+        else:
+            highlight = [COLORS['white'] for item in inventory.items]
+    return menu(header, options, inventory_width,
+                screen_width, screen_height, highlight=highlight)

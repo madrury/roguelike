@@ -25,7 +25,8 @@ def handle_keys(user_input, game_state):
         return handle_player_turn_keys(user_input)
     elif game_state == GameStates.PLAYER_DEAD:
         return handle_player_dead_keys(user_input)
-    elif game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
+    elif game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY, 
+                        GameStates.THROW_INVENTORY):
         return handle_inventory_keys(user_input)
     elif game_state == GameStates.CURSOR_INPUT:
         return handle_cursor_keys(user_input)
@@ -62,6 +63,8 @@ def handle_player_turn_keys(user_input):
         return {ResultTypes.SHOW_INVENTORY: True}
     if key_char == 'd':
         return {ResultTypes.DROP_INVENTORY: True}
+    if key_char == 't':
+        return {ResultTypes.THROW_INVENTORY: True}
     return handle_generic_keys(user_input)
 
 def handle_player_dead_keys(user_input):

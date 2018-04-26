@@ -36,6 +36,7 @@ class GameStates(Enum):
     PLAYER_TURN = auto() 
     #TODO: Change this name to USE_INVENTORY
     SHOW_INVENTORY = auto()
+    THROW_INVENTORY = auto()
 
 
 #-----------------------------------------------------------------------------
@@ -108,6 +109,7 @@ class ResultTypes(Enum):
     MOVE = auto()
     PICKUP = auto()
     SHOW_INVENTORY = auto()
+    THROW_INVENTORY = auto()
 
 
 class EntityTypes(Enum):
@@ -118,10 +120,12 @@ class EntityTypes(Enum):
 
 
 class Animations(Enum):
+    CONCATINATED = auto()
     HEALTH_POTION = auto()
     MAGIC_MISSILE = auto()
     FIREBLAST = auto()
     THROWING_KNIFE = auto()
+    THROW_POTION = auto()
 
 
 class RenderOrder(Enum):

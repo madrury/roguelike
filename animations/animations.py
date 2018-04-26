@@ -3,10 +3,65 @@ from time import sleep
 import random
 
 from utils.utils import coordinates_within_circle
+from etc.enum import Animations
 from etc.config import SCREEN_WIDTH, SCREEN_HEIGHT, PANEL_CONFIG
 from etc.colors import COLORS
 from etc.chars import CHARS
 from animations.colors import COLOR_PATHS, random_yellow, random_red_or_yellow
+
+
+def construct_animation(animation_data, map_console, game_map):
+    animation_type = animation_data[0]
+    if animation_type == Animations.MAGIC_MISSILE:
+        _, source, target = animation_data
+        animation_player = MagicMissileAnimation(
+            map_console, game_map, source, target)
+    elif animation_type == Animations.THROWING_KNIFE:
+        _, source, target = animation_data
+        animation_player = ThrowingKnifeAnimation(
+            map_console, game_map, source, target)
+    elif animation_type == Animations.THROW_POTION:
+        _, source, target = animation_data
+        animation_player = ThrownPotionAnimation(
+            map_console, game_map, source, target)
+    elif animation_type == Animations.HEALTH_POTION:
+        _, target, char, color = animation_data
+        animation_player = HealthPotionAnimation(
+            map_console, game_map, target, char, color)
+    elif animation_type == Animations.FIREBLAST:
+        _, _, radius = animation_data
+        animation_player = FireblastAnimation(
+            map_console, game_map, (player.x, player.y), radius)
+    elif animation_type == Animations.CONCATINATED:
+        animation_player = ConcatinatedAnimation.construct(
+            map_console, game_map, animation_data[1])
+    return animation_player
+
+
+class ConcatinatedAnimation:
+
+    def __init__(self, *animations):
+        self.animations = animations
+        self.n_animations = len(animations)
+        self.current_animation = 0
+
+    def next_frame(self):
+        current_animation = self.animations[self.current_animation]
+        result = current_animation.next_frame()
+        if result and self.current_animation != self.n_animations - 1:
+            self.current_animation += 1
+            return False
+        elif result and self.current_animation == self.n_animations - 1:
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def construct(map_console, game_map, animation_data):
+        animations = []
+        for datum in animation_data:
+            animations.append(construct_animation(datum, map_console, game_map))
+        return ConcatinatedAnimation(*animations)
 
 
 class HealthPotionAnimation:
@@ -31,6 +86,22 @@ class HealthPotionAnimation:
             self.target[0], self.target[1], self.char, self.color,
             bg=color)
         return False
+
+
+class ThrownPotionAnimation:
+
+    def __init__(self, map_console, game_map, source, target):
+        self.map_console = map_console
+        self.source = source
+        self.game_map = game_map
+        self.target = target
+        self.path = game_map.compute_path(
+            source[0], source[1], target[0], target[1])
+        self.char = '!'
+        self.current_frame = 0
+
+    def next_frame(self):
+        return draw_missile(self, COLORS['violet'], COLORS['light_ground'])
         
 
 class MagicMissileAnimation:

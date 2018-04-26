@@ -23,6 +23,7 @@ class HealthPotionComponent:
     def __init__(self, healing=5):
         self.name = "healing potion"
         self.targeting = ItemTargeting.PLAYER
+        self.throwable = True
         self.healing = healing
 
     def use(self, reciever):
@@ -53,6 +54,48 @@ class HealthPotionComponent:
                                 reciever.color)})
         return results
 
+    def throw(self, game_map, thrower, entities):
+        callback = HealthPotionCallback(self, game_map, thrower, entities)
+        return [
+            {ResultTypes.CURSOR_MODE: (thrower.x, thrower.y, callback)}]
+
+
+class HealthPotionCallback:
+
+    def __init__(self, owner, game_map, user, entities):
+        self.owner = owner
+        self.game_map = game_map
+        self.user = user
+        self.entities = entities
+
+    def execute(self, x, y):
+        results = []
+        target = get_first_blocking_entity_along_path(
+            self.game_map, self.entities, (self.user.x, self.user.y), (x, y))
+        if target:
+            text = "The health potion heals the {}'s wounds".format(
+                target.name)
+            results.append({
+                ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
+                ResultTypes.HEAL: (target, self.owner.healing),
+                ResultTypes.ITEM_CONSUMED: (True, self.owner.owner),
+                ResultTypes.ANIMATION: (
+                    Animations.HEALTH_POTION,
+                    (target.x, target.y), target.char, target.color)
+            }),
+        else:
+            text = "The health potion splashes on the ground."
+            throw_animation = (
+                Animations.THROW_POTION, (self.user.x, self.user.y), (x, y))
+            spill_animation = (Animations.HEALTH_POTION, (x, y), ' ', None)
+            results.append({
+                ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
+                ResultTypes.ITEM_CONSUMED: (True, self.owner.owner),
+                ResultTypes.ANIMATION: (
+                    Animations.CONCATINATED, (throw_animation, spill_animation))
+                })
+        return results
+
 
 class MagicMissileComponent:
     """A Magic Missile spell.
@@ -77,6 +120,7 @@ class MagicMissileComponent:
     def __init__(self, damage=6, spell_range=12):
         self.name = "magic missile"
         self.targeting = ItemTargeting.CLOSEST_MONSTER
+        self.throwable = False
         self.damage = damage
         self.spell_range = spell_range
 
@@ -123,6 +167,7 @@ class FireblastComponent:
     def __init__(self, damage=10, radius=4):
         self.name = "fireblast"
         self.targeting = ItemTargeting.WITHIN_RADIUS
+        self.throwable = False
         self.damage = damage
         self.radius = radius
 
@@ -147,12 +192,16 @@ class ThrowingKnifeComponent:
     def __init__(self, damage=10):
         self.name = "throwing knife"
         self.targeting = ItemTargeting.FIRST_ALONG_PATH_TO_CURSOR
+        self.throwable = True
         self.damage = damage
 
     def use(self, game_map, user, entities):
         callback = ThrowingKnifeCallback(self, game_map, user, entities)
         return [
             {ResultTypes.CURSOR_MODE: (user.x, user.y, callback)}]
+
+    def throw(self, game_map, user, entities):
+        return self.use(game_map, user, entities)
 
 
 class ThrowingKnifeCallback:

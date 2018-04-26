@@ -19,9 +19,7 @@ from spawnable.items import ITEM_SCHEDULE, ITEM_GROUPS
 from spawnable.spawnable import spawn_entities
 from spawnable.items import (
     HealthPotion, MagicMissileScroll, FireblastScroll, ThrowingKnife)
-from animations.animations import (
-    MagicMissileAnimation, HealthPotionAnimation, FireblastAnimation,
-    ThrowingKnifeAnimation)
+from animations.animations import construct_animation
 
 from cursor import Cursor
 from input_handlers import handle_keys
@@ -57,9 +55,10 @@ def main():
     entities = [player]
 
     # Setup Initial Inventory, for testing.
-    player.inventory.extend([ThrowingKnife.make(0, 0) for _ in range(5)])
-    player.inventory.extend([MagicMissileScroll.make(0, 0) for _ in range(5)])
-    player.inventory.extend([FireblastScroll.make(0, 0) for _ in range(5)])
+    player.inventory.extend([HealthPotion.make(0, 0) for _ in range(3)])
+    player.inventory.extend([ThrowingKnife.make(0, 0) for _ in range(3)])
+    player.inventory.extend([MagicMissileScroll.make(0, 0) for _ in range(3)])
+    player.inventory.extend([FireblastScroll.make(0, 0) for _ in range(3)])
  
     # Generate the map and place player, monsters, and items.
     game_map = GameMap(FLOOR_CONFIG['width'], FLOOR_CONFIG['height'])
@@ -122,14 +121,25 @@ def main():
         #---------------------------------------------------------------------
         # Render any menus.
         #---------------------------------------------------------------------
-        if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
+        menu_states = (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY, 
+                       GameStates.THROW_INVENTORY)
+        if game_state in menu_states:
             if game_state == GameStates.SHOW_INVENTORY:
                 invetory_message = "Press the letter next to the item to use it.\n"
+                highlight_attr = None
             elif game_state == GameStates.DROP_INVENTORY:
                 invetory_message = "Press the letter next to the item to drop it.\n"
+                highlight_attr = None
+            elif game_state == GameStates.THROW_INVENTORY:
+                invetory_message = "Press the letter next to the item to throw it.\n"
+                highlight_attr = "throwable"
             menu_console, menu_x, menu_y = invetory_menu(
-                invetory_message, player.inventory, 50,
-                SCREEN_WIDTH, SCREEN_HEIGHT)
+                invetory_message, player.inventory, 
+                # TODO: Remove this magic number.
+                inventory_width=50,
+                screen_width=SCREEN_WIDTH, 
+                screen_height=SCREEN_HEIGHT,
+                highlight_attr=highlight_attr)
 
         #---------------------------------------------------------------------
         # Advance the frame of any animations.
@@ -147,7 +157,8 @@ def main():
         root_console.blit(map_console, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
         root_console.blit(panel_console, 0, PANEL_CONFIG['y'],
                           SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
-        if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
+        if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY, 
+                          GameStates.THROW_INVENTORY):
             root_console.blit(menu_console, menu_x, menu_y,
                               SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
         tdl.flush()
@@ -163,7 +174,8 @@ def main():
         # Get key input from the player.
         #---------------------------------------------------------------------
         input_states = (
-            GameStates.PLAYER_TURN, GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY,
+            GameStates.PLAYER_TURN, GameStates.SHOW_INVENTORY,
+            GameStates.DROP_INVENTORY, GameStates.THROW_INVENTORY, 
             GameStates.CURSOR_INPUT)
         for event in tdl.event.get():
             if event.type == 'KEYDOWN':
@@ -236,7 +248,8 @@ def main():
         # Check which state we are in (using or dropping) and put an
         # instruction on the queue.
         #----------------------------------------------------------------------
-        elif (game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY)
+        elif (game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY,
+                             GameStates.THROW_INVENTORY)
             and inventory_index is not None
             and inventory_index < len(player.inventory.items)
             and previous_game_state != GameStates.PLAYER_DEAD):
@@ -256,6 +269,15 @@ def main():
                         entity.item.use(game_map, player, entities))
             elif game_state == GameStates.DROP_INVENTORY:
                 player_turn_results.extend(player.inventory.drop(entity))
+            elif game_state == GameStates.THROW_INVENTORY:
+                if entity.item.throwable:
+                    player_turn_results.extend(
+                        entity.item.throw(game_map, player, entities))
+                else:
+                    message = Message(
+                        "You cannot throw the {}".format(entity.name),
+                        COLORS['white'])
+                    player_turn_results.append({ResultTypes.MESSAGE: message})
             game_state, previous_game_state = previous_game_state, game_state
 
         #----------------------------------------------------------------------
@@ -284,7 +306,7 @@ def main():
         # the stack, so we continually process the results stack until it is
         # empty.
         #----------------------------------------------------------------------
-        while player_turn_results != []:
+        while game_state != GameStates.ANIMATION_PLAYING and player_turn_results != []:
             result = player_turn_results.pop()
 
             animation = result.get(ResultTypes.ANIMATION)
@@ -357,26 +379,14 @@ def main():
                 game_state, previous_game_state = (
                     GameStates.CURSOR_INPUT, game_state)
             # Play an animation.
+            # TODO: Factor this out into its own function. This should be easy,
+            #       you only need the animation object.
             if animation:
-                animation_type = animation[0]
-                if animation_type == Animations.MAGIC_MISSILE:
-                    _, source, target = animation
-                    animation_player = MagicMissileAnimation(
-                        map_console, game_map, source, target)
-                elif animation_type == Animations.THROWING_KNIFE:
-                    _, source, target = animation
-                    animation_player = ThrowingKnifeAnimation(
-                        map_console, game_map, source, target)
-                elif animation_type == Animations.HEALTH_POTION:
-                    _, target, char, color = animation
-                    animation_player = HealthPotionAnimation(
-                        map_console, game_map, target, char, color)
-                elif animation_type == Animations.FIREBLAST:
-                    _, _, radius = animation
-                    animation_player = FireblastAnimation(
-                        map_console, game_map, (player.x, player.y), radius)
+                animation_player = construct_animation(animation, map_console, game_map)
                 game_state, previous_game_state = (
                     GameStates.ANIMATION_PLAYING, game_state)
+                # Immediately play the animation.
+                #break
 
         #---------------------------------------------------------------------
         # All enemies take thier turns.
@@ -430,10 +440,15 @@ def main():
             previous_game_state = game_state
             game_state = GameStates.SHOW_INVENTORY
 
-        drop = action.get(ResultTypes.DROP_INVENTORY)
-        if game_state == GameStates.PLAYER_TURN and drop:
+        drop_inventory = action.get(ResultTypes.DROP_INVENTORY)
+        if game_state == GameStates.PLAYER_TURN and drop_inventory:
             previous_game_state = game_state
             game_state = GameStates.DROP_INVENTORY
+
+        throw_inventory = action.get(ResultTypes.THROW_INVENTORY)
+        if game_state == GameStates.PLAYER_TURN and throw_inventory:
+            previous_game_state = game_state
+            game_state = GameStates.THROW_INVENTORY
 
         exit = action.get(ResultTypes.EXIT)
         if exit:
@@ -441,7 +456,7 @@ def main():
                 cursor.clear()
             if game_state in (
                 GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY,
-                GameStates.CURSOR_INPUT):
+                GameStates.THROW_INVENTORY, GameStates.CURSOR_INPUT):
                 game_state, previous_game_state = (
                     previous_game_state, game_state)
             else:
