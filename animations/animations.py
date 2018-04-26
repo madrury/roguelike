@@ -9,8 +9,9 @@ from etc.colors import COLORS
 from etc.chars import CHARS
 from animations.colors import COLOR_PATHS, random_yellow, random_red_or_yellow
 
-
-def construct_animation(animation_data, map_console, game_map):
+# TODO: Remove player as an arguement here.  Fireblast anumation should not
+#       rely on the player object.
+def construct_animation(animation_data, map_console, game_map, player=None):
     animation_type = animation_data[0]
     if animation_type == Animations.MAGIC_MISSILE:
         _, source, target = animation_data

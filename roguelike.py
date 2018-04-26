@@ -382,7 +382,8 @@ def main():
             # TODO: Factor this out into its own function. This should be easy,
             #       you only need the animation object.
             if animation:
-                animation_player = construct_animation(animation, map_console, game_map)
+                animation_player = construct_animation(
+                    animation, map_console, game_map, player=player)
                 game_state, previous_game_state = (
                     GameStates.ANIMATION_PLAYING, game_state)
                 # Immediately play the animation.

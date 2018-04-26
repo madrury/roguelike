@@ -75,13 +75,17 @@ class HealthPotionCallback:
         if target:
             text = "The health potion heals the {}'s wounds".format(
                 target.name)
+            throw_animation = (
+                Animations.THROW_POTION,
+                (self.user.x, self.user.y), (target.x, target.y))
+            heal_animation = (
+                Animations.HEALTH_POTION, (target.x, target.y), ' ', None)
             results.append({
                 ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
                 ResultTypes.HEAL: (target, self.owner.healing),
                 ResultTypes.ITEM_CONSUMED: (True, self.owner.owner),
                 ResultTypes.ANIMATION: (
-                    Animations.HEALTH_POTION,
-                    (target.x, target.y), target.char, target.color)
+                    Animations.CONCATINATED, (throw_animation, heal_animation))
             }),
         else:
             text = "The health potion splashes on the ground."
@@ -93,7 +97,7 @@ class HealthPotionCallback:
                 ResultTypes.ITEM_CONSUMED: (True, self.owner.owner),
                 ResultTypes.ANIMATION: (
                     Animations.CONCATINATED, (throw_animation, spill_animation))
-                })
+            })
         return results
 
 
