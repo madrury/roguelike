@@ -75,15 +75,15 @@ class HealthPotionCallback:
         if target:
             text = "The health potion heals the {}'s wounds".format(
                 target.name)
+            #TODO: Use a queue so these read in the correct order.
+            retults.append({ResultTypes.ANIMATION: (
+                Animations.HEALTH_POTION,
+                (target.x, target.y), target.char, target.color)})
             results.append({
                 ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
                 ResultTypes.HEAL: (target, self.owner.healing),
-                ResultTypes.ITEM_CONSUMED: (True, self.owner.owner),
-                ResultTypes.ANIMATION: (
-                    Animations.HEALTH_POTION, 
-                    (target.x, target.y),
-                    target.char,
-                    target.color)})
+                ResultTypes.ITEM_CONSUMED: (True, self.owner.owner)}),
+
         else:
             # Todo: Have the knife drop on the ground.
             text = "The health potion splashes on the ground."
@@ -92,6 +92,10 @@ class HealthPotionCallback:
                 ResultTypes.ITEM_CONSUMED: (True, self.owner.owner),
                 ResultTypes.ANIMATION: (
                     Animations.HEALTH_POTION, (x, y), ' ', None)})
+            results.append({ResultTypes.ANIMATION: (
+                Animations.THROW_POTION,
+                    (self.user.x, self.user.y),
+                    (x, y))})
         return results
 
 

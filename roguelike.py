@@ -21,7 +21,7 @@ from spawnable.items import (
     HealthPotion, MagicMissileScroll, FireblastScroll, ThrowingKnife)
 from animations.animations import (
     MagicMissileAnimation, HealthPotionAnimation, FireblastAnimation,
-    ThrowingKnifeAnimation)
+    ThrownPotionAnimation, ThrowingKnifeAnimation)
 
 from cursor import Cursor
 from input_handlers import handle_keys
@@ -148,6 +148,7 @@ def main():
         #---------------------------------------------------------------------
         if game_state == GameStates.ANIMATION_PLAYING:
             # Now play the animatin
+            print(animation_player)
             animation_finished = animation_player.next_frame()
             sleep(0.1)
             if animation_finished:
@@ -308,7 +309,7 @@ def main():
         # the stack, so we continually process the results stack until it is
         # empty.
         #----------------------------------------------------------------------
-        while player_turn_results != []:
+        while game_state != GameStates.ANIMATION_PLAYING and player_turn_results != []:
             result = player_turn_results.pop()
 
             animation = result.get(ResultTypes.ANIMATION)
@@ -322,6 +323,8 @@ def main():
             item_dropped = result.get(ResultTypes.ITEM_DROPPED)
             message = result.get(ResultTypes.MESSAGE)
             move = result.get(ResultTypes.MOVE)
+
+            print(animation)
 
             # Move the player.
             if move:
@@ -381,6 +384,8 @@ def main():
                 game_state, previous_game_state = (
                     GameStates.CURSOR_INPUT, game_state)
             # Play an animation.
+            # TODO: Factor this out into its own function. This should be easy,
+            #       you only need the animation object.
             if animation:
                 animation_type = animation[0]
                 if animation_type == Animations.MAGIC_MISSILE:
@@ -390,6 +395,11 @@ def main():
                 elif animation_type == Animations.THROWING_KNIFE:
                     _, source, target = animation
                     animation_player = ThrowingKnifeAnimation(
+                        map_console, game_map, source, target)
+                elif animation_type == Animations.THROW_POTION:
+                    print("Constructing animation.")
+                    _, source, target = animation
+                    animation_player = ThrownPotionAnimation(
                         map_console, game_map, source, target)
                 elif animation_type == Animations.HEALTH_POTION:
                     _, target, char, color = animation
@@ -401,6 +411,8 @@ def main():
                         map_console, game_map, (player.x, player.y), radius)
                 game_state, previous_game_state = (
                     GameStates.ANIMATION_PLAYING, game_state)
+                # Immediately play the animation.
+                #break
 
         #---------------------------------------------------------------------
         # All enemies take thier turns.

@@ -31,6 +31,22 @@ class HealthPotionAnimation:
             self.target[0], self.target[1], self.char, self.color,
             bg=color)
         return False
+
+
+class ThrownPotionAnimation:
+
+    def __init__(self, map_console, game_map, source, target):
+        self.map_console = map_console
+        self.source = source
+        self.game_map = game_map
+        self.target = target
+        self.path = game_map.compute_path(
+            source[0], source[1], target[0], target[1])
+        self.char = '!'
+        self.current_frame = 0
+
+    def next_frame(self):
+        return draw_missile(self, COLORS['violet'], COLORS['light_ground'])
         
 
 class MagicMissileAnimation:

@@ -124,6 +124,7 @@ class Animations(Enum):
     MAGIC_MISSILE = auto()
     FIREBLAST = auto()
     THROWING_KNIFE = auto()
+    THROW_POTION = auto()
 
 
 class RenderOrder(Enum):
