@@ -3,10 +3,36 @@ from time import sleep
 import random
 
 from utils.utils import coordinates_within_circle
+from etc.enum import Animations
 from etc.config import SCREEN_WIDTH, SCREEN_HEIGHT, PANEL_CONFIG
 from etc.colors import COLORS
 from etc.chars import CHARS
 from animations.colors import COLOR_PATHS, random_yellow, random_red_or_yellow
+
+
+def construct_animation(animation_data, map_console, game_map):
+    animation_type = animation_data[0]
+    if animation_type == Animations.MAGIC_MISSILE:
+        _, source, target = animation_data
+        animation_player = MagicMissileAnimation(
+            map_console, game_map, source, target)
+    elif animation_type == Animations.THROWING_KNIFE:
+        _, source, target = animation_data
+        animation_player = ThrowingKnifeAnimation(
+            map_console, game_map, source, target)
+    elif animation_type == Animations.THROW_POTION:
+        _, source, target = animation_data
+        animation_player = ThrownPotionAnimation(
+            map_console, game_map, source, target)
+    elif animation_type == Animations.HEALTH_POTION:
+        _, target, char, color = animation_data
+        animation_player = HealthPotionAnimation(
+            map_console, game_map, target, char, color)
+    elif animation_type == Animations.FIREBLAST:
+        _, _, radius = animation_data
+        animation_player = FireblastAnimation(
+            map_console, game_map, (player.x, player.y), radius)
+    return animation_player
 
 
 class HealthPotionAnimation:

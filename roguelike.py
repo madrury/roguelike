@@ -19,9 +19,7 @@ from spawnable.items import ITEM_SCHEDULE, ITEM_GROUPS
 from spawnable.spawnable import spawn_entities
 from spawnable.items import (
     HealthPotion, MagicMissileScroll, FireblastScroll, ThrowingKnife)
-from animations.animations import (
-    MagicMissileAnimation, HealthPotionAnimation, FireblastAnimation,
-    ThrownPotionAnimation, ThrowingKnifeAnimation)
+from animations.animations import construct_animation
 
 from cursor import Cursor
 from input_handlers import handle_keys
@@ -387,28 +385,7 @@ def main():
             # TODO: Factor this out into its own function. This should be easy,
             #       you only need the animation object.
             if animation:
-                animation_type = animation[0]
-                if animation_type == Animations.MAGIC_MISSILE:
-                    _, source, target = animation
-                    animation_player = MagicMissileAnimation(
-                        map_console, game_map, source, target)
-                elif animation_type == Animations.THROWING_KNIFE:
-                    _, source, target = animation
-                    animation_player = ThrowingKnifeAnimation(
-                        map_console, game_map, source, target)
-                elif animation_type == Animations.THROW_POTION:
-                    print("Constructing animation.")
-                    _, source, target = animation
-                    animation_player = ThrownPotionAnimation(
-                        map_console, game_map, source, target)
-                elif animation_type == Animations.HEALTH_POTION:
-                    _, target, char, color = animation
-                    animation_player = HealthPotionAnimation(
-                        map_console, game_map, target, char, color)
-                elif animation_type == Animations.FIREBLAST:
-                    _, _, radius = animation
-                    animation_player = FireblastAnimation(
-                        map_console, game_map, (player.x, player.y), radius)
+                animation_player = construct_animation(animation, map_console, game_map)
                 game_state, previous_game_state = (
                     GameStates.ANIMATION_PLAYING, game_state)
                 # Immediately play the animation.
