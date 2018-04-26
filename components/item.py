@@ -55,8 +55,44 @@ class HealthPotionComponent:
         return results
 
     def throw(self, game_map, thrower, entities):
-        print("You throw the potion!")
-        return [{}]
+        callback = HealthPotionCallback(self, game_map, thrower, entities)
+        return [
+            {ResultTypes.CURSOR_MODE: (thrower.x, thrower.y, callback)}]
+
+
+class HealthPotionCallback:
+
+    def __init__(self, owner, game_map, user, entities):
+        self.owner = owner
+        self.game_map = game_map
+        self.user = user
+        self.entities = entities
+
+    def execute(self, x, y):
+        results = []
+        target = get_first_blocking_entity_along_path(
+            self.game_map, self.entities, (self.user.x, self.user.y), (x, y))
+        if target:
+            text = "The health potion heals the {}'s wounds".format(
+                target.name)
+            results.append({
+                ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
+                ResultTypes.HEAL: (target, self.owner.healing),
+                ResultTypes.ITEM_CONSUMED: (True, self.owner.owner),
+                ResultTypes.ANIMATION: (
+                    Animations.HEALTH_POTION, 
+                    (target.x, target.y),
+                    target.char,
+                    target.color)})
+        else:
+            # Todo: Have the knife drop on the ground.
+            text = "The health potion splashes on the ground."
+            results.append({
+                ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
+                ResultTypes.ITEM_CONSUMED: (True, self.owner.owner),
+                ResultTypes.ANIMATION: (
+                    Animations.HEALTH_POTION, (x, y), ' ', None)})
+        return results
 
 
 class MagicMissileComponent:
