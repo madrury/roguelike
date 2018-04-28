@@ -114,7 +114,7 @@ def main():
         #---------------------------------------------------------------------
         # Render and display the dungeon and its inhabitates.
         #---------------------------------------------------------------------
-        game_map.render_all(entities, fov_recompute)
+        game_map.update_and_draw_all(entities, fov_recompute)
         render_health_bars(panel_console, player, PANEL_CONFIG, COLORS)
         render_messages(panel_console, message_log)
 
@@ -166,7 +166,7 @@ def main():
         # Clear all the entities drawn to the consoles, else we will re-draw
         # them in the same positions next game loop.
         if game_state != GameStates.ANIMATION_PLAYING:
-            game_map.clear_all(entities)
+            game_map.undraw_all(entities)
 
         # Unless the player moves, we do not need to recompute the fov.
         fov_recompute = False 

@@ -1,6 +1,8 @@
-from tdl.map import Map
 import numpy as np
+from itertools import product
 from random import randint, choice
+
+from tdl.map import Map
 
 from etc.colors import COLORS
 
@@ -22,56 +24,80 @@ class GameMap(Map):
         self.walkable[x, y] = True
         self.transparent[x, y] = True
 
-    def draw_char(self, x, y, char, fg=None, bg=None):
+    def undraw_entity(self, entity):
+        self.draw_blank(entity.x, entity.y)
+
+    def draw_entity(self, entity):
+        bg = self.bg_colors[entity.x, entity.y]
+        if self.fov[entity.x, entity.y]:
+            self.draw_char(entity.x, entity.y, entity.char, 
+                        fg=entity.color, bg=bg)
+
+    def draw_blank(self, x, y):
+        bg = self.bg_colors[x, y]
+        self.draw_char(x, y, ' ', fg=None, bg=bg)
+
+    def update_entity(self, entity):
+        bg = self.bg_colors[entity.x, entity.y]
+        self.update_position(entity.x, entity.y, entity.char,
+                             fg=entity.color, bg=bg)
+
+    def update_and_draw_entity(self, entity):
+        self.update_entity(entity)
+        self.draw_entity(entity)
+
+    def update_position(self, x, y, char, fg=None, bg=None):
         self.fg_colors[x, y] = fg
         self.bg_colors[x, y] = bg
         self.chars[x, y] = char
+
+    def draw_char(self, x, y, char, fg=None, bg=None):
         self.console.draw_char(x, y, char, fg, bg)
 
-    def render_all(self, entities, fov_recompute):
+    def draw_all(self):
+        it = zip(product(range(self.width), range(self.height)),
+                 self.chars.flatten(),
+                 self.fg_colors.flatten(),
+                 self.bg_colors.flatten())
+        for (x, y), char, fg_color, bg_color in it:
+            self.draw_char(x, y, char, fg, bg)
+
+    def update_and_draw_char(self, x, y, char, fg=None, bg=None):
+        self.update_position(x, y, char, fg, bg)
+        self.console.draw_char(x, y, char, fg, bg)
+
+    def update_and_draw_all(self, entities, fov_recompute=True):
         # Draw walls.
         if fov_recompute:
-            self._draw_walls() 
+            self.update_and_draw_layout() 
         # Draw Entities.
         entities_in_render_order = sorted(
             entities, key=lambda x: x.render_order.value)
         for entity in entities_in_render_order:
-            self._draw_entity(entity)
+            self.update_and_draw_entity(entity)
 
-    def clear_all(self, entities):
+    def undraw_all(self, entities):
         for entity in entities:
-            self._clear_entity(entity)
+            self.undraw_entity(entity)
 
-    def _draw_walls(self):
+    def update_and_draw_layout(self):
         for x, y in self:
             wall = not self.transparent[x, y]
             if self.fov[x, y]:
                 if wall:
-                    self.draw_char(
+                    self.update_and_draw_char(
                         x, y, ' ', fg=None, bg=COLORS.get('light_wall'))
                 else:
-                    self.draw_char(
+                    self.update_and_draw_char(
                         x, y, ' ', fg=None, bg=COLORS.get('light_ground'))
                 self.explored[x, y] = True
             elif self.explored[x, y]:
                 if wall:
-                    self.draw_char(
+                    self.update_and_draw_char(
                         x, y, ' ', fg=None, bg=COLORS.get('dark_wall'))
                 else:
-                    self.draw_char(
+                    self.update_and_draw_char(
                         x, y, ' ', fg=None, bg=COLORS.get('dark_ground'))
-
-    def _draw_entity(self, entity):
-        bg_color = self.bg_colors[entity.x, entity.y]
-        if self.fov[entity.x, entity.y]:
-            self.draw_char(
-                entity.x, entity.y, entity.char, 
-                fg=entity.color, bg=bg_color)
-
-    def _clear_entity(self, entity):
-        bg_color = self.bg_colors[entity.x, entity.y]
-        self.draw_char(
-            entity.x, entity.y, ' ', entity.color, bg=bg_color)
 
 
 class ColorArray:
