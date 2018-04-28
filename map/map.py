@@ -30,21 +30,29 @@ class GameMap(Map):
             self.draw_char(entity.x, entity.y, entity.char, 
                         fg=entity.color, bg=bg)
 
-    def undraw_entity(self, entity):
-        self.draw_blank(entity.x, entity.y)
-
-    def draw_blank(self, x, y):
-        bg = self.bg_colors[x, y]
-        self.draw_char(x, y, ' ', fg=None, bg=bg)
+    def update_entity(self, entity):
+        bg = self.bg_colors[entity.x, entity.y]
+        self.update_position(entity.x, entity.y, entity.char,
+                             fg=entity.color, bg=bg)
 
     def update_and_draw_entity(self, entity):
         self.update_entity(entity)
         self.draw_entity(entity)
 
-    def update_entity(self, entity):
-        bg = self.bg_colors[entity.x, entity.y]
-        self.update_position(entity.x, entity.y, entity.char,
-                             fg=entity.color, bg=bg)
+    def undraw_entity(self, entity):
+        self.draw_blank(entity.x, entity.y)
+
+    def remove_entity(self, entity):
+        self.fg_colors[entity.x, entity.y] = None
+        self.chars[entity.x, entity.y] = ' '
+
+    def remove_and_undraw_entity(self, entity):
+        self.remove_entity(entity)
+        self.undraw_entity(entity)
+
+    def draw_blank(self, x, y):
+        bg = self.bg_colors[x, y]
+        self.draw_char(x, y, ' ', fg=None, bg=bg)
 
     def update_position(self, x, y, char, fg=None, bg=None):
         self.fg_colors[x, y] = fg
@@ -59,6 +67,7 @@ class GameMap(Map):
         fg = self.fg_colors[x, y]
         self.draw_char(x, y, char, fg=fg, bg=color)
 
+    # TODO: Is this needed?
     def draw_position(self, x, y):
         char = self.chars[x, y]
         fg = self.fg_colors[x, y]

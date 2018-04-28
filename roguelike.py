@@ -324,7 +324,9 @@ def main():
 
             # Move the player.
             if move:
+                game_map.undraw_entity(player)
                 player.move(*move)
+                game_map.draw_entity(player)
                 fov_recompute = True
             # Add to the message log.
             if message:
@@ -411,12 +413,16 @@ def main():
             # Handle a move towards action.  Move towards a target.
             if move_towards:
                monster, target_x, target_y = move_towards
+               game_map.remove_and_undraw_entity(monster)
                monster.move_towards(target_x, target_y, game_map, entities)
+               game_map.update_and_draw_entity(monster)
             # Handle a move random adjacent action.  Move to a random adjacent
             # square.
             if move_random_adjacent:
                monster = move_random_adjacent
+               game_map.remove_and_undraw_entity(monster)
                monster.move_to_random_adjacent(game_map, entities)
+               game_map.update_and_draw_entity(monster)
             # Handle a simple message.
             if message:
                 message_log.add_message(message)
