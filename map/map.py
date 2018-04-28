@@ -13,6 +13,7 @@ class GameMap(Map):
         super().__init__(width, height)
         self.console = console
         self.explored = np.zeros((width, height)).astype(bool)
+        self.pool = np.zeros((width, height)).astype(bool)
         self.fg_colors = ColorArray((width, height))
         self.bg_colors = ColorArray((width, height))
         self.chars = np.full((width, height), ' ')
