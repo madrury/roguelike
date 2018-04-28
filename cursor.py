@@ -67,8 +67,8 @@ class Cursor:
         path = self.game_map.compute_path(
             self.source[0], self.source[1], self.x, self.y)
         for x, y in path[:-1]:
-            self.game_map.console.draw_char(x, y, ' ', fg=None, bg=path_color)
-        self.game_map.console.draw_char(
+            self.game_map.draw_char(x, y, ' ', fg=None, bg=path_color)
+        self.game_map.draw_char(
             self.x, self.y, ' ', fg=None, bg=cursor_color)
 
 
