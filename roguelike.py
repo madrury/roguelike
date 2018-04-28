@@ -115,7 +115,7 @@ def main():
         #---------------------------------------------------------------------
         # Render and display the dungeon and its inhabitates.
         #---------------------------------------------------------------------
-        render_all(game_map, entities, fov_recompute)
+        game_map.render_all(entities, fov_recompute)
         render_health_bars(panel_console, player, PANEL_CONFIG, COLORS)
         render_messages(panel_console, message_log)
 
