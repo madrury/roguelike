@@ -4,8 +4,9 @@ from random import randint, choice
 
 class GameMap(Map):
 
-    def __init__(self, width, height):
+    def __init__(self, width, height, console):
         super().__init__(width, height)
+        self.console = console
         self.explored = np.zeros((width, height)).astype(bool)
 
     def within_bounds(self, x, y):

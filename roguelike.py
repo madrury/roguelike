@@ -61,7 +61,8 @@ def main():
     player.inventory.extend([FireblastScroll.make(0, 0) for _ in range(3)])
  
     # Generate the map and place player, monsters, and items.
-    game_map = GameMap(FLOOR_CONFIG['width'], FLOOR_CONFIG['height'])
+    game_map = GameMap(FLOOR_CONFIG['width'], FLOOR_CONFIG['height'], 
+                       map_console)
     floor = make_floor(FLOOR_CONFIG, ROOM_CONFIG)
     floor.place_player(player)
     floor.write_to_game_map(game_map)
@@ -114,7 +115,7 @@ def main():
         #---------------------------------------------------------------------
         # Render and display the dungeon and its inhabitates.
         #---------------------------------------------------------------------
-        render_all(map_console, entities, game_map, fov_recompute, COLORS)
+        render_all(game_map, entities, fov_recompute)
         render_health_bars(panel_console, player, PANEL_CONFIG, COLORS)
         render_messages(panel_console, message_log)
 
