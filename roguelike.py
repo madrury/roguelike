@@ -27,8 +27,7 @@ from messages import Message, MessageLog
 from entity import Entity, get_blocking_entity_at_location
 from menus import invetory_menu
 from death_functions import kill_monster, kill_player, make_corpse
-from rendering import (
-    clear_all, render_all, render_health_bars, render_messages)
+from rendering import render_health_bars, render_messages
 
 
 def main():
@@ -155,7 +154,7 @@ def main():
         #---------------------------------------------------------------------
         # Blit the subconsoles to the main console and flush all rendering.
         #---------------------------------------------------------------------
-        root_console.blit(map_console, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
+        root_console.blit(game_map.console, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
         root_console.blit(panel_console, 0, PANEL_CONFIG['y'],
                           SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
         if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY, 
@@ -166,7 +165,7 @@ def main():
 
         # Clear all the entities drawn to the consoles, else we will re-draw
         # them in the same positions next game loop.
-        clear_all(map_console, entities)
+        game_map.clear_all(entities)
 
         # Unless the player moves, we do not need to recompute the fov.
         fov_recompute = False 
@@ -375,8 +374,7 @@ def main():
             if cursor_mode:
                 x, y, callback = cursor_mode
                 cursor = Cursor(
-                    player.x, player.y, map_console, game_map, 
-                    callback=callback)
+                    player.x, player.y, game_map, callback=callback)
                 game_state, previous_game_state = (
                     GameStates.CURSOR_INPUT, game_state)
             # Play an animation.

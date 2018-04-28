@@ -1,15 +1,6 @@
 from etc.colors import COLORS
 
 
-def render_all(game_map, entities, fov_recompute):
-    # Draw walls.
-    if fov_recompute:
-        _draw_walls(game_map) 
-    # Draw Entities.
-    entities_in_render_order = sorted(
-        entities, key=lambda x: x.render_order.value)
-    for entity in entities_in_render_order:
-        _draw_entity(game_map, entity)
 
 def render_health_bars(panel, player, panel_config, colors):
     panel.clear(fg=colors['white'], bg=colors['black'])
@@ -26,10 +17,6 @@ def render_messages(panel, message_log):
         panel.draw_str(
             message_log.x, y, message.text, bg=None, fg=message.color)
 
-def clear_all(con, entities):
-    for entity in entities:
-        _clear_entity(con, entity)
-
 
 def _render_bar(panel, name, x, y, total_width, value, maximum, bar_colors):
     bar_color = bar_colors['bar_color']
@@ -42,31 +29,3 @@ def _render_bar(panel, name, x, y, total_width, value, maximum, bar_colors):
     text = name + ': ' + str(value) + '/' + str(maximum)
     x_centered = x + int((total_width - len(text)) / 2)
     panel.draw_str(x_centered, y, text, fg=string_color, bg=None)
-
-def _draw_walls(game_map):
-    for x, y in game_map:
-        wall = not game_map.transparent[x, y]
-        if game_map.fov[x, y]:
-            if wall:
-                game_map.console.draw_char(
-                    x, y, None, fg=None, bg=COLORS.get('light_wall'))
-            else:
-                game_map.console.draw_char(
-                    x, y, None, fg=None, bg=COLORS.get('light_ground'))
-            game_map.explored[x, y] = True
-        elif game_map.explored[x, y]:
-            if wall:
-                game_map.console.draw_char(
-                    x, y, None, fg=None, bg=COLORS.get('dark_wall'))
-            else:
-                game_map.console.draw_char(
-                    x, y, None, fg=None, bg=COLORS.get('dark_ground'))
-
-def _draw_entity(game_map, entity):
-    if game_map.fov[entity.x, entity.y]:
-        game_map.console.draw_char(
-            entity.x, entity.y, entity.char, entity.color, bg=None)
-
-def _clear_entity(game_map, entity):
-    game_map.console.draw_char(
-        entity.x, entity.y, ' ', entity.color, bg=None)

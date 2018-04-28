@@ -25,9 +25,6 @@ class Cursor:
     color: tuple of RGB values
       The color of the cursor.
 
-    map_console: tdl.Console object
-      The console to draw the cursor onto.
-
     game_map: tdl.Map object
       The dungeon map to select an object from.
 
@@ -38,7 +35,7 @@ class Cursor:
       callback should return a list of turn result dictionaries to be added to
       the player turn results stack.
     """
-    def __init__(self, x, y, map_console, game_map, callback):
+    def __init__(self, x, y, game_map, callback):
         self.source = (x, y)
         self.x = x
         self.y = y
@@ -46,7 +43,6 @@ class Cursor:
         self.previous_y = None
         self.color = COLORS['cursor']
         self.path_color = COLORS['cursor_tail']
-        self.map_console = map_console
         self.game_map = game_map
         self.callback = callback
 
@@ -71,8 +67,8 @@ class Cursor:
         path = self.game_map.compute_path(
             self.source[0], self.source[1], self.x, self.y)
         for x, y in path[:-1]:
-            self.map_console.draw_char(x, y, ' ', fg=None, bg=path_color)
-        self.map_console.draw_char(
+            self.game_map.console.draw_char(x, y, ' ', fg=None, bg=path_color)
+        self.game_map.console.draw_char(
             self.x, self.y, ' ', fg=None, bg=cursor_color)
 
 
