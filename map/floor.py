@@ -4,8 +4,9 @@ import numpy as np
 from .room import PinnedDungeonRoom, random_dungeon_room
 from .tunnel import random_tunnel_between_pinned_rooms
 
+
 def make_floor(floor_config, room_config):
-    # Destructure the floor_config dictionary into local variables.
+    """Generate a random dungeon floor with given parameters."""
     floor_config_keys = ['width', 'height', 'max_rooms']
     floor_width, floor_height, max_rooms = [
         floor_config[key] for key in floor_config_keys]
@@ -19,6 +20,35 @@ def random_dungeon_floor(width=80,
                          n_rooms_to_try=50,
                          n_room_placement_trys=25,
                          room_config=None):
+    """Generate a random dungeon floor with given parameters.
+
+    make_floor is the intended interface for this function.
+
+    Parameters
+    ----------
+    width: int
+      The width of the dungeon floor.
+
+    height: int
+      The height of the dungeon floor.
+
+    max_rooms: int
+      The maximum number of rooms in the dungeon.
+
+    n_rooms_to_try: int
+      The maximum number of rooms to generate and attempt to place.
+
+    n_room_placement_trys: int
+      The maximum number of times to attempt to place a single room.
+
+    room_config: dict
+      Configuration for random generation of a single room.
+
+    Returns
+    -------
+    floor: DungeonFloor object
+      The generated dungeon floor.
+    """
     if room_config == None:
         room_config = {}
     floor = DungeonFloor(width, height)
@@ -48,6 +78,25 @@ class DungeonFloor:
     """A Floor of a dungeon.
 
     A floor of a dungeon is made up of multiple PinnedDungeonRooms.
+
+    Parameters
+    ----------
+    width: int
+      The width of the dungeon floor.
+
+    height: int
+      The height of the dungeon floor.
+
+    Attributes
+    ----------
+    self.rooms: list of PinnedDungeonRoom objects.
+      The rooms in the dungeon.
+
+    self.tunnels: list of Tunnel objects
+      The tunnels in the dungeon.
+
+    self.floor: np.array of bool
+      Array of transparant tiles.  Only used for printing. 
     """
     def __init__(self, width=80, height=43):
         self.width = width
