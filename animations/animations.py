@@ -11,31 +11,27 @@ from animations.colors import COLOR_PATHS, random_yellow, random_red_or_yellow
 
 # TODO: Remove player as an arguement here.  Fireblast anumation should not
 #       rely on the player object.
-def construct_animation(animation_data, map_console, game_map, player=None):
+def construct_animation(animation_data, game_map, player=None):
     animation_type = animation_data[0]
     if animation_type == Animations.MAGIC_MISSILE:
         _, source, target = animation_data
-        animation_player = MagicMissileAnimation(
-            map_console, game_map, source, target)
+        animation_player = MagicMissileAnimation( game_map, source, target)
     elif animation_type == Animations.THROWING_KNIFE:
         _, source, target = animation_data
-        animation_player = ThrowingKnifeAnimation(
-            map_console, game_map, source, target)
+        animation_player = ThrowingKnifeAnimation( game_map, source, target)
     elif animation_type == Animations.THROW_POTION:
         _, source, target = animation_data
-        animation_player = ThrownPotionAnimation(
-            map_console, game_map, source, target)
+        animation_player = ThrownPotionAnimation(game_map, source, target)
     elif animation_type == Animations.HEALTH_POTION:
         _, target, char, color = animation_data
-        animation_player = HealthPotionAnimation(
-            map_console, game_map, target, char, color)
+        animation_player = HealthPotionAnimation(game_map, target, char, color)
     elif animation_type == Animations.FIREBLAST:
         _, _, radius = animation_data
         animation_player = FireblastAnimation(
-            map_console, game_map, (player.x, player.y), radius)
+            game_map, (player.x, player.y), radius)
     elif animation_type == Animations.CONCATINATED:
         animation_player = ConcatinatedAnimation.construct(
-            map_console, game_map, animation_data[1])
+            game_map, animation_data[1])
     return animation_player
 
 
@@ -58,17 +54,16 @@ class ConcatinatedAnimation:
             return False
 
     @staticmethod
-    def construct(map_console, game_map, animation_data):
+    def construct(game_map, animation_data):
         animations = []
         for datum in animation_data:
-            animations.append(construct_animation(datum, map_console, game_map))
+            animations.append(construct_animation(datum, game_map))
         return ConcatinatedAnimation(*animations)
 
 
 class HealthPotionAnimation:
 
-    def __init__(self, map_console, game_map, target, char, color):
-        self.map_console = map_console
+    def __init__(self, game_map, target, char, color):
         self.game_map = game_map
         self.target = target
         self.char = char
@@ -77,13 +72,13 @@ class HealthPotionAnimation:
 
     def next_frame(self):
         try:
-            self.map_console.draw_char(
+            self.game_map.draw_char(
                 self.target[0], self.target[1], self.char, self.color,
                 bg=COLORS['light_ground'])
             color = next(self.color_iter)
         except StopIteration:
             return True
-        self.map_console.draw_char(
+        self.game_map.draw_char(
             self.target[0], self.target[1], self.char, self.color,
             bg=color)
         return False
@@ -91,10 +86,9 @@ class HealthPotionAnimation:
 
 class ThrownPotionAnimation:
 
-    def __init__(self, map_console, game_map, source, target):
-        self.map_console = map_console
-        self.source = source
+    def __init__(self, game_map, source, target):
         self.game_map = game_map
+        self.source = source
         self.target = target
         self.path = game_map.compute_path(
             source[0], source[1], target[0], target[1])
@@ -107,10 +101,9 @@ class ThrownPotionAnimation:
 
 class MagicMissileAnimation:
 
-    def __init__(self, map_console, game_map, source, target):
-        self.map_console = map_console
-        self.source = source
+    def __init__(self, game_map, source, target):
         self.game_map = game_map
+        self.source = source
         self.target = target
         self.path = game_map.compute_path(
             source[0], source[1], target[0], target[1])
@@ -123,8 +116,7 @@ class MagicMissileAnimation:
 
 class FireblastAnimation:
 
-    def __init__(self, map_console, game_map, source, radius=4):
-        self.map_console = map_console
+    def __init__(self, game_map, source, radius=4):
         self.game_map = game_map
         self.source = source
         self.radius = radius
@@ -141,7 +133,7 @@ class FireblastAnimation:
                 if (self.game_map.within_bounds(x, y) and 
                     self.game_map.fov[x, y] and 
                     self.game_map.walkable[x, y]):
-                    self.map_console.draw_char(
+                    self.game_map.draw_char(
                         x, y, ' ', 
                         COLORS.get('light_ground'), 
                         bg=COLORS.get('light_ground'))
@@ -153,15 +145,14 @@ class FireblastAnimation:
             if (self.game_map.within_bounds(x, y) and 
                 self.game_map.fov[x, y] and 
                 self.game_map.walkable[x, y]):
-                self.map_console.draw_char(
+                self.game_map.draw_char(
                     x, y, '^', random_red_or_yellow(), random_red_or_yellow())
         return False
 
 
 class ThrowingKnifeAnimation:
 
-    def __init__(self, map_console, game_map, source, target):
-        self.map_console = map_console
+    def __init__(self, game_map, source, target):
         self.game_map = game_map
         self.source = source
         self.target = target
@@ -194,7 +185,7 @@ def draw_missile(animation, fg_color, bg_color):
         missile_prior_location = animation.path[animation.current_frame - 1]
         if animation.game_map.fov[
             missile_prior_location[0], missile_prior_location[1]]:
-            animation.map_console.draw_char(
+            animation.game_map.draw_char(
                 missile_prior_location[0], missile_prior_location[1], 
                 ' ', COLORS.get('light_ground'), bg=COLORS.get('light_ground'))
     # If the missile has reached the target, the animation is done.
@@ -202,7 +193,7 @@ def draw_missile(animation, fg_color, bg_color):
         return True
     # Draw the missile.
     if animation.game_map.fov[missile_location[0], missile_location[1]]:
-        animation.map_console.draw_char(
+        animation.game_map.draw_char(
             missile_location[0], missile_location[1], 
             animation.char, fg_color, bg_color)
     animation.current_frame += 1
