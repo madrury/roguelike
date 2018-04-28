@@ -23,8 +23,9 @@ def construct_animation(animation_data, game_map, player=None):
         _, source, target = animation_data
         animation_player = ThrownPotionAnimation(game_map, source, target)
     elif animation_type == Animations.HEALTH_POTION:
-        _, target, char, color = animation_data
-        animation_player = HealthPotionAnimation(game_map, target, char, color)
+        _, target = animation_data
+        print(game_map.chars[target[0], target[1]])
+        animation_player = HealthPotionAnimation(game_map, target)
     elif animation_type == Animations.FIREBLAST:
         _, _, radius = animation_data
         animation_player = FireblastAnimation(
@@ -63,24 +64,25 @@ class ConcatinatedAnimation:
 
 class HealthPotionAnimation:
 
-    def __init__(self, game_map, target, char, color):
+    def __init__(self, game_map, target):
         self.game_map = game_map
         self.target = target
-        self.char = char
-        self.color = color
+        self.fg_color = game_map.fg_colors[target[0], target[1]]
+        self.bg_color = game_map.bg_colors[target[0], target[1]]
+        self.char = game_map.chars[target[0], target[1]]
         self.color_iter = iter(COLOR_PATHS['dark_to_light_green'])
 
     def next_frame(self):
         try:
-            self.game_map.draw_char(
-                self.target[0], self.target[1], self.char, self.color,
-                bg=COLORS['light_ground'])
             color = next(self.color_iter)
+            self.game_map.draw_char(
+                self.target[0], self.target[1], self.char, 
+                fg=self.fg_color, bg=color)
         except StopIteration:
+            self.game_map.draw_char(
+                self.target[0], self.target[1], self.char, 
+                fg=self.fg_color, bg=self.bg_color)
             return True
-        self.game_map.draw_char(
-            self.target[0], self.target[1], self.char, self.color,
-            bg=color)
         return False
 
 
@@ -186,8 +188,8 @@ def draw_missile(animation, fg_color, bg_color):
         if animation.game_map.fov[
             missile_prior_location[0], missile_prior_location[1]]:
             animation.game_map.draw_char(
-                missile_prior_location[0], missile_prior_location[1], 
-                ' ', COLORS.get('light_ground'), bg=COLORS.get('light_ground'))
+                missile_prior_location[0], missile_prior_location[1], ' ',
+                fg=COLORS.get('light_ground'), bg=COLORS.get('light_ground'))
     # If the missile has reached the target, the animation is done.
     if missile_location == animation.target:
         return True

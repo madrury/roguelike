@@ -165,7 +165,8 @@ def main():
 
         # Clear all the entities drawn to the consoles, else we will re-draw
         # them in the same positions next game loop.
-        game_map.clear_all(entities)
+        if game_state != GameStates.ANIMATION_PLAYING:
+            game_map.clear_all(entities)
 
         # Unless the player moves, we do not need to recompute the fov.
         fov_recompute = False 

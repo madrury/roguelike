@@ -49,9 +49,7 @@ class HealthPotionComponent:
                             ResultTypes.MESSAGE: message,
                             ResultTypes.ANIMATION: (
                                 Animations.HEALTH_POTION, 
-                                (reciever.x, reciever.y),
-                                reciever.char,
-                                reciever.color)})
+                                (reciever.x, reciever.y))})
         return results
 
     def throw(self, game_map, thrower, entities):
@@ -79,7 +77,7 @@ class HealthPotionCallback:
                 Animations.THROW_POTION,
                 (self.user.x, self.user.y), (target.x, target.y))
             heal_animation = (
-                Animations.HEALTH_POTION, (target.x, target.y), ' ', None)
+                Animations.HEALTH_POTION, (target.x, target.y))
             results.append({
                 ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
                 ResultTypes.HEAL: (target, self.owner.healing),
@@ -91,7 +89,7 @@ class HealthPotionCallback:
             text = "The health potion splashes on the ground."
             throw_animation = (
                 Animations.THROW_POTION, (self.user.x, self.user.y), (x, y))
-            spill_animation = (Animations.HEALTH_POTION, (x, y), ' ', None)
+            spill_animation = (Animations.HEALTH_POTION, (x, y))
             results.append({
                 ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
                 ResultTypes.ITEM_CONSUMED: (True, self.owner.owner),

@@ -48,37 +48,46 @@ class GameMap(Map):
             if self.fov[x, y]:
                 if wall:
                     self.draw_char(
-                        x, y, None, fg=None, bg=COLORS.get('light_wall'))
+                        x, y, ' ', fg=None, bg=COLORS.get('light_wall'))
                 else:
                     self.draw_char(
-                        x, y, None, fg=None, bg=COLORS.get('light_ground'))
+                        x, y, ' ', fg=None, bg=COLORS.get('light_ground'))
                 self.explored[x, y] = True
             elif self.explored[x, y]:
                 if wall:
                     self.draw_char(
-                        x, y, None, fg=None, bg=COLORS.get('dark_wall'))
+                        x, y, ' ', fg=None, bg=COLORS.get('dark_wall'))
                 else:
                     self.draw_char(
-                        x, y, None, fg=None, bg=COLORS.get('dark_ground'))
+                        x, y, ' ', fg=None, bg=COLORS.get('dark_ground'))
 
     def _draw_entity(self, entity):
+        bg_color = self.bg_colors[entity.x, entity.y]
         if self.fov[entity.x, entity.y]:
             self.draw_char(
-                entity.x, entity.y, entity.char, entity.color, bg=None)
+                entity.x, entity.y, entity.char, 
+                fg=entity.color, bg=bg_color)
 
     def _clear_entity(self, entity):
+        bg_color = self.bg_colors[entity.x, entity.y]
         self.draw_char(
-            entity.x, entity.y, ' ', entity.color, bg=None)
+            entity.x, entity.y, ' ', entity.color, bg=bg_color)
 
 
 class ColorArray:
 
     def __init__(self, shape):
+        # This needs to be an array of floating points so that we
+        # can store NaNs.
         self.a = np.zeros((shape[0], shape[1], 3))
 
     def __getitem__(self, idxs):
         if len(idxs) == 2:
-            return self.a[idxs[0], idxs[1], :]
+            colors = self.a[idxs[0], idxs[1], :]
+            if np.all(np.isnan(colors)):
+                return None
+            else:
+                return tuple(colors.astype(int))
         else:
             return self.a[idxs]
 
