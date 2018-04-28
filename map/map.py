@@ -11,6 +11,9 @@ class GameMap(Map):
         super().__init__(width, height)
         self.console = console
         self.explored = np.zeros((width, height)).astype(bool)
+        self.fg_colors = ColorArray((width, height))
+        self.bg_colors = ColorArray((width, height))
+        self.chars = np.full((width, height), ' ')
 
     def within_bounds(self, x, y):
         return (0 <= x < self.width) and (0 <= y < self.height)
@@ -20,6 +23,9 @@ class GameMap(Map):
         self.transparent[x, y] = True
 
     def draw_char(self, x, y, char, fg=None, bg=None):
+        self.fg_colors[x, y] = fg
+        self.bg_colors[x, y] = bg
+        self.chars[x, y] = char
         self.console.draw_char(x, y, char, fg, bg)
 
     def render_all(self, entities, fov_recompute):
@@ -63,3 +69,21 @@ class GameMap(Map):
     def _clear_entity(self, entity):
         self.draw_char(
             entity.x, entity.y, ' ', entity.color, bg=None)
+
+
+class ColorArray:
+
+    def __init__(self, shape):
+        self.a = np.zeros((shape[0], shape[1], 3))
+
+    def __getitem__(self, idxs):
+        if len(idxs) == 2:
+            return self.a[idxs[0], idxs[1], :]
+        else:
+            return self.a[idxs]
+
+    def __setitem__(self, idxs, value):
+        if len(idxs) == 2:
+            self.a[idxs[0], idxs[1], :] = value
+        else:
+            self.a[idxs] = value
