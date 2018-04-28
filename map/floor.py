@@ -103,6 +103,7 @@ class DungeonFloor:
         self.height = height
         self.rooms = []
         self.tunnels = []
+        self.pools = []
         self.floor = np.zeros((width, height)).astype(bool)
 
     def write_to_game_map(self, game_map):
@@ -126,6 +127,9 @@ class DungeonFloor:
         for x, y in tunnel:
             self.floor[x, y] = True
         self.tunnels.append(tunnel)
+
+    def add_pool(self, pool):
+        self.pools.append(pool)
 
     def print_floor(self):
         arr = np.array(['.', '#'])[self.floor.astype(int)].T
