@@ -41,7 +41,7 @@ class Cursor:
         self.y = y
         self.previous_x = None
         self.previous_y = None
-        self.color = COLORS['cursor']
+        self.cursor_color = COLORS['cursor']
         self.path_color = COLORS['cursor_tail']
         self.game_map = game_map
         self.callback = callback
@@ -58,17 +58,14 @@ class Cursor:
         return self.callback.execute(self.x, self.y)
 
     def draw(self):
-        self._draw_path(self.path_color, self.color)
-
-    def clear(self):
-        self._draw_path(COLORS['light_ground'], COLORS['light_ground'])
-
-    def _draw_path(self, path_color, cursor_color):
         path = self.game_map.compute_path(
             self.source[0], self.source[1], self.x, self.y)
         for x, y in path[:-1]:
-            self.game_map.draw_char(x, y, ' ', fg=None, bg=path_color)
-        self.game_map.draw_char(
-            self.x, self.y, ' ', fg=None, bg=cursor_color)
+            self.game_map.highlight_position(x, y, self.path_color)
+        self.game_map.highlight_position(self.x, self.y, self.cursor_color)
 
-
+    def clear(self):
+        path = self.game_map.compute_path(
+            self.source[0], self.source[1], self.x, self.y)
+        for x, y in path:
+            self.game_map.draw_position(x, y)

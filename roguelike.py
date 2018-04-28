@@ -105,11 +105,6 @@ def main():
                 radius=FOV_CONFIG["radius"],
                 light_walls=FOV_CONFIG["light_walls"])
 
-        #---------------------------------------------------------------------
-        # Draw the selection cursor if in cursor input state.
-        #---------------------------------------------------------------------
-        if game_state == GameStates.CURSOR_INPUT:
-            cursor.draw()
 
         #---------------------------------------------------------------------
         # Render and display the dungeon and its inhabitates.
@@ -117,6 +112,12 @@ def main():
         game_map.update_and_draw_all(entities, fov_recompute)
         render_health_bars(panel_console, player, PANEL_CONFIG, COLORS)
         render_messages(panel_console, message_log)
+
+        #---------------------------------------------------------------------
+        # Draw the selection cursor if in cursor input state.
+        #---------------------------------------------------------------------
+        if game_state == GameStates.CURSOR_INPUT:
+            cursor.draw()
 
         #---------------------------------------------------------------------
         # Render any menus.
@@ -165,8 +166,7 @@ def main():
 
         # Clear all the entities drawn to the consoles, else we will re-draw
         # them in the same positions next game loop.
-        if game_state != GameStates.ANIMATION_PLAYING:
-            game_map.undraw_all(entities)
+        game_map.undraw_all(entities)
 
         # Unless the player moves, we do not need to recompute the fov.
         fov_recompute = False 

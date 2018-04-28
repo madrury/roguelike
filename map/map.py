@@ -24,27 +24,27 @@ class GameMap(Map):
         self.walkable[x, y] = True
         self.transparent[x, y] = True
 
-    def undraw_entity(self, entity):
-        self.draw_blank(entity.x, entity.y)
-
     def draw_entity(self, entity):
         bg = self.bg_colors[entity.x, entity.y]
         if self.fov[entity.x, entity.y]:
             self.draw_char(entity.x, entity.y, entity.char, 
                         fg=entity.color, bg=bg)
 
+    def undraw_entity(self, entity):
+        self.draw_blank(entity.x, entity.y)
+
     def draw_blank(self, x, y):
         bg = self.bg_colors[x, y]
         self.draw_char(x, y, ' ', fg=None, bg=bg)
+
+    def update_and_draw_entity(self, entity):
+        self.update_entity(entity)
+        self.draw_entity(entity)
 
     def update_entity(self, entity):
         bg = self.bg_colors[entity.x, entity.y]
         self.update_position(entity.x, entity.y, entity.char,
                              fg=entity.color, bg=bg)
-
-    def update_and_draw_entity(self, entity):
-        self.update_entity(entity)
-        self.draw_entity(entity)
 
     def update_position(self, x, y, char, fg=None, bg=None):
         self.fg_colors[x, y] = fg
@@ -54,6 +54,18 @@ class GameMap(Map):
     def draw_char(self, x, y, char, fg=None, bg=None):
         self.console.draw_char(x, y, char, fg, bg)
 
+    def highlight_position(self, x, y, color):
+        char = self.chars[x, y]
+        fg = self.fg_colors[x, y]
+        self.draw_char(x, y, char, fg=fg, bg=color)
+
+    def draw_position(self, x, y):
+        char = self.chars[x, y]
+        fg = self.fg_colors[x, y]
+        bg = self.bg_colors[x, y]
+        self.draw_char(x, y, char, fg=fg, bg=bg)
+
+    # TODO: Is this needed?
     def draw_all(self):
         it = zip(product(range(self.width), range(self.height)),
                  self.chars.flatten(),
