@@ -74,13 +74,10 @@ class GameMap(Map):
         bg = self.bg_colors[x, y]
         self.draw_char(x, y, char, fg=fg, bg=bg)
 
-    # TODO: Is this needed?
     def draw_all(self):
-        it = zip(product(range(self.width), range(self.height)),
-                 self.chars.flatten(),
-                 self.fg_colors.flatten(),
-                 self.bg_colors.flatten())
-        for (x, y), char, fg_color, bg_color in it:
+        for x, y in product(range(self.width), range(self.height)):
+            char, fg, bg = (
+                self.chars[x, y], self.fg_colors[x, y], self.bg_colors[x, y])
             self.draw_char(x, y, char, fg, bg)
 
     def update_and_draw_char(self, x, y, char, fg=None, bg=None):

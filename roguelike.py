@@ -255,6 +255,7 @@ def main():
             and inventory_index < len(player.inventory.items)
             and previous_game_state != GameStates.PLAYER_DEAD):
             entity = player.inventory.items[inventory_index]
+            # TODO: Factor out the switch statement in the inner code block.
             if game_state == GameStates.SHOW_INVENTORY:
                 if entity.item.targeting == ItemTargeting.PLAYER:
                     player_turn_results.extend(

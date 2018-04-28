@@ -63,7 +63,18 @@ class ConcatinatedAnimation:
 
 
 class HealthPotionAnimation:
+    """Animation for using a health potion.
 
+    Cycles the background colors of a tilethrough shades of green.
+
+    Parameters
+    ----------
+    game_map: GameMap object
+      The game_map to draw the animation on.
+
+    target: (int, int):
+      The location of the animation.
+    """
     def __init__(self, game_map, target):
         self.game_map = game_map
         self.target = target
@@ -87,7 +98,21 @@ class HealthPotionAnimation:
 
 
 class ThrownPotionAnimation:
+    """Animation for throwing a health potion.
 
+    Draws the potion glyph along a path from a source to a target.
+
+    Parameters
+    ----------
+    game_map: GameMap object
+      The game_map to draw the animation on.
+
+    source: (int, int):
+      The location of the source.
+
+    target: (int, int):
+      The location of the target.
+    """
     def __init__(self, game_map, source, target):
         self.game_map = game_map
         self.source = source
@@ -95,14 +120,29 @@ class ThrownPotionAnimation:
         self.path = game_map.compute_path(
             source[0], source[1], target[0], target[1])
         self.char = '!'
+        self.color = COLORS['violet']
         self.current_frame = 0
 
     def next_frame(self):
-        return draw_missile(self, COLORS['violet'], COLORS['light_ground'])
+        return draw_missile(self)
         
 
 class MagicMissileAnimation:
+    """Animation for casting a magic missile.
 
+    Fickers tiles random shades of yellow between a source and a target.
+
+    Parameters
+    ----------
+    game_map: GameMap object
+      The game_map to draw the animation on.
+
+    source: (int, int):
+      The location of the source.
+
+    target: (int, int):
+      The location of the target.
+    """
     def __init__(self, game_map, source, target):
         self.game_map = game_map
         self.source = source
@@ -117,7 +157,22 @@ class MagicMissileAnimation:
 
 
 class FireblastAnimation:
+    """Animation for casting a fireblast.
 
+    Draws an expanding circle (in the L1 metric) centerd at a source in random
+    shades of red/yellow.
+
+    Parameters
+    ----------
+    game_map: GameMap object
+      The game_map to draw the animation on.
+
+    source: (int, int):
+      The location of the source.
+
+    radius: int:
+      The radius of the fireblast.
+    """
     def __init__(self, game_map, source, radius=4):
         self.game_map = game_map
         self.source = source
@@ -132,13 +187,7 @@ class FireblastAnimation:
             clear_coordinates = coordinates_within_circle(
                 (self.source[0], self.source[1]), self.radius)
             for x, y in clear_coordinates:
-                if (self.game_map.within_bounds(x, y) and 
-                    self.game_map.fov[x, y] and 
-                    self.game_map.walkable[x, y]):
-                    self.game_map.draw_char(
-                        x, y, ' ', 
-                        COLORS.get('light_ground'), 
-                        bg=COLORS.get('light_ground'))
+                self.game_map.draw_position(x, y)
             return True
         # Draw a red circle centered at `source`.
         blast_coordinates = coordinates_within_circle(
@@ -153,7 +202,21 @@ class FireblastAnimation:
 
 
 class ThrowingKnifeAnimation:
+    """Animation for throwing a knife potion.
 
+    Draws the throwing knife along a path from a source to a target.
+
+    Parameters
+    ----------
+    game_map: GameMap object
+      The game_map to draw the animation on.
+
+    source: (int, int):
+      The location of the source.
+
+    target: (int, int):
+      The location of the target.
+    """
     def __init__(self, game_map, source, target):
         self.game_map = game_map
         self.source = source
@@ -161,9 +224,13 @@ class ThrowingKnifeAnimation:
         self.path = game_map.compute_path(
             source[0], source[1], target[0], target[1])
         self.char = self._get_char()
+        self.color = COLORS['white']
         self.current_frame = 0
 
     def _get_char(self):
+        if len(self.path) == 1:
+            # Nothing to draw.
+            return ' '
         dx, dy = (self.path[1][0] - self.path[0][0],
                   self.path[1][1] - self.path[0][1])
         if (dx, dy) in ((-1, 1), (0, 1), (1, 1)):
@@ -177,26 +244,34 @@ class ThrowingKnifeAnimation:
         raise ValueError('Path does not move away from starting position.')
 
     def next_frame(self):
-        return draw_missile(self, COLORS['white'], None)
+        return draw_missile(self)
 
 
-def draw_missile(animation, fg_color, bg_color):
+def draw_missile(animation, fg=None, bg=None):
+    """Animate a missile moving from a source to a target.
+
+    Parameters
+    ----------
+    animation: Animation object
+      Must have .current_frame, and game_map attributes.
+    """
     missile_location = animation.path[animation.current_frame]
+    if not fg:
+        fg = animation.color
+    if not bg:
+        bg = animation.game_map.bg_colors[
+            missile_location[0], missile_location[1]]
     # Clear the previous frame's missile.
     if animation.current_frame >= 1:
-        missile_prior_location = animation.path[animation.current_frame - 1]
-        if animation.game_map.fov[
-            missile_prior_location[0], missile_prior_location[1]]:
-            animation.game_map.draw_char(
-                missile_prior_location[0], missile_prior_location[1], ' ',
-                fg=COLORS.get('light_ground'), bg=COLORS.get('light_ground'))
+        x, y = animation.path[animation.current_frame - 1]
+        animation.game_map.draw_position(x, y)
     # If the missile has reached the target, the animation is done.
     if missile_location == animation.target:
         return True
     # Draw the missile.
     if animation.game_map.fov[missile_location[0], missile_location[1]]:
         animation.game_map.draw_char(
-            missile_location[0], missile_location[1], 
-            animation.char, fg_color, bg_color)
+            missile_location[0], missile_location[1],
+            animation.char, fg=fg, bg=bg)
     animation.current_frame += 1
     return False
