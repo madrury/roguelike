@@ -19,6 +19,9 @@ class GameMap(Map):
         self.walkable[x, y] = True
         self.transparent[x, y] = True
 
+    def draw_char(self, x, y, char, fg=None, bg=None):
+        self.console.draw_char(x, y, char, fg, bg)
+
     def render_all(self, entities, fov_recompute):
         # Draw walls.
         if fov_recompute:
@@ -38,25 +41,25 @@ class GameMap(Map):
             wall = not self.transparent[x, y]
             if self.fov[x, y]:
                 if wall:
-                    self.console.draw_char(
+                    self.draw_char(
                         x, y, None, fg=None, bg=COLORS.get('light_wall'))
                 else:
-                    self.console.draw_char(
+                    self.draw_char(
                         x, y, None, fg=None, bg=COLORS.get('light_ground'))
                 self.explored[x, y] = True
             elif self.explored[x, y]:
                 if wall:
-                    self.console.draw_char(
+                    self.draw_char(
                         x, y, None, fg=None, bg=COLORS.get('dark_wall'))
                 else:
-                    self.console.draw_char(
+                    self.draw_char(
                         x, y, None, fg=None, bg=COLORS.get('dark_ground'))
 
     def _draw_entity(self, entity):
         if self.fov[entity.x, entity.y]:
-            self.console.draw_char(
+            self.draw_char(
                 entity.x, entity.y, entity.char, entity.color, bg=None)
 
     def _clear_entity(self, entity):
-        self.console.draw_char(
+        self.draw_char(
             entity.x, entity.y, ' ', entity.color, bg=None)
