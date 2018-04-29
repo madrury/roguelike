@@ -5,6 +5,8 @@ FLOOR_CONFIG = {
     'width': 80,
     'height': 43,
     'max_rooms': 15,
+    'min_pools': 2,
+    'max_pools': 10,
 }
 
 ROOM_CONFIG = {
