@@ -74,6 +74,10 @@ def random_dungeon_floor(width=80,
         floor.add_tunnel(t2)
     # Add a pool.
     floor.pools.append(random_pool(floor))
+    floor.pools.append(random_pool(floor))
+    floor.pools.append(random_pool(floor))
+    floor.pools.append(random_pool(floor))
+    floor.pools.append(random_pool(floor))
     return floor
 
 
@@ -113,20 +117,6 @@ class DungeonFloor:
         self.tunnels = []
         self.pools = []
         self.floor = np.zeros((width, height)).astype(bool)
-
-    def write_to_game_map(self, game_map):
-        for room in self.rooms:
-            for x, y in room:
-                game_map.make_transparent_and_walkable(x, y)
-        for tunnel in self.tunnels:
-            for x, y in tunnel:
-                game_map.make_transparent_and_walkable(x, y)
-        for pool in self.pools:
-            pool.write_to_game_map(game_map)
-
-    def place_player(self, player):
-        start_room = random.choice(self.rooms)
-        player.x, player.y = start_room.random_point()
 
     def add_pinned_room(self, pinned_room):
         for x, y in pinned_room:

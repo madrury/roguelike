@@ -9,14 +9,27 @@ from etc.colors import COLORS
 
 class GameMap(Map):
 
-    def __init__(self, width, height, console):
+    def __init__(self, floor, console):
+        width, height = floor.width, floor.height
         super().__init__(width, height)
+        self.floor = floor
         self.console = console
         self.explored = np.zeros((width, height)).astype(bool)
         self.pool = np.zeros((width, height)).astype(bool)
         self.fg_colors = ColorArray((width, height))
         self.bg_colors = ColorArray((width, height))
         self.chars = np.full((width, height), ' ')
+        self.blit_floor()
+
+    def blit_floor(self):
+        for room in self.floor.rooms:
+            for x, y in room:
+                self.make_transparent_and_walkable(x, y)
+        for tunnel in self.floor.tunnels:
+            for x, y in tunnel:
+                self.make_transparent_and_walkable(x, y)
+        for pool in self.floor.pools:
+            pool.write_to_game_map(self)
 
     def within_bounds(self, x, y):
         return (0 <= x < self.width) and (0 <= y < self.height)
@@ -24,6 +37,15 @@ class GameMap(Map):
     def make_transparent_and_walkable(self, x, y):
         self.walkable[x, y] = True
         self.transparent[x, y] = True
+
+    def place_player(self, player):
+        placed = False
+        while not placed:
+            start_room = choice(self.floor.rooms)
+            x, y = start_room.random_point()
+            if not self.pool[x, y]:
+                player.x, player.y = x, y
+                placed = True
 
     def draw_entity(self, entity):
         bg = self.bg_colors[entity.x, entity.y]
