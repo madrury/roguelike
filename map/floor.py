@@ -40,7 +40,13 @@ def random_dungeon_floor(width=80,
       The height of the dungeon floor.
 
     max_rooms: int
-      The maximum number of rooms in the dungeon.
+      The maximum number of rooms in the floor.
+
+    min_pools: int
+      The minumum number of water pools in the floor.
+
+    max_pools: int
+      The maximum number of water pools in the floor.
 
     n_rooms_to_try: int
       The maximum number of rooms to generate and attempt to place.
