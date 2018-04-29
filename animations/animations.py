@@ -7,7 +7,7 @@ from etc.enum import Animations
 from etc.config import SCREEN_WIDTH, SCREEN_HEIGHT, PANEL_CONFIG
 from etc.colors import COLORS
 from etc.chars import CHARS
-from animations.colors import COLOR_PATHS, random_yellow, random_red_or_yellow
+from colors import COLOR_PATHS, random_yellow, random_red_or_yellow
 
 # TODO: Remove player as an arguement here.  Fireblast anumation should not
 #       rely on the player object.

@@ -13,6 +13,12 @@ def random_red():
     red = int(random.uniform(100, 255))
     return (red, 0, 0)
 
+def random_light_water():
+    return (40, 40, int(random.uniform(200, 255)))
+
+def random_dark_water():
+    return (40, 40, int(random.uniform(80, 140)))
+
 def random_red_or_yellow():
     x = random.uniform(0, 1)
     if x <= 0.8:

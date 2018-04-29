@@ -5,6 +5,7 @@ from random import randint, choice
 from tdl.map import Map
 
 from etc.colors import COLORS
+from colors import random_light_water, random_dark_water
 
 
 class GameMap(Map):
@@ -159,7 +160,7 @@ class GameMap(Map):
                         x, y, ' ', fg=None, bg=COLORS.get('light_wall'))
                 elif pool:
                     self.update_and_draw_char(
-                        x, y, ' ', fg=None, bg=COLORS.get('light_pool'))
+                        x, y, ' ', fg=None, bg=random_light_water())
                 else:
                     self.update_and_draw_char(
                         x, y, ' ', fg=None, bg=COLORS.get('light_ground'))
@@ -170,7 +171,7 @@ class GameMap(Map):
                         x, y, ' ', fg=None, bg=COLORS.get('dark_wall'))
                 elif pool:
                     self.update_and_draw_char(
-                        x, y, ' ', fg=None, bg=COLORS.get('dark_pool'))
+                        x, y, ' ', fg=None, bg=random_dark_water())
                 else:
                     self.update_and_draw_char(
                         x, y, ' ', fg=None, bg=COLORS.get('dark_ground'))
