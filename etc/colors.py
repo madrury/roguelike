@@ -3,6 +3,8 @@ COLORS = {
     'dark_ground': (60, 60, 60),
     'light_wall': (110, 110, 110),
     'light_ground': (200, 200, 200),
+    'light_pool': (150, 150, 230),
+    'dark_pool': (60, 60, 150),
 
     'cursor': (255, 215, 0),
     'cursor_tail': (220, 180, 0), 

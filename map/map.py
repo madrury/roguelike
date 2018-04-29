@@ -102,10 +102,14 @@ class GameMap(Map):
     def update_and_draw_layout(self):
         for x, y in self:
             wall = not self.transparent[x, y]
+            pool = self.pool[x, y]
             if self.fov[x, y]:
                 if wall:
                     self.update_and_draw_char(
                         x, y, ' ', fg=None, bg=COLORS.get('light_wall'))
+                elif pool:
+                    self.update_and_draw_char(
+                        x, y, ' ', fg=None, bg=COLORS.get('light_pool'))
                 else:
                     self.update_and_draw_char(
                         x, y, ' ', fg=None, bg=COLORS.get('light_ground'))
@@ -114,6 +118,9 @@ class GameMap(Map):
                 if wall:
                     self.update_and_draw_char(
                         x, y, ' ', fg=None, bg=COLORS.get('dark_wall'))
+                elif pool:
+                    self.update_and_draw_char(
+                        x, y, ' ', fg=None, bg=COLORS.get('dark_pool'))
                 else:
                     self.update_and_draw_char(
                         x, y, ' ', fg=None, bg=COLORS.get('dark_ground'))

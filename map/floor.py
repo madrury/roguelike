@@ -122,6 +122,8 @@ class DungeonFloor:
         for tunnel in self.tunnels:
             for x, y in tunnel:
                 game_map.make_transparent_and_walkable(x, y)
+        for pool in self.pools:
+            pool.write_to_game_map(game_map)
 
     def place_player(self, player):
         start_room = random.choice(self.rooms)

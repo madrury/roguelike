@@ -28,7 +28,10 @@ class Pool:
         coord = self.room.random_point()
         self.coords.append(coord)
 
-    def grow(self, n_attempts=25):
+    def grow(self, n_attempts=None):
+        if not n_attempts:
+            n_attempts = int((3/2) * self.room.width * self.room.height)
+            print(n_attempts)
         self.seed()
         for i in range(n_attempts):
             coord = random.choice(self.coords)
