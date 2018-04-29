@@ -30,6 +30,9 @@ class Entity:
     blocks: bool
       Does the entity block movement?
 
+    swims: bool
+      Can the entity move through water spaces?
+
     render_order: int
       In which order shoudl the entity be rendered.  For example, the player
       should be rendered after corpses and items.
@@ -57,6 +60,7 @@ class Entity:
                  entity_type=None,
                  render_order=RenderOrder.CORPSE,
                  blocks=False, 
+                 swims=False, 
                  attacker=None,
                  harmable=None,
                  ai=None,
@@ -69,6 +73,7 @@ class Entity:
         self.name = name
         self.entity_type = entity_type
         self.blocks = blocks
+        self.swims = swims
         self.render_order = render_order
 
         self.add_component(attacker, "attacker")
@@ -106,7 +111,8 @@ class Entity:
         is_walkable = game_map.walkable[target_location]
         is_blocked = get_blocking_entity_at_location(
             entities, target_location[0], target_location[1])
-        if is_walkable and not is_blocked:
+        water_if_able = self.swims or not game_map.pool[target_location]
+        if is_walkable and not is_blocked and water_if_able:
             self.move(dx, dy)
 
     def distance_to(self, other):
