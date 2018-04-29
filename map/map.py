@@ -160,7 +160,8 @@ class GameMap(Map):
                         x, y, ' ', fg=None, bg=COLORS.get('light_wall'))
                 elif pool:
                     self.update_and_draw_char(
-                        x, y, ' ', fg=None, bg=random_light_water())
+                        x, y, '~', 
+                        fg=random_light_water(), bg=random_light_water())
                 else:
                     self.update_and_draw_char(
                         x, y, ' ', fg=None, bg=COLORS.get('light_ground'))
@@ -171,7 +172,8 @@ class GameMap(Map):
                         x, y, ' ', fg=None, bg=COLORS.get('dark_wall'))
                 elif pool:
                     self.update_and_draw_char(
-                        x, y, ' ', fg=None, bg=random_dark_water())
+                        x, y, '~', 
+                        fg=random_dark_water(), bg=random_dark_water())
                 else:
                     self.update_and_draw_char(
                         x, y, ' ', fg=None, bg=COLORS.get('dark_ground'))
