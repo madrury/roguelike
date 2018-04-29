@@ -14,6 +14,7 @@ from components.harmable import Harmable
 from components.inventory import Inventory
 from map.map import GameMap
 from map.floor import make_floor
+from map.terrain import random_river
 from spawnable.monsters import MONSTER_SCHEDULE, MONSTER_GROUPS
 from spawnable.items import ITEM_SCHEDULE, ITEM_GROUPS
 from spawnable.spawnable import spawn_entities
@@ -62,6 +63,8 @@ def main():
     # Generate the map and place player, monsters, and items.
     floor = make_floor(FLOOR_CONFIG, ROOM_CONFIG)
     game_map = GameMap(floor, map_console)
+    river = random_river(game_map)
+    river.write_to_game_map()
     game_map.place_player(player)
     spawn_entities(MONSTER_SCHEDULE, MONSTER_GROUPS, game_map, entities)
     spawn_entities(ITEM_SCHEDULE, ITEM_GROUPS, game_map, entities)

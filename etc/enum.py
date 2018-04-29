@@ -127,6 +127,9 @@ class Animations(Enum):
     THROWING_KNIFE = auto()
     THROW_POTION = auto()
 
+class Terrain(Enum):
+    POOL = auto()
+
 
 class RenderOrder(Enum):
     CORPSE = 1

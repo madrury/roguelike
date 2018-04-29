@@ -1,4 +1,5 @@
 import random
+from etc.enum import Terrain
 
 
 def random_pool(dugeon_floor):
@@ -13,6 +14,7 @@ class Pool:
 
     def __init__(self, pinned_room):
         self.pinned_room = pinned_room
+        pinned_room.terrain = Terrain.POOL
         self.room = pinned_room.room
         self.coords = []
 
@@ -46,3 +48,36 @@ class Pool:
             (x - 1, y),                 (x + 1, y),
             (x - 1, y - 1), (x, y - 1), (x + 1, y + 1)]
         return random.choice(candidates)
+
+
+def random_river(game_map):
+    r1 = random.choice(game_map.floor.rooms)
+    while r1.terrain != Terrain.POOL:
+        r1 = random.choice(game_map.floor.rooms)
+    r2 = random.choice(game_map.floor.rooms)
+    while r1 == r2 or r2.terrain != Terrain.POOL:
+        r2 = random.choice(game_map.floor.rooms)
+    river = River(game_map, r1, r2)
+    return river
+
+class River:
+
+    def __init__(self, game_map, source_room, dest_room):
+        self.game_map = game_map
+        self.source_point = self.get_random_pool_point(source_room)
+        self.dest_point = self.get_random_pool_point(dest_room)
+        self.path = game_map.compute_path(
+            self.source_point[0], self.source_point[1],
+            self.dest_point[0], self.dest_point[1])
+
+    def write_to_game_map(self):
+        for x, y in self.path:
+            self.game_map.pool[x, y] = True
+
+    def get_random_pool_point(self, room):
+        if room.terrain != Terrain.POOL:
+            raise ValueError("Cannot create river in room with no pool tiles.")
+        x, y = room.random_point()
+        while not self.game_map.pool[x, y]:
+            x, y = room.random_point()
+        return x, y

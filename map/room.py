@@ -63,6 +63,7 @@ class PinnedDungeonRoom:
     def __init__(self, room, position):
         self.x, self.y = position
         self.room = room
+        self.terrain = None
 
     def contains(self, point):
         point[0] - self.x, point[1] - self.x in self.room
