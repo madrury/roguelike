@@ -33,7 +33,7 @@ class Pool:
         for i in range(n_attempts):
             coord = random.choice(self.coords)
             new_coord = self.grow_one(coord)
-            if new_coord in room:
+            if new_coord in self.room:
                 self.coords.append(new_coord)
         return self
 
@@ -43,4 +43,4 @@ class Pool:
             (x - 1, y + 1), (x, y + 1), (x + 1, y + 1),
             (x - 1, y),                 (x + 1, y),
             (x - 1, y - 1), (x, y - 1), (x + 1, y + 1)]
-        return random.choice(coordinates)
+        return random.choice(candidates)

@@ -3,6 +3,7 @@ import numpy as np
 
 from .room import PinnedDungeonRoom, random_dungeon_room
 from .tunnel import random_tunnel_between_pinned_rooms
+from .terrain import random_pool
 
 
 def make_floor(floor_config, room_config):
@@ -71,13 +72,18 @@ def random_dungeon_floor(width=80,
         t1, t2 = random_tunnel_between_pinned_rooms(r1, r2)
         floor.add_tunnel(t1)
         floor.add_tunnel(t2)
+    # Add a pool.
+    floor.pools.append(random_pool(floor))
+    print(floor.pools[0].coords)
     return floor
 
 
 class DungeonFloor:
     """A Floor of a dungeon.
 
-    A floor of a dungeon is made up of multiple PinnedDungeonRooms.
+    A floor of a dungeon is made up of a collection of dungeon features.  At
+    the most basic level, PinnedDungeonRooms and Tunnels define the walkable
+    space.  Additional terrain features (Pools, ...) are also stored.
 
     Parameters
     ----------
@@ -94,6 +100,9 @@ class DungeonFloor:
 
     self.tunnels: list of Tunnel objects
       The tunnels in the dungeon.
+
+    self.Pool: list of Pool objects.
+      Pools of water in the dungeon.
 
     self.floor: np.array of bool
       Array of transparant tiles.  Only used for printing. 
