@@ -74,7 +74,6 @@ def random_dungeon_floor(width=80,
         floor.add_tunnel(t2)
     # Add a pool.
     floor.pools.append(random_pool(floor))
-    print(floor.pools[0].coords)
     return floor
 
 
