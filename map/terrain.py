@@ -1,5 +1,6 @@
 import random
 from etc.enum import Terrain
+from utils.utils import adjacent_coordinates
 
 
 def random_pool(dugeon_floor):
@@ -62,17 +63,28 @@ def random_river(game_map):
 
 class River:
 
-    def __init__(self, game_map, source_room, dest_room):
+    def __init__(self, game_map, source_room, dest_room, width=1):
         self.game_map = game_map
         self.source_point = self.get_random_pool_point(source_room)
         self.dest_point = self.get_random_pool_point(dest_room)
-        self.path = game_map.compute_path(
+        self.coords = set(game_map.compute_path(
             self.source_point[0], self.source_point[1],
-            self.dest_point[0], self.dest_point[1])
+            self.dest_point[0], self.dest_point[1]))
+        self.grow(width)
 
     def write_to_game_map(self):
-        for x, y in self.path:
+        for x, y in self.coords:
             self.game_map.pool[x, y] = True
+            self.game_map.transparent[x, y] = True
+            self.game_map.walkable[x, y] = True
+
+    def grow(self, width):
+        for _ in range(width - 1):
+            new_coords = set()
+            for river_coord in self.coords:
+                for coord in adjacent_coordinates(river_coord):
+                    new_coords.add(coord)
+            self.coords.update(new_coords)
 
     def get_random_pool_point(self, room):
         if room.terrain != Terrain.POOL:
