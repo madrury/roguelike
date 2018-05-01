@@ -18,14 +18,29 @@ class Entity:
     char: one character string.
       The symbol used to represent the entity on the map.
 
-    color: Three tuple of integers. 
-      The RGB color to draw the entity on the map.
-
     name: str
       The name of the entity.
 
     entity_type: EntityTypes object
       The type of entity.
+
+    fg_color: (int, int, int) RGB value
+      The RGB color to draw the entity on the map.
+
+    bg_color: (int, int, int) RGB value
+      The background color to draw the entity tile, if any.
+
+    dark_fg_color: (int, int, int) RGB value
+      The RGB color to draw the entity on the map when out of view, if if any.
+
+    dark_bg_color: (int, int, int) RGB value
+      The background color to draw the entity tile when out of view, if any.
+
+    seen: bool
+      Has the player seen the entity?
+
+    visible_out_of_fov: bool
+      Should the entity be draw even when out of the players fov?
 
     blocks: bool
       Does the entity block movement?
@@ -56,7 +71,7 @@ class Entity:
     inventory: Inventory object.
       Contains logic for managing an inventory.
     """
-    def __init__(self, 
+    def __init__(self,
                  x, y, char, fg_color, name,
                  entity_type=None,
                  render_order=RenderOrder.CORPSE,
@@ -65,12 +80,12 @@ class Entity:
                  dark_bg_color=None,
                  visible_out_of_fov=False,
                  seen=False,
-                 blocks=False, 
-                 swims=False, 
+                 blocks=False,
+                 swims=False,
                  attacker=None,
                  harmable=None,
                  ai=None,
-                 item=None, 
+                 item=None,
                  inventory=None):
         self.x = x
         self.y = y
@@ -114,7 +129,7 @@ class Entity:
         dx, dy = random.choice([
             (-1, 1), (0, 1), (1, 1),
             (-1, 0),         (1, 0),
-            (-1, -1), (0, -1), (1, -1)]) 
+            (-1, -1), (0, -1), (1, -1)])
         self._move_if_able(dx, dy, game_map, entities)
 
     def _move_if_able(self, dx, dy, game_map, entities):
@@ -148,7 +163,7 @@ class Entity:
         """Get all the entities of a given type within a given range."""
         within_radius = []
         for entity in entities:
-            if (self.distance_to(entity) <= radius and 
+            if (self.distance_to(entity) <= radius and
                 entity.entity_type == entity_type):
                 within_radius.append(entity)
         return within_radius

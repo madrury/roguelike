@@ -6,7 +6,7 @@ from etc.config import (
    SCREEN_WIDTH, SCREEN_HEIGHT, FLOOR_CONFIG, ROOM_CONFIG, TERRAIN_CONFIG,
    PANEL_CONFIG, MESSAGE_CONFIG, FOV_CONFIG)
 from etc.enum import (
-    EntityTypes, GameStates, ItemTargeting, RenderOrder, Animations, 
+    EntityTypes, GameStates, ItemTargeting, RenderOrder, Animations,
     ResultTypes)
 
 from components.attacker import Attacker
@@ -46,7 +46,7 @@ def main():
     message_log = MessageLog(MESSAGE_CONFIG)
 
     # This is you.  Kill some Orcs.
-    player = Entity(0, 0, '@', COLORS['white'], 'Player', 
+    player = Entity(0, 0, '@', COLORS['white'], 'Player',
                     blocks=True,
                     render_order=RenderOrder.ACTOR,
                     attacker=Attacker(power=5),
@@ -59,7 +59,7 @@ def main():
     player.inventory.extend([ThrowingKnife.make(0, 0) for _ in range(3)])
     player.inventory.extend([MagicMissileScroll.make(0, 0) for _ in range(3)])
     player.inventory.extend([FireblastScroll.make(0, 0) for _ in range(3)])
- 
+
     # Generate the map and place player, monsters, and items.
     floor = make_floor(FLOOR_CONFIG, ROOM_CONFIG)
     game_map = GameMap(floor, map_console)
@@ -70,11 +70,13 @@ def main():
 
     # DEBUG: The entire dungeon is explored.
     #game_map.explored[:, :] = True
-    
+
 
     #-------------------------------------------------------------------------
     # Game State Varaibles
     #-------------------------------------------------------------------------
+    # Counter for the game loop iteration we are on.
+    game_loop = -1
     # Initial values for game states
     game_state = GameStates.PLAYER_TURN
     previous_game_state = game_state
@@ -98,6 +100,8 @@ def main():
     #-------------------------------------------------------------------------
     while not tdl.event.is_window_closed():
 
+        game_loop += 1
+
         #---------------------------------------------------------------------
         # If needed, recompute the player's field of view.
         #---------------------------------------------------------------------
@@ -112,7 +116,10 @@ def main():
         #---------------------------------------------------------------------
         # Render and display the dungeon and its inhabitates.
         #---------------------------------------------------------------------
-        game_map.update_and_draw_all(entities)
+        game_map.update_and_draw_all(
+            entities,
+            fov_recompute,
+            redraw_random_colors=(game_loop % 50 == 0))
         render_health_bars(panel_console, player, PANEL_CONFIG, COLORS)
         render_messages(panel_console, message_log)
 
@@ -125,7 +132,7 @@ def main():
         #---------------------------------------------------------------------
         # Render any menus.
         #---------------------------------------------------------------------
-        menu_states = (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY, 
+        menu_states = (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY,
                        GameStates.THROW_INVENTORY)
         if game_state in menu_states:
             if game_state == GameStates.SHOW_INVENTORY:
@@ -138,10 +145,10 @@ def main():
                 invetory_message = "Press the letter next to the item to throw it.\n"
                 highlight_attr = "throwable"
             menu_console, menu_x, menu_y = invetory_menu(
-                invetory_message, player.inventory, 
+                invetory_message, player.inventory,
                 # TODO: Remove this magic number.
                 inventory_width=50,
-                screen_width=SCREEN_WIDTH, 
+                screen_width=SCREEN_WIDTH,
                 screen_height=SCREEN_HEIGHT,
                 highlight_attr=highlight_attr)
 
@@ -161,7 +168,7 @@ def main():
         root_console.blit(game_map.console, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
         root_console.blit(panel_console, 0, PANEL_CONFIG['y'],
                           SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
-        if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY, 
+        if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY,
                           GameStates.THROW_INVENTORY):
             root_console.blit(menu_console, menu_x, menu_y,
                               SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
@@ -172,14 +179,14 @@ def main():
         game_map.undraw_all(entities)
 
         # Unless the player moves, we do not need to recompute the fov.
-        fov_recompute = False 
+        fov_recompute = False
 
         #---------------------------------------------------------------------
         # Get key input from the player.
         #---------------------------------------------------------------------
         input_states = (
             GameStates.PLAYER_TURN, GameStates.SHOW_INVENTORY,
-            GameStates.DROP_INVENTORY, GameStates.THROW_INVENTORY, 
+            GameStates.DROP_INVENTORY, GameStates.THROW_INVENTORY,
             GameStates.CURSOR_INPUT)
         for event in tdl.event.get():
             if event.type == 'KEYDOWN':
@@ -196,7 +203,7 @@ def main():
         #......................................................................
         # Here we process the consequences of input from the player that
         # affect the game state.  These consequences are added to a queue for
-        # later processing.  This allows consequences to have further 
+        # later processing.  This allows consequences to have further
         # consequences, which are then also added to the queue.  The messages
         # on the queue are constantly popped and dealt with until the queue is
         # empty, after which we pass the turn.
@@ -367,7 +374,7 @@ def main():
             # Handle death
             if dead_entity == player:
                 player_turn_results.extend(kill_player(player, COLORS))
-                game_state = GameStates.PLAYER_DEAD 
+                game_state = GameStates.PLAYER_DEAD
             elif dead_entity:
                 player_turn_results.extend(
                     kill_monster(dead_entity, COLORS))
@@ -434,7 +441,7 @@ def main():
             # Handle death.
             if dead_entity == player:
                 enemy_turn_results.extend(kill_player(player, COLORS))
-                game_state = GameStates.PLAYER_DEAD 
+                game_state = GameStates.PLAYER_DEAD
             elif dead_entity:
                 enemy_turn_results.extend(
                     kill_monster(dead_entity, COLORS))

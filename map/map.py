@@ -88,24 +88,24 @@ class GameMap(Map):
 
     def update_entity(self, entity):
         if (entity.visible_out_of_fov and entity.seen):
-            bg = (entity.dark_bg_color if entity.dark_bg_color 
+            bg = (entity.dark_bg_color if entity.dark_bg_color
                   else self.bg_colors[entity.x, entity.y])
-            self.update_position(entity.x, entity.y, entity.char, 
+            self.update_position(entity.x, entity.y, entity.char,
                                  fg=entity.dark_fg_color, bg=bg)
         elif self.fov[entity.x, entity.y]:
             entity.seen = True
-            bg = (entity.bg_color if entity.bg_color 
+            bg = (entity.bg_color if entity.bg_color
                   else self.bg_colors[entity.x, entity.y])
-            self.update_position(entity.x, entity.y, entity.char, 
+            self.update_position(entity.x, entity.y, entity.char,
                                  fg=entity.fg_color, bg=bg)
 
     def draw_entity(self, entity):
         # TODO: Need to draw the dark version if visible out of fov.
         if (entity.visible_out_of_fov and entity.seen):
-            self.draw_char(entity.x, entity.y, entity.char, 
+            self.draw_char(entity.x, entity.y, entity.char,
                            fg=entity.dark_fg_color, bg=enity.dark_bg_color)
         elif self.fov[entity.x, entity.y]:
-            self.draw_char(entity.x, entity.y, entity.char, 
+            self.draw_char(entity.x, entity.y, entity.char,
                            fg=entity.fg_color, bg=entity.bg_color)
 
     def update_and_draw_entity(self, entity):
@@ -150,8 +150,9 @@ class GameMap(Map):
         self.update_position(x, y, char, fg, bg)
         self.console.draw_char(x, y, char, fg, bg)
 
-    def update_and_draw_all(self, entities):
-        self.update_and_draw_layout() 
+    def update_and_draw_all(self, entities,
+                            fov_recompute=False, redraw_random_colors=False):
+        self.update_and_draw_layout(fov_recompute, redraw_random_colors)
         entities_in_render_order = sorted(
             entities, key=lambda x: x.render_order.value)
         for entity in entities_in_render_order:
@@ -161,7 +162,8 @@ class GameMap(Map):
         for entity in entities:
             self.undraw_entity(entity)
 
-    def update_and_draw_layout(self):
+    def update_and_draw_layout(self,
+                               fov_recompute=False, redraw_random_colors=False):
         for x, y in self:
             wall = not self.transparent[x, y]
             pool = self.pool[x, y]
@@ -171,9 +173,14 @@ class GameMap(Map):
                     self.update_and_draw_char(
                         x, y, ' ', fg=None, bg=COLORS.get('light_wall'))
                 elif pool:
-                    self.update_and_draw_char(
-                        x, y, '~', 
-                        fg=random_light_water(), bg=random_light_water())
+                    if redraw_random_colors or fov_recompute:
+                        self.update_and_draw_char(
+                            x, y, '~',
+                            fg=random_light_water(), bg=random_light_water())
+                    else:
+                        self.update_and_draw_char(
+                            x, y, '~',
+                            fg=self.fg_colors[x, y], bg=self.bg_colors[x, y])
                 elif grass:
                     self.update_and_draw_char(
                         x, y, '"', fg=COLORS.get('light_grass'), bg=COLORS.get('light_ground'))
@@ -186,9 +193,14 @@ class GameMap(Map):
                     self.update_and_draw_char(
                         x, y, ' ', fg=None, bg=COLORS.get('dark_wall'))
                 elif pool:
-                    self.update_and_draw_char(
-                        x, y, '~', 
-                        fg=random_dark_water(), bg=random_dark_water())
+                    if redraw_random_colors or fov_recompute:
+                        self.update_and_draw_char(
+                            x, y, '~',
+                            fg=random_dark_water(), bg=random_dark_water())
+                    else:
+                        self.update_and_draw_char(
+                            x, y, '~',
+                            fg=self.fg_colors[x, y], bg=self.bg_colors[x, y])
                 elif grass:
                     self.update_and_draw_char(
                         x, y, '"', fg=COLORS.get('dark_grass'), bg=COLORS.get('dark_ground'))
@@ -198,7 +210,7 @@ class GameMap(Map):
 
     def within_bounds(self, x, y, buffer=0):
         return (
-            (0 + buffer <= x < self.width - buffer) and 
+            (0 + buffer <= x < self.width - buffer) and
             (0 + buffer <= y < self.height - buffer))
 
     def make_transparent_and_walkable(self, x, y):
