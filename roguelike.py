@@ -63,8 +63,8 @@ def main():
     # Generate the map and place player, monsters, and items.
     floor = make_floor(FLOOR_CONFIG, ROOM_CONFIG)
     game_map = GameMap(floor, map_console)
-    game_map.place_player(player)
     add_random_terrain(game_map, TERRAIN_CONFIG)
+    game_map.place_player(player)
     spawn_entities(MONSTER_SCHEDULE, MONSTER_GROUPS, game_map, entities)
     spawn_entities(ITEM_SCHEDULE, ITEM_GROUPS, game_map, entities)
 
