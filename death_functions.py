@@ -16,7 +16,7 @@ def kill_monster(monster, colors):
 
 def make_corpse(monster, colors):
     monster.char = '#'
-    monster.color = colors.get('dark_red')
+    monster.fg_color = colors.get('dark_red')
     monster.entity_type = EntityTypes.CORPSE
     monster.name = 'Remains of the' + monster.name.capitalize()
     monster.render_order = RenderOrder.CORPSE
