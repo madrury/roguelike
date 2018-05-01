@@ -4,7 +4,7 @@ SCREEN_HEIGHT = 50
 FLOOR_CONFIG = {
     'width': 80,
     'height': 43,
-    'max_rooms': 15,
+    'max_rooms': 20,
 }
 
 ROOM_CONFIG = {
@@ -17,8 +17,8 @@ ROOM_CONFIG = {
 
 TERRAIN_CONFIG = {
     'min_pools': 2,
-    'max_pools': 10,
-    'pool_room_proportion': 1.0,
+    'max_pools': 5,
+    'pool_room_proportion': 0.7,
     'min_rivers': 1,
     'max_rivers': 3
 }

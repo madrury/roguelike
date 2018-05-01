@@ -56,10 +56,8 @@ class Pool:
         for i in range(n_attempts):
             coord = random.choice(self.coords)
             x, y = self.grow_one(coord)
-            if self.game_map.within_bounds(x, y):
+            if self.game_map.within_bounds(x, y, buffer=1):
                 self.coords.append([x, y])
-            else:
-                print(x, y, self.game_map.within_bounds(x, y))
 
     def grow_one(self, coord):
         x, y = coord

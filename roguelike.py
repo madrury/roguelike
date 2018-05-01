@@ -67,6 +67,9 @@ def main():
     add_random_terrain(game_map, TERRAIN_CONFIG)
     spawn_entities(MONSTER_SCHEDULE, MONSTER_GROUPS, game_map, entities)
     spawn_entities(ITEM_SCHEDULE, ITEM_GROUPS, game_map, entities)
+
+    # DEBUG: The entire dungeon is explored.
+    game_map.explored[:, :] = True
     
 
     #-------------------------------------------------------------------------

@@ -178,8 +178,10 @@ class GameMap(Map):
                     self.update_and_draw_char(
                         x, y, ' ', fg=None, bg=COLORS.get('dark_ground'))
 
-    def within_bounds(self, x, y):
-        return (0 <= x < self.width) and (0 <= y < self.height)
+    def within_bounds(self, x, y, buffer=0):
+        return (
+            (0 + buffer <= x < self.width - buffer) and 
+            (0 + buffer <= y < self.height - buffer))
 
     def make_transparent_and_walkable(self, x, y):
         self.walkable[x, y] = True
