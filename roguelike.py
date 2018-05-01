@@ -69,7 +69,7 @@ def main():
     spawn_entities(ITEM_SCHEDULE, ITEM_GROUPS, game_map, entities)
 
     # DEBUG: The entire dungeon is explored.
-    game_map.explored[:, :] = True
+    #game_map.explored[:, :] = True
     
 
     #-------------------------------------------------------------------------

@@ -16,7 +16,6 @@ def add_random_terrain(game_map, terrain_config):
         pool.write_to_game_map()
 
     grass = random_grass(game_map)
-    print(grass.coords)
     grass.write_to_game_map()
 
     min_rivers, max_rivers = (
@@ -27,41 +26,24 @@ def add_random_terrain(game_map, terrain_config):
         river.write_to_game_map()
 
 
-#-----------------------------------------------------------------------------
-# Pool
-#-----------------------------------------------------------------------------
-def random_pool(game_map, pool_room_proportion):
-    pinned_room = random.choice(game_map.floor.rooms)
-    pool = Pool(game_map, pinned_room)
-    pool.seed()
-    pool.grow(pool_room_proportion=pool_room_proportion)
-    return pool
-
-
-class Pool:
+class Growable:
 
     def __init__(self, game_map, room):
         self.game_map = game_map
         self.room = room
-        room.terrain = Terrain.POOL
         self.coords = []
 
     def __iter__(self):
         yield from iter(self.coords)
 
-    def write_to_game_map(self):
-        for x, y in self:
-            self.game_map.pool[x, y] = True
-            self.game_map.make_transparent_and_walkable(x, y)
-
     def seed(self):
         coord = self.room.random_point()
         self.coords.append(coord)
 
-    def grow(self, pool_room_proportion=None, n_attempts=None):
+    def grow(self, stay_in_room=False, proportion=None, n_attempts=None):
         if not n_attempts:
             n_attempts = int(
-                pool_room_proportion * self.room.room.width * self.room.room.height)
+                proportion * self.room.width * self.room.height)
         self.seed()
         for i in range(n_attempts):
             coord = random.choice(self.coords)
@@ -69,6 +51,54 @@ class Pool:
             if self.game_map.within_bounds(x, y, buffer=1):
                 self.coords.append([x, y])
 
+#-----------------------------------------------------------------------------
+# Pool
+#-----------------------------------------------------------------------------
+def random_pool(game_map, pool_room_proportion):
+    pinned_room = random.choice(game_map.floor.rooms)
+    pool = Pool(game_map, pinned_room)
+    pool.seed()
+    pool.grow(stay_in_room=False,
+              proportion=pool_room_proportion)
+    return pool
+
+
+class Pool(Growable):
+
+    def __init__(self, game_map, room):
+        super().__init__(game_map, room)
+        room.terrain = Terrain.POOL
+
+
+    def write_to_game_map(self):
+        for x, y in self:
+            self.game_map.pool[x, y] = True
+            self.game_map.make_transparent_and_walkable(x, y)
+
+
+#-----------------------------------------------------------------------------
+# Grass
+#-----------------------------------------------------------------------------
+class Grass(Growable):
+
+    def __init__(self, game_map, room):
+        super().__init__(game_map, room)
+        room.terrain = Terrain.GRASS
+        
+    def write_to_game_map(self):
+        for x, y in self:
+            self.game_map.grass[x, y] = True
+            self.game_map.make_transparent_and_walkable(x, y)
+
+
+def random_grass(game_map):
+    pinned_room = random.choice(game_map.floor.rooms)
+    while pinned_room.terrain != None:
+        pinned_room = random.choice(game_map.floor.rooms)
+    grass = Grass(game_map, pinned_room)
+    grass.grow(stay_in_room=True, proportion=1.5)
+    return grass
+    
 
 #-----------------------------------------------------------------------------
 # River
@@ -115,53 +145,3 @@ class River:
         while not self.game_map.pool[x, y]:
             x, y = room.random_point()
         return x, y
-
-
-#-----------------------------------------------------------------------------
-# Grass
-#-----------------------------------------------------------------------------
-class Growable:
-
-    def __init__(self, game_map, room):
-        self.game_map = game_map
-        self.room = room
-        self.coords = []
-
-    def __iter__(self):
-        yield from iter(self.coords)
-
-    def seed(self):
-        coord = self.room.random_point()
-        self.coords.append(coord)
-
-    def grow(self, stay_in_room=False, proportion=None, n_attempts=None):
-        if not n_attempts:
-            n_attempts = int(
-                proportion * self.room.width * self.room.height)
-        self.seed()
-        for i in range(n_attempts):
-            coord = random.choice(self.coords)
-            x, y = random_adjacent(coord)
-            if self.game_map.within_bounds(x, y, buffer=1):
-                self.coords.append([x, y])
-
-
-class Grass(Growable):
-
-    def __init__(self, game_map, room):
-        super().__init__(game_map, room)
-        room.terrain = Terrain.GRASS
-        
-    def write_to_game_map(self):
-        for x, y in self:
-            self.game_map.grass[x, y] = True
-            self.game_map.make_transparent_and_walkable(x, y)
-
-
-def random_grass(game_map):
-    pinned_room = random.choice(game_map.floor.rooms)
-    while pinned_room.terrain != None:
-        pinned_room = random.choice(game_map.floor.rooms)
-    grass = Grass(game_map, pinned_room)
-    grass.grow(stay_in_room=True, proportion=1.5)
-    return grass
