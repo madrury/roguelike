@@ -1,3 +1,4 @@
+import random
 import numpy as np
 
 def choose_from_list_of_tuples(list_of_tuples):
@@ -30,3 +31,11 @@ def adjacent_coordinates(center):
                 (-1, 0),         (1, 0),
                 (-1, -1), (0, -1), (1, -1)]
         return [(center[0] + dx, center[1] + dy) for dx, dy in dxdy]
+
+def random_adjacent(center):
+    x, y = center
+    candidates = [
+        (x - 1, y + 1), (x, y + 1), (x + 1, y + 1),
+        (x - 1, y),                 (x + 1, y),
+        (x - 1, y - 1), (x, y - 1), (x + 1, y + 1)]
+    return random.choice(candidates)

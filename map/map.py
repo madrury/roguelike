@@ -61,6 +61,7 @@ class GameMap(Map):
         self.console = console
         self.explored = np.zeros((width, height)).astype(bool)
         self.pool = np.zeros((width, height)).astype(bool)
+        self.grass = np.zeros((width, height)).astype(bool)
         self.fg_colors = ColorArray((width, height))
         self.bg_colors = ColorArray((width, height))
         self.chars = np.full((width, height), ' ')
@@ -154,6 +155,7 @@ class GameMap(Map):
         for x, y in self:
             wall = not self.transparent[x, y]
             pool = self.pool[x, y]
+            grass = self.grass[x, y]
             if self.fov[x, y]:
                 if wall:
                     self.update_and_draw_char(
@@ -162,6 +164,9 @@ class GameMap(Map):
                     self.update_and_draw_char(
                         x, y, '~', 
                         fg=random_light_water(), bg=random_light_water())
+                elif grass:
+                    self.update_and_draw_char(
+                        x, y, '"', fg=COLORS.get('light_grass'), bg=COLORS.get('light_ground'))
                 else:
                     self.update_and_draw_char(
                         x, y, ' ', fg=None, bg=COLORS.get('light_ground'))
@@ -174,6 +179,9 @@ class GameMap(Map):
                     self.update_and_draw_char(
                         x, y, '~', 
                         fg=random_dark_water(), bg=random_dark_water())
+                elif grass:
+                    self.update_and_draw_char(
+                        x, y, '"', fg=COLORS.get('dark_grass'), bg=COLORS.get('dark_ground'))
                 else:
                     self.update_and_draw_char(
                         x, y, ' ', fg=None, bg=COLORS.get('dark_ground'))
