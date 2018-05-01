@@ -5,8 +5,6 @@ FLOOR_CONFIG = {
     'width': 80,
     'height': 43,
     'max_rooms': 15,
-    'min_pools': 2,
-    'max_pools': 10,
 }
 
 ROOM_CONFIG = {
@@ -15,6 +13,14 @@ ROOM_CONFIG = {
     'max_rectangles': 3,
     'max_rectangle_width': 8,
     'max_rectangle_height': 8,
+}
+
+TERRAIN_CONFIG = {
+    'min_pools': 2,
+    'max_pools': 10,
+    'pool_room_proportion': 1.0,
+    'min_rivers': 1,
+    'max_rivers': 3
 }
 
 PANEL_CONFIG = {

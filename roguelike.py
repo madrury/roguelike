@@ -3,7 +3,7 @@ from time import sleep
 
 from etc.colors import COLORS
 from etc.config import (
-   SCREEN_WIDTH, SCREEN_HEIGHT, FLOOR_CONFIG, ROOM_CONFIG,
+   SCREEN_WIDTH, SCREEN_HEIGHT, FLOOR_CONFIG, ROOM_CONFIG, TERRAIN_CONFIG,
    PANEL_CONFIG, MESSAGE_CONFIG, FOV_CONFIG)
 from etc.enum import (
     EntityTypes, GameStates, ItemTargeting, RenderOrder, Animations, 
@@ -64,7 +64,7 @@ def main():
     floor = make_floor(FLOOR_CONFIG, ROOM_CONFIG)
     game_map = GameMap(floor, map_console)
     game_map.place_player(player)
-    add_random_terrain(game_map)
+    add_random_terrain(game_map, TERRAIN_CONFIG)
     spawn_entities(MONSTER_SCHEDULE, MONSTER_GROUPS, game_map, entities)
     spawn_entities(ITEM_SCHEDULE, ITEM_GROUPS, game_map, entities)
     
