@@ -56,9 +56,14 @@ class Entity:
     inventory: Inventory object.
       Contains logic for managing an inventory.
     """
-    def __init__(self, x, y, char, color, name, 
+    def __init__(self, 
+                 x, y, char, fg_color, name,
                  entity_type=None,
                  render_order=RenderOrder.CORPSE,
+                 dark_fg_color=None,
+                 bg_color=None,
+                 dark_bg_color=None,
+                 visible_out_of_fov=False,
                  blocks=False, 
                  swims=False, 
                  attacker=None,
@@ -69,9 +74,13 @@ class Entity:
         self.x = x
         self.y = y
         self.char = char
-        self.color = color
+        self.fg_color = fg_color
+        self.bg_color = bg_color
+        self.dark_fg_color = dark_fg_color
+        self.dark_bg_color = dark_bg_color
         self.name = name
         self.entity_type = entity_type
+        self.visible_out_of_fov=visible_out_of_fov
         self.blocks = blocks
         self.swims = swims
         self.render_order = render_order

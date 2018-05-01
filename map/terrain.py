@@ -90,6 +90,17 @@ class Grass(Growable):
             self.game_map.grass[x, y] = True
             self.game_map.make_transparent_and_walkable(x, y)
 
+#    @staticmethod
+#    def make(self):
+#        return Entity(
+#            x, y, '"', COLORS['light_grass'], 'Kruthik', 
+#            entity_type=EntityTypes.MONSTER,
+#            attacker=Attacker(power=1),
+#            harmable=Harmable(hp=1, defense=0),
+#            ai=SkitteringMonster(),
+#            blocks=True,
+#            render_order=RenderOrder.ACTOR)
+
 
 def random_grass(game_map):
     pinned_room = random.choice(game_map.floor.rooms)
