@@ -3,9 +3,21 @@ from etc.enum import Terrain
 from utils.utils import adjacent_coordinates
 
 
-def random_pool(dugeon_floor):
-    pinned_room = random.choice(dugeon_floor.rooms)
-    pool = Pool(pinned_room)
+def add_random_terrain(game_map):
+    min_pools, max_pools = 2, 8
+    floor = game_map.floor
+    n_pools = random.randint(min_pools, max_pools)
+    for _ in range(n_pools):
+        pool = random_pool(game_map)
+        floor.pools.append(pool)
+        pool.write_to_game_map()
+    river = random_river(game_map)
+    river.write_to_game_map()
+
+
+def random_pool(game_map):
+    pinned_room = random.choice(game_map.floor.rooms)
+    pool = Pool(game_map, pinned_room)
     pool.seed()
     pool.grow()
     return pool
@@ -13,19 +25,19 @@ def random_pool(dugeon_floor):
 
 class Pool:
 
-    def __init__(self, pinned_room):
-        self.pinned_room = pinned_room
-        pinned_room.terrain = Terrain.POOL
-        self.room = pinned_room.room
+    def __init__(self, game_map, room):
+        self.game_map = game_map
+        self.room = room
+        room.terrain = Terrain.POOL
         self.coords = []
 
     def __iter__(self):
-        for x, y in self.coords:
-            yield x + self.pinned_room.x, y + self.pinned_room.y
+        yield from iter(self.coords)
 
-    def write_to_game_map(self, game_map):
+    def write_to_game_map(self):
         for x, y in self:
-            game_map.pool[x, y] = True
+            self.game_map.pool[x, y] = True
+            self.game_map.make_transparent_and_walkable(x, y)
 
     def seed(self):
         coord = self.room.random_point()
@@ -33,14 +45,15 @@ class Pool:
 
     def grow(self, n_attempts=None):
         if not n_attempts:
-            n_attempts = int((3/2) * self.room.width * self.room.height)
+            n_attempts = int(0.7 * self.room.room.width * self.room.room.height)
         self.seed()
         for i in range(n_attempts):
             coord = random.choice(self.coords)
-            new_coord = self.grow_one(coord)
-            if new_coord in self.room:
-                self.coords.append(new_coord)
-        return self
+            x, y = self.grow_one(coord)
+            if self.game_map.within_bounds(x, y):
+                self.coords.append([x, y])
+            else:
+                print(x, y, self.game_map.within_bounds(x, y))
 
     def grow_one(self, coord):
         x, y = coord
@@ -61,6 +74,7 @@ def random_river(game_map):
     river = River(game_map, r1, r2)
     return river
 
+
 class River:
 
     def __init__(self, game_map, source_room, dest_room, width=1):
@@ -75,8 +89,7 @@ class River:
     def write_to_game_map(self):
         for x, y in self.coords:
             self.game_map.pool[x, y] = True
-            self.game_map.transparent[x, y] = True
-            self.game_map.walkable[x, y] = True
+            self.game_map.make_transparent_and_walkable(x, y)
 
     def grow(self, width):
         for _ in range(width - 1):

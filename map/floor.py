@@ -8,22 +8,18 @@ from .terrain import random_pool
 
 def make_floor(floor_config, room_config):
     """Generate a random dungeon floor with given parameters."""
-    floor_config_keys = ['width', 'height', 'max_rooms', 
-                         'min_pools', 'max_pools']
-    floor_width, floor_height, max_rooms, min_pools, max_pools = [
+    floor_config_keys = ['width', 'height', 'max_rooms']
+    floor_width, floor_height, max_rooms = [
         floor_config[key] for key in floor_config_keys]
+    print(floor_width, floor_height)
     floor = random_dungeon_floor(floor_width, floor_height, 
                                  max_rooms=max_rooms,
-                                 min_pools=min_pools,
-                                 max_pools=max_pools,
                                  room_config=room_config)
     return floor
 
 def random_dungeon_floor(width=80, 
                          height=43, 
                          max_rooms=25,
-                         min_pools=2,
-                         max_pools=10,
                          n_rooms_to_try=50,
                          n_room_placement_trys=25,
                          room_config=None):
@@ -85,9 +81,6 @@ def random_dungeon_floor(width=80,
         floor.add_tunnel(t1)
         floor.add_tunnel(t2)
     # Add a pool.
-    n_pools = random.randint(min_pools, max_pools)
-    for _ in range(n_pools):
-        floor.pools.append(random_pool(floor))
     return floor
 
 

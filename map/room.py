@@ -63,6 +63,7 @@ class PinnedDungeonRoom:
     def __init__(self, room, position):
         self.x, self.y = position
         self.room = room
+        self.width, self.height = room.width, room.height
         self.terrain = None
 
     def contains(self, point):
