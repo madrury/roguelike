@@ -64,6 +64,7 @@ class Entity:
                  bg_color=None,
                  dark_bg_color=None,
                  visible_out_of_fov=False,
+                 seen=False,
                  blocks=False, 
                  swims=False, 
                  attacker=None,
@@ -81,6 +82,7 @@ class Entity:
         self.name = name
         self.entity_type = entity_type
         self.visible_out_of_fov=visible_out_of_fov
+        self.seen = seen
         self.blocks = blocks
         self.swims = swims
         self.render_order = render_order

@@ -86,18 +86,23 @@ class GameMap(Map):
                 player.x, player.y = x, y
                 placed = True
 
+    def update_entity(self, entity):
+        if (entity.visible_out_of_fov and entity.seen):
+            self.update_position(entity.x, entity.y, entity.char, 
+                           fg=entity.dark_fg_color, bg=enity.dark_bg_color)
+        elif self.fov[entity.x, entity.y]:
+            entity.seen = True
+            self.update_position(entity.x, entity.y, entity.char, 
+                           fg=entity.fg_color, bg=entity.bg_color)
+
     def draw_entity(self, entity):
         # TODO: Need to draw the dark version if visible out of fov.
-        if entity.visible_out_of_fov or self.fov[entity.x, entity.y]:
-            fg = self.get_fg_color(entity)
-            bg = self.get_bg_color(entity)
+        if (entity.visible_out_of_fov and entity.seen):
             self.draw_char(entity.x, entity.y, entity.char, 
-                           fg=fg, bg=bg)
-
-    def update_entity(self, entity):
-        fg = self.get_fg_color(entity)
-        bg = self.get_bg_color(entity)
-        self.update_position(entity.x, entity.y, entity.char, fg=fg, bg=bg)
+                           fg=entity.dark_fg_color, bg=enity.dark_bg_color)
+        elif self.fov[entity.x, entity.y]:
+            self.draw_char(entity.x, entity.y, entity.char, 
+                           fg=entity.fg_color, bg=entity.bg_color)
 
     def update_and_draw_entity(self, entity):
         self.update_entity(entity)
@@ -196,24 +201,6 @@ class GameMap(Map):
     def make_transparent_and_walkable(self, x, y):
         self.walkable[x, y] = True
         self.transparent[x, y] = True
-
-    def get_fg_color(self, entity):
-        if not entity.fg_color:
-            fg = self.fg_colors[entity.x, entity.y]
-        elif self.fov[entity.x, entity.y]:
-            fg = entity.fg_color 
-        else:
-            fg = entity.dark_fg_color
-        return fg
-
-    def get_bg_color(self, entity):
-        if not entity.bg_color:
-            bg = self.bg_colors[entity.x, entity.y]
-        elif self.fov[entity.x, entity.y]:
-            bg = entity.bg_color 
-        else:
-            bg = entity.dark_bg_color
-        return bg
 
 
 class ColorArray:
