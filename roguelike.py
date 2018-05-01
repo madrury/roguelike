@@ -112,7 +112,7 @@ def main():
         #---------------------------------------------------------------------
         # Render and display the dungeon and its inhabitates.
         #---------------------------------------------------------------------
-        game_map.update_and_draw_all(entities, fov_recompute)
+        game_map.update_and_draw_all(entities)
         render_health_bars(panel_console, player, PANEL_CONFIG, COLORS)
         render_messages(panel_console, message_log)
 
@@ -385,15 +385,11 @@ def main():
                 game_state, previous_game_state = (
                     GameStates.CURSOR_INPUT, game_state)
             # Play an animation.
-            # TODO: Factor this out into its own function. This should be easy,
-            #       you only need the animation object.
             if animation:
                 animation_player = construct_animation(
                     animation, game_map, player=player)
                 game_state, previous_game_state = (
                     GameStates.ANIMATION_PLAYING, game_state)
-                # Immediately play the animation.
-                #break
 
         #---------------------------------------------------------------------
         # All enemies take thier turns.

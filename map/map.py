@@ -150,9 +150,8 @@ class GameMap(Map):
         self.update_position(x, y, char, fg, bg)
         self.console.draw_char(x, y, char, fg, bg)
 
-    def update_and_draw_all(self, entities, fov_recompute=True):
-        if fov_recompute:
-            self.update_and_draw_layout() 
+    def update_and_draw_all(self, entities):
+        self.update_and_draw_layout() 
         entities_in_render_order = sorted(
             entities, key=lambda x: x.render_order.value)
         for entity in entities_in_render_order:
