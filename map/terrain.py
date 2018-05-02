@@ -3,6 +3,7 @@ import random
 from entity import Entity
 from etc.enum import Terrain, EntityTypes, RenderOrder
 from etc.colors import COLORS
+from colors import random_light_green, random_light_water, random_dark_water
 from utils.utils import adjacent_coordinates, random_adjacent
 
 
@@ -15,8 +16,8 @@ def add_random_terrain(game_map, entities, terrain_config):
     for _ in range(n_pools):
         pool = random_pool(game_map, 
                            pool_room_proportion=pool_room_proportion)
-        floor.pools.append(pool)
         pool.write_to_game_map()
+        entities.extend(pool.get_entities())
 
     min_rivers, max_rivers = (
         terrain_config['min_rivers'], terrain_config['max_rivers'])
@@ -56,6 +57,9 @@ class Growable:
             if is_valid and self.game_map.within_bounds(x, y, buffer=1):
                 self.coords.append([x, y])
 
+    def get_entities(self):
+        return [self.make(x, y) for x, y in self]
+
 #-----------------------------------------------------------------------------
 # Pool
 #-----------------------------------------------------------------------------
@@ -82,6 +86,23 @@ class Pool(Growable):
             self.game_map.pool[x, y] = True
             self.game_map.make_transparent_and_walkable(x, y)
 
+    @staticmethod
+    def make(x, y):
+        fg_color = random_light_water()
+        bg_color = random_light_water()
+        dark_fg_color = random_dark_water()
+        dark_bg_color = random_dark_water()
+        return Entity(
+            x, y, '~',
+            name="Water",
+            fg_color=fg_color,
+            dark_fg_color=dark_fg_color,
+            bg_color=bg_color,
+            dark_bg_color=dark_bg_color,
+            visible_out_of_fov=True,
+            entity_type=EntityTypes.TERRAIN,
+            render_order=RenderOrder.TERRAIN)
+
 
 #-----------------------------------------------------------------------------
 # Grass
@@ -92,16 +113,16 @@ class Grass(Growable):
         super().__init__(game_map, room)
         room.terrain = Terrain.GRASS
         
-    def get_entities(self):
-        return [self.make(x, y) for x, y in self]
-
     @staticmethod
     def make(x, y):
+        fg_color = random_light_green()
+        # Shift down the green component to make the grass dark.
+        bg_color = (fg_color[0], fg_color[1] - 60, fg_color[2])
         return Entity(
             x, y, '"',
             name="Grass",
-            fg_color=COLORS['light_grass'],
-            dark_fg_color=COLORS['dark_grass'],
+            fg_color=fg_color,
+            dark_fg_color=bg_color,
             visible_out_of_fov=True,
             entity_type=EntityTypes.TERRAIN,
             render_order=RenderOrder.TERRAIN)
