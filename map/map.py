@@ -98,13 +98,12 @@ class GameMap(Map):
                                  fg=entity.fg_color, bg=bg)
 
     def draw_entity(self, entity):
-        # TODO: Need to draw the dark version if visible out of fov.
-        if (entity.visible_out_of_fov and entity.seen):
-            self.draw_char(entity.x, entity.y, entity.char,
-                           fg=entity.dark_fg_color, bg=entity.dark_bg_color)
-        elif self.fov[entity.x, entity.y]:
+        if self.fov[entity.x, entity.y]:
             self.draw_char(entity.x, entity.y, entity.char,
                            fg=entity.fg_color, bg=entity.bg_color)
+        elif (entity.visible_out_of_fov and entity.seen):
+            self.draw_char(entity.x, entity.y, entity.char,
+                           fg=entity.dark_fg_color, bg=entity.dark_bg_color)
 
     def update_and_draw_entity(self, entity):
         self.update_entity(entity)
