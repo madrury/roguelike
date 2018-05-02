@@ -45,6 +45,9 @@ class GameMap(Map):
     pool: np.array of bool
       Does the tile currently hold a pool of water?
 
+    grass: np.array of bool
+      Does the tile currently hold grass?
+
     fg_colors: ColorArray object
       The RGB colors currently rendered in the foreground of each tile
 
@@ -103,7 +106,7 @@ class GameMap(Map):
         # TODO: Need to draw the dark version if visible out of fov.
         if (entity.visible_out_of_fov and entity.seen):
             self.draw_char(entity.x, entity.y, entity.char,
-                           fg=entity.dark_fg_color, bg=enity.dark_bg_color)
+                           fg=entity.dark_fg_color, bg=entity.dark_bg_color)
         elif self.fov[entity.x, entity.y]:
             self.draw_char(entity.x, entity.y, entity.char,
                            fg=entity.fg_color, bg=entity.bg_color)

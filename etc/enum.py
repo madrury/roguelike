@@ -113,10 +113,11 @@ class ResultTypes(Enum):
 
 
 class EntityTypes(Enum):
-    PLAYER = 1
-    MONSTER = 2
-    ITEM = 3
-    CORPSE = 4
+    PLAYER = auto()
+    MONSTER = auto()
+    ITEM = auto()
+    CORPSE = auto()
+    TERRAIN = auto()
 
 
 class Animations(Enum):
@@ -133,9 +134,10 @@ class Terrain(Enum):
 
 
 class RenderOrder(Enum):
-    CORPSE = 1
-    ITEM = 2
-    ACTOR = 3
+    TERRAIN = 1
+    CORPSE = 2
+    ITEM = 3
+    ACTOR = 4
 
 
 class ItemTargeting(Enum):

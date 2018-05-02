@@ -1,9 +1,12 @@
 import random
-from etc.enum import Terrain
+
+from entity import Entity
+from etc.enum import Terrain, EntityTypes, RenderOrder
+from etc.colors import COLORS
 from utils.utils import adjacent_coordinates, random_adjacent
 
 
-def add_random_terrain(game_map, terrain_config):
+def add_random_terrain(game_map, entities, terrain_config):
     floor = game_map.floor
     min_pools, max_pools = (
         terrain_config['min_pools'], terrain_config['max_pools'])
@@ -15,15 +18,16 @@ def add_random_terrain(game_map, terrain_config):
         floor.pools.append(pool)
         pool.write_to_game_map()
 
-    grass = random_grass(game_map)
-    grass.write_to_game_map()
-
     min_rivers, max_rivers = (
         terrain_config['min_rivers'], terrain_config['max_rivers'])
     n_rivers = random.randint(min_rivers, max_rivers)
     for _ in range(n_rivers):
         river = random_river(game_map)
         river.write_to_game_map()
+
+    grass = random_grass(game_map)
+    entities.extend(grass.get_entities())
+
 
 
 class Growable:
@@ -48,7 +52,8 @@ class Growable:
         for i in range(n_attempts):
             coord = random.choice(self.coords)
             x, y = random_adjacent(coord)
-            if self.game_map.within_bounds(x, y, buffer=1):
+            is_valid = (not stay_in_room or self.game_map.walkable[x, y])
+            if is_valid and self.game_map.within_bounds(x, y, buffer=1):
                 self.coords.append([x, y])
 
 #-----------------------------------------------------------------------------
@@ -56,6 +61,8 @@ class Growable:
 #-----------------------------------------------------------------------------
 def random_pool(game_map, pool_room_proportion):
     pinned_room = random.choice(game_map.floor.rooms)
+    while pinned_room.terrain != None:
+        pinned_room = random.choice(game_map.floor.rooms)
     pool = Pool(game_map, pinned_room)
     pool.seed()
     pool.grow(stay_in_room=False,
@@ -85,21 +92,19 @@ class Grass(Growable):
         super().__init__(game_map, room)
         room.terrain = Terrain.GRASS
         
-    def write_to_game_map(self):
-        for x, y in self:
-            self.game_map.grass[x, y] = True
-            self.game_map.make_transparent_and_walkable(x, y)
+    def get_entities(self):
+        return [self.make(x, y) for x, y in self]
 
-#    @staticmethod
-#    def make(self):
-#        return Entity(
-#            x, y, '"', COLORS['light_grass'], 'Kruthik', 
-#            entity_type=EntityTypes.MONSTER,
-#            attacker=Attacker(power=1),
-#            harmable=Harmable(hp=1, defense=0),
-#            ai=SkitteringMonster(),
-#            blocks=True,
-#            render_order=RenderOrder.ACTOR)
+    @staticmethod
+    def make(x, y):
+        return Entity(
+            x, y, '"',
+            name="Grass",
+            fg_color=COLORS['light_grass'],
+            dark_fg_color=COLORS['dark_grass'],
+            visible_out_of_fov=True,
+            entity_type=EntityTypes.TERRAIN,
+            render_order=RenderOrder.TERRAIN)
 
 
 def random_grass(game_map):
