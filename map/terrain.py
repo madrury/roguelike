@@ -31,7 +31,6 @@ def add_random_terrain(game_map, entities, terrain_config):
     entities.extend(grass.get_entities())
 
 
-
 class Growable:
 
     def __init__(self, game_map, room):

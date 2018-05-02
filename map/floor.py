@@ -11,7 +11,6 @@ def make_floor(floor_config, room_config):
     floor_config_keys = ['width', 'height', 'max_rooms']
     floor_width, floor_height, max_rooms = [
         floor_config[key] for key in floor_config_keys]
-    print(floor_width, floor_height)
     floor = random_dungeon_floor(floor_width, floor_height, 
                                  max_rooms=max_rooms,
                                  room_config=room_config)

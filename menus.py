@@ -54,7 +54,6 @@ def menu(header, options, width, screen_width, screen_height, highlight):
     options_highlight = zip(options, highlight)
     iter_options = enumerate(enumerate(options_highlight, start=options_buffer))
     for i, (y, (option, color)) in iter_options:
-        #print(i, y, option, highlight)
         text = '(' + string.ascii_lowercase[i] + ') ' + option
         window.draw_str(edge_buffer, y, text, fg=color) 
     # Return the position to blit the new console
