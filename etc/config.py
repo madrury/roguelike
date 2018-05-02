@@ -40,3 +40,5 @@ FOV_CONFIG = {
     "light_walls": True,
     "radius": 10
 }
+
+SHIMMER_INTERVAL = 50

@@ -70,6 +70,10 @@ class Entity:
 
     inventory: Inventory object.
       Contains logic for managing an inventory.
+
+    shimmer: Shimmer object.
+      Contains logic for changing the color of the enitity according to certain
+      triggers.
     """
     def __init__(self,
                  x, y, char, fg_color, name,
@@ -86,7 +90,8 @@ class Entity:
                  harmable=None,
                  ai=None,
                  item=None,
-                 inventory=None):
+                 inventory=None,
+                 shimmer=None):
         self.x = x
         self.y = y
         self.char = char
@@ -107,6 +112,7 @@ class Entity:
         self.add_component(ai, "ai")
         self.add_component(item, "item")
         self.add_component(inventory, "inventory")
+        self.add_component(shimmer, "shimmer")
 
     def add_component(self, component, component_name):
         """Add a component as an attribute of the current object, and set the

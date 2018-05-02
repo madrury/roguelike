@@ -4,7 +4,7 @@ from time import sleep
 from etc.colors import COLORS
 from etc.config import (
    SCREEN_WIDTH, SCREEN_HEIGHT, FLOOR_CONFIG, ROOM_CONFIG, TERRAIN_CONFIG,
-   PANEL_CONFIG, MESSAGE_CONFIG, FOV_CONFIG)
+   PANEL_CONFIG, MESSAGE_CONFIG, FOV_CONFIG, SHIMMER_INTERVAL)
 from etc.enum import (
     EntityTypes, GameStates, ItemTargeting, RenderOrder, Animations,
     ResultTypes)
@@ -111,7 +111,14 @@ def main():
                 fov=FOV_CONFIG["algorithm"],
                 radius=FOV_CONFIG["radius"],
                 light_walls=FOV_CONFIG["light_walls"])
-
+        
+        #---------------------------------------------------------------------
+        # Shimmer the colors of entities that shimmer.
+        #---------------------------------------------------------------------
+        if game_loop % SHIMMER_INTERVAL == 0:
+            for entity in entities:
+                if entity.shimmer:
+                    entity.shimmer.shimmer()
 
         #---------------------------------------------------------------------
         # Render and display the dungeon and its inhabitates.

@@ -1,10 +1,11 @@
 import random
 
 from entity import Entity
+from colors import random_light_green, random_light_water, random_dark_water
 from etc.enum import Terrain, EntityTypes, RenderOrder
 from etc.colors import COLORS
-from colors import random_light_green, random_light_water, random_dark_water
 from utils.utils import adjacent_coordinates, random_adjacent
+from components.shimmer import WaterShimmer
 
 
 def add_random_terrain(game_map, entities, terrain_config):
@@ -87,7 +88,8 @@ def make_water_entity(x, y):
         dark_bg_color=dark_bg_color,
         visible_out_of_fov=True,
         entity_type=EntityTypes.TERRAIN,
-        render_order=RenderOrder.TERRAIN)
+        render_order=RenderOrder.TERRAIN,
+        shimmer=WaterShimmer())
 
 
 class Pool(Growable):
