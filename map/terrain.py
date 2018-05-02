@@ -25,6 +25,7 @@ def add_random_terrain(game_map, entities, terrain_config):
     for _ in range(n_rivers):
         river = random_river(game_map)
         river.write_to_game_map()
+        entities.extend(river.get_entities())
 
     grass = random_grass(game_map)
     entities.extend(grass.get_entities())
@@ -73,6 +74,22 @@ def random_pool(game_map, pool_room_proportion):
               proportion=pool_room_proportion)
     return pool
 
+def make_water_entity(x, y):
+    fg_color = random_light_water()
+    bg_color = random_light_water()
+    dark_fg_color = random_dark_water()
+    dark_bg_color = random_dark_water()
+    return Entity(
+        x, y, '~',
+        name="Water",
+        fg_color=fg_color,
+        dark_fg_color=dark_fg_color,
+        bg_color=bg_color,
+        dark_bg_color=dark_bg_color,
+        visible_out_of_fov=True,
+        entity_type=EntityTypes.TERRAIN,
+        render_order=RenderOrder.TERRAIN)
+
 
 class Pool(Growable):
 
@@ -88,20 +105,7 @@ class Pool(Growable):
 
     @staticmethod
     def make(x, y):
-        fg_color = random_light_water()
-        bg_color = random_light_water()
-        dark_fg_color = random_dark_water()
-        dark_bg_color = random_dark_water()
-        return Entity(
-            x, y, '~',
-            name="Water",
-            fg_color=fg_color,
-            dark_fg_color=dark_fg_color,
-            bg_color=bg_color,
-            dark_bg_color=dark_bg_color,
-            visible_out_of_fov=True,
-            entity_type=EntityTypes.TERRAIN,
-            render_order=RenderOrder.TERRAIN)
+        return make_water_entity(x, y)
 
 
 #-----------------------------------------------------------------------------
@@ -174,6 +178,13 @@ class River:
                 for coord in adjacent_coordinates(river_coord):
                     new_coords.add(coord)
             self.coords.update(new_coords)
+
+    @staticmethod
+    def make(x, y):
+        return make_water_entity(x, y)
+
+    def get_entities(self):
+        return [self.make(x, y) for x, y in self.coords]
 
     def get_random_pool_point(self, room):
         if room.terrain != Terrain.POOL:
