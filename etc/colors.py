@@ -6,7 +6,7 @@ COLORS = {
     'light_pool': (150, 150, 230),
     'dark_pool': (60, 60, 150),
     'light_grass': (0, 150, 0),
-    'dark_grass': (0, 100, 0),
+    'dark_grass': (0, 80, 0),
 
     'cursor': (255, 215, 0),
     'cursor_tail': (220, 180, 0), 

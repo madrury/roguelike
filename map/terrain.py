@@ -52,7 +52,7 @@ class Growable:
         for i in range(n_attempts):
             coord = random.choice(self.coords)
             x, y = random_adjacent(coord)
-            is_valid = (not stay_in_room or self.game_map.walkable[x, y])
+            is_valid = not stay_in_room or self.game_map.walkable[x, y]
             if is_valid and self.game_map.within_bounds(x, y, buffer=1):
                 self.coords.append([x, y])
 

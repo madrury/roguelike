@@ -45,9 +45,6 @@ class GameMap(Map):
     pool: np.array of bool
       Does the tile currently hold a pool of water?
 
-    grass: np.array of bool
-      Does the tile currently hold grass?
-
     fg_colors: ColorArray object
       The RGB colors currently rendered in the foreground of each tile
 
@@ -64,7 +61,6 @@ class GameMap(Map):
         self.console = console
         self.explored = np.zeros((width, height)).astype(bool)
         self.pool = np.zeros((width, height)).astype(bool)
-        self.grass = np.zeros((width, height)).astype(bool)
         self.fg_colors = ColorArray((width, height))
         self.bg_colors = ColorArray((width, height))
         self.chars = np.full((width, height), ' ')
@@ -170,7 +166,6 @@ class GameMap(Map):
         for x, y in self:
             wall = not self.transparent[x, y]
             pool = self.pool[x, y]
-            grass = self.grass[x, y]
             if self.fov[x, y]:
                 if wall:
                     self.update_and_draw_char(
@@ -184,9 +179,6 @@ class GameMap(Map):
                         self.update_and_draw_char(
                             x, y, '~',
                             fg=self.fg_colors[x, y], bg=self.bg_colors[x, y])
-                elif grass:
-                    self.update_and_draw_char(
-                        x, y, '"', fg=COLORS.get('light_grass'), bg=COLORS.get('light_ground'))
                 else:
                     self.update_and_draw_char(
                         x, y, ' ', fg=None, bg=COLORS.get('light_ground'))
@@ -204,9 +196,6 @@ class GameMap(Map):
                         self.update_and_draw_char(
                             x, y, '~',
                             fg=self.fg_colors[x, y], bg=self.bg_colors[x, y])
-                elif grass:
-                    self.update_and_draw_char(
-                        x, y, '"', fg=COLORS.get('dark_grass'), bg=COLORS.get('dark_ground'))
                 else:
                     self.update_and_draw_char(
                         x, y, ' ', fg=None, bg=COLORS.get('dark_ground'))
