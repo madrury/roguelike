@@ -187,7 +187,8 @@ class FireblastAnimation:
             clear_coordinates = coordinates_within_circle(
                 (self.source[0], self.source[1]), self.radius)
             for x, y in clear_coordinates:
-                self.game_map.draw_position(x, y)
+                if self.game_map.within_bounds(x, y):
+                    self.game_map.draw_position(x, y)
             return True
         # Draw a red circle centered at `source`.
         blast_coordinates = coordinates_within_circle(
