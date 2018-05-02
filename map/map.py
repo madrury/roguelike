@@ -85,17 +85,17 @@ class GameMap(Map):
                 placed = True
 
     def update_entity(self, entity):
-        if (entity.visible_out_of_fov and entity.seen):
-            bg = (entity.dark_bg_color if entity.dark_bg_color
-                  else self.bg_colors[entity.x, entity.y])
-            self.update_position(entity.x, entity.y, entity.char,
-                                 fg=entity.dark_fg_color, bg=bg)
-        elif self.fov[entity.x, entity.y]:
+        if self.fov[entity.x, entity.y]:
             entity.seen = True
             bg = (entity.bg_color if entity.bg_color
                   else self.bg_colors[entity.x, entity.y])
             self.update_position(entity.x, entity.y, entity.char,
                                  fg=entity.fg_color, bg=bg)
+        elif (entity.visible_out_of_fov and entity.seen):
+            bg = (entity.dark_bg_color if entity.dark_bg_color
+                  else self.bg_colors[entity.x, entity.y])
+            self.update_position(entity.x, entity.y, entity.char,
+                                 fg=entity.dark_fg_color, bg=bg)
 
     def draw_entity(self, entity):
         if self.fov[entity.x, entity.y]:
