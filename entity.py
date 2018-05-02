@@ -72,8 +72,11 @@ class Entity:
       Contains logic for managing an inventory.
 
     shimmer: Shimmer object.
-      Contains logic for changing the color of the enitity according to certain
+      Contains logic for changing the color of the entity according to certain
       triggers.
+
+    burnable: Burnable object.
+      Contains logic for results of attempting to burn the entity.
     """
     def __init__(self,
                  x, y, char, fg_color, name,
@@ -86,12 +89,14 @@ class Entity:
                  seen=False,
                  blocks=False,
                  swims=False,
+                 # Optional components.
                  attacker=None,
                  harmable=None,
                  ai=None,
                  item=None,
                  inventory=None,
-                 shimmer=None):
+                 shimmer=None,
+                 burnable=None):
         self.x = x
         self.y = y
         self.char = char
@@ -113,6 +118,7 @@ class Entity:
         self.add_component(item, "item")
         self.add_component(inventory, "inventory")
         self.add_component(shimmer, "shimmer")
+        self.add_component(burnable, "burnable")
 
     def add_component(self, component, component_name):
         """Add a component as an attribute of the current object, and set the

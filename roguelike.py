@@ -69,7 +69,7 @@ def main():
     spawn_entities(ITEM_SCHEDULE, ITEM_GROUPS, game_map, entities)
 
     # DEBUG: The entire dungeon is explored.
-    #game_map.explored[:, :] = True
+    game_map.explored[:, :] = True
 
 
     #-------------------------------------------------------------------------
@@ -165,7 +165,7 @@ def main():
         if game_state == GameStates.ANIMATION_PLAYING:
             # Now play the animatin
             animation_finished = animation_player.next_frame()
-            sleep(0.1)
+            sleep(0.06)
             if animation_finished:
                 game_state, previous_game_state = previous_game_state, game_state
 

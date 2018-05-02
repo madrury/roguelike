@@ -108,6 +108,7 @@ class ResultTypes(Enum):
     MESSAGE = auto()
     MOVE = auto()
     PICKUP = auto()
+    REMOVE_ENTITY = auto()
     SHOW_INVENTORY = auto()
     THROW_INVENTORY = auto()
 

@@ -6,6 +6,7 @@ from etc.enum import Terrain, EntityTypes, RenderOrder
 from etc.colors import COLORS
 from utils.utils import adjacent_coordinates, random_adjacent
 from components.shimmer import WaterShimmer
+from components.burnable import GrassBurnable
 
 
 def add_random_terrain(game_map, entities, terrain_config):
@@ -130,7 +131,8 @@ class Grass(Growable):
             dark_fg_color=bg_color,
             visible_out_of_fov=True,
             entity_type=EntityTypes.TERRAIN,
-            render_order=RenderOrder.TERRAIN)
+            render_order=RenderOrder.TERRAIN,
+            burnable=GrassBurnable())
 
 
 def random_grass(game_map):

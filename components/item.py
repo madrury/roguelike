@@ -177,12 +177,17 @@ class FireblastComponent:
         results = []
         monsters_within_radius = user.get_all_entities_of_type_within_radius(
             entities, EntityTypes.MONSTER, self.radius)
+        terrain_within_radius = user.get_all_entities_of_type_within_radius(
+            entities, EntityTypes.TERRAIN, self.radius)
         for monster in monsters_within_radius:
             text = "The {} is caught in the fireblast!".format(
                 monster.name)
             message = Message(text, COLORS.get('white'))
             results.append({ResultTypes.DAMAGE: (monster, self.damage),
                             ResultTypes.MESSAGE: message})
+        for terrain in terrain_within_radius:
+            if terrain.burnable:
+                results.extend(terrain.burnable.burn())
         results.append({ResultTypes.ITEM_CONSUMED: (True, self.owner),
                         ResultTypes.ANIMATION: (
                              Animations.FIREBLAST, (user.x, user.y), self.radius)})
