@@ -339,6 +339,7 @@ def main():
             item_dropped = result.get(ResultTypes.ITEM_DROPPED)
             message = result.get(ResultTypes.MESSAGE)
             move = result.get(ResultTypes.MOVE)
+            remove_entity = result.get(ResultTypes.REMOVE_ENTITY)
 
             # Move the player.
             if move:
@@ -378,6 +379,10 @@ def main():
                 # TODO: This calculation should not go here.
                 target.harmable.hp += min(
                     amount, target.harmable.max_hp - target.harmable.hp)
+            # Remove an entity from the game.
+            if remove_entity:
+                entity = remove_entity
+                entities.remove(entity)
             # Handle death
             if dead_entity == player:
                 player_turn_results.extend(kill_player(player, COLORS))
