@@ -70,6 +70,8 @@ def main():
 
     # DEBUG: The entire dungeon is explored.
     game_map.explored[:, :] = True
+    for entity in entities:
+        entity.seen = True
 
 
     #-------------------------------------------------------------------------
