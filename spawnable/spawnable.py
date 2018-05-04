@@ -13,7 +13,7 @@ def spawn_group(group_definition, room, game_map, entities):
             entities.append(entity)
 
 def entity_can_spawn_in_space(entity, x, y, game_map):
-    return entity.swims or not game_map.pool[x, y]
+    return entity.swims or not game_map.water[x, y]
 
 
 class Spawnable:

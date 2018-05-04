@@ -41,8 +41,8 @@ class GameMap(Map):
     explored: np.array of bool
       Has the tile in this location been explored?
 
-    pool: np.array of bool
-      Does the tile currently hold a pool of water?
+    water: np.array of bool
+      Does the tile currently hold a water?
 
     fg_colors: ColorArray object
       The RGB colors currently rendered in the foreground of each tile
@@ -59,7 +59,7 @@ class GameMap(Map):
         self.floor = floor
         self.console = console
         self.explored = np.zeros((width, height)).astype(bool)
-        self.pool = np.zeros((width, height)).astype(bool)
+        self.water = np.zeros((width, height)).astype(bool)
         self.fg_colors = ColorArray((width, height))
         self.bg_colors = ColorArray((width, height))
         self.chars = np.full((width, height), ' ')
@@ -80,7 +80,7 @@ class GameMap(Map):
         while not placed:
             start_room = choice(self.floor.rooms)
             x, y = start_room.random_point()
-            if not self.pool[x, y]:
+            if not self.water[x, y]:
                 player.x, player.y = x, y
                 placed = True
 
@@ -163,7 +163,6 @@ class GameMap(Map):
                                fov_recompute=False, redraw_random_colors=False):
         for x, y in self:
             wall = not self.transparent[x, y]
-            pool = self.pool[x, y]
             if self.fov[x, y]:
                 if wall:
                     self.update_and_draw_char(

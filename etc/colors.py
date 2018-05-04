@@ -3,8 +3,8 @@ COLORS = {
     'dark_ground': (60, 60, 60),
     'light_wall': (110, 110, 110),
     'light_ground': (200, 200, 200),
-    'light_pool': (150, 150, 230),
-    'dark_pool': (60, 60, 150),
+    'light_water': (150, 150, 230),
+    'dark_water': (60, 60, 150),
     'light_grass': (0, 150, 0),
     'dark_grass': (0, 80, 0),
 

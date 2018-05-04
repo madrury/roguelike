@@ -156,7 +156,7 @@ class Entity:
         is_walkable = game_map.walkable[target_location]
         is_blocked = get_blocking_entity_at_location(
             entities, target_location[0], target_location[1])
-        water_if_able = self.swims or not game_map.pool[target_location]
+        water_if_able = self.swims or not game_map.water[target_location]
         if is_walkable and not is_blocked and water_if_able:
             self.move(dx, dy)
 

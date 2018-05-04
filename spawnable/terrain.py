@@ -104,8 +104,9 @@ class Pool(Growable):
 
     def write_to_game_map(self):
         for x, y in self:
-            self.game_map.pool[x, y] = True
-            self.game_map.make_transparent_and_walkable(x, y)
+            if not self.game_map.water[x, y]:
+                self.game_map.water[x, y] = True
+                self.game_map.make_transparent_and_walkable(x, y)
 
     @staticmethod
     def make(x, y):
@@ -139,8 +140,9 @@ class River:
 
     def write_to_game_map(self):
         for x, y in self.coords:
-            self.game_map.pool[x, y] = True
-            self.game_map.make_transparent_and_walkable(x, y)
+            if not self.game_map.water[x, y]:
+                self.game_map.water[x, y] = True
+                self.game_map.make_transparent_and_walkable(x, y)
 
     def grow(self, width=1):
         for _ in range(width - 1):
@@ -161,7 +163,7 @@ class River:
         if room.terrain != Terrain.POOL:
             raise ValueError("Cannot create river in room with no pool tiles.")
         x, y = room.random_point()
-        while not self.game_map.pool[x, y]:
+        while not self.game_map.water[x, y]:
             x, y = room.random_point()
         return x, y
 

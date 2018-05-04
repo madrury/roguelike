@@ -197,7 +197,7 @@ class FireblastAnimation:
             if (self.game_map.within_bounds(x, y) and 
                 self.game_map.fov[x, y] and 
                 self.game_map.walkable[x, y] and
-                not self.game_map.pool[x, y]):
+                not self.game_map.water[x, y]):
                 self.game_map.draw_char(
                     x, y, '^', random_red_or_yellow(), random_red_or_yellow())
         return False
