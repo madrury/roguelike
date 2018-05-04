@@ -5,6 +5,7 @@ from entity import Entity
 from etc.enum import EntityTypes, RenderOrder
 from components.shimmer import FireShimmer
 from components.spreadable import FireSpreadable
+from components.dissipatable import FireDissipatable
 
 
 class Fire:
@@ -18,10 +19,11 @@ class Fire:
             entity_type=EntityTypes.TERRAIN,
             render_order=RenderOrder.TERRAIN,
             shimmer=FireShimmer(),
-            spreadable=FireSpreadable())
+            spreadable=FireSpreadable(),
+            dissipatable=FireDissipatable())
 
     def maybe_make(x, y, p=0.5):
-        spawn = random.uniform(0, 1) < 0.5 
+        spawn = random.uniform(0, 1) < p 
         if spawn:
             return Fire.make(x, y)
         else:

@@ -197,15 +197,3 @@ def random_grass(game_map):
     grass = Grass(game_map, pinned_room)
     grass.grow(stay_in_room=True, proportion=1.5)
     return grass
-    
-
-class Fire:
-
-    def make(x, y):
-        fg_color = random_red_or_yellow()
-        return Entity(
-            x, y, '^',
-            name="Fire",
-            fg_color=fg_color,
-            entity_type=EntityTypes.TERRAIN,
-            render_order=RenderOrder.TERRAIN)

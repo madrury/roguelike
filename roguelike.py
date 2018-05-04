@@ -425,6 +425,9 @@ def main():
             for entity in (x for x in entities if x.spreadable):
                 enemy_turn_results.extend(
                     entity.spreadable.spread(game_map, entities))
+            for entity in (x for x in entities if x.dissipatable):
+                enemy_turn_results.extend(
+                    entity.dissipatable.dissipate())
             game_state = GameStates.PLAYER_TURN
 
         #---------------------------------------------------------------------
@@ -468,7 +471,10 @@ def main():
             # Remove an entity from the game.
             if remove_entity:
                 entity = remove_entity
-                entities.remove(entity)
+                # For example: different fires can spread to the same space in
+                # one turn.
+                if entity in entities:
+                    entities.remove(entity)
             # Handle death.
             if dead_entity == player:
                 enemy_turn_results.extend(kill_player(player, COLORS))

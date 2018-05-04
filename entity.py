@@ -100,7 +100,8 @@ class Entity:
                  inventory=None,
                  shimmer=None,
                  burnable=None,
-                 spreadable=None):
+                 spreadable=None,
+                 dissipatable=None):
         self.x = x
         self.y = y
         self.char = char
@@ -124,6 +125,7 @@ class Entity:
         self.add_component(shimmer, "shimmer")
         self.add_component(burnable, "burnable")
         self.add_component(spreadable, "spreadable")
+        self.add_component(dissipatable, "dissipatable")
 
     def add_component(self, component, component_name):
         """Add a component as an attribute of the current object, and set the
