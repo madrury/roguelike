@@ -38,7 +38,7 @@ class Growable:
     def __init__(self, game_map, room):
         self.game_map = game_map
         self.room = room
-        self.coords = []
+        self.coords = [] 
 
     def __iter__(self):
         yield from iter(self.coords)
@@ -56,8 +56,10 @@ class Growable:
             coord = random.choice(self.coords)
             x, y = random_adjacent(coord)
             is_valid = not stay_in_room or self.game_map.walkable[x, y]
-            if is_valid and self.game_map.within_bounds(x, y, buffer=1):
-                self.coords.append([x, y])
+            already_spawned = (x, y) in self.coords
+            within_bounds = self.game_map.within_bounds(x, y, buffer=1)
+            if is_valid and not already_spawned and within_bounds:
+                self.coords.append((x, y))
 
     def get_entities(self):
         return [self.make(x, y) for x, y in self]
