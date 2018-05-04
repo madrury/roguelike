@@ -4,6 +4,7 @@ from colors import random_red_or_yellow
 from entity import Entity
 from etc.enum import EntityTypes, RenderOrder
 from components.shimmer import FireShimmer
+from components.spreadable import FireSpreadable
 
 
 class Fire:
@@ -16,7 +17,8 @@ class Fire:
             fg_color=fg_color,
             entity_type=EntityTypes.TERRAIN,
             render_order=RenderOrder.TERRAIN,
-            shimmer=FireShimmer())
+            shimmer=FireShimmer(),
+            spreadable=FireSpreadable())
 
     def maybe_make(x, y, p=0.5):
         spawn = random.uniform(0, 1) < 0.5 

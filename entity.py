@@ -77,6 +77,9 @@ class Entity:
 
     burnable: Burnable object.
       Contains logic for results of attempting to burn the entity.
+
+    spreadable: Spreadable object.
+      Contains logic for an entity to self propagate across the map.
     """
     def __init__(self,
                  x, y, char, fg_color, name,
@@ -96,7 +99,8 @@ class Entity:
                  item=None,
                  inventory=None,
                  shimmer=None,
-                 burnable=None):
+                 burnable=None,
+                 spreadable=None):
         self.x = x
         self.y = y
         self.char = char
@@ -119,6 +123,7 @@ class Entity:
         self.add_component(inventory, "inventory")
         self.add_component(shimmer, "shimmer")
         self.add_component(burnable, "burnable")
+        self.add_component(spreadable, "spreadable")
 
     def add_component(self, component, component_name):
         """Add a component as an attribute of the current object, and set the
@@ -180,6 +185,13 @@ class Entity:
                 within_radius.append(entity)
         return within_radius
 
+
+def get_entities_at_location(entities, x, y):
+    entities_at_location = []
+    for entity in entities:
+        if entity.x == x and entity.y == y:
+            entities_at_location.append(entity)
+    return entities_at_location
 
 def get_blocking_entity_at_location(entities, x, y):
     """Get a blocking entity at a location, if any, from a list of entities."""

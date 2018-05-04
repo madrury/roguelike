@@ -8,7 +8,7 @@ class GrassBurnable:
 
     def burn(self):
         message = Message("The grass burns away.", COLORS["orange"])
-        fire = Fire.maybe_make(self.owner.x, self.owner.y) 
+        fire = Fire.maybe_make(self.owner.x, self.owner.y, p=0.8) 
         if fire:
             return [{
                 ResultTypes.MESSAGE: message,

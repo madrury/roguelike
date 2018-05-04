@@ -422,6 +422,9 @@ def main():
             for entity in (x for x in entities if x.ai):
                 enemy_turn_results.extend(entity.ai.take_turn(
                     player, game_map))
+            for entity in (x for x in entities if x.spreadable):
+                enemy_turn_results.extend(
+                    entity.spreadable.spread(game_map, entities))
             game_state = GameStates.PLAYER_TURN
 
         #---------------------------------------------------------------------
@@ -432,8 +435,11 @@ def main():
             move_towards = result.get('move_towards')
             move_random_adjacent = result.get('move_random_adjacent')
             message = result.get(ResultTypes.MESSAGE)
+            new_entity = result.get(ResultTypes.ADD_ENTITY)
+            remove_entity = result.get(ResultTypes.REMOVE_ENTITY)
             damage = result.get(ResultTypes.DAMAGE)
             dead_entity = result.get(ResultTypes.DEAD_ENTITY)
+
             # Handle a move towards action.  Move towards a target.
             if move_towards:
                monster, target_x, target_y = move_towards
@@ -455,6 +461,14 @@ def main():
                 target, amount = damage
                 damage_result = target.harmable.take_damage(amount)
                 enemy_turn_results.extend(damage_result)
+            # Add a new entity to the game.
+            if new_entity:
+                entity = new_entity
+                entities.append(entity)
+            # Remove an entity from the game.
+            if remove_entity:
+                entity = remove_entity
+                entities.remove(entity)
             # Handle death.
             if dead_entity == player:
                 enemy_turn_results.extend(kill_player(player, COLORS))
