@@ -40,7 +40,7 @@ def main():
     #  - A console with the player's health bar, and a message log.
     root_console = tdl.init(
        SCREEN_WIDTH, SCREEN_HEIGHT,
-       title='Rougelike Tutorial Game')
+       title='Roguelike Tutorial Game')
     map_console = tdl.Console(SCREEN_WIDTH, SCREEN_HEIGHT)
     panel_console = tdl.Console(SCREEN_WIDTH, PANEL_CONFIG['height'])
     message_log = MessageLog(MESSAGE_CONFIG)

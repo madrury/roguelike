@@ -15,12 +15,12 @@ class Attacker:
             return results
         damage = self.power - target.harmable.defense
         if damage > 0:
-            attack_message = Message('{0} atacks {1} for {2} HP.'.format(
+            attack_message = Message('{0} attacks {1} for {2} HP.'.format(
                 self.owner.name.capitalize(), target.name, damage))
             results.append({ResultTypes.MESSAGE: attack_message})
             results.append({ResultTypes.DAMAGE: (target, damage)})
         else:
-            attack_message = Message('{0} atacks {1}, but does no damage.'.format(
+            attack_message = Message('{0} attacks {1}, but does no damage.'.format(
                 self.owner.name.capitalize(), target.name))
             results.append({ResultTypes.MESSAGE: attack_message})
         return results
