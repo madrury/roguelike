@@ -1,6 +1,8 @@
 import math
 import random
 
+import tcod
+
 from etc.enum import EntityTypes, RenderOrder
 
 
@@ -140,9 +142,22 @@ class Entity:
         self.y += dy
 
     def move_towards(self, target_x, target_y, game_map, entities):
-        path = game_map.compute_path(self.x, self.y, target_x, target_y)
-        dx, dy = path[0][0] - self.x, path[0][1] - self.y
-        self._move_if_able(dx, dy, game_map, entities)
+        if self.swims:
+            path = game_map.compute_path(self.x, self.y, target_x, target_y)
+        else:
+            # TODO: Fuck all!  The path in the tcod module is transposed from
+            # the Map object!
+            walkable = game_map.walkable * (1 - game_map.water)
+            pathfinder = tcod.path.AStar(walkable.T, diagonal=1.0)
+            path = pathfinder.get_path(self.x, self.y, target_x, target_y)
+            # If the entity is in a different connected component due to water,
+            # then we will have an empty path.  Since the entity can SEE the
+            # player, they should at least move towards them.
+            if path == []:
+                path = game_map.compute_path(self.x, self.y, target_x, target_y)
+        if len(path) > 1:
+            dx, dy = path[0][0] - self.x, path[0][1] - self.y
+            self._move_if_able(dx, dy, game_map, entities)
 
     def move_to_random_adjacent(self, game_map, entities):
         dx, dy = random.choice([
