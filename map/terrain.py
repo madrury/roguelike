@@ -111,40 +111,6 @@ class Pool(Growable):
 
 
 #-----------------------------------------------------------------------------
-# Grass
-#-----------------------------------------------------------------------------
-class Grass(Growable):
-
-    def __init__(self, game_map, room):
-        super().__init__(game_map, room)
-        room.terrain = Terrain.GRASS
-        
-    @staticmethod
-    def make(x, y):
-        fg_color = random_light_green()
-        # Shift down the green component to make the grass dark.
-        bg_color = (fg_color[0], fg_color[1] - 60, fg_color[2])
-        return Entity(
-            x, y, '"',
-            name="Grass",
-            fg_color=fg_color,
-            dark_fg_color=bg_color,
-            visible_out_of_fov=True,
-            entity_type=EntityTypes.TERRAIN,
-            render_order=RenderOrder.TERRAIN,
-            burnable=GrassBurnable())
-
-
-def random_grass(game_map):
-    pinned_room = random.choice(game_map.floor.rooms)
-    while pinned_room.terrain != None:
-        pinned_room = random.choice(game_map.floor.rooms)
-    grass = Grass(game_map, pinned_room)
-    grass.grow(stay_in_room=True, proportion=1.5)
-    return grass
-    
-
-#-----------------------------------------------------------------------------
 # River
 #-----------------------------------------------------------------------------
 def random_river(game_map):
@@ -196,3 +162,48 @@ class River:
         while not self.game_map.pool[x, y]:
             x, y = room.random_point()
         return x, y
+
+#-----------------------------------------------------------------------------
+# Grass
+#-----------------------------------------------------------------------------
+class Grass(Growable):
+
+    def __init__(self, game_map, room):
+        super().__init__(game_map, room)
+        room.terrain = Terrain.GRASS
+        
+    @staticmethod
+    def make(x, y):
+        fg_color = random_light_green()
+        # Shift down the green component to make the grass dark.
+        bg_color = (fg_color[0], fg_color[1] - 60, fg_color[2])
+        return Entity(
+            x, y, '"',
+            name="Grass",
+            fg_color=fg_color,
+            dark_fg_color=bg_color,
+            visible_out_of_fov=True,
+            entity_type=EntityTypes.TERRAIN,
+            render_order=RenderOrder.TERRAIN,
+            burnable=GrassBurnable())
+
+
+def random_grass(game_map):
+    pinned_room = random.choice(game_map.floor.rooms)
+    while pinned_room.terrain != None:
+        pinned_room = random.choice(game_map.floor.rooms)
+    grass = Grass(game_map, pinned_room)
+    grass.grow(stay_in_room=True, proportion=1.5)
+    return grass
+    
+
+class Fire:
+
+    def make(x, y):
+        fg_color = random_red_or_yellow()
+        return Entity(
+            x, y, '^',
+            name="Fire",
+            fg_color=fg_color,
+            entity_type=EntityTypes.TERRAIN,
+            render_order=RenderOrder.TERRAIN)

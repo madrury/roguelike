@@ -339,6 +339,7 @@ def main():
             item_dropped = result.get(ResultTypes.ITEM_DROPPED)
             message = result.get(ResultTypes.MESSAGE)
             move = result.get(ResultTypes.MOVE)
+            new_entity = result.get(ResultTypes.ADD_ENTITY)
             remove_entity = result.get(ResultTypes.REMOVE_ENTITY)
 
             # Move the player.
@@ -379,6 +380,10 @@ def main():
                 # TODO: This calculation should not go here.
                 target.harmable.hp += min(
                     amount, target.harmable.max_hp - target.harmable.hp)
+            # Add a new entity to the game.
+            if new_entity:
+                entity = new_entity
+                entities.append(entity)
             # Remove an entity from the game.
             if remove_entity:
                 entity = remove_entity

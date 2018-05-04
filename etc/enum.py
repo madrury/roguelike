@@ -91,6 +91,7 @@ class GameStates(Enum):
 #   Show the inventory menu.
 #.............................................................................
 class ResultTypes(Enum):
+    ADD_ENTITY = auto()
     ANIMATION = auto()
     CURSOR_MODE = auto()
     CURSOR_SELECT = auto()
