@@ -42,3 +42,9 @@ FOV_CONFIG = {
 }
 
 SHIMMER_INTERVAL = 50
+
+PROBABILITIES = {
+    'grass_burn': 0.8,
+    'fire_spread': 1.0,
+    'fire_dissipate': 0.25
+}

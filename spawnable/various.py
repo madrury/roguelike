@@ -22,7 +22,7 @@ class Fire:
             spreadable=FireSpreadable(),
             dissipatable=FireDissipatable())
 
-    def maybe_make(x, y, p=0.5):
+    def maybe_make(x, y, p):
         spawn = random.uniform(0, 1) < p 
         if spawn:
             return Fire.make(x, y)
