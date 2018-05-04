@@ -44,6 +44,9 @@ class GameMap(Map):
     water: np.array of bool
       Does the tile currently hold a water?
 
+    terrain: np.array of bool
+      Does the tile currently hold any terrain?
+
     fg_colors: ColorArray object
       The RGB colors currently rendered in the foreground of each tile
 
@@ -60,6 +63,7 @@ class GameMap(Map):
         self.console = console
         self.explored = np.zeros((width, height)).astype(bool)
         self.water = np.zeros((width, height)).astype(bool)
+        self.terrain = np.zeros((width, height)).astype(bool)
         self.fg_colors = ColorArray((width, height))
         self.bg_colors = ColorArray((width, height))
         self.chars = np.full((width, height), ' ')

@@ -56,9 +56,9 @@ class Growable:
             coord = random.choice(self.coords)
             x, y = random_adjacent(coord)
             is_valid = not stay_in_room or self.game_map.walkable[x, y]
-            already_spawned = (x, y) in self.coords
+            already_occupied = self.game_map.terrain[x, y]             
             within_bounds = self.game_map.within_bounds(x, y, buffer=1)
-            if is_valid and not already_spawned and within_bounds:
+            if is_valid and not already_occupied and within_bounds:
                 self.coords.append((x, y))
 
     def get_entities(self):
@@ -104,8 +104,9 @@ class Pool(Growable):
 
     def write_to_game_map(self):
         for x, y in self:
-            if not self.game_map.water[x, y]:
+            if not self.game_map.terrain[x, y]:
                 self.game_map.water[x, y] = True
+                self.game_map.terrain[x, y] = True
                 self.game_map.make_transparent_and_walkable(x, y)
 
     @staticmethod
@@ -140,8 +141,9 @@ class River:
 
     def write_to_game_map(self):
         for x, y in self.coords:
-            if not self.game_map.water[x, y]:
+            if not self.game_map.terrain[x, y]:
                 self.game_map.water[x, y] = True
+                self.game_map.terrain[x, y] = True
                 self.game_map.make_transparent_and_walkable(x, y)
 
     def grow(self, width=1):
