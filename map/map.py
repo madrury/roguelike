@@ -45,7 +45,7 @@ class GameMap(Map):
       Does the tile currently hold a water?
 
     terrain: np.array of bool
-      Does the tile currently hold any terrain?
+      Does the tile currently hold any premenant terrain?
 
     fg_colors: ColorArray object
       The RGB colors currently rendered in the foreground of each tile
