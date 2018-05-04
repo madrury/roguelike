@@ -14,9 +14,9 @@ from components.harmable import Harmable
 from components.inventory import Inventory
 from map.map import GameMap
 from map.floor import make_floor
-from map.terrain import add_random_terrain
 from spawnable.monsters import MONSTER_SCHEDULE, MONSTER_GROUPS
 from spawnable.items import ITEM_SCHEDULE, ITEM_GROUPS
+from spawnable.terrain import add_random_terrain
 from spawnable.spawnable import spawn_entities
 from spawnable.items import (
     HealthPotion, MagicMissileScroll, FireblastScroll, ThrowingKnife)

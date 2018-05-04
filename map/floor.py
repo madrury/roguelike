@@ -3,7 +3,6 @@ import numpy as np
 
 from .room import PinnedDungeonRoom, random_dungeon_room
 from .tunnel import random_tunnel_between_pinned_rooms
-from .terrain import random_pool
 
 
 def make_floor(floor_config, room_config):
