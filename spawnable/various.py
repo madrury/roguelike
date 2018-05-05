@@ -10,21 +10,23 @@ from components.dissipatable import FireDissipatable
 
 class Fire:
 
-    def make(x, y):
-        fg_color = random_red_or_yellow()
-        return Entity(
-            x, y, '^',
-            name="Fire",
-            fg_color=fg_color,
-            entity_type=EntityTypes.TERRAIN,
-            render_order=RenderOrder.TERRAIN,
-            shimmer=FireShimmer(),
-            spreadable=FireSpreadable(),
-            dissipatable=FireDissipatable())
+    def make(game_map, x, y):
+        if not game_map.fire[x, y]:
+            game_map.fire[x, y] = True
+            fg_color = random_red_or_yellow()
+            return Entity(
+                x, y, '^',
+                name="Fire",
+                fg_color=fg_color,
+                entity_type=EntityTypes.TERRAIN,
+                render_order=RenderOrder.TERRAIN,
+                shimmer=FireShimmer(),
+                spreadable=FireSpreadable(),
+                dissipatable=FireDissipatable())
 
-    def maybe_make(x, y, p):
+    def maybe_make(game_map, x, y, p):
         spawn = random.uniform(0, 1) < p 
         if spawn:
-            return Fire.make(x, y)
+            return Fire.make(game_map, x, y)
         else:
             return None

@@ -15,5 +15,5 @@ class FireSpreadable:
         results = []
         for entity in burnable_entities:
             if random.uniform(0, 1) < p:
-                results.extend(entity.burnable.burn())
+                results.extend(entity.burnable.burn(game_map))
         return results

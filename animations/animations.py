@@ -24,7 +24,6 @@ def construct_animation(animation_data, game_map, player=None):
         animation_player = ThrownPotionAnimation(game_map, source, target)
     elif animation_type == Animations.HEALTH_POTION:
         _, target = animation_data
-        print(game_map.chars[target[0], target[1]])
         animation_player = HealthPotionAnimation(game_map, target)
     elif animation_type == Animations.FIREBLAST:
         _, _, radius = animation_data

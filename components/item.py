@@ -173,7 +173,7 @@ class FireblastComponent:
         self.damage = damage
         self.radius = radius
 
-    def use(self, user, entities):
+    def use(self, game_map, user, entities):
         results = []
         monsters_within_radius = user.get_all_entities_of_type_within_radius(
             entities, EntityTypes.MONSTER, self.radius)
@@ -187,7 +187,7 @@ class FireblastComponent:
                             ResultTypes.MESSAGE: message})
         for terrain in terrain_within_radius:
             if terrain.burnable:
-                results.extend(terrain.burnable.burn())
+                results.extend(terrain.burnable.burn(game_map))
         results.append({ResultTypes.ITEM_CONSUMED: (True, self.owner),
                         ResultTypes.ANIMATION: (
                              Animations.FIREBLAST, (user.x, user.y), self.radius)})

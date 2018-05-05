@@ -69,9 +69,9 @@ def main():
     spawn_entities(ITEM_SCHEDULE, ITEM_GROUPS, game_map, entities)
 
     # DEBUG: The entire dungeon is explored.
-    game_map.explored[:, :] = True
-    for entity in entities:
-        entity.seen = True
+    #game_map.explored[:, :] = True
+    #for entity in entities:
+    #    entity.seen = True
 
 
     #-------------------------------------------------------------------------
@@ -95,7 +95,6 @@ def main():
     # Stacks for holding the results of player and enemy turns.
     player_turn_results = []
     enemy_turn_results = []
-
 
     #-------------------------------------------------------------------------
     # Main Game Loop.
@@ -284,7 +283,7 @@ def main():
                         entity.item.use(player, entities))
                 if entity.item.targeting == ItemTargeting.WITHIN_RADIUS:
                     player_turn_results.extend(
-                        entity.item.use(player, entities))
+                        entity.item.use(game_map, player, entities))
                 if entity.item.targeting == ItemTargeting.FIRST_ALONG_PATH_TO_CURSOR:
                     player_turn_results.extend(
                         entity.item.use(game_map, player, entities))
@@ -346,9 +345,7 @@ def main():
 
             # Move the player.
             if move:
-                game_map.undraw_entity(player)
                 player.move(*move)
-                game_map.draw_entity(player)
                 fov_recompute = True
             # Add to the message log.
             if message:
@@ -429,7 +426,7 @@ def main():
                     entity.spreadable.spread(game_map, entities))
             for entity in (x for x in entities if x.dissipatable):
                 enemy_turn_results.extend(
-                    entity.dissipatable.dissipate())
+                    entity.dissipatable.dissipate(game_map))
             game_state = GameStates.PLAYER_TURN
 
         #---------------------------------------------------------------------
@@ -448,16 +445,12 @@ def main():
             # Handle a move towards action.  Move towards a target.
             if move_towards:
                monster, target_x, target_y = move_towards
-               game_map.remove_and_undraw_entity(monster)
                monster.move_towards(target_x, target_y, game_map, entities)
-               game_map.update_and_draw_entity(monster)
             # Handle a move random adjacent action.  Move to a random adjacent
             # square.
             if move_random_adjacent:
                monster = move_random_adjacent
-               game_map.remove_and_undraw_entity(monster)
                monster.move_to_random_adjacent(game_map, entities)
-               game_map.update_and_draw_entity(monster)
             # Handle a simple message.
             if message:
                 message_log.add_message(message)

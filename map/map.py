@@ -44,6 +44,9 @@ class GameMap(Map):
     water: np.array of bool
       Does the tile currently hold a water?
 
+    fire: np.array of bool
+      Is the tile currently on fire?
+
     terrain: np.array of bool
       Does the tile currently hold any premenant terrain?
 
@@ -64,6 +67,7 @@ class GameMap(Map):
         # These need to be int8's to work with the tcod pathfinder
         self.explored = np.zeros((width, height), dtype=np.int8)
         self.water = np.zeros((width, height), dtype=np.int8)
+        self.fire = np.zeros((width, height), dtype=np.int8)
         self.terrain = np.zeros((width, height), dtype=np.int8)
         self.fg_colors = ColorArray((width, height))
         self.bg_colors = ColorArray((width, height))
