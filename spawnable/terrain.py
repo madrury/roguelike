@@ -29,8 +29,14 @@ def add_random_terrain(game_map, entities, terrain_config):
         river.write_to_game_map()
         entities.extend(river.get_entities())
 
-    grass = random_grass(game_map)
-    entities.extend(grass.get_entities())
+    
+    min_grass, max_grass = (
+        terrain_config['min_grass'], terrain_config['max_grass'])
+    grass_room_proportion = terrain_config['grass_room_proportion']
+    n_grass = random.randint(min_grass, max_grass)
+    for _ in range(n_grass):
+        grass = random_grass(game_map, grass_room_proportion)
+        entities.extend(grass.get_entities())
 
 
 class Growable:
@@ -254,12 +260,12 @@ class Grass(Growable):
             burnable=GrassBurnable())
 
 
-def random_grass(game_map):
+def random_grass(game_map, grass_room_proportion):
     """Grow grass in a random room on the game map."""
     pinned_room = random.choice(game_map.floor.rooms)
     while pinned_room.terrain != None:
         pinned_room = random.choice(game_map.floor.rooms)
     grass = Grass(game_map, pinned_room)
     # TODO: Move constant to config.
-    grass.grow(stay_in_room=True, proportion=1.5)
+    grass.grow(stay_in_room=True, proportion=grass_room_proportion)
     return grass

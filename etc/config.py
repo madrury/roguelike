@@ -20,7 +20,10 @@ TERRAIN_CONFIG = {
     'max_pools': 5,
     'pool_room_proportion': 0.7,
     'min_rivers': 1,
-    'max_rivers': 3
+    'max_rivers': 3,
+    'min_grass': 1,
+    'max_grass': 3,
+    'grass_room_proportion': 2.0
 }
 
 PANEL_CONFIG = {
@@ -44,7 +47,7 @@ FOV_CONFIG = {
 SHIMMER_INTERVAL = 50
 
 PROBABILITIES = {
-    'grass_burn': 0.8,
-    'fire_spread': 1.0,
-    'fire_dissipate': 0.25
+    'grass_burn': 1.0,
+    'fire_spread': 0.9,
+    'fire_dissipate': 0.15
 }
