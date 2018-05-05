@@ -179,6 +179,8 @@ class FireblastComponent:
             entities, EntityTypes.MONSTER, self.radius)
         terrain_within_radius = user.get_all_entities_of_type_within_radius(
             entities, EntityTypes.TERRAIN, self.radius)
+        items_within_radius = user.get_all_entities_of_type_within_radius(
+            entities, EntityTypes.ITEM, self.radius)
         for monster in monsters_within_radius:
             text = "The {} is caught in the fireblast!".format(
                 monster.name)
@@ -188,6 +190,9 @@ class FireblastComponent:
         for terrain in terrain_within_radius:
             if terrain.burnable:
                 results.extend(terrain.burnable.burn(game_map))
+        for item in items_within_radius:
+            if item.burnable:
+                results.extend(item.burnable.burn(game_map))
         results.append({ResultTypes.ITEM_CONSUMED: (True, self.owner),
                         ResultTypes.ANIMATION: (
                              Animations.FIREBLAST, (user.x, user.y), self.radius)})

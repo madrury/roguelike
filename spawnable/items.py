@@ -6,6 +6,7 @@ from etc.enum import EntityTypes, RenderOrder, ItemGroups
 from components.item import (
     HealthPotionComponent, MagicMissileComponent,
     FireblastComponent, ThrowingKnifeComponent)
+from components.burnable import ItemBurnable
 
 
 class HealthPotion(Spawnable):
@@ -25,7 +26,8 @@ class MagicMissileScroll(Spawnable):
         return Entity(x, y, '%', COLORS['violet'], 'Scroll of Magic Missile',
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
-                      item=MagicMissileComponent())
+                      item=MagicMissileComponent(),
+                      burnable=ItemBurnable())
 
 
 class FireblastScroll(Spawnable):
@@ -35,7 +37,8 @@ class FireblastScroll(Spawnable):
         return Entity(x, y, '%', COLORS['violet'], 'Scroll of Fireblast',
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
-                      item=FireblastComponent())
+                      item=FireblastComponent(),
+                      burnable=ItemBurnable())
 
 
 class ThrowingKnife(Spawnable):
@@ -59,9 +62,9 @@ ITEM_GROUPS = {
 
 ITEM_SCHEDULE = [
     (0.6, ItemGroups.NONE),
-    (0.4*0.3, ItemGroups.ONE_HEALTH_POTION),
-    (0.4*0.1, ItemGroups.TWO_HEALTH_POTIONS),
-    (0.4*0.2, ItemGroups.MAGIC_MISSILE_SCROLL),
-    (0.4*0.1, ItemGroups.FIREBLAST_SCROLL),
-    (0.4*0.3, ItemGroups.THROWING_KNIFE)
+    (0.4*0.0, ItemGroups.ONE_HEALTH_POTION),
+    (0.4*0.0, ItemGroups.TWO_HEALTH_POTIONS),
+    (0.4*1.0, ItemGroups.MAGIC_MISSILE_SCROLL),
+    (0.4*0.0, ItemGroups.FIREBLAST_SCROLL),
+    (0.4*0.0, ItemGroups.THROWING_KNIFE)
 ]

@@ -5,6 +5,15 @@ from etc.config import PROBABILITIES
 from spawnable.various import Fire
 
 
+class ItemBurnable:
+
+    def burn(self, game_map):
+        fire = Fire.make(game_map, self.owner.x, self.owner.y)
+        return [{
+            ResultTypes.REMOVE_ENTITY: self.owner,
+            ResultTypes.ADD_ENTITY: fire}] 
+
+
 class GrassBurnable:
 
     def __init__(self, p_fire=PROBABILITIES['grass_burn']):
