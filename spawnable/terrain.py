@@ -34,7 +34,26 @@ def add_random_terrain(game_map, entities, terrain_config):
 
 
 class Growable:
+    """Base class for terrain that can be grown.
 
+    Terrain is grown by first seeding a random point in a rooma and placing
+    terrain there. Then we repeatadely expand this seed by choosing a point
+    adjaent to an already grown terrain, and placing a terrain there if
+    possible. 
+
+    Parameters
+    ----------
+    game_map: GameMap object
+      The game map.
+
+    room: PinnedDungeonRoom object
+      The room to grow the terrain in.
+
+    Attributes
+    ----------
+    coords: List[(int, int)]
+      A list of the currently grown coordinates.
+    """
     def __init__(self, game_map, room):
         self.game_map = game_map
         self.room = room
@@ -44,10 +63,28 @@ class Growable:
         yield from iter(self.coords)
 
     def seed(self):
-        coord = self.room.random_point()
-        self.coords.append(coord)
+        x, y = self.room.random_point()
+        while self.game_map.terrain[x, y]:
+            x, y = self.room.random_point()
+        self.coords.append((x, y))
 
     def grow(self, stay_in_room=False, proportion=None, n_attempts=None):
+        """Grow the room using the algorithm described in the class
+        docstring.
+        
+        Parameters
+        ----------
+        stay_in_room: bool
+          Should the terrain stay within the bounds of the room it is grown in?
+          If False, any space terrain is spawned in will be made walkable.
+
+        n_attempts: int
+          The number of times to attempt to spawn a new piece of terrain.
+
+        proportion: float
+          A scaling factor for how much terrain to grow.  Used if n_atempts is
+          not passed.
+        """
         if not n_attempts:
             n_attempts = int(
                 proportion * self.room.width * self.room.height)
@@ -65,10 +102,12 @@ class Growable:
     def get_entities(self):
         return [self.make(x, y) for x, y in self]
 
+
 #-----------------------------------------------------------------------------
 # Pool
 #-----------------------------------------------------------------------------
 def random_pool(game_map, pool_room_proportion):
+    """Grow a pool of water in a random room on a map."""
     pinned_room = random.choice(game_map.floor.rooms)
     while pinned_room.terrain != None:
         pinned_room = random.choice(game_map.floor.rooms)
@@ -97,7 +136,7 @@ def make_water_entity(x, y):
 
 
 class Pool(Growable):
-
+    """A pool of water in a room."""
     def __init__(self, game_map, room):
         super().__init__(game_map, room)
         room.terrain = Terrain.POOL
@@ -117,6 +156,7 @@ class Pool(Growable):
 # River
 #-----------------------------------------------------------------------------
 def random_river(game_map):
+    """Grow a river between two pools of water."""
     r1 = random.choice(game_map.floor.rooms)
     while r1.terrain != Terrain.POOL:
         r1 = random.choice(game_map.floor.rooms)
@@ -128,7 +168,21 @@ def random_river(game_map):
 
 
 class River:
+    """A river connecting two pools of water.
 
+    Parameters
+    ----------
+    game_map: GameMap object
+    
+    source_room: PinnedDungeonRoom object
+      The room contining the pool to use a source of the river.
+
+    dest_room: PinnedDungeonRoom object
+      The room containing the pool to use as a destination of the river.
+
+    width: int
+      The width of the river.
+    """
     def __init__(self, game_map, source_room, dest_room, width=1):
         self.game_map = game_map
         self.source_point = self.get_random_pool_point(source_room)
@@ -144,6 +198,9 @@ class River:
             self.game_map.make_transparent_and_walkable(x, y)
 
     def grow(self, width=1):
+        """Choose a random point in both the source and destination pool, and
+        fill the path between them with water terain.
+        """
         for _ in range(width - 1):
             new_coords = set()
             for river_coord in self.coords:
@@ -168,11 +225,15 @@ class River:
             x, y = room.random_point()
         return x, y
 
+
 #-----------------------------------------------------------------------------
 # Grass
 #-----------------------------------------------------------------------------
 class Grass(Growable):
+    """A grassy room.
 
+    Grass is burnable, so fire spells used in the grassy room will spread.
+    """
     def __init__(self, game_map, room):
         super().__init__(game_map, room)
         room.terrain = Terrain.GRASS
@@ -194,9 +255,11 @@ class Grass(Growable):
 
 
 def random_grass(game_map):
+    """Grow grass in a random room on the game map."""
     pinned_room = random.choice(game_map.floor.rooms)
     while pinned_room.terrain != None:
         pinned_room = random.choice(game_map.floor.rooms)
     grass = Grass(game_map, pinned_room)
+    # TODO: Move constant to config.
     grass.grow(stay_in_room=True, proportion=1.5)
     return grass
