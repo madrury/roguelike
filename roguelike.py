@@ -28,7 +28,7 @@ from messages import Message, MessageLog
 from entity import Entity, get_blocking_entity_at_location
 from menus import invetory_menu
 from death_functions import kill_monster, kill_player, make_corpse
-from rendering import StatusBar
+from status_bar import StatusBar
 
 
 def main():
