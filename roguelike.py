@@ -123,12 +123,6 @@ def main():
                 if entity.shimmer:
                     entity.shimmer.shimmer()
 
-        #---------------------------------------------------------------------
-        # Create UI Elements
-        #---------------------------------------------------------------------
-        hp_bar = StatusBar(
-            1, 1, 'HP', PANEL_CONFIG['bar_width'], player.harmable.max_hp, 
-            STATUS_BAR_COLORS['hp_bar'])
 
         #---------------------------------------------------------------------
         # Render and display the dungeon and its inhabitates.
@@ -136,10 +130,20 @@ def main():
         game_map.update_and_draw_all(entities, fov_recompute)
 
         #---------------------------------------------------------------------
+        # Create UI Elements
+        #---------------------------------------------------------------------
+        hp_bar = StatusBar(
+            1, 1, 'HP', PANEL_CONFIG['bar_width'], player.harmable.max_hp, 
+            STATUS_BAR_COLORS['hp_bar'])
+        swim_bar = StatusBar(
+            1, 3, 'Swim Stamina', PANEL_CONFIG['bar_width'], 5, 
+            STATUS_BAR_COLORS['swim_bar'])
+        #---------------------------------------------------------------------
         # Render the UI
         #---------------------------------------------------------------------
         panel_console.clear(fg=COLORS['white'], bg=COLORS['black'])
         hp_bar.render(panel_console, player.harmable.hp)
+        swim_bar.render(panel_console, 4)
         message_log.render(panel_console)
 
         #---------------------------------------------------------------------
