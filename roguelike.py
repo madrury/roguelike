@@ -133,10 +133,11 @@ def main():
         #---------------------------------------------------------------------
         # Render and display the dungeon and its inhabitates.
         #---------------------------------------------------------------------
-        game_map.update_and_draw_all(
-            entities,
-            fov_recompute,
-            redraw_random_colors=(game_loop % 50 == 0))
+        game_map.update_and_draw_all(entities, fov_recompute)
+
+        #---------------------------------------------------------------------
+        # Render the UI
+        #---------------------------------------------------------------------
         panel_console.clear(fg=COLORS['white'], bg=COLORS['black'])
         hp_bar.render(panel_console, player.harmable.hp)
         message_log.render(panel_console)
