@@ -28,7 +28,7 @@ from messages import Message, MessageLog
 from entity import Entity, get_blocking_entity_at_location
 from menus import invetory_menu
 from death_functions import kill_monster, kill_player, make_corpse
-from rendering import render_health_bars, render_messages
+from rendering import render_health_bars
 
 
 def main():
@@ -129,7 +129,7 @@ def main():
             fov_recompute,
             redraw_random_colors=(game_loop % 50 == 0))
         render_health_bars(panel_console, player, PANEL_CONFIG, COLORS)
-        render_messages(panel_console, message_log)
+        message_log.render(panel_console)
 
         #---------------------------------------------------------------------
         # Draw the selection cursor if in cursor input state.

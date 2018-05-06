@@ -22,3 +22,8 @@ class MessageLog:
             if len(self.messages) == self.height:
                 del self.messages[0]
             self.messages.append(Message(line, message.color))
+
+    def render(self, panel):
+        for y, message in enumerate(self.messages, start=1):
+            panel.draw_str(
+                self.x, y, message.text, bg=None, fg=message.color)
