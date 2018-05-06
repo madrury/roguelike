@@ -14,10 +14,12 @@ class Fire:
         if not game_map.fire[x, y]:
             game_map.fire[x, y] = True
             fg_color = random_red_or_yellow()
+            bg_color = random_red_or_yellow()
             return Entity(
                 x, y, '^',
                 name="Fire",
                 fg_color=fg_color,
+                bg_color=bg_color,
                 entity_type=EntityTypes.FIRE,
                 render_order=RenderOrder.TERRAIN,
                 shimmer=FireShimmer(),

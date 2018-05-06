@@ -15,3 +15,4 @@ class FireShimmer:
 
     def shimmer(self):
         self.owner.fg_color = random_red_or_yellow()
+        self.owner.bg_color = random_red_or_yellow()
