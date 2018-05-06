@@ -13,6 +13,7 @@ from components.attacker import Attacker
 from components.harmable import Harmable
 from components.inventory import Inventory
 from components.burnable import AliveBurnable
+from components.swimmable import Swimmable
 from map.map import GameMap
 from map.floor import make_floor
 from spawnable.monsters import MONSTER_SCHEDULE, MONSTER_GROUPS
@@ -50,9 +51,11 @@ def main():
     player = Entity(0, 0, '@', COLORS['white'], 'Player',
                     blocks=True,
                     render_order=RenderOrder.ACTOR,
+                    # TODO: Move all this to config.
                     attacker=Attacker(power=5),
                     harmable=Harmable(hp=2000, defense=2),
                     burnable=AliveBurnable(),
+                    swimmable=Swimmable(5),
                     inventory=Inventory(26))
     entities = [player]
 
@@ -123,7 +126,6 @@ def main():
                 if entity.shimmer:
                     entity.shimmer.shimmer()
 
-
         #---------------------------------------------------------------------
         # Render and display the dungeon and its inhabitates.
         #---------------------------------------------------------------------
@@ -133,17 +135,19 @@ def main():
         # Create UI Elements
         #---------------------------------------------------------------------
         hp_bar = StatusBar(
-            1, 1, 'HP', PANEL_CONFIG['bar_width'], player.harmable.max_hp, 
+            1, 1, 'HP', PANEL_CONFIG['bar_width'],
+            player.harmable.max_hp, 
             STATUS_BAR_COLORS['hp_bar'])
         swim_bar = StatusBar(
-            1, 3, 'Swim Stamina', PANEL_CONFIG['bar_width'], 5, 
+            1, 3, 'Swim Stamina', PANEL_CONFIG['bar_width'],
+            player.swimmable.max_stamina, 
             STATUS_BAR_COLORS['swim_bar'])
         #---------------------------------------------------------------------
         # Render the UI
         #---------------------------------------------------------------------
         panel_console.clear(fg=COLORS['white'], bg=COLORS['black'])
         hp_bar.render(panel_console, player.harmable.hp)
-        swim_bar.render(panel_console, 4)
+        swim_bar.render(panel_console, player.swimmable.stamina)
         message_log.render(panel_console)
 
         #---------------------------------------------------------------------
@@ -449,6 +453,8 @@ def main():
                         entities, "burnable"))
                 for e in burnable_entities_at_position:
                     enemy_turn_results.extend(e.burnable.burn(game_map))
+            if game_map.water[player.x, player.y] and GameStates.PLAYER_TURN:
+                enemy_turn_results.extend(player.swimmable.swim())
             game_state = GameStates.PLAYER_TURN
 
         #---------------------------------------------------------------------
@@ -456,13 +462,15 @@ def main():
         #---------------------------------------------------------------------
         while enemy_turn_results != []:
             result = enemy_turn_results.pop()
-            move_towards = result.get('move_towards')
-            move_random_adjacent = result.get('move_random_adjacent')
-            message = result.get(ResultTypes.MESSAGE)
-            new_entity = result.get(ResultTypes.ADD_ENTITY)
-            remove_entity = result.get(ResultTypes.REMOVE_ENTITY)
+            # TODO: Add to ResultTypes
             damage = result.get(ResultTypes.DAMAGE)
             dead_entity = result.get(ResultTypes.DEAD_ENTITY)
+            decrease_swim_stamina = result.get(ResultTypes.DECREASE_SWIM_STAMINA)
+            message = result.get(ResultTypes.MESSAGE)
+            move_random_adjacent = result.get('move_random_adjacent')
+            move_towards = result.get('move_towards')
+            new_entity = result.get(ResultTypes.ADD_ENTITY)
+            remove_entity = result.get(ResultTypes.REMOVE_ENTITY)
 
             # Handle a move towards action.  Move towards a target.
             if move_towards:
@@ -481,6 +489,10 @@ def main():
                 target, amount, element = damage
                 damage_result = target.harmable.take_damage(amount, element)
                 enemy_turn_results.extend(damage_result)
+            # Entities swim and thier stamana decreases.
+            if decrease_swim_stamina:
+                entity, stamina_decrease = decrease_swim_stamina
+                entity.swimmable.decrease_stamina(stamina_decrease) 
             # Add a new entity to the game.
             if new_entity:
                 entity = new_entity

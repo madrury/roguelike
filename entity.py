@@ -100,6 +100,7 @@ class Entity:
                  ai=None,
                  item=None,
                  inventory=None,
+                 swimmable=None,
                  shimmer=None,
                  burnable=None,
                  spreadable=None,
@@ -123,6 +124,7 @@ class Entity:
         self.add_component(harmable, "harmable")
         self.add_component(ai, "ai")
         self.add_component(item, "item")
+        self.add_component(swimmable, "swimmable")
         self.add_component(inventory, "inventory")
         self.add_component(shimmer, "shimmer")
         self.add_component(burnable, "burnable")
