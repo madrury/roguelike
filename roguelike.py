@@ -1,7 +1,7 @@
 import tdl
 from time import sleep
 
-from etc.colors import COLORS
+from etc.colors import COLORS, STATUS_BAR_COLORS
 from etc.config import (
    SCREEN_WIDTH, SCREEN_HEIGHT, FLOOR_CONFIG, ROOM_CONFIG, TERRAIN_CONFIG,
    PANEL_CONFIG, MESSAGE_CONFIG, FOV_CONFIG, SHIMMER_INTERVAL)
@@ -29,7 +29,7 @@ from messages import Message, MessageLog
 from entity import Entity, get_blocking_entity_at_location
 from menus import invetory_menu
 from death_functions import kill_monster, kill_player, make_corpse
-from rendering import render_health_bars, render_messages
+from status_bar import StatusBar
 
 
 def main():
@@ -124,14 +124,22 @@ def main():
                     entity.shimmer.shimmer()
 
         #---------------------------------------------------------------------
+        # Create UI Elements
+        #---------------------------------------------------------------------
+        hp_bar = StatusBar(
+            1, 1, 'HP', PANEL_CONFIG['bar_width'], player.harmable.max_hp, 
+            STATUS_BAR_COLORS['hp_bar'])
+
+        #---------------------------------------------------------------------
         # Render and display the dungeon and its inhabitates.
         #---------------------------------------------------------------------
         game_map.update_and_draw_all(
             entities,
             fov_recompute,
             redraw_random_colors=(game_loop % 50 == 0))
-        render_health_bars(panel_console, player, PANEL_CONFIG, COLORS)
-        render_messages(panel_console, message_log)
+        panel_console.clear(fg=COLORS['white'], bg=COLORS['black'])
+        hp_bar.render(panel_console, player.harmable.hp)
+        message_log.render(panel_console)
 
         #---------------------------------------------------------------------
         # Draw the selection cursor if in cursor input state.

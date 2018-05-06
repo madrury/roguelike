@@ -27,3 +27,10 @@ COLORS = {
     'yellow': (255, 255, 0),
 }
 
+STATUS_BAR_COLORS = {
+    'hp_bar': {
+        'bar_color': COLORS['light_red'],
+        'back_color': COLORS['darker_red'],
+        'string_color': COLORS['white']
+    }
+}
