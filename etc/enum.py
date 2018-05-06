@@ -129,6 +129,7 @@ class Animations(Enum):
     HEALTH_POTION = auto()
     MAGIC_MISSILE = auto()
     FIREBLAST = auto()
+    SIMULTANEOUS = auto()
     THROWING_KNIFE = auto()
     THROW_POTION = auto()
 

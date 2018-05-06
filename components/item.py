@@ -119,12 +119,13 @@ class MagicMissileComponent:
     spell_range:
       The maximum distance to an entity able to be targeted.
     """
-    def __init__(self, damage=6, spell_range=12):
+    def __init__(self, damage=6, spell_range=12, n_targets=3):
         self.name = "magic missile"
         self.targeting = ItemTargeting.CLOSEST_MONSTER
         self.throwable = False
         self.damage = damage
         self.spell_range = spell_range
+        self.n_targets = n_targets
 
     def use(self, user, entities, target_type=EntityTypes.MONSTER):
         """Cast the magic missile spell.
@@ -141,21 +142,38 @@ class MagicMissileComponent:
           The type of target for the spell to seek.
         """
         results = []
-        closest_monster = user.get_closest_entity_of_type(
-            entities, target_type)
-        if (closest_monster and 
-            user.distance_to(closest_monster) <= self.spell_range):
-            text = 'A shining magic missile pierces the {}'.format(
-                closest_monster.name)
-            message = Message(text, COLORS.get('white'))
-            results.append({ResultTypes.ITEM_CONSUMED: (True, self.owner),
-                            ResultTypes.DAMAGE: (
-                                closest_monster, self.damage, Elements.NONE),
-                            ResultTypes.MESSAGE: message,
-                            ResultTypes.ANIMATION: (
-                                Animations.MAGIC_MISSILE,
-                                (user.x, user.y),
-                                (closest_monster.x, closest_monster.y))})
+        closest_monsters = user.get_n_closest_entities_of_type(
+            entities, target_type, self.n_targets)
+        if closest_monsters:
+            for monster in (m for m in closest_monsters 
+                            if user.distance_to(m) <= self.spell_range):
+                text = 'A shining magic missile pierces the {}'.format(
+                    monster.name)
+                message = Message(text, COLORS.get('white'))
+                results.append({ResultTypes.DAMAGE: (
+                                   monster, self.damage, Elements.NONE),
+                                ResultTypes.MESSAGE: message})
+            animations = [
+                (Animations.MAGIC_MISSILE, (user.x, user.y), (monster.x, monster.y))
+                for monster in closest_monsters]
+            results.append({
+                ResultTypes.ITEM_CONSUMED: (True, self.owner),
+                ResultTypes.ANIMATION: (
+                    Animations.SIMULTANEOUS, animations)})               
+
+#            if (closest_monsters and 
+#                user.distance_to(closest_monster) <= self.spell_range):
+#                text = 'A shining magic missile pierces the {}'.format(
+#                    closest_monster.name)
+#                message = Message(text, COLORS.get('white'))
+#                results.append({ResultTypes.ITEM_CONSUMED: (True, self.owner),
+#                                ResultTypes.DAMAGE: (
+#                                    closest_monster, self.damage, Elements.NONE),
+#                                ResultTypes.MESSAGE: message,
+#                                ResultTypes.ANIMATION: (
+#                                    Animations.MAGIC_MISSILE,
+#                                    (user.x, user.y),
+#                                    (closest_monster.x, closest_monster.y))})
         else:
             message = Message(
                 "A shining magic missile streaks into the darkness.",

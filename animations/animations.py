@@ -32,6 +32,9 @@ def construct_animation(animation_data, game_map, player=None):
     elif animation_type == Animations.CONCATINATED:
         animation_player = ConcatinatedAnimation.construct(
             game_map, animation_data[1])
+    elif animation_type == Animations.SIMULTANEOUS:
+        animation_player = SimultaneousAnimation.construct(
+            game_map, animation_data[1])
     return animation_player
 
 
@@ -61,6 +64,27 @@ class ConcatinatedAnimation:
         return ConcatinatedAnimation(*animations)
 
 
+class SimultaneousAnimation:
+
+    def __init__(self, *animations):
+        self.animations = animations
+        self.n_animations = len(animations)
+
+    def next_frame(self):
+        finished = [False] * self.n_animations
+        for idx, a in enumerate(self.animations):
+            if not finished[idx]:
+                finished[idx] = a.next_frame()
+        return all(finished)
+
+    @staticmethod
+    def construct(game_map, animation_data):
+        animations = []
+        for datum in animation_data:
+            animations.append(construct_animation(datum, game_map))
+        return SimultaneousAnimation(*animations)
+
+            
 class HealthPotionAnimation:
     """Animation for using a health potion.
 

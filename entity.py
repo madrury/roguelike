@@ -194,6 +194,16 @@ class Entity:
                 closest_distance = distance_to
         return closest
 
+    def get_n_closest_entities_of_type(self, entities, entity_type, n):
+        entities_of_type = [
+            e for e in entities if e.entity_type == entity_type]
+        entities_of_type = sorted(
+            entities_of_type, key=lambda e: self.distance_to(e))
+        if len(entities_of_type) < n:
+            return entities_of_type
+        else:
+            return entities_of_type[:n]
+
     def get_all_entities_of_type_within_radius(
         self, entities, entity_type, radius):
         """Get all the entities of a given type within a given range."""
