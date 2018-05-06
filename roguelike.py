@@ -197,12 +197,11 @@ def main():
                               SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
         tdl.flush()
 
+        #---------------------------------------------------------------------
         # Clear all the entities drawn to the consoles, else we will re-draw
         # them in the same positions next game loop.
+        #---------------------------------------------------------------------
         game_map.undraw_all(entities)
-
-        # Unless the player moves, we do not need to recompute the fov.
-        fov_recompute = False
 
         #---------------------------------------------------------------------
         # Get key input from the player.
@@ -244,6 +243,8 @@ def main():
         # if not, attack the blocking entity by putting an attack action on the
         # queue.
         #----------------------------------------------------------------------
+        # Unless the player moves, we do not need to recompute the fov.
+        fov_recompute = False
         if move and game_state == GameStates.PLAYER_TURN:
             dx, dy = move
             destination_x, destination_y = player.x + dx, player.y + dy
@@ -327,7 +328,6 @@ def main():
             player_turn_results.extend(cursor.select())
             game_state, previous_game_state = previous_game_state, game_state
             cursor = None
-
 
         #----------------------------------------------------------------------
         # Process the results stack
@@ -430,7 +430,7 @@ def main():
                     GameStates.ANIMATION_PLAYING, game_state)
 
         #---------------------------------------------------------------------
-        # All enemies take thier turns.
+        # All enemies and hazardous entities take thier turns.
         #---------------------------------------------------------------------
         if game_state == GameStates.ENEMY_TURN:
             # TODO: This could be one for loop.
