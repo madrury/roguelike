@@ -98,7 +98,7 @@ class ResultTypes(Enum):
     DAMAGE = auto()
     DEAD_ENTITY = auto()
     DEATH_MESSAGE = auto()
-    DECREASE_SWIM_STAMINA = auto()
+    CHANGE_SWIM_STAMINA = auto()
     DROP_INVENTORY = auto()
     EXIT = auto()
     FULLSCREEN = auto()

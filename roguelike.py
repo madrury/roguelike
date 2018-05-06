@@ -142,6 +142,7 @@ def main():
             1, 3, 'Swim Stamina', PANEL_CONFIG['bar_width'],
             player.swimmable.max_stamina, 
             STATUS_BAR_COLORS['swim_bar'])
+
         #---------------------------------------------------------------------
         # Render the UI
         #---------------------------------------------------------------------
@@ -433,28 +434,37 @@ def main():
                 game_state, previous_game_state = (
                     GameStates.ANIMATION_PLAYING, game_state)
 
+
         #---------------------------------------------------------------------
-        # All enemies and hazardous entities take thier turns.
+        # All enemies and hazardous terrain and entities take thier turns.
         #---------------------------------------------------------------------
         if game_state == GameStates.ENEMY_TURN:
             # TODO: This could be one for loop.
+            # Enemies move and attack if possible.
             for entity in (x for x in entities if x.ai):
                 enemy_turn_results.extend(entity.ai.take_turn(
                     player, game_map))
+            # Fire and gas spreads.
             for entity in (x for x in entities if x.spreadable):
                 enemy_turn_results.extend(
                     entity.spreadable.spread(game_map, entities))
+            # Fire and gas dissapates.
             for entity in (x for x in entities if x.dissipatable):
                 enemy_turn_results.extend(
                     entity.dissipatable.dissipate(game_map))
+            # Entities burn if needed.
             for entity in (x for x in entities if x.entity_type == EntityTypes.FIRE):
                 burnable_entities_at_position = (
                     entity.get_all_entities_with_component_in_same_position(
                         entities, "burnable"))
                 for e in burnable_entities_at_position:
                     enemy_turn_results.extend(e.burnable.burn(game_map))
+            # If the player is swimming, decrease the swim stamina.  Otherwise,
+            # recover.
             if game_map.water[player.x, player.y] and GameStates.PLAYER_TURN:
                 enemy_turn_results.extend(player.swimmable.swim())
+            else:
+               enemy_turn_results.extend(player.swimmable.rest())
             game_state = GameStates.PLAYER_TURN
 
         #---------------------------------------------------------------------
@@ -463,9 +473,9 @@ def main():
         while enemy_turn_results != []:
             result = enemy_turn_results.pop()
             # TODO: Add to ResultTypes
+            change_swim_stamina = result.get(ResultTypes.CHANGE_SWIM_STAMINA)
             damage = result.get(ResultTypes.DAMAGE)
             dead_entity = result.get(ResultTypes.DEAD_ENTITY)
-            decrease_swim_stamina = result.get(ResultTypes.DECREASE_SWIM_STAMINA)
             message = result.get(ResultTypes.MESSAGE)
             move_random_adjacent = result.get('move_random_adjacent')
             move_towards = result.get('move_towards')
@@ -490,9 +500,9 @@ def main():
                 damage_result = target.harmable.take_damage(amount, element)
                 enemy_turn_results.extend(damage_result)
             # Entities swim and thier stamana decreases.
-            if decrease_swim_stamina:
-                entity, stamina_decrease = decrease_swim_stamina
-                entity.swimmable.decrease_stamina(stamina_decrease) 
+            if change_swim_stamina:
+                entity, stamina_change = change_swim_stamina
+                entity.swimmable.change_stamina(stamina_change) 
             # Add a new entity to the game.
             if new_entity:
                 entity = new_entity
