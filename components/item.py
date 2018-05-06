@@ -1,7 +1,7 @@
 from messages import Message
 from entity import get_first_blocking_entity_along_path
 from etc.colors import COLORS
-from etc.enum import EntityTypes, ItemTargeting, ResultTypes, Animations
+from etc.enum import EntityTypes, ItemTargeting, ResultTypes, Animations, Elements
 
 
 class HealthPotionComponent:
@@ -149,7 +149,8 @@ class MagicMissileComponent:
                 closest_monster.name)
             message = Message(text, COLORS.get('white'))
             results.append({ResultTypes.ITEM_CONSUMED: (True, self.owner),
-                            ResultTypes.DAMAGE: (closest_monster, self.damage),
+                            ResultTypes.DAMAGE: (
+                                closest_monster, self.damage, Elements.NONE),
                             ResultTypes.MESSAGE: message,
                             ResultTypes.ANIMATION: (
                                 Animations.MAGIC_MISSILE,
@@ -185,7 +186,8 @@ class FireblastComponent:
             text = "The {} is caught in the fireblast!".format(
                 monster.name)
             message = Message(text, COLORS.get('white'))
-            results.append({ResultTypes.DAMAGE: (monster, self.damage),
+            results.append({ResultTypes.DAMAGE: (
+                                monster, self.damage, Elements.FIRE),
                             ResultTypes.MESSAGE: message})
         for terrain in terrain_within_radius:
             if terrain.burnable:
@@ -233,7 +235,7 @@ class ThrowingKnifeCallback:
                 monster.name)
             results.append({
                 ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
-                ResultTypes.DAMAGE: (monster, self.owner.damage),
+                ResultTypes.DAMAGE: (monster, self.owner.damage, Elements.NONE),
                 ResultTypes.ITEM_CONSUMED: (True, self.owner.owner),
                 ResultTypes.ANIMATION: (
                     Animations.THROWING_KNIFE,

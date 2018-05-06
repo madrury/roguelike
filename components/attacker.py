@@ -1,5 +1,5 @@
 from messages import Message
-from etc.enum import ResultTypes
+from etc.enum import ResultTypes, Elements
 
 class Attacker:
 
@@ -18,7 +18,7 @@ class Attacker:
             attack_message = Message('{0} attacks {1} for {2} HP.'.format(
                 self.owner.name.capitalize(), target.name, damage))
             results.append({ResultTypes.MESSAGE: attack_message})
-            results.append({ResultTypes.DAMAGE: (target, damage)})
+            results.append({ResultTypes.DAMAGE: (target, damage, Elements.NONE)})
         else:
             attack_message = Message('{0} attacks {1}, but does no damage.'.format(
                 self.owner.name.capitalize(), target.name))

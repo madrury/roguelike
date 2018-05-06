@@ -1,5 +1,5 @@
 from messages import Message
-from etc.enum import ResultTypes
+from etc.enum import ResultTypes, Elements
 from etc.colors import COLORS
 from etc.config import PROBABILITIES
 from spawnable.various import Fire
@@ -36,6 +36,4 @@ class AliveBurnable:
 
     def burn(self, game_map):
         # TODO: Add fire damage to config.
-        # TODO: Give entities fire resistance.
-        print("Burning and live thing: ", self.owner)
-        return [{ResultTypes.DAMAGE: (self.owner, 20)}]
+        return [{ResultTypes.DAMAGE: (self.owner, 5, Elements.FIRE)}]

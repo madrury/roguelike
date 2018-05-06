@@ -131,6 +131,7 @@ class Animations(Enum):
     THROWING_KNIFE = auto()
     THROW_POTION = auto()
 
+
 class Terrain(Enum):
     POOL = auto()
     GRASS = auto()
@@ -148,6 +149,11 @@ class ItemTargeting(Enum):
     CLOSEST_MONSTER = auto()
     WITHIN_RADIUS = auto()
     FIRST_ALONG_PATH_TO_CURSOR = auto()
+
+
+class Elements(Enum):
+    NONE = auto()
+    FIRE = auto()
 
 
 class ItemGroups(Enum):

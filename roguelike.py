@@ -354,8 +354,8 @@ def main():
                 message_log.add_message(message)
             # Handle damage dealt.
             if damage:
-                target, amount = damage
-                damage_result = target.harmable.take_damage(amount)
+                target, amount, element = damage
+                damage_result = target.harmable.take_damage(amount, element)
                 player_turn_results.extend(damage_result)
             # Add an item to the inventory.
             if item_added:
@@ -465,8 +465,8 @@ def main():
                 message_log.add_message(message)
             # Handle damage dealt.
             if damage:
-                target, amount = damage
-                damage_result = target.harmable.take_damage(amount)
+                target, amount, element = damage
+                damage_result = target.harmable.take_damage(amount, element)
                 enemy_turn_results.extend(damage_result)
             # Add a new entity to the game.
             if new_entity:
