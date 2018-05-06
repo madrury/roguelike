@@ -1,4 +1,5 @@
 from etc.enum import EntityTypes, GameStates, RenderOrder, ResultTypes
+from components.harmable import NullHarmable
 from messages import Message
 
 def kill_player(player, colors):
@@ -9,7 +10,8 @@ def kill_player(player, colors):
 def kill_monster(monster, colors):
     monster.blocks = False
     monster.attacker = None
-    monster.harmable = None
+    monster.harmable = NullHarmable()
+    monster.burnable = None
     monster.ai = None
     message = 'The {} is dead!'.format(monster.name.capitalize())
     return [{ResultTypes.MESSAGE: Message(message, colors['orange'])}]

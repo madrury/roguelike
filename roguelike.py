@@ -12,6 +12,7 @@ from etc.enum import (
 from components.attacker import Attacker
 from components.harmable import Harmable
 from components.inventory import Inventory
+from components.burnable import AliveBurnable
 from map.map import GameMap
 from map.floor import make_floor
 from spawnable.monsters import MONSTER_SCHEDULE, MONSTER_GROUPS
@@ -51,6 +52,7 @@ def main():
                     render_order=RenderOrder.ACTOR,
                     attacker=Attacker(power=5),
                     harmable=Harmable(hp=2000, defense=2),
+                    burnable=AliveBurnable(),
                     inventory=Inventory(26))
     entities = [player]
 
@@ -418,6 +420,7 @@ def main():
         # All enemies take thier turns.
         #---------------------------------------------------------------------
         if game_state == GameStates.ENEMY_TURN:
+            # TODO: This could be one for loop.
             for entity in (x for x in entities if x.ai):
                 enemy_turn_results.extend(entity.ai.take_turn(
                     player, game_map))
@@ -427,6 +430,12 @@ def main():
             for entity in (x for x in entities if x.dissipatable):
                 enemy_turn_results.extend(
                     entity.dissipatable.dissipate(game_map))
+            for entity in (x for x in entities if x.entity_type == EntityTypes.FIRE):
+                burnable_entities_at_position = (
+                    entity.get_all_entities_with_component_in_same_position(
+                        entities, "burnable"))
+                for e in burnable_entities_at_position:
+                    enemy_turn_results.extend(e.burnable.burn(game_map))
             game_state = GameStates.PLAYER_TURN
 
         #---------------------------------------------------------------------
@@ -477,6 +486,7 @@ def main():
             elif dead_entity:
                 enemy_turn_results.extend(
                     kill_monster(dead_entity, COLORS))
+                dead_entities.append(dead_entity)
 
         #---------------------------------------------------------------------
         # Handle meta actions,

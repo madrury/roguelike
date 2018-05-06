@@ -30,3 +30,12 @@ class GrassBurnable:
         else:
             return [{
                 ResultTypes.REMOVE_ENTITY: self.owner}]
+
+
+class AliveBurnable:
+
+    def burn(self, game_map):
+        # TODO: Add fire damage to config.
+        # TODO: Give entities fire resistance.
+        print("Burning and live thing: ", self.owner)
+        return [{ResultTypes.DAMAGE: (self.owner, 20)}]

@@ -202,6 +202,25 @@ class Entity:
                 within_radius.append(entity)
         return within_radius
 
+    def get_all_entities_of_type_in_same_position(self, entities, entity_type):
+        return self.get_all_entities_of_type_within_radius(
+            entities, entity_type, radius=0)
+
+    
+    def get_all_entities_with_component_within_radius(
+        self, entities, component, radius):
+        """Get all the entities of a given type within a given range."""
+        within_radius = []
+        for entity in entities:
+            if (self.distance_to(entity) <= radius and getattr(entity, component)):
+                within_radius.append(entity)
+        return within_radius
+
+    def get_all_entities_with_component_in_same_position(self, entities, component):
+        return self.get_all_entities_with_component_within_radius(
+            entities, component, radius=0)
+
+
 
 def get_entities_at_location(entities, x, y):
     entities_at_location = []
@@ -216,7 +235,6 @@ def get_blocking_entity_at_location(entities, x, y):
         if entity.blocks and entity.x == x and entity.y == y:
             return entity
     return None
-
 
 def get_first_blocking_entity_along_path(game_map, entities, source, target):
     path = game_map.compute_path(source[0], source[1], target[0], target[1])

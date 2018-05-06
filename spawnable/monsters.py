@@ -6,6 +6,7 @@ from etc.enum import RenderOrder, EntityTypes, MonsterGroups
 from components.ai import BasicMonster, HuntingMonster, SkitteringMonster
 from components.attacker import Attacker
 from components.harmable import Harmable
+from components.burnable import AliveBurnable
 
 
 
@@ -19,6 +20,7 @@ class Kruthik(Spawnable):
             attacker=Attacker(power=1),
             harmable=Harmable(hp=1, defense=0),
             ai=SkitteringMonster(),
+            burnable=AliveBurnable(),
             blocks=True,
             render_order=RenderOrder.ACTOR)
 
@@ -33,6 +35,7 @@ class Orc(Spawnable):
             attacker=Attacker(power=3),
             harmable=Harmable(hp=10, defense=0),
             ai=BasicMonster(),
+            burnable=AliveBurnable(),
             blocks=True,
             render_order=RenderOrder.ACTOR)
 
@@ -47,6 +50,7 @@ class Troll(Spawnable):
             attacker=Attacker(power=4),
             harmable=Harmable(hp=16, defense=1),
             ai=HuntingMonster(),
+            burnable=AliveBurnable(),
             blocks=True,
             render_order=RenderOrder.ACTOR)
             

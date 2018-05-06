@@ -14,3 +14,9 @@ class Harmable:
         if self.hp <= 0:
             results.append({ResultTypes.DEAD_ENTITY: self.owner})
         return results
+
+
+class NullHarmable:
+
+    def take_damage(self, amount):
+        return []

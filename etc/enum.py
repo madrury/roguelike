@@ -120,6 +120,7 @@ class EntityTypes(Enum):
     ITEM = auto()
     CORPSE = auto()
     TERRAIN = auto()
+    FIRE = auto()
 
 
 class Animations(Enum):

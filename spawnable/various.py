@@ -18,7 +18,7 @@ class Fire:
                 x, y, '^',
                 name="Fire",
                 fg_color=fg_color,
-                entity_type=EntityTypes.TERRAIN,
+                entity_type=EntityTypes.FIRE,
                 render_order=RenderOrder.TERRAIN,
                 shimmer=FireShimmer(),
                 spreadable=FireSpreadable(),
