@@ -197,7 +197,7 @@ def main():
         input_states = (
             GameStates.PLAYER_TURN, GameStates.SHOW_INVENTORY,
             GameStates.DROP_INVENTORY, GameStates.THROW_INVENTORY,
-            GameStates.CURSOR_INPUT)
+            GameStates.CURSOR_INPUT, GameStates.PLAYER_DEAD)
         for event in tdl.event.get():
             if event.type == 'KEYDOWN':
                 user_input = event
