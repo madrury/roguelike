@@ -33,8 +33,8 @@ PANEL_CONFIG = {
 PANEL_CONFIG['y'] = SCREEN_HEIGHT - PANEL_CONFIG['height']
 
 MESSAGE_CONFIG = {
-    'x': PANEL_CONFIG['bar_width'] + 2,
-    'width': SCREEN_WIDTH - PANEL_CONFIG['bar_width'] - 2,
+    'x': 2*PANEL_CONFIG['bar_width'] + 3,
+    'width': SCREEN_WIDTH - 2*PANEL_CONFIG['bar_width'] - 3,
     'height': PANEL_CONFIG['height'] - 1
 }
 
