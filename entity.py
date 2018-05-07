@@ -160,12 +160,11 @@ class Entity:
             # Fuck all!  The path in the tcod module is transposed from
             # the Map object!
             water_walkable = walkable * (1 - game_map.water)
-            water_pathfinder = tcod.path.AStar(walkable.T, diagonal=1.0)
-            path = pathfinder.get_path(self.x, self.y, target_x, target_y)
-            # If the entity is in a different connected component due to water,
-            # then we will have an empty path.  Since the entity can SEE the
-            # player, they should at least move towards them.
-            print(path)
+            water_pathfinder = tcod.path.AStar(water_walkable.T, diagonal=1.0)
+            path = water_pathfinder.get_path(self.x, self.y, target_x, target_y)
+            # If the entity is in a different connected component than the
+            # player, then we will have an empty path.  Since the entity can
+            # SEE the player, they should at least move towards them.
             if path == []:
                 path = pathfinder.get_path(self.x, self.y, target_x, target_y)
         if len(path) > 1:
