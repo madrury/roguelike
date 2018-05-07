@@ -54,7 +54,7 @@ def main():
                     render_order=RenderOrder.ACTOR,
                     # TODO: Move all this to config.
                     attacker=Attacker(power=5),
-                    harmable=Harmable(hp=2000, defense=2),
+                    harmable=Harmable(hp=50, defense=2),
                     burnable=AliveBurnable(),
                     swimmable=Swimmable(5),
                     inventory=Inventory(26))
@@ -78,7 +78,6 @@ def main():
     #game_map.explored[:, :] = True
     #for entity in entities:
     #    entity.seen = True
-
 
     #-------------------------------------------------------------------------
     # Game State Varaibles
@@ -516,6 +515,8 @@ def main():
             # Handle damage dealt.
             if damage:
                 target, amount, element = damage
+                damage_result = target.harmable.take_damage(amount, element)
+                enemy_turn_results.extend(damage_result)
             # Entities swim and thier stamana decreases.
             if change_swim_stamina:
                 entity, stamina_change = change_swim_stamina
