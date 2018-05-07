@@ -47,6 +47,9 @@ class GameMap(Map):
     fire: np.array of bool
       Is the tile currently on fire?
 
+    blocked: np.array of bool
+      Is there currently a blocking entity in this spot?
+
     terrain: np.array of bool
       Does the tile currently hold any premenant terrain?
 
@@ -68,6 +71,7 @@ class GameMap(Map):
         self.explored = np.zeros((width, height), dtype=np.int8)
         self.water = np.zeros((width, height), dtype=np.int8)
         self.fire = np.zeros((width, height), dtype=np.int8)
+        self.blocked = np.zeros((width, height), dtype=np.int8)
         self.terrain = np.zeros((width, height), dtype=np.int8)
         self.fg_colors = ColorArray((width, height))
         self.bg_colors = ColorArray((width, height))

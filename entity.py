@@ -139,17 +139,25 @@ class Entity:
             component.owner = self
         setattr(self, component_name, component)
 
-    def move(self, dx, dy):
+    def move(self, game_map, dx, dy):
+        new_x, new_y = self.x + dx, self.y + dy
+        game_map.blocked[self.x, self.y] = False
+        game_map.blocked[new_x, new_y] = True
         self.x += dx
         self.y += dy
 
+    # TODO: Movement strategy should be part of the ai object.
     def move_towards(self, target_x, target_y, game_map, entities):
-        walkable = game_map.walkable * (1 - game_map.fire)
+        walkable = game_map.walkable * (1 - game_map.fire) * (1 - game_map.blocked)
+        # The cell the entity and the player occupies needs to manually be set
+        # to walkable, else the entity will be frozen in place.
+        walkable[self.x, self.y] = True
+        walkable[target_x, target_y] = True
         pathfinder = tcod.path.AStar(walkable.T, diagonal=1.0)
         if self.swims:
             path = pathfinder.get_path(self.x, self.y, target_x, target_y)
         else:
-            # TODO: Fuck all!  The path in the tcod module is transposed from
+            # Fuck all!  The path in the tcod module is transposed from
             # the Map object!
             water_walkable = walkable * (1 - game_map.water)
             water_pathfinder = tcod.path.AStar(walkable.T, diagonal=1.0)
@@ -157,6 +165,7 @@ class Entity:
             # If the entity is in a different connected component due to water,
             # then we will have an empty path.  Since the entity can SEE the
             # player, they should at least move towards them.
+            print(path)
             if path == []:
                 path = pathfinder.get_path(self.x, self.y, target_x, target_y)
         if len(path) > 1:
@@ -177,7 +186,7 @@ class Entity:
             entities, target_location[0], target_location[1])
         water_if_able = self.swims or not game_map.water[target_location]
         if is_walkable and not is_blocked and water_if_able:
-            self.move(dx, dy)
+            self.move(game_map, dx, dy)
 
     def distance_to(self, other):
         dx = other.x - self.x

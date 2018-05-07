@@ -359,7 +359,7 @@ def main():
 
             # Move the player.
             if move:
-                player.move(*move)
+                player.move(game_map, *move)
                 fov_recompute = True
             # Add to the message log.
             if message:
@@ -405,11 +405,11 @@ def main():
                 entities.remove(entity)
             # Handle death
             if dead_entity == player:
-                player_turn_results.extend(kill_player(player, COLORS))
+                player_turn_results.extend(kill_player(player))
                 game_state = GameStates.PLAYER_DEAD
             elif dead_entity:
                 player_turn_results.extend(
-                    kill_monster(dead_entity, COLORS))
+                    kill_monster(dead_entity, game_map))
                 dead_entities.append(dead_entity)
             # Handle a player death message.  Death messages are special in
             # that they immediately break out of the game loop.
@@ -516,7 +516,7 @@ def main():
                 game_state = GameStates.PLAYER_DEAD
             elif dead_entity:
                 enemy_turn_results.extend(
-                    kill_monster(dead_entity, COLORS))
+                    kill_monster(dead_entity, game_map))
                 dead_entities.append(dead_entity)
 
         #---------------------------------------------------------------------
@@ -573,7 +573,7 @@ def main():
                 dead_entity = dead_entities.pop()
                 while dead_entity in harmed_queue:
                     harmed_queue.remove(dead_entity)
-                make_corpse(dead_entity, COLORS)
+                make_corpse(dead_entity)
 
         #---------------------------------------------------------------------
         # If the player is dead, the game is over.

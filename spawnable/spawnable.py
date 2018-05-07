@@ -1,5 +1,6 @@
 from utils.utils import choose_from_list_of_tuples
 
+
 def spawn_entities(schedule, group_definitions, game_map, entities):
     for room in game_map.floor.rooms:
         group = choose_from_list_of_tuples(schedule)
@@ -28,6 +29,7 @@ class Spawnable:
         else:
             entity = None
         if entity and entity_can_spawn_in_space(entity, x, y, game_map):
+            game_map.blocked[x, y] = True
             return entity
         else:
             return None
