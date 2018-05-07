@@ -38,6 +38,9 @@ class NullHarmable:
     def take_damage(self, amount, element):
         return []
 
+    def render_status_bar(self, panel, x, y):
+        pass
+
     def __bool__(self):
         """Prevent entities with this component from showing up in searches for
         harmable entities.
