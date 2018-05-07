@@ -5,7 +5,7 @@ from etc.enum import EntityTypes, ItemTargeting, ResultTypes, Animations, Elemen
 
 
 class HealthPotionComponent:
-    """A health component.
+    """A health potion.
 
     When used on an entity, heals some amount of HP.
 
@@ -15,13 +15,18 @@ class HealthPotionComponent:
       The name of this item.
 
     targeting: ItemTargeting entry.
-      The targeting style of this item.  From the ItemTargeting enum.
+      The targeting style of this item.  The health potion targets the user of
+      the potion.
+
+    throwable: bool
+      The health potion can be thrown.
 
     healing: int
       The amount of healing in this potion.
     """
     def __init__(self, healing=5):
         self.name = "healing potion"
+        # TODO: Change to ItemTargeting.USER
         self.targeting = ItemTargeting.PLAYER
         self.throwable = True
         self.healing = healing
@@ -53,13 +58,14 @@ class HealthPotionComponent:
         return results
 
     def throw(self, game_map, thrower, entities):
+        """Throw the health potion at a target."""
         callback = HealthPotionCallback(self, game_map, thrower, entities)
         return [
             {ResultTypes.CURSOR_MODE: (thrower.x, thrower.y, callback)}]
 
 
 class HealthPotionCallback:
-
+    """A callback for managing throwing a health poition."""
     def __init__(self, owner, game_map, user, entities):
         self.owner = owner
         self.game_map = game_map
@@ -102,8 +108,8 @@ class HealthPotionCallback:
 class MagicMissileComponent:
     """A Magic Missile spell.
 
-    This targets the closest entity fo a given type, and deals a fixed amount
-    of damage.
+    This targets the closest n entities of a given type, and deals a fixed
+    amount of non-elemental elemental damage.
 
     Attributes
     ----------
@@ -111,15 +117,22 @@ class MagicMissileComponent:
       The name of this item.
 
     targeting: ItemTargeting entry.
-      The targeting style of this item.  From the ItemTargeting enum.
+      The targeting style of this item.  Magic missile targets the closest
+      entities.
+
+    throwable: bool
+      The magic missile scroll cannot be thrown.
 
     damage: int
       The amount of damage dealt by the missile.
 
-    spell_range:
+    spell_range: int
       The maximum distance to an entity able to be targeted.
+
+    n_targets: int
+      The number of entities to target.  Each target is damaged by a missile.
     """
-    def __init__(self, damage=6, spell_range=12, n_targets=3):
+    def __init__(self, damage=6, spell_range=10, n_targets=3):
         self.name = "magic missile"
         self.targeting = ItemTargeting.CLOSEST_MONSTER
         self.throwable = False
@@ -130,8 +143,8 @@ class MagicMissileComponent:
     def use(self, user, entities, target_type=EntityTypes.MONSTER):
         """Cast the magic missile spell.
 
-        Arguments
-        ---------
+        Parameters
+        ----------
         user: Entity
           The entity casting the spell.
 
@@ -160,20 +173,6 @@ class MagicMissileComponent:
                 ResultTypes.ITEM_CONSUMED: (True, self.owner),
                 ResultTypes.ANIMATION: (
                     Animations.SIMULTANEOUS, animations)})               
-
-#            if (closest_monsters and 
-#                user.distance_to(closest_monster) <= self.spell_range):
-#                text = 'A shining magic missile pierces the {}'.format(
-#                    closest_monster.name)
-#                message = Message(text, COLORS.get('white'))
-#                results.append({ResultTypes.ITEM_CONSUMED: (True, self.owner),
-#                                ResultTypes.DAMAGE: (
-#                                    closest_monster, self.damage, Elements.NONE),
-#                                ResultTypes.MESSAGE: message,
-#                                ResultTypes.ANIMATION: (
-#                                    Animations.MAGIC_MISSILE,
-#                                    (user.x, user.y),
-#                                    (closest_monster.x, closest_monster.y))})
         else:
             message = Message(
                 "A shining magic missile streaks into the darkness.",
@@ -184,8 +183,33 @@ class MagicMissileComponent:
 
 
 class FireblastComponent:
+    """A fireblast spell.
 
-    def __init__(self, damage=10, radius=4):
+    Fireblast is an area of effect spell centered at the player.  The fireblast spell:
+
+      - Deals non-elemental damage to all harmable entities within a given
+        radius (this is the concussion blast).
+      - Burns all burnable entities within a given radius.
+
+    Attributes
+    ----------
+    name: str
+      The name of the component.
+
+    targeting: ItemTargeting entry.
+      The targeting style of this item.  The fireblast spell targets all
+      entities within a given radius.
+
+    throwable: bool
+      The fireblast scroll cannot be thrown.
+
+    damage: int
+      Amount of concussion damage.
+
+    radius: int
+      The radius of the fireblast.
+    """
+    def __init__(self, damage=6, radius=4):
         self.name = "fireblast"
         self.targeting = ItemTargeting.WITHIN_RADIUS
         self.throwable = False
@@ -194,25 +218,21 @@ class FireblastComponent:
 
     def use(self, game_map, user, entities):
         results = []
-        monsters_within_radius = user.get_all_entities_of_type_within_radius(
-            entities, EntityTypes.MONSTER, self.radius)
-        terrain_within_radius = user.get_all_entities_of_type_within_radius(
-            entities, EntityTypes.TERRAIN, self.radius)
-        items_within_radius = user.get_all_entities_of_type_within_radius(
-            entities, EntityTypes.ITEM, self.radius)
-        for monster in monsters_within_radius:
+        harmable_within_radius = (
+            user.get_all_entities_with_component_within_radius(
+                entities, "harmable", self.radius))
+        burnable_within_radius = (
+            user.get_all_entities_with_component_within_radius(
+                entities, "burnable", self.radius))
+        for entity in (x for x in harmable_within_radius if x != user):
             text = "The {} is caught in the fireblast!".format(
-                monster.name)
+                entity.name)
             message = Message(text, COLORS.get('white'))
             results.append({ResultTypes.DAMAGE: (
-                                monster, self.damage, Elements.FIRE),
+                                entity, self.damage, Elements.NONE),
                             ResultTypes.MESSAGE: message})
-        for terrain in terrain_within_radius:
-            if terrain.burnable:
-                results.extend(terrain.burnable.burn(game_map))
-        for item in items_within_radius:
-            if item.burnable:
-                results.extend(item.burnable.burn(game_map))
+        for entity in (x for x in burnable_within_radius if x != user):
+            results.extend(entity.burnable.burn(game_map))
         results.append({ResultTypes.ITEM_CONSUMED: (True, self.owner),
                         ResultTypes.ANIMATION: (
                              Animations.FIREBLAST, (user.x, user.y), self.radius)})

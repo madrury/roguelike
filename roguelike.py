@@ -460,7 +460,7 @@ def main():
                 for e in burnable_entities_at_position:
                     enemy_turn_results.extend(e.burnable.burn(game_map))
             # If the player is swimming, decrease the swim stamina.  Otherwise,
-            # recover.
+            # recover swim stamina.
             if game_map.water[player.x, player.y] and GameStates.PLAYER_TURN:
                 enemy_turn_results.extend(player.swimmable.swim())
             else:
