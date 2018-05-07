@@ -65,7 +65,10 @@ class HealthPotionComponent:
 
 
 class HealthPotionCallback:
-    """A callback for managing throwing a health poition."""
+    """A callback for managing throwing a health poition.
+    
+    Called after the player enters a cursor selection.
+    """
     def __init__(self, owner, game_map, user, entities):
         self.owner = owner
         self.game_map = game_map
@@ -240,7 +243,26 @@ class FireblastComponent:
 
 
 class ThrowingKnifeComponent:
-    
+    """A throwing kife.
+
+    The throwing knife does non elemental damage to the first harmable entity
+    along a path from the user to a selected target.
+
+    Attributes
+    ----------
+    name: str
+      The name of the component.
+
+    targeting: ItemTargeting entry.
+      The targeting style of this item. The throwing knife targets the first
+      blocking entity along 
+
+    throwable: bool
+      The throwing knife can be thrown (right!).
+
+    damage: int
+      Amount of damage.
+    """
     def __init__(self, damage=10):
         self.name = "throwing knife"
         self.targeting = ItemTargeting.FIRST_ALONG_PATH_TO_CURSOR
@@ -257,7 +279,10 @@ class ThrowingKnifeComponent:
 
 
 class ThrowingKnifeCallback:
+    """A callback for managing throwing a health poition.
     
+    Called after the player enters a cursor selection.
+    """
     def __init__(self, owner, game_map, user, entities):
         self.owner = owner
         self.game_map = game_map
@@ -268,7 +293,7 @@ class ThrowingKnifeCallback:
         results = []
         monster = get_first_blocking_entity_along_path(
             self.game_map, self.entities, (self.user.x, self.user.y), (x, y))
-        if monster:
+        if monster and monster.harmable:
             text = "The throwing knife pierces the {}'s flesh.".format(
                 monster.name)
             results.append({

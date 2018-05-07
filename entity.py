@@ -218,7 +218,6 @@ class Entity:
         return self.get_all_entities_of_type_within_radius(
             entities, entity_type, radius=0)
 
-    
     def get_all_entities_with_component_within_radius(
         self, entities, component, radius):
         """Get all the entities of a given type within a given range."""
