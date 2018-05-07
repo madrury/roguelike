@@ -1,10 +1,17 @@
 from etc.enum import ResultTypes, Elements
+from etc.config import PANEL_CONFIG
+from etc.colors import STATUS_BAR_COLORS
+from status_bar import StatusBar
+
 
 class Swimmable:
 
     def __init__(self, stamina):
         self.max_stamina = stamina
         self.stamina = stamina
+        self.status_bar = StatusBar(
+            total_width=PANEL_CONFIG['bar_width'],
+            bar_colors=STATUS_BAR_COLORS['swim_bar'])
 
     def swim(self):
         results = []
@@ -24,3 +31,10 @@ class Swimmable:
             self.stamina = 0
         else:
             self.stamina = min(max(0, self.stamina + change), self.max_stamina)
+
+    def render_status_bar(self, panel, x, y):
+        self.status_bar.render(
+            panel, x, y, 
+            name='Swim Stamina',
+            maximum=self.max_stamina,
+            value=self.stamina)

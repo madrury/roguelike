@@ -135,20 +135,12 @@ def main():
         game_map.update_and_draw_all(entities, fov_recompute)
 
         #---------------------------------------------------------------------
-        # Create UI Elements
-        #---------------------------------------------------------------------
-#        swim_bar = StatusBar(
-#            1, 3, 'Swim Stamina', PANEL_CONFIG['bar_width'],
-#            player.swimmable.max_stamina, 
-#            STATUS_BAR_COLORS['swim_bar'])
-
-        #---------------------------------------------------------------------
         # Render the UI
         #---------------------------------------------------------------------
         panel_console.clear(fg=COLORS['white'], bg=COLORS['black'])
         player.harmable.render_status_bar(panel_console, 1, 1)
-#        swim_bar.render(panel_console, player.swimmable.stamina)
-#        message_log.render(panel_console)
+        player.swimmable.render_status_bar(panel_console, 1, 3)
+        message_log.render(panel_console)
         for idx, entity in enumerate(harmed_queue):
             entity.harmable.render_status_bar(
                 panel_console, PANEL_CONFIG['bar_width'] + 2, 2*idx + 1)
