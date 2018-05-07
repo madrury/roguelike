@@ -148,13 +148,14 @@ def main():
         # Health bars for the most recently harmed enemies.
         target_bars = []
         for idx, target in enumerate(harmed_queue):
-            target_bars.append(StatusBar(
-            PANEL_CONFIG['bar_width'] + 2,
-            2*idx + 1, 
-            target.name + ' HP', 
-            PANEL_CONFIG['bar_width'],
-            target.harmable.max_hp,
-            STATUS_BAR_COLORS['hp_bar']))
+            if target.harmable:
+                target_bars.append(StatusBar(
+                    PANEL_CONFIG['bar_width'] + 2,
+                    2*idx + 1, 
+                    target.name + ' HP', 
+                    PANEL_CONFIG['bar_width'],
+                    target.harmable.max_hp,
+                    STATUS_BAR_COLORS['hp_bar']))
 
         #---------------------------------------------------------------------
         # Render the UI
@@ -388,11 +389,10 @@ def main():
             # Handle damage dealt.
             if damage:
                 target, amount, element = damage
-                if target.harmable:
-                    damage_result = target.harmable.take_damage(amount, element)
-                    enemy_turn_results.extend(damage_result)
-                    if target not in harmed_queue:
-                        harmed_queue.appendleft(target)
+                damage_result = target.harmable.take_damage(amount, element)
+                enemy_turn_results.extend(damage_result)
+                if target not in harmed_queue:
+                    harmed_queue.appendleft(target)
             # Add an item to the inventory.
             if item_added:
                 player.inventory.add(item_added)
