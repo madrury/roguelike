@@ -1,5 +1,6 @@
 import tdl
 from time import sleep
+from collections import deque
 
 from etc.colors import COLORS, STATUS_BAR_COLORS
 from etc.config import (
@@ -92,6 +93,9 @@ def main():
     fov_recompute = True
     # Data needed to play an animation.
     animation_player = None
+    # A queue for storing enemy targets that have taken damage.  Used to render
+    # enemy health bars in the UI.
+    harmed_queue = deque(maxlen=3)
     # A cursor object for allowing the user to select a space on the map.
     cursor = None
     # A list of recently dead enemies.  We need this to defer drawing thier
@@ -142,6 +146,16 @@ def main():
             1, 3, 'Swim Stamina', PANEL_CONFIG['bar_width'],
             player.swimmable.max_stamina, 
             STATUS_BAR_COLORS['swim_bar'])
+        # Health bars for the most recently harmed enemies.
+        target_bars = []
+        for idx, target in enumerate(harmed_queue):
+            target_bars.append(StatusBar(
+            PANEL_CONFIG['bar_width'] + 2,
+            2*idx + 1, 
+            target.name + ' HP', 
+            PANEL_CONFIG['bar_width'],
+            target.harmable.max_hp,
+            STATUS_BAR_COLORS['hp_bar']))
 
         #---------------------------------------------------------------------
         # Render the UI
@@ -150,6 +164,8 @@ def main():
         hp_bar.render(panel_console, player.harmable.hp)
         swim_bar.render(panel_console, player.swimmable.stamina)
         message_log.render(panel_console)
+        for target, bar in zip(harmed_queue, target_bars):
+            bar.render(panel_console, target.harmable.hp)
 
         #---------------------------------------------------------------------
         # Draw the selection cursor if in cursor input state.
@@ -184,8 +200,8 @@ def main():
         # Advance the frame of any animations.
         #---------------------------------------------------------------------
         if game_state == GameStates.ANIMATION_PLAYING:
-            # Now play the animatin
             animation_finished = animation_player.next_frame()
+            # TODO: Remove magic number.
             sleep(0.06)
             if animation_finished:
                 game_state, previous_game_state = previous_game_state, game_state
@@ -373,8 +389,11 @@ def main():
             # Handle damage dealt.
             if damage:
                 target, amount, element = damage
-                damage_result = target.harmable.take_damage(amount, element)
-                player_turn_results.extend(damage_result)
+                if target.harmable:
+                    damage_result = target.harmable.take_damage(amount, element)
+                    enemy_turn_results.extend(damage_result)
+                    if target not in harmed_queue:
+                        harmed_queue.appendleft(target)
             # Add an item to the inventory.
             if item_added:
                 player.inventory.add(item_added)
@@ -497,8 +516,6 @@ def main():
             # Handle damage dealt.
             if damage:
                 target, amount, element = damage
-                damage_result = target.harmable.take_damage(amount, element)
-                enemy_turn_results.extend(damage_result)
             # Entities swim and thier stamana decreases.
             if change_swim_stamina:
                 entity, stamina_change = change_swim_stamina
@@ -562,12 +579,21 @@ def main():
             tdl.set_fullscreen(not tdl.get_fullscreen())
 
         #---------------------------------------------------------------------
-        # Once an animation is finished that results in a dead monster, draw it
-        # as a corpse.
+        # If the last turn resulted in a dead monster: 
+        #   - Draw it as a corpse.
+        #   - Replace all is components with null components.
+        #   - Remove it from the harmed_queue so that its health bars will not
+        #     render.
+        #
+        # Note we do not do this until *after* an animation is finished, since
+        # the game state will possibly already know the monster is dead before
+        # playing the animation.
         #---------------------------------------------------------------------
         if game_state != GameStates.ANIMATION_PLAYING:
             while dead_entities:
                 dead_entity = dead_entities.pop()
+                while dead_entity in harmed_queue:
+                    harmed_queue.remove(dead_entity)
                 make_corpse(dead_entity, COLORS)
 
         #---------------------------------------------------------------------
