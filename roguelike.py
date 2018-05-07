@@ -54,7 +54,7 @@ def main():
                     render_order=RenderOrder.ACTOR,
                     # TODO: Move all this to config.
                     attacker=Attacker(power=5),
-                    harmable=Harmable(hp=50, defense=2),
+                    harmable=Harmable(hp=500, defense=2),
                     burnable=AliveBurnable(),
                     swimmable=Swimmable(5),
                     inventory=Inventory(26))
