@@ -1,6 +1,7 @@
 from messages import Message
 from etc.enum import ResultTypes, Elements
 
+
 class Harmable:
 
     def __init__(self, hp, defense, 
@@ -24,3 +25,9 @@ class NullHarmable:
 
     def take_damage(self, amount, element):
         return []
+
+    def __bool__(self):
+        """Prevent entities with this component from showing up in searches for
+        harmable entities.
+        """
+        return False
