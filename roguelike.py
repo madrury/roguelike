@@ -137,35 +137,35 @@ def main():
         #---------------------------------------------------------------------
         # Create UI Elements
         #---------------------------------------------------------------------
-        hp_bar = StatusBar(
-            1, 1, 'HP', PANEL_CONFIG['bar_width'],
-            player.harmable.max_hp, 
-            STATUS_BAR_COLORS['hp_bar'])
-        swim_bar = StatusBar(
-            1, 3, 'Swim Stamina', PANEL_CONFIG['bar_width'],
-            player.swimmable.max_stamina, 
-            STATUS_BAR_COLORS['swim_bar'])
-        # Health bars for the most recently harmed enemies.
-        target_bars = []
-        for idx, target in enumerate(harmed_queue):
-            if target.harmable:
-                target_bars.append(StatusBar(
-                    PANEL_CONFIG['bar_width'] + 2,
-                    2*idx + 1, 
-                    target.name + ' HP', 
-                    PANEL_CONFIG['bar_width'],
-                    target.harmable.max_hp,
-                    STATUS_BAR_COLORS['hp_bar']))
+#        hp_bar = StatusBar(
+#            1, 1, 'HP', PANEL_CONFIG['bar_width'],
+#            player.harmable.max_hp, 
+#            STATUS_BAR_COLORS['hp_bar'])
+#        swim_bar = StatusBar(
+#            1, 3, 'Swim Stamina', PANEL_CONFIG['bar_width'],
+#            player.swimmable.max_stamina, 
+#            STATUS_BAR_COLORS['swim_bar'])
+#        # Health bars for the most recently harmed enemies.
+#        target_bars = []
+#        for idx, target in enumerate(harmed_queue):
+#            if target.harmable:
+#                target_bars.append(StatusBar(
+#                    PANEL_CONFIG['bar_width'] + 2,
+#                    2*idx + 1, 
+#                    target.name + ' HP', 
+#                    PANEL_CONFIG['bar_width'],
+#                    target.harmable.max_hp,
+#                    STATUS_BAR_COLORS['hp_bar']))
 
         #---------------------------------------------------------------------
         # Render the UI
         #---------------------------------------------------------------------
         panel_console.clear(fg=COLORS['white'], bg=COLORS['black'])
-        hp_bar.render(panel_console, player.harmable.hp)
-        swim_bar.render(panel_console, player.swimmable.stamina)
-        message_log.render(panel_console)
-        for target, bar in zip(harmed_queue, target_bars):
-            bar.render(panel_console, target.harmable.hp)
+        player.harmable.render_status_bar(panel_console, 1, 1)
+#        swim_bar.render(panel_console, player.swimmable.stamina)
+#        message_log.render(panel_console)
+#        for target, bar in zip(harmed_queue, target_bars):
+#            bar.render(panel_console, target.harmable.hp)
 
         #---------------------------------------------------------------------
         # Draw the selection cursor if in cursor input state.
