@@ -2,7 +2,7 @@ from entity import Entity
 
 from spawnable.spawnable import Spawnable
 from etc.colors import COLORS
-from etc.enum import RenderOrder, EntityTypes, MonsterGroups
+from etc.enum import RenderOrder, EntityTypes, MonsterGroups, RoutingOptions
 from components.ai import BasicMonster, HuntingMonster, SkitteringMonster
 from components.attacker import Attacker
 from components.harmable import Harmable
@@ -17,12 +17,16 @@ class Kruthik(Spawnable):
         return Entity(
             x, y, 'k', COLORS['desaturated_green'], 'Kruthik', 
             entity_type=EntityTypes.MONSTER,
-            attacker=Attacker(power=1),
+            blocks=True,
+            render_order=RenderOrder.ACTOR,
+            routing_avoid=[RoutingOptions.AVOID_WATER,
+                           RoutingOptions.AVOID_FIRE,
+                           RoutingOptions.AVOID_MONSTERS],
+            attacker=Attacker(power=2),
             harmable=Harmable(hp=1, defense=0),
             ai=SkitteringMonster(),
             burnable=AliveBurnable(),
-            blocks=True,
-            render_order=RenderOrder.ACTOR)
+            )
 
 
 class Orc(Spawnable):
@@ -32,12 +36,15 @@ class Orc(Spawnable):
         return Entity(
             x, y, 'O', COLORS['desaturated_green'], 'Orc', 
             entity_type=EntityTypes.MONSTER,
+            blocks=True,
+            render_order=RenderOrder.ACTOR,
+            routing_avoid=[RoutingOptions.AVOID_WATER,
+                           RoutingOptions.AVOID_FIRE,
+                           RoutingOptions.AVOID_MONSTERS],
             attacker=Attacker(power=3),
             harmable=Harmable(hp=10, defense=0),
             ai=BasicMonster(),
-            burnable=AliveBurnable(),
-            blocks=True,
-            render_order=RenderOrder.ACTOR)
+            burnable=AliveBurnable())
 
 
 class Troll(Spawnable):
@@ -47,12 +54,15 @@ class Troll(Spawnable):
         return Entity(
             x, y, 'T', COLORS['darker_green'], 'Troll', 
             entity_type=EntityTypes.MONSTER,
+            blocks=True,
+            render_order=RenderOrder.ACTOR,
+            routing_avoid=[RoutingOptions.AVOID_WATER,
+                           RoutingOptions.AVOID_FIRE,
+                           RoutingOptions.AVOID_MONSTERS],
             attacker=Attacker(power=4),
             harmable=Harmable(hp=16, defense=1),
             ai=HuntingMonster(),
-            burnable=AliveBurnable(),
-            blocks=True,
-            render_order=RenderOrder.ACTOR)
+            burnable=AliveBurnable())
             
 
 MONSTER_GROUPS = {

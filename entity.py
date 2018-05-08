@@ -161,7 +161,9 @@ class Entity:
             game_map, (self.x, self.y), (target_x, target_y),
             routing_avoid=self.routing_avoid)
         if path == []:
-            path = pathfinder.get_path(self.x, self.y, target_x, target_y)
+            path = get_shortest_path(
+                game_map, (self.x, self.y), (target_x, target_y),
+                routing_avoid=[])
         if len(path) > 1:
             dx, dy = path[0][0] - self.x, path[0][1] - self.y
             self._move_if_able(dx, dy, game_map, entities)
