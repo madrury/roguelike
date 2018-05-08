@@ -159,6 +159,12 @@ class Elements(Enum):
     WATER = auto()
 
 
+class RoutingOptions(Enum):
+    AVOID_MONSTERS = auto()
+    AVOID_WATER = auto()
+    AVOID_FIRE = auto()
+
+
 class ItemGroups(Enum):
     NONE = auto()
     ONE_HEALTH_POTION = auto()

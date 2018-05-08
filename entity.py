@@ -3,7 +3,8 @@ import random
 
 import tcod
 
-from etc.enum import EntityTypes, RenderOrder
+from pathfinding import get_shortest_path
+from etc.enum import EntityTypes, RenderOrder, RoutingOptions
 
 
 class Entity:
@@ -84,7 +85,7 @@ class Entity:
       Contains logic for an entity to self propagate across the map.
     """
     def __init__(self,
-                 x, y, char, fg_color, name,
+                 x, y, char, fg_color, name, *,
                  entity_type=None,
                  render_order=RenderOrder.CORPSE,
                  dark_fg_color=None,
@@ -93,18 +94,19 @@ class Entity:
                  visible_out_of_fov=False,
                  seen=False,
                  blocks=False,
-                 swims=False,
+                 routing_avoid=None,
                  # Optional components.
-                 attacker=None,
-                 harmable=None,
                  ai=None,
-                 item=None,
-                 inventory=None,
-                 swimmable=None,
-                 shimmer=None,
+                 attacker=None,
                  burnable=None,
+                 dissipatable=None,
+                 harmable=None,
+                 inventory=None,
+                 item=None,
+                 shimmer=None,
                  spreadable=None,
-                 dissipatable=None):
+                 swimmable=None):
+
         self.x = x
         self.y = y
         self.char = char
@@ -117,19 +119,27 @@ class Entity:
         self.visible_out_of_fov=visible_out_of_fov
         self.seen = seen
         self.blocks = blocks
-        self.swims = swims
         self.render_order = render_order
 
-        self.add_component(attacker, "attacker")
-        self.add_component(harmable, "harmable")
+        if routing_avoid:
+            self.routing_avoid = routing_avoid
+        else:
+            self.routing_avoid = []
+
         self.add_component(ai, "ai")
-        self.add_component(item, "item")
-        self.add_component(swimmable, "swimmable")
-        self.add_component(inventory, "inventory")
-        self.add_component(shimmer, "shimmer")
+        self.add_component(attacker, "attacker")
         self.add_component(burnable, "burnable")
-        self.add_component(spreadable, "spreadable")
         self.add_component(dissipatable, "dissipatable")
+        self.add_component(harmable, "harmable")
+        self.add_component(inventory, "inventory")
+        self.add_component(item, "item")
+        self.add_component(shimmer, "shimmer")
+        self.add_component(spreadable, "spreadable")
+        self.add_component(swimmable, "swimmable")
+
+    @property
+    def swims(self):
+        return RoutingOptions.AVOID_WATER not in self.routing_avoid
 
     def add_component(self, component, component_name):
         """Add a component as an attribute of the current object, and set the
@@ -146,27 +156,12 @@ class Entity:
         self.x += dx
         self.y += dy
 
-    # TODO: Movement strategy should be part of the ai object.
     def move_towards(self, target_x, target_y, game_map, entities):
-        walkable = game_map.walkable * (1 - game_map.fire) * (1 - game_map.blocked)
-        # The cell the entity and the player occupies needs to manually be set
-        # to walkable, else the entity will be frozen in place.
-        walkable[self.x, self.y] = True
-        walkable[target_x, target_y] = True
-        pathfinder = tcod.path.AStar(walkable.T, diagonal=1.0)
-        if self.swims:
+        path = get_shortest_path(
+            game_map, (self.x, self.y), (target_x, target_y),
+            routing_avoid=self.routing_avoid)
+        if path == []:
             path = pathfinder.get_path(self.x, self.y, target_x, target_y)
-        else:
-            # Fuck all!  The path in the tcod module is transposed from
-            # the Map object!
-            water_walkable = walkable * (1 - game_map.water)
-            water_pathfinder = tcod.path.AStar(water_walkable.T, diagonal=1.0)
-            path = water_pathfinder.get_path(self.x, self.y, target_x, target_y)
-            # If the entity is in a different connected component than the
-            # player, then we will have an empty path.  Since the entity can
-            # SEE the player, they should at least move towards them.
-            if path == []:
-                path = pathfinder.get_path(self.x, self.y, target_x, target_y)
         if len(path) > 1:
             dx, dy = path[0][0] - self.x, path[0][1] - self.y
             self._move_if_able(dx, dy, game_map, entities)

@@ -1,4 +1,5 @@
 from utils.utils import choose_from_list_of_tuples
+from etc.enum import RoutingOptions
 
 
 def spawn_entities(schedule, group_definitions, game_map, entities):
@@ -14,7 +15,7 @@ def spawn_group(group_definition, room, game_map, entities):
             entities.append(entity)
 
 def entity_can_spawn_in_space(entity, x, y, game_map):
-    return entity.swims or not game_map.water[x, y]
+    return (entity.swims or not game_map.water[x, y])
 
 
 class Spawnable:
