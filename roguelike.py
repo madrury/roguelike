@@ -15,6 +15,7 @@ from components.attacker import Attacker
 from components.harmable import Harmable
 from components.inventory import Inventory
 from components.burnable import AliveBurnable
+from components.scaldable import AliveScaldable
 from components.swimmable import Swimmable
 from map.map import GameMap
 from map.floor import make_floor
@@ -59,6 +60,7 @@ def main():
                     harmable=Harmable(hp=PLAYER_CONFIG["hp"],
                                       defense=PLAYER_CONFIG["defense"]),
                     burnable=AliveBurnable(),
+                    scaldable=AliveScaldable(),
                     swimmable=Swimmable(PLAYER_CONFIG["swim_stamina"]),
                     inventory=Inventory(PLAYER_CONFIG["inventory_size"]))
     entities = [player]
@@ -418,6 +420,7 @@ def main():
         #---------------------------------------------------------------------
         # If the player is swimming, decrease the swim stamina.  Otherwise,
         # recover swim stamina.
+        # TODO: Fix this logic, double ticks on rest.
         if game_map.water[player.x, player.y] and GameStates.PLAYER_TURN:
             enemy_turn_results.extend(player.swimmable.swim())
         else:
@@ -447,6 +450,13 @@ def main():
                             entities, "burnable"))
                     for e in burnable_entities_at_position:
                         enemy_turn_results.extend(e.burnable.burn(game_map))
+                # Steam scalds entities in the same space.
+                if entity.entity_type == EntityTypes.STEAM:
+                    scaldable_entities_at_position = (
+                        entity.get_all_entities_with_component_in_same_position(
+                            entities, "scaldable"))
+                    for e in scaldable_entities_at_position:
+                        enemy_turn_results.extend(e.scaldable.scald(game_map))
             game_state = GameStates.PLAYER_TURN
 
         #---------------------------------------------------------------------

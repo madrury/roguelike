@@ -103,6 +103,7 @@ class Entity:
                  harmable=None,
                  inventory=None,
                  item=None,
+                 scaldable=None,
                  shimmer=None,
                  spreadable=None,
                  swimmable=None):
@@ -133,6 +134,7 @@ class Entity:
         self.add_component(harmable, "harmable")
         self.add_component(inventory, "inventory")
         self.add_component(item, "item")
+        self.add_component(scaldable, "scaldable")
         self.add_component(shimmer, "shimmer")
         self.add_component(spreadable, "spreadable")
         self.add_component(swimmable, "swimmable")

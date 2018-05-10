@@ -17,6 +17,7 @@ class ItemBurnable:
 
 class AliveBurnable:
     """A living creature takes fire elemental damage from a fire."""
+    # TODO: Move to config.py
     def burn(self, game_map):
         return [{ResultTypes.DAMAGE: (self.owner, 5, Elements.FIRE)}]
 
