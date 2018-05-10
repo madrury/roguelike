@@ -4,7 +4,7 @@ from etc.config import PROBABILITIES
 
 
 class FireDissipatable:
-
+    """Fire dissipates at a fixed probabilitiy every turn."""
     def __init__(self, p=PROBABILITIES['fire_dissipate']):
         self.p = p
 
@@ -17,7 +17,9 @@ class FireDissipatable:
 
 
 class SteamDissipatable:
-
+    """Steam lingers for a number of frames, and then dissipates at a fixed
+    probability during all subsequent turns.
+    """
     def __init__(self, p=PROBABILITIES['steam_dissipate'],
                        n_frames=3):
         self.p_dissipate = p

@@ -8,21 +8,30 @@ import spawnable.various
 
 
 class FireSpreadable:
+    """Fire spreads to a random adjacent space containing a burnable entity at
+    a fixed probability.
+    """
+    def __init__(self, p=PROBABILITIES['fire_spread']):
+        self.p_spread = p
 
-    def spread(self, game_map, entities, p=PROBABILITIES['fire_spread']):
+    def spread(self, game_map, entities):
         new_x, new_y = random_adjacent((self.owner.x, self.owner.y))
         entities_at_location = get_entities_at_location(entities, new_x, new_y)
         burnable_entities = [entity for entity in entities_at_location
                              if entity.burnable]
         results = []
         for entity in burnable_entities:
-            if random.uniform(0, 1) < p:
+            if random.uniform(0, 1) < self.p_spread:
                 results.extend(entity.burnable.burn(game_map))
         return results
 
 
 class SteamSpreadable:
+    """Steam spreads to all adjacent coordinates, each with a fixed probability.
 
+    New steam that are the result of spreading are more likely to dissipate
+    quickly, and less likely to spread.
+    """
     def __init__(self, p=PROBABILITIES["steam_spread"]):
         self.p_spread = p
 

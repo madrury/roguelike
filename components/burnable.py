@@ -6,7 +6,7 @@ import spawnable.various
 
 
 class ItemBurnable:
-
+    """Items are destroyed when they burn, and spawn fire."""
     def burn(self, game_map):
         fire = spawnable.various.Fire.make(
             game_map, self.owner.x, self.owner.y)
@@ -16,13 +16,17 @@ class ItemBurnable:
 
 
 class AliveBurnable:
-
+    """A living creature takes fire elemental damage from a fire."""
     def burn(self, game_map):
         return [{ResultTypes.DAMAGE: (self.owner, 5, Elements.FIRE)}]
 
 
 class GrassBurnable:
-
+    """When grass burns, the grass entity is removed from the game and replaced
+    with a fire entity.
+    
+    Grass does not alway burn, it only catched fire with a fixed probability.
+    """
     def __init__(self, p_fire=PROBABILITIES['grass_burn']):
         self.p_fire = p_fire
 
@@ -40,7 +44,7 @@ class GrassBurnable:
 
 
 class WaterBurnable:
-
+    """When water burns, it spawns a steam entity within the same square."""
     def burn(self, game_map):
         steam = spawnable.various.Steam.make(
             game_map, self.owner.x, self.owner.y)

@@ -10,7 +10,12 @@ from components.dissipatable import FireDissipatable, SteamDissipatable
 
 
 class Fire:
+    """A fire entity.
 
+    Fire entities can spread to neighbouring squares containing burnable
+    material, or harm burnable anjacent entities.  It will also dissipate at a
+    fixed probability every turn.
+    """
     @staticmethod
     def make(game_map, x, y):
         if not game_map.fire[x, y]:
@@ -37,7 +42,12 @@ class Fire:
 
 
 class Steam:
+    """A stteam entity.
 
+    Steam entities can spread to all neighbouring squares, and harm entities in
+    the same equare.  It will also dissipate at a probablity each turn that
+    increases with each spread.
+    """
     @staticmethod
     def make(game_map, x, y, 
              p_spread=PROBABILITIES['steam_spread'], 
