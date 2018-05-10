@@ -6,7 +6,7 @@ from etc.colors import COLORS, STATUS_BAR_COLORS
 from etc.config import (
    SCREEN_WIDTH, SCREEN_HEIGHT, FLOOR_CONFIG, ROOM_CONFIG, TERRAIN_CONFIG,
    PANEL_CONFIG, MESSAGE_CONFIG, FOV_CONFIG, PLAYER_CONFIG, 
-   ANIMATION_INTERVAL, SHIMMER_INTERVAL)
+   ANIMATION_INTERVAL, INVENTORY_WIDTH, SHIMMER_INTERVAL)
 from etc.enum import (
     EntityTypes, GameStates, ItemTargeting, RenderOrder, Animations,
     ResultTypes)
@@ -171,7 +171,6 @@ def main():
                 highlight_attr = "throwable"
             menu_console, menu_x, menu_y = invetory_menu(
                 invetory_message, player.inventory,
-                # TODO: Remove this magic number.
                 inventory_width=50,
                 screen_width=SCREEN_WIDTH,
                 screen_height=SCREEN_HEIGHT,
@@ -182,7 +181,6 @@ def main():
         #---------------------------------------------------------------------
         if game_state == GameStates.ANIMATION_PLAYING:
             animation_finished = animation_player.next_frame()
-            # TODO: Remove magic number.
             sleep(ANIMATION_INTERVAL)
             if animation_finished:
                 game_state, previous_game_state = previous_game_state, game_state
