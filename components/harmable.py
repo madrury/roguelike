@@ -25,6 +25,9 @@ class Harmable:
             results.append({ResultTypes.DEAD_ENTITY: self.owner})
         return results
 
+    def heal(self, amount):
+        self.hp += min(amount, self.max_hp - self.hp)
+
     def render_status_bar(self, panel, x, y):
         self.status_bar.render(
             panel, x, y, 

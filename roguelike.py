@@ -393,9 +393,7 @@ def main():
             # Heal an entity
             if heal:
                 target, amount = heal
-                # TODO: This calculation should not go here.
-                target.harmable.hp += min(
-                    amount, target.harmable.max_hp - target.harmable.hp)
+                target.harmable.heal(amount)
             # Add a new entity to the game.
             if new_entity:
                 entity = new_entity
