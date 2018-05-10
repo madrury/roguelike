@@ -16,7 +16,7 @@ class Harmable:
             total_width=PANEL_CONFIG['bar_width'],
             bar_colors=STATUS_BAR_COLORS['hp_bar'])
 
-    def take_damage(self, amount, element):
+    def harm(self, amount, element):
         if element == Elements.FIRE:
             amount -= self.fire_modifier
         self.hp -= amount
@@ -38,7 +38,10 @@ class Harmable:
 
 class NullHarmable:
 
-    def take_damage(self, amount, element):
+    def harm(self, amount, element):
+        return []
+
+    def heal(self, amount, element):
         return []
 
     def render_status_bar(self, panel, x, y):
