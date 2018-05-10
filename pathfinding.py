@@ -45,5 +45,7 @@ def make_walkable_array(game_map, routing_avoid=None):
         walkable = walkable * (1 - game_map.water)
     if RoutingOptions.AVOID_FIRE in routing_avoid:
         walkable = walkable * (1 - game_map.fire)
+    if RoutingOptions.AVOID_STEAM in routing_avoid:
+        walkable = walkable * (1 - game_map.steam)
     return walkable
 

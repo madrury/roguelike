@@ -10,7 +10,6 @@ from components.burnable import AliveBurnable
 from components.scaldable import AliveScaldable
 
 
-
 class Kruthik(Spawnable):
 
     @staticmethod
@@ -22,7 +21,8 @@ class Kruthik(Spawnable):
             render_order=RenderOrder.ACTOR,
             routing_avoid=[RoutingOptions.AVOID_WATER,
                            RoutingOptions.AVOID_FIRE,
-                           RoutingOptions.AVOID_MONSTERS],
+                           RoutingOptions.AVOID_MONSTERS,
+                           RoutingOptions.AVOID_STEAM],
             attacker=Attacker(power=2),
             harmable=Harmable(hp=1, defense=0),
             ai=SkitteringMonster(),
@@ -41,7 +41,8 @@ class Orc(Spawnable):
             render_order=RenderOrder.ACTOR,
             routing_avoid=[RoutingOptions.AVOID_WATER,
                            RoutingOptions.AVOID_FIRE,
-                           RoutingOptions.AVOID_MONSTERS],
+                           RoutingOptions.AVOID_MONSTERS,
+                           RoutingOptions.AVOID_STEAM],
             attacker=Attacker(power=3),
             harmable=Harmable(hp=10, defense=0),
             ai=BasicMonster(),
@@ -60,7 +61,8 @@ class Troll(Spawnable):
             render_order=RenderOrder.ACTOR,
             routing_avoid=[RoutingOptions.AVOID_WATER,
                            RoutingOptions.AVOID_FIRE,
-                           RoutingOptions.AVOID_MONSTERS],
+                           RoutingOptions.AVOID_MONSTERS,
+                           RoutingOptions.AVOID_STEAM],
             attacker=Attacker(power=4),
             harmable=Harmable(hp=16, defense=1),
             ai=HuntingMonster(),

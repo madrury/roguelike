@@ -166,9 +166,10 @@ class Elements(Enum):
 
 
 class RoutingOptions(Enum):
-    AVOID_MONSTERS = auto()
-    AVOID_WATER = auto()
     AVOID_FIRE = auto()
+    AVOID_MONSTERS = auto()
+    AVOID_STEAM = auto()
+    AVOID_WATER = auto()
 
 
 class ItemGroups(Enum):
