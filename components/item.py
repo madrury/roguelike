@@ -31,7 +31,7 @@ class HealthPotionComponent:
         self.throwable = True
         self.healing = healing
 
-    def use(self, reciever):
+    def use(self, game_map, reciever, entities):
         """Use the health potion on a reciever.
 
         Arguments
@@ -143,7 +143,8 @@ class MagicMissileComponent:
         self.spell_range = spell_range
         self.n_targets = n_targets
 
-    def use(self, user, entities, target_type=EntityTypes.MONSTER):
+    def use(self, game_map, user, entities, 
+            target_type=EntityTypes.MONSTER):
         """Cast the magic missile spell.
 
         Parameters

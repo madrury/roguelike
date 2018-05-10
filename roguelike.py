@@ -288,25 +288,15 @@ def main():
             and inventory_index is not None
             and inventory_index < len(player.inventory.items)
             and previous_game_state != GameStates.PLAYER_DEAD):
+
             entity = player.inventory.items[inventory_index]
-            # TODO: Factor out the switch statement in the inner code block.
             if game_state == GameStates.SHOW_INVENTORY:
-                if entity.item.targeting == ItemTargeting.PLAYER:
-                    player_turn_results.extend(
-                        entity.item.use(player))
-                if entity.item.targeting == ItemTargeting.CLOSEST_MONSTER:
-                    player_turn_results.extend(
-                        entity.item.use(player, entities))
-                if entity.item.targeting == ItemTargeting.WITHIN_RADIUS:
-                    player_turn_results.extend(
-                        entity.item.use(game_map, player, entities))
-                if entity.item.targeting == ItemTargeting.FIRST_ALONG_PATH_TO_CURSOR:
-                    player_turn_results.extend(
-                        entity.item.use(game_map, player, entities))
-            elif game_state == GameStates.DROP_INVENTORY:
-                player_turn_results.extend(player.inventory.drop(entity))
+                player_turn_results.extend(
+                    entity.item.use(game_map, player, entities))
             elif game_state == GameStates.THROW_INVENTORY:
                 if entity.item.throwable:
+                    # TODO: Throw should have a default method that says it is
+                    # not throwable.
                     player_turn_results.extend(
                         entity.item.throw(game_map, player, entities))
                 else:
@@ -314,6 +304,8 @@ def main():
                         "You cannot throw the {}".format(entity.name),
                         COLORS['white'])
                     player_turn_results.append({ResultTypes.MESSAGE: message})
+            elif game_state == GameStates.DROP_INVENTORY:
+                player_turn_results.extend(player.inventory.drop(entity))
             game_state, previous_game_state = previous_game_state, game_state
 
         #----------------------------------------------------------------------
