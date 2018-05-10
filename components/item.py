@@ -4,7 +4,18 @@ from etc.colors import COLORS
 from etc.enum import EntityTypes, ItemTargeting, ResultTypes, Animations, Elements
 
 
-class HealthPotionComponent:
+class Item:
+
+    def use(self, game_map, reciever, entities):
+        message = Message(f"{self.name} is not usable!", COLORS["white"])
+        return [{ResultTypes.MESSAGE: message}]
+
+    def throw(self, game_map, reciever, entities):
+        message = Message(f"{self.name} is not throwable!", COLORS["white"])
+        return [{ResultTypes.MESSAGE: message}]
+
+
+class HealthPotionComponent(Item):
     """A health potion.
 
     When used on an entity, heals some amount of HP.
@@ -25,7 +36,7 @@ class HealthPotionComponent:
       The amount of healing in this potion.
     """
     def __init__(self, healing=5):
-        self.name = "healing potion"
+        self.name = "Healing Hotion"
         # TODO: Change to ItemTargeting.USER
         self.targeting = ItemTargeting.PLAYER
         self.throwable = True
@@ -108,7 +119,7 @@ class HealthPotionCallback:
         return results
 
 
-class MagicMissileComponent:
+class MagicMissileComponent(Item):
     """A Magic Missile spell.
 
     This targets the closest n entities of a given type, and deals a fixed
@@ -136,7 +147,7 @@ class MagicMissileComponent:
       The number of entities to target.  Each target is damaged by a missile.
     """
     def __init__(self, damage=6, spell_range=10, n_targets=3):
-        self.name = "magic missile"
+        self.name = "Scroll of Magic Missile"
         self.targeting = ItemTargeting.CLOSEST_MONSTER
         self.throwable = False
         self.damage = damage
@@ -186,7 +197,7 @@ class MagicMissileComponent:
         return results
 
 
-class FireblastComponent:
+class FireblastComponent(Item):
     """A fireblast spell.
 
     Fireblast is an area of effect spell centered at the player.  The fireblast spell:
@@ -214,7 +225,7 @@ class FireblastComponent:
       The radius of the fireblast.
     """
     def __init__(self, damage=6, radius=4):
-        self.name = "fireblast"
+        self.name = "Scroll of Fireblast"
         self.targeting = ItemTargeting.WITHIN_RADIUS
         self.throwable = False
         self.damage = damage
@@ -243,7 +254,7 @@ class FireblastComponent:
         return results
 
 
-class ThrowingKnifeComponent:
+class ThrowingKnifeComponent(Item):
     """A throwing kife.
 
     The throwing knife does non elemental damage to the first harmable entity
@@ -265,7 +276,7 @@ class ThrowingKnifeComponent:
       Amount of damage.
     """
     def __init__(self, damage=10):
-        self.name = "throwing knife"
+        self.name = "Throwing Knife"
         self.targeting = ItemTargeting.FIRST_ALONG_PATH_TO_CURSOR
         self.throwable = True
         self.damage = damage

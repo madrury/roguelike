@@ -294,16 +294,8 @@ def main():
                 player_turn_results.extend(
                     entity.item.use(game_map, player, entities))
             elif game_state == GameStates.THROW_INVENTORY:
-                if entity.item.throwable:
-                    # TODO: Throw should have a default method that says it is
-                    # not throwable.
-                    player_turn_results.extend(
-                        entity.item.throw(game_map, player, entities))
-                else:
-                    message = Message(
-                        "You cannot throw the {}".format(entity.name),
-                        COLORS['white'])
-                    player_turn_results.append({ResultTypes.MESSAGE: message})
+                player_turn_results.extend(
+                    entity.item.throw(game_map, player, entities))
             elif game_state == GameStates.DROP_INVENTORY:
                 player_turn_results.extend(player.inventory.drop(entity))
             game_state, previous_game_state = previous_game_state, game_state
