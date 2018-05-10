@@ -18,7 +18,7 @@ class FireDissipatable:
 
 class SteamDissipatable:
 
-    def __init__(self, p=PROBABILITIES['fire_dissipate']):
+    def __init__(self, p=PROBABILITIES['steam_dissipate']):
         self.p = p
 
     def dissipate(self, game_map):

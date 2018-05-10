@@ -246,7 +246,6 @@ def main():
         # Unless the player moves, we do not need to recompute the fov.
         fov_recompute = False
         if move and game_state == GameStates.PLAYER_TURN:
-            print()
             dx, dy = move
             destination_x, destination_y = player.x + dx, player.y + dy
             if game_map.walkable[destination_x, destination_y]:
@@ -455,9 +454,6 @@ def main():
         #---------------------------------------------------------------------
         while enemy_turn_results != []:
             result = enemy_turn_results.pop()
-
-            print(result)
-            print([entity.name for entity in entities])
 
             change_swim_stamina = result.get(ResultTypes.CHANGE_SWIM_STAMINA)
             damage = result.get(ResultTypes.DAMAGE)
