@@ -127,6 +127,7 @@ class EntityTypes(Enum):
     CORPSE = auto()
     TERRAIN = auto()
     FIRE = auto()
+    STEAM = auto()
 
 
 class Animations(Enum):

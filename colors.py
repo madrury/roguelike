@@ -20,12 +20,16 @@ def random_red_or_yellow():
     else:
         return random_yellow()
 
+def random_light_green():
+    g = int(random.uniform(120, 200))
+    return (0, g, 30)
+
+def random_grey():
+    g = int(random.uniform(200, 250))
+    return (g, g, g)
+
 def random_light_water():
     return (40, 40, int(random.uniform(200, 255)))
 
 def random_dark_water():
     return (40, 40, int(random.uniform(80, 140)))
-
-def random_light_green():
-    g = int(random.uniform(120, 200))
-    return (0, g, 30)

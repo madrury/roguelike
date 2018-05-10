@@ -2,7 +2,7 @@ from messages import Message
 from etc.enum import ResultTypes, Elements
 from etc.colors import COLORS
 from etc.config import PROBABILITIES
-from spawnable.various import Fire
+from spawnable.various import Fire, Steam
 
 
 class ItemBurnable:
@@ -12,6 +12,12 @@ class ItemBurnable:
         return [{
             ResultTypes.REMOVE_ENTITY: self.owner,
             ResultTypes.ADD_ENTITY: fire}] 
+
+
+class AliveBurnable:
+
+    def burn(self, game_map):
+        return [{ResultTypes.DAMAGE: (self.owner, 5, Elements.FIRE)}]
 
 
 class GrassBurnable:
@@ -32,8 +38,8 @@ class GrassBurnable:
                 ResultTypes.REMOVE_ENTITY: self.owner}]
 
 
-class AliveBurnable:
+class WaterBurnable:
 
     def burn(self, game_map):
-        # TODO: Add fire damage to config.
-        return [{ResultTypes.DAMAGE: (self.owner, 5, Elements.FIRE)}]
+        steam = Steam.make(game_map, self.owner.x, self.owner.y)
+        return [{ResultTypes.ADD_ENTITY: steam}]

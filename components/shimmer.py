@@ -1,4 +1,6 @@
-from colors import random_light_water, random_dark_water, random_red_or_yellow
+from colors import (
+    random_light_water, random_dark_water, random_red_or_yellow,
+    random_grey)
 
 class WaterShimmer:
     """Change the random colors of a water tile."""
@@ -16,3 +18,10 @@ class FireShimmer:
     def shimmer(self):
         self.owner.fg_color = random_red_or_yellow()
         self.owner.bg_color = random_red_or_yellow()
+
+
+class SteamShimmer:
+    """Change the random colors of a steam tile."""
+    def shimmer(self):
+        self.owner.fg_color = random_grey()
+        self.owner.bg_color = random_grey()

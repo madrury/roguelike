@@ -6,7 +6,7 @@ from etc.enum import Terrain, EntityTypes, RenderOrder
 from etc.colors import COLORS
 from utils.utils import adjacent_coordinates, random_adjacent
 from components.shimmer import WaterShimmer
-from components.burnable import GrassBurnable
+from components.burnable import GrassBurnable, WaterBurnable
 
 
 def add_random_terrain(game_map, entities, terrain_config):
@@ -138,7 +138,8 @@ def make_water_entity(x, y):
         visible_out_of_fov=True,
         entity_type=EntityTypes.TERRAIN,
         render_order=RenderOrder.TERRAIN,
-        shimmer=WaterShimmer())
+        shimmer=WaterShimmer(),
+        burnable=WaterBurnable())
 
 
 class Pool(Growable):
