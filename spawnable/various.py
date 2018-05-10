@@ -3,6 +3,7 @@ import random
 from colors import random_red_or_yellow, random_grey
 from entity import Entity
 from etc.enum import EntityTypes, RenderOrder
+from etc.config import PROBABILITIES
 from components.shimmer import FireShimmer, SteamShimmer
 from components.spreadable import FireSpreadable, SteamSpreadable
 from components.dissipatable import FireDissipatable, SteamDissipatable
@@ -10,6 +11,7 @@ from components.dissipatable import FireDissipatable, SteamDissipatable
 
 class Fire:
 
+    @staticmethod
     def make(game_map, x, y):
         if not game_map.fire[x, y]:
             game_map.fire[x, y] = True
@@ -36,7 +38,10 @@ class Fire:
 
 class Steam:
 
-    def make(game_map, x, y):
+    @staticmethod
+    def make(game_map, x, y, 
+             p_spread=PROBABILITIES['steam_spread'], 
+             p_dissipate=PROBABILITIES['steam_dissipate']):
         if not game_map.steam[x, y]:
             game_map.steam[x, y] = True
             fg_color = random_grey()
@@ -49,5 +54,5 @@ class Steam:
                 entity_type=EntityTypes.STEAM,
                 render_order=RenderOrder.TERRAIN,
                 shimmer=SteamShimmer(),
-                spreadable=SteamSpreadable(),
-                dissipatable=SteamDissipatable())
+                spreadable=SteamSpreadable(p=p_spread),
+                dissipatable=SteamDissipatable(p=p_dissipate))

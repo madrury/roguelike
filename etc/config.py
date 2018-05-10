@@ -62,6 +62,6 @@ PROBABILITIES = {
     'grass_burn': 1.0,
     'fire_spread': 0.9,
     'steam_spread': 0.8,
-    'fire_dissipate': 0.15,
-    'steam_dissipate': 0.7
+    'fire_dissipate': 0.2,
+    'steam_dissipate': 0.5
 }

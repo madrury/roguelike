@@ -18,11 +18,17 @@ class FireDissipatable:
 
 class SteamDissipatable:
 
-    def __init__(self, p=PROBABILITIES['steam_dissipate']):
-        self.p = p
+    def __init__(self, p=PROBABILITIES['steam_dissipate'],
+                       n_frames=3):
+        self.p_dissipate = p
+        self.n_frames = n_frames
+        self.frame = 0
 
     def dissipate(self, game_map):
-        if random.uniform(0, 1) < self.p:
+        if self.frame < self.n_frames:
+            self.frame += 1
+            return []
+        elif random.uniform(0, 1) < self.p_dissipate:
             game_map.steam[self.owner.x, self.owner.y] = False
             return [{ResultTypes.REMOVE_ENTITY: self.owner}]
         else:
