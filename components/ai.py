@@ -1,3 +1,5 @@
+from etc.enum import ResultTypes
+
 class BasicMonster:
     """Simple monster ai.
 
@@ -9,7 +11,7 @@ class BasicMonster:
         monster = self.owner
         if game_map.fov[monster.x, monster.y]:
             if monster.distance_to(target) >= 2:
-                results.append({'move_towards': (monster, target.x, target.y)})
+                results.append({ResultTypes.MOVE_TOWARDS: (monster, target.x, target.y)})
             elif target.harmable and target.harmable.hp > 0:
                 attack_results = monster.attacker.attack(target)
                 results.extend(attack_results)
@@ -28,7 +30,7 @@ class HuntingMonster:
         results = []
         monster = self.owner
         if 2 <= monster.distance_to(target) <= self.sensing_range:
-            results.append({'move_towards': (monster, target.x, target.y)})
+            results.append({ResultTypes.MOVE_TOWARDS: (monster, target.x, target.y)})
         elif (monster.distance_to(target) <= 2 and 
               target.harmable and target.harmable.hp > 0):
             attack_results = monster.attacker.attack(target)
@@ -50,7 +52,7 @@ class SkitteringMonster:
         monster = self.owner
         if game_map.fov[monster.x, monster.y]:
             if monster.distance_to(target) > self.skitering_range:
-                results.append({'move_random_adjacent': monster})
+                results.append({ResultTypes.MOVE_RANDOM_ADJACENT: monster})
             elif monster.distance_to(target) <= self.skitering_range:
-                results.append({'move_towards': (monster, target.x, target.y)})
+                results.append({ResultTypes.MOVE_TOWARDS: (monster, target.x, target.y)})
         return results

@@ -82,12 +82,15 @@ class GameStates(Enum):
 #   a position.
 # MESSAGE: message
 #   Display a game message in the message queue.
+# # TODO: Add an entity argument to this so it can be used to move any entity.
 # MOVE: (dx, dy) 
 #   Move the player or another entity on the game map.
+# MOVE_TOWARDS: entity, target_x, target_y
+#   Attempt to move the entity towards the target. 
+# MOVE_RANDOM_ADJACENT: entity
+#   Attempt to move the entity to a random adjacent square.
 # PICKUP: bool 
-#   Pickup an item at the current position.  TODO: This should work with any
-#   entity.
-# SHOW_INVENTORy: bool
+#   Pickup an item at the current position.  # SHOW_INVENTORy: bool
 #   Show the inventory menu.
 #.............................................................................
 class ResultTypes(Enum):
@@ -109,6 +112,8 @@ class ResultTypes(Enum):
     ITEM_DROPPED = auto()
     MESSAGE = auto()
     MOVE = auto()
+    MOVE_TOWARDS = auto()
+    MOVE_RANDOM_ADJACENT = auto()
     PICKUP = auto()
     REMOVE_ENTITY = auto()
     SHOW_INVENTORY = auto()

@@ -468,13 +468,13 @@ def main():
         #---------------------------------------------------------------------
         while enemy_turn_results != []:
             result = enemy_turn_results.pop()
-            # TODO: Add to ResultTypes
+
             change_swim_stamina = result.get(ResultTypes.CHANGE_SWIM_STAMINA)
             damage = result.get(ResultTypes.DAMAGE)
             dead_entity = result.get(ResultTypes.DEAD_ENTITY)
             message = result.get(ResultTypes.MESSAGE)
-            move_random_adjacent = result.get('move_random_adjacent')
-            move_towards = result.get('move_towards')
+            move_random_adjacent = result.get(ResultTypes.MOVE_RANDOM_ADJACENT)
+            move_towards = result.get(ResultTypes.MOVE_TOWARDS)
             new_entity = result.get(ResultTypes.ADD_ENTITY)
             remove_entity = result.get(ResultTypes.REMOVE_ENTITY)
 
