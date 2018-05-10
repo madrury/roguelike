@@ -420,11 +420,11 @@ def main():
         #---------------------------------------------------------------------
         # If the player is swimming, decrease the swim stamina.  Otherwise,
         # recover swim stamina.
-        # TODO: Fix this logic, double ticks on rest.
-        if game_map.water[player.x, player.y] and GameStates.PLAYER_TURN:
-            enemy_turn_results.extend(player.swimmable.swim())
-        else:
-            enemy_turn_results.extend(player.swimmable.rest())
+        if game_state == GameStates.ENEMY_TURN:
+            if game_map.water[player.x, player.y]:
+                enemy_turn_results.extend(player.swimmable.swim())
+            else:
+                enemy_turn_results.extend(player.swimmable.rest())
 
         #---------------------------------------------------------------------
         # All enemies and hazardous terrain and entities take thier turns.
