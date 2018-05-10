@@ -429,37 +429,40 @@ def main():
                 game_state, previous_game_state = (
                     GameStates.ANIMATION_PLAYING, game_state)
 
+        #---------------------------------------------------------------------
+        # Post player turn checks.
+        #---------------------------------------------------------------------
+        # If the player is swimming, decrease the swim stamina.  Otherwise,
+        # recover swim stamina.
+        if game_map.water[player.x, player.y] and GameStates.PLAYER_TURN:
+            enemy_turn_results.extend(player.swimmable.swim())
+        else:
+            enemy_turn_results.extend(player.swimmable.rest())
 
         #---------------------------------------------------------------------
         # All enemies and hazardous terrain and entities take thier turns.
         #---------------------------------------------------------------------
         if game_state == GameStates.ENEMY_TURN:
-            # TODO: This could be one for loop.
-            # Enemies move and attack if possible.
-            for entity in (x for x in entities if x.ai):
-                enemy_turn_results.extend(entity.ai.take_turn(
-                    player, game_map))
-            # Fire and gas spreads.
-            for entity in (x for x in entities if x.spreadable):
-                enemy_turn_results.extend(
-                    entity.spreadable.spread(game_map, entities))
-            # Fire and gas dissapates.
-            for entity in (x for x in entities if x.dissipatable):
-                enemy_turn_results.extend(
-                    entity.dissipatable.dissipate(game_map))
-            # Entities burn if needed.
-            for entity in (x for x in entities if x.entity_type == EntityTypes.FIRE):
-                burnable_entities_at_position = (
-                    entity.get_all_entities_with_component_in_same_position(
-                        entities, "burnable"))
-                for e in burnable_entities_at_position:
-                    enemy_turn_results.extend(e.burnable.burn(game_map))
-            # If the player is swimming, decrease the swim stamina.  Otherwise,
-            # recover swim stamina.
-            if game_map.water[player.x, player.y] and GameStates.PLAYER_TURN:
-                enemy_turn_results.extend(player.swimmable.swim())
-            else:
-               enemy_turn_results.extend(player.swimmable.rest())
+            for entity in entities:
+                # Enemies move and attack if possible.
+                if entity.ai:
+                    enemy_turn_results.extend(entity.ai.take_turn(
+                        player, game_map))
+                # Fire and gas spreads.
+                if entity.spreadable:
+                    enemy_turn_results.extend(
+                        entity.spreadable.spread(game_map, entities))
+                # Fire and gas dissipates.
+                if entity.dissipatable:
+                    enemy_turn_results.extend(
+                        entity.dissipatable.dissipate(game_map))
+                # Fire burns entities in the same space.
+                if entity.entity_type == EntityTypes.FIRE:
+                    burnable_entities_at_position = (
+                        entity.get_all_entities_with_component_in_same_position(
+                            entities, "burnable"))
+                    for e in burnable_entities_at_position:
+                        enemy_turn_results.extend(e.burnable.burn(game_map))
             game_state = GameStates.PLAYER_TURN
 
         #---------------------------------------------------------------------
