@@ -455,6 +455,7 @@ def main():
         while enemy_turn_results != []:
             result = enemy_turn_results.pop()
 
+            print(result)
             change_swim_stamina = result.get(ResultTypes.CHANGE_SWIM_STAMINA)
             damage = result.get(ResultTypes.DAMAGE)
             dead_entity = result.get(ResultTypes.DEAD_ENTITY)

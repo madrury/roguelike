@@ -4,7 +4,7 @@ from colors import random_red_or_yellow, random_grey
 from entity import Entity
 from etc.enum import EntityTypes, RenderOrder
 from components.shimmer import FireShimmer, SteamShimmer
-from components.spreadable import FireSpreadable
+from components.spreadable import FireSpreadable, SteamSpreadable
 from components.dissipatable import FireDissipatable
 
 
@@ -49,5 +49,5 @@ class Steam:
                 entity_type=EntityTypes.STEAM,
                 render_order=RenderOrder.TERRAIN,
                 shimmer=SteamShimmer(),
-                spreadable=FireSpreadable(),
+                spreadable=SteamSpreadable(),
                 dissipatable=FireDissipatable())

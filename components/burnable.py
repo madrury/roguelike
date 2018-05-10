@@ -2,13 +2,14 @@ from messages import Message
 from etc.enum import ResultTypes, Elements
 from etc.colors import COLORS
 from etc.config import PROBABILITIES
-from spawnable.various import Fire, Steam
+import spawnable.various
 
 
 class ItemBurnable:
 
     def burn(self, game_map):
-        fire = Fire.make(game_map, self.owner.x, self.owner.y)
+        fire = spawnable.various.Fire.make(
+            game_map, self.owner.x, self.owner.y)
         return [{
             ResultTypes.REMOVE_ENTITY: self.owner,
             ResultTypes.ADD_ENTITY: fire}] 
@@ -27,7 +28,7 @@ class GrassBurnable:
 
     def burn(self, game_map):
         game_map.terrain[self.owner.x, self.owner.y] = False
-        fire = Fire.maybe_make(
+        fire = spawnable.various.Fire.maybe_make(
             game_map, self.owner.x, self.owner.y, p=self.p_fire)
         if fire:
             return [{
@@ -41,5 +42,6 @@ class GrassBurnable:
 class WaterBurnable:
 
     def burn(self, game_map):
-        steam = Steam.make(game_map, self.owner.x, self.owner.y)
+        steam = spawnable.various.Steam.make(
+            game_map, self.owner.x, self.owner.y)
         return [{ResultTypes.ADD_ENTITY: steam}]
