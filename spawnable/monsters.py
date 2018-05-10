@@ -7,6 +7,7 @@ from components.ai import BasicMonster, HuntingMonster, SkitteringMonster
 from components.attacker import Attacker
 from components.harmable import Harmable
 from components.burnable import AliveBurnable
+from components.scaldable import AliveScaldable
 
 
 
@@ -26,7 +27,7 @@ class Kruthik(Spawnable):
             harmable=Harmable(hp=1, defense=0),
             ai=SkitteringMonster(),
             burnable=AliveBurnable(),
-            )
+            scaldable=AliveScaldable())
 
 
 class Orc(Spawnable):
@@ -44,7 +45,8 @@ class Orc(Spawnable):
             attacker=Attacker(power=3),
             harmable=Harmable(hp=10, defense=0),
             ai=BasicMonster(),
-            burnable=AliveBurnable())
+            burnable=AliveBurnable(),
+            scaldable=AliveScaldable())
 
 
 class Troll(Spawnable):
@@ -62,7 +64,8 @@ class Troll(Spawnable):
             attacker=Attacker(power=4),
             harmable=Harmable(hp=16, defense=1),
             ai=HuntingMonster(),
-            burnable=AliveBurnable())
+            burnable=AliveBurnable(),
+            scaldable=AliveScaldable())
             
 
 MONSTER_GROUPS = {
@@ -70,16 +73,16 @@ MONSTER_GROUPS = {
     MonsterGroups.SINGLE_ORC: [Orc],
     MonsterGroups.THREE_ORCS: [Orc, Orc, Orc],
     MonsterGroups.SINGLE_TROLL: [Troll],
-    MonsterGroups.TWO_ORCS_AND_TROLL: [Orc, Orc, Orc],
+    MonsterGroups.TWO_ORCS_AND_TROLL: [Orc, Orc, Troll],
     MonsterGroups.KRUTHIK_SQARM: [Kruthik]*10
 }
 
 
 MONSTER_SCHEDULE = [
-    (0.3, MonsterGroups.NONE),
-    (0.7*0.3, MonsterGroups.SINGLE_ORC),
-    (0.7*0.2, MonsterGroups.THREE_ORCS),
-    (0.7*0.2, MonsterGroups.SINGLE_TROLL),
-    (0.7*0.2, MonsterGroups.TWO_ORCS_AND_TROLL),
-    (0.7*0.1, MonsterGroups.KRUTHIK_SQARM),
+    (0.5, MonsterGroups.NONE),
+    (0.5*0.6, MonsterGroups.SINGLE_ORC),
+    (0.5*0.1, MonsterGroups.THREE_ORCS),
+    (0.5*0.1, MonsterGroups.SINGLE_TROLL),
+    (0.5*0.1, MonsterGroups.TWO_ORCS_AND_TROLL),
+    (0.5*0.1, MonsterGroups.KRUTHIK_SQARM),
 ]
