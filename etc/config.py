@@ -1,5 +1,7 @@
+ANIMATION_INTERVAL = 0.075
 SCREEN_WIDTH = 80
 SCREEN_HEIGHT = 50
+SHIMMER_INTERVAL = 50
 
 FLOOR_CONFIG = {
     'width': 80,
@@ -44,7 +46,16 @@ FOV_CONFIG = {
     "radius": 10
 }
 
-SHIMMER_INTERVAL = 50
+PLAYER_CONFIG = {
+    "char": '@',
+    "color": "white",
+    "defense": 2,
+    "hp": 250,
+    "inventory_size": 26,
+    "name": "Player",
+    "power": 5,
+    "swim_stamina": 5,
+}
 
 PROBABILITIES = {
     'grass_burn': 1.0,

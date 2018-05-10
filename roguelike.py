@@ -5,7 +5,8 @@ from collections import deque
 from etc.colors import COLORS, STATUS_BAR_COLORS
 from etc.config import (
    SCREEN_WIDTH, SCREEN_HEIGHT, FLOOR_CONFIG, ROOM_CONFIG, TERRAIN_CONFIG,
-   PANEL_CONFIG, MESSAGE_CONFIG, FOV_CONFIG, SHIMMER_INTERVAL)
+   PANEL_CONFIG, MESSAGE_CONFIG, FOV_CONFIG, PLAYER_CONFIG, 
+   ANIMATION_INTERVAL, SHIMMER_INTERVAL)
 from etc.enum import (
     EntityTypes, GameStates, ItemTargeting, RenderOrder, Animations,
     ResultTypes)
@@ -49,15 +50,17 @@ def main():
     message_log = MessageLog(MESSAGE_CONFIG)
 
     # This is you.  Kill some Orcs.
-    player = Entity(0, 0, '@', COLORS['white'], 'Player',
+    player = Entity(0, 0, PLAYER_CONFIG["char"], 
+                    COLORS[PLAYER_CONFIG["color"]], 
+                    PLAYER_CONFIG["name"],
                     blocks=True,
                     render_order=RenderOrder.ACTOR,
-                    # TODO: Move all this to config.
-                    attacker=Attacker(power=5),
-                    harmable=Harmable(hp=500, defense=2),
+                    attacker=Attacker(power=PLAYER_CONFIG["power"]),
+                    harmable=Harmable(hp=PLAYER_CONFIG["hp"],
+                                      defense=PLAYER_CONFIG["defense"]),
                     burnable=AliveBurnable(),
-                    swimmable=Swimmable(5),
-                    inventory=Inventory(26))
+                    swimmable=Swimmable(PLAYER_CONFIG["swim_stamina"]),
+                    inventory=Inventory(PLAYER_CONFIG["inventory_size"]))
     entities = [player]
 
     # Setup Initial Inventory, for testing.
@@ -180,7 +183,7 @@ def main():
         if game_state == GameStates.ANIMATION_PLAYING:
             animation_finished = animation_player.next_frame()
             # TODO: Remove magic number.
-            sleep(0.06)
+            sleep(ANIMATION_INTERVAL)
             if animation_finished:
                 game_state, previous_game_state = previous_game_state, game_state
 
