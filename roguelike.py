@@ -481,6 +481,8 @@ def main():
                 target, amount, element = damage
                 damage_result = target.harmable.harm(amount, element)
                 enemy_turn_results.extend(damage_result)
+                if target != player and target not in harmed_queue:
+                    harmed_queue.appendleft(target)
             # Entities swim and thier stamana decreases.
             if change_swim_stamina:
                 entity, stamina_change = change_swim_stamina
