@@ -5,7 +5,7 @@ from entity import Entity
 from etc.enum import EntityTypes, RenderOrder
 from components.shimmer import FireShimmer, SteamShimmer
 from components.spreadable import FireSpreadable, SteamSpreadable
-from components.dissipatable import FireDissipatable
+from components.dissipatable import FireDissipatable, SteamDissipatable
 
 
 class Fire:
@@ -50,4 +50,4 @@ class Steam:
                 render_order=RenderOrder.TERRAIN,
                 shimmer=SteamShimmer(),
                 spreadable=SteamSpreadable(),
-                dissipatable=FireDissipatable())
+                dissipatable=SteamDissipatable())

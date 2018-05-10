@@ -74,8 +74,8 @@ def main():
     game_map = GameMap(floor, map_console)
     terrain = add_random_terrain(game_map, entities, TERRAIN_CONFIG)
     game_map.place_player(player)
-    spawn_entities(MONSTER_SCHEDULE, MONSTER_GROUPS, game_map, entities)
-    spawn_entities(ITEM_SCHEDULE, ITEM_GROUPS, game_map, entities)
+    #spawn_entities(MONSTER_SCHEDULE, MONSTER_GROUPS, game_map, entities)
+    #spawn_entities(ITEM_SCHEDULE, ITEM_GROUPS, game_map, entities)
 
     # DEBUG: The entire dungeon is explored.
     #game_map.explored[:, :] = True
@@ -246,6 +246,7 @@ def main():
         # Unless the player moves, we do not need to recompute the fov.
         fov_recompute = False
         if move and game_state == GameStates.PLAYER_TURN:
+            print()
             dx, dy = move
             destination_x, destination_y = player.x + dx, player.y + dy
             if game_map.walkable[destination_x, destination_y]:
@@ -456,6 +457,8 @@ def main():
             result = enemy_turn_results.pop()
 
             print(result)
+            print([entity.name for entity in entities])
+
             change_swim_stamina = result.get(ResultTypes.CHANGE_SWIM_STAMINA)
             damage = result.get(ResultTypes.DAMAGE)
             dead_entity = result.get(ResultTypes.DEAD_ENTITY)
@@ -496,7 +499,8 @@ def main():
             if remove_entity:
                 entity = remove_entity
                 # For example: different fires can spread to the same space in
-                # one turn.
+                # one turn, which results in two requests to remove grass in
+                # that space.
                 if entity in entities:
                     entities.remove(entity)
             # Handle death.

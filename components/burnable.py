@@ -44,4 +44,7 @@ class WaterBurnable:
     def burn(self, game_map):
         steam = spawnable.various.Steam.make(
             game_map, self.owner.x, self.owner.y)
-        return [{ResultTypes.ADD_ENTITY: steam}]
+        if steam:
+            return [{ResultTypes.ADD_ENTITY: steam}]
+        else:
+            return []

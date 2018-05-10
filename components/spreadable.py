@@ -28,5 +28,6 @@ class SteamSpreadable:
         new_x, new_y = random_adjacent((self.owner.x, self.owner.y))
         if random.uniform(0, 1) < p and game_map.within_bounds(new_x, new_y):
             steam = spawnable.various.Steam.make(game_map, new_x, new_y)
-            results.append({ResultTypes.ADD_ENTITY: steam})
+            if steam:
+                results.append({ResultTypes.ADD_ENTITY: steam})
         return results
