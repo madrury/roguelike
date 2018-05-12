@@ -6,7 +6,7 @@ from entity import Entity
 from etc.enum import Terrain, EntityTypes, RenderOrder
 from etc.colors import COLORS
 from utils.utils import adjacent_coordinates, random_adjacent
-from entities.terrain import Water
+from entities.terrain import Water, Grass
 from components.shimmer import WaterShimmer
 from components.burnable import GrassBurnable, WaterBurnable
 
@@ -220,7 +220,7 @@ class River:
 #-----------------------------------------------------------------------------
 # Grass
 #-----------------------------------------------------------------------------
-class Grass(Growable):
+class PatchOfGrass(Growable):
     """A grassy room.
 
     Grass is burnable, so fire spells used in the grassy room will spread.
@@ -228,21 +228,11 @@ class Grass(Growable):
     def __init__(self, game_map, room):
         super().__init__(game_map, room)
         room.terrain = Terrain.GRASS
-        
+
     @staticmethod
     def make(x, y):
-        fg_color = random_light_green()
-        # Shift down the green component to make the grass dark.
-        bg_color = (fg_color[0], fg_color[1] - 60, fg_color[2])
-        return Entity(
-            x, y, '"',
-            name="Grass",
-            fg_color=fg_color,
-            dark_fg_color=bg_color,
-            visible_out_of_fov=True,
-            entity_type=EntityTypes.TERRAIN,
-            render_order=RenderOrder.TERRAIN,
-            burnable=GrassBurnable())
+        return Grass.make(x, y)
+        
 
 
 def random_grass(game_map, grass_room_proportion):
@@ -250,7 +240,7 @@ def random_grass(game_map, grass_room_proportion):
     pinned_room = random.choice(game_map.floor.rooms)
     while pinned_room.terrain != None:
         pinned_room = random.choice(game_map.floor.rooms)
-    grass = Grass(game_map, pinned_room)
+    grass = PatchOfGrass(game_map, pinned_room)
     # TODO: Move constant to config.
     grass.grow(stay_in_room=True, proportion=grass_room_proportion)
     return grass
