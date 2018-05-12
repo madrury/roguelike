@@ -167,6 +167,10 @@ class Entity:
     def swims(self):
         return RoutingOptions.AVOID_WATER not in self.routing_avoid
 
+    @property
+    def pickupable(self):
+        return self.usable or self.throwable or self.equipable
+
     def add_component(self, component, component_name):
         """Add a component as an attribute of the current object, and set the
         owner of the component to the current object.

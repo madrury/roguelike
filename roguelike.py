@@ -279,7 +279,7 @@ def main():
         #----------------------------------------------------------------------
         elif pickup and game_state == GameStates.PLAYER_TURN:
             for entity in entities:
-                if (entity.item
+                if (entity.pickupable
                     and entity.x == player.x and entity.y == player.y):
                     pickup_results = player.inventory.pickup(entity)
                     player_turn_results.extend(pickup_results)
