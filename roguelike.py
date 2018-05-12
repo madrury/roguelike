@@ -9,7 +9,7 @@ from etc.config import (
    ANIMATION_INTERVAL, INVENTORY_WIDTH, SHIMMER_INTERVAL)
 from etc.enum import (
     EntityTypes, GameStates, ItemTargeting, RenderOrder, Animations,
-    ResultTypes)
+    ResultTypes, Elements)
 
 from animations.animations import construct_animation
 from components.attacker import Attacker
@@ -19,6 +19,7 @@ from components.inventory import Inventory
 from components.movable import Movable
 from components.scaldable import AliveScaldable
 from components.swimmable import Swimmable
+from components.damage_filters.defensive_filters import ElementalFilter
 from game_objects.items import (
     HealthPotion, MagicMissileScroll, FireblastScroll, ThrowingKnife)
 from generation.floor import make_floor
@@ -58,8 +59,10 @@ def main():
                     blocks=True,
                     render_order=RenderOrder.ACTOR,
                     attacker=Attacker(power=PLAYER_CONFIG["power"]),
-                    harmable=Harmable(hp=PLAYER_CONFIG["hp"],
-                                      defense=PLAYER_CONFIG["defense"]),
+                    harmable=Harmable(
+                        hp=PLAYER_CONFIG["hp"],
+                        defense=PLAYER_CONFIG["defense"],
+                        damage_filters=[ElementalFilter(100, Elements.NONE)]),
                     movable=Movable(),
                     burnable=AliveBurnable(),
                     scaldable=AliveScaldable(),
