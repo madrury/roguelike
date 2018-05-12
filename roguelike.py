@@ -18,10 +18,10 @@ from components.burnable import AliveBurnable
 from components.scaldable import AliveScaldable
 from components.swimmable import Swimmable
 from generation.floor import make_floor
+from generation.terrain import add_random_terrain
+from generation.spawn_entities import spawn_entities
 from spawnable.monster_groups import MONSTER_SCHEDULE, MONSTER_GROUPS
 from spawnable.item_groups import ITEM_SCHEDULE, ITEM_GROUPS
-from spawnable.terrain import add_random_terrain
-from spawnable.spawnable import spawn_entities
 from game_objects.items import (
     HealthPotion, MagicMissileScroll, FireblastScroll, ThrowingKnife)
 from animations.animations import construct_animation
