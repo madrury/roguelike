@@ -23,7 +23,8 @@ def spawn_in_room(entity_type, room, game_map, entities, max_tries=25):
     else:
         entity = None
     if entity and entity_can_spawn_in_space(entity, x, y, game_map):
-        game_map.blocked[x, y] = True
+        if entity.blocks:
+            game_map.blocked[x, y] = True
         return entity
     else:
         return None
