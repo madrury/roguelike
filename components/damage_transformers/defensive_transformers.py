@@ -1,4 +1,4 @@
-class ElementalFilter:
+class ElementalTransformer:
     """Reduce damage of a certain element by some amount.
 
     Attributes

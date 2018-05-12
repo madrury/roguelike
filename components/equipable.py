@@ -1,17 +1,17 @@
 class ArmorEquipable:
 
-    def __init__(self, damage_filters=None):
-        self.damage_filters = []
-        if damage_filters:
-            for filter in damage_filters:
-                self.damage_filters.append(filter)
+    def __init__(self, damage_transformers=None):
+        self.damage_transformers = []
+        if damage_transformers:
+            for transformer in damage_transformers:
+                self.damage_transformers.append(transformer)
 
     def equip(self, entity):
         if not hasattr(entity, "harmable"):
             raise AttributeError("Non harmable entities cannot equip Armor")
-        for filter in self.damage_filters:
-            entity.harmable.damage_filters.append(filter)
+        for transformer in self.damage_transformers:
+            entity.harmable.damage_transformers.append(transformer)
 
     def unequip(self, entity):
-        for filter in self.damage_filters:
-            entity.harmable.damage_filters.remove(filter)
+        for transformer in self.damage_transformers:
+            entity.harmable.damage_transformers.remove(transformer)

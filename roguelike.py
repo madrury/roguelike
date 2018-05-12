@@ -14,7 +14,8 @@ from etc.enum import (
 from animations.animations import construct_animation
 from components.attacker import Attacker
 from components.burnable import AliveBurnable
-from components.damage_filters.defensive_filters import ElementalFilter
+from components.damage_transformers.defensive_transformers import (
+    ElementalTransformer)
 from components.harmable import Harmable
 from components.inventory import Inventory
 from components.movable import Movable
