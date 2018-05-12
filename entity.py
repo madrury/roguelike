@@ -116,6 +116,7 @@ class Entity:
                  attacker=None,
                  burnable=None,
                  dissipatable=None,
+                 equipable=None,
                  harmable=None,
                  inventory=None,
                  item=None,
@@ -150,6 +151,7 @@ class Entity:
         self.add_component(attacker, "attacker")
         self.add_component(burnable, "burnable")
         self.add_component(dissipatable, "dissipatable")
+        self.add_component(equipable, "equipable")
         self.add_component(harmable, "harmable")
         self.add_component(inventory, "inventory")
         self.add_component(item, "item")

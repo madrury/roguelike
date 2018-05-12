@@ -14,19 +14,21 @@ from etc.enum import (
 from animations.animations import construct_animation
 from components.attacker import Attacker
 from components.burnable import AliveBurnable
+from components.damage_filters.defensive_filters import ElementalFilter
 from components.harmable import Harmable
 from components.inventory import Inventory
 from components.movable import Movable
 from components.scaldable import AliveScaldable
 from components.swimmable import Swimmable
-from components.damage_filters.defensive_filters import ElementalFilter
 from game_objects.items import (
     HealthPotion, MagicMissileScroll, FireblastScroll, ThrowingKnife)
+from game_objects.armor import LeatherArmor
 from generation.floor import make_floor
 from generation.item_groups import ITEM_SCHEDULE, ITEM_GROUPS
 from generation.monster_groups import MONSTER_SCHEDULE, MONSTER_GROUPS
 from generation.spawn_entities import spawn_entities
 from generation.terrain import add_random_terrain
+
 
 from cursor import Cursor
 from death_functions import kill_monster, kill_player, make_corpse
@@ -61,8 +63,7 @@ def main():
                     attacker=Attacker(power=PLAYER_CONFIG["power"]),
                     harmable=Harmable(
                         hp=PLAYER_CONFIG["hp"],
-                        defense=PLAYER_CONFIG["defense"],
-                        damage_filters=[ElementalFilter(100, Elements.NONE)]),
+                        defense=PLAYER_CONFIG["defense"]),
                     movable=Movable(),
                     burnable=AliveBurnable(),
                     scaldable=AliveScaldable(),
@@ -75,6 +76,10 @@ def main():
     player.inventory.extend([ThrowingKnife.make(0, 0) for _ in range(3)])
     player.inventory.extend([MagicMissileScroll.make(0, 0) for _ in range(3)])
     player.inventory.extend([FireblastScroll.make(0, 0) for _ in range(3)])
+
+    # Setup player equimpent, for testing
+    leather_armor = LeatherArmor.make(0, 0, modifier=100)
+    leather_armor.equipable.equip(player)
 
     # Generate the map and place player, monsters, and items.
     floor = make_floor(FLOOR_CONFIG, ROOM_CONFIG)
