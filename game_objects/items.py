@@ -3,8 +3,11 @@ from entity import Entity
 from etc.colors import COLORS
 from etc.enum import EntityTypes, RenderOrder, ItemGroups
 from components.item import (
-    HealthPotionComponent, MagicMissileComponent,
+    MagicMissileComponent,
     FireblastComponent, ThrowingKnifeComponent)
+
+from components.usable import HealthPotionUsable
+from components.throwable import HealthPotionThrowable
 from components.burnable import ItemBurnable
 
 
@@ -15,7 +18,8 @@ class HealthPotion:
         return Entity(x, y, '!', COLORS['violet'], 'Potion of Health',
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
-                      item=HealthPotionComponent())
+                      usable=HealthPotionUsable(),
+                      throwable=HealthPotionThrowable())
 
 
 class MagicMissileScroll:

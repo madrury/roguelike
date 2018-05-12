@@ -93,6 +93,12 @@ class Entity:
 
     swimmable: Swimmable object.
       Containins stats and logic for the entity swimming.
+
+    throwable: Trowable object.
+      Contains logic for throwing the item.
+
+    usable: Usable object.
+      Contains logic for using the item.
     """
     def __init__(self,
                  x, y, char, fg_color, name, *,
@@ -117,7 +123,9 @@ class Entity:
                  scaldable=None,
                  shimmer=None,
                  spreadable=None,
-                 swimmable=None):
+                 swimmable=None,
+                 throwable=None,
+                 usable=None):
 
         self.x = x
         self.y = y
@@ -150,6 +158,8 @@ class Entity:
         self.add_component(shimmer, "shimmer")
         self.add_component(spreadable, "spreadable")
         self.add_component(swimmable, "swimmable")
+        self.add_component(usable, "usable")
+        self.add_component(throwable, "throwable")
 
     @property
     def swims(self):
