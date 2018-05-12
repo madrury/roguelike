@@ -114,18 +114,6 @@ class Growable:
 #-----------------------------------------------------------------------------
 # Pool
 #-----------------------------------------------------------------------------
-def random_pool(game_map, pool_room_proportion):
-    """Grow a pool of water in a random room on a map."""
-    pinned_room = random.choice(game_map.floor.rooms)
-    while pinned_room.terrain != None:
-        pinned_room = random.choice(game_map.floor.rooms)
-    pool = Pool(game_map, pinned_room)
-    pool.seed()
-    pool.grow(stay_in_room=False,
-              proportion=pool_room_proportion)
-    return pool
-
-
 class Pool(Growable):
     """A pool of water in a room."""
     def __init__(self, game_map, room):
@@ -143,21 +131,21 @@ class Pool(Growable):
         return Water.make(x, y)
 
 
+def random_pool(game_map, pool_room_proportion):
+    """Grow a pool of water in a random room on a map."""
+    pinned_room = random.choice(game_map.floor.rooms)
+    while pinned_room.terrain != None:
+        pinned_room = random.choice(game_map.floor.rooms)
+    pool = Pool(game_map, pinned_room)
+    pool.seed()
+    pool.grow(stay_in_room=False,
+              proportion=pool_room_proportion)
+    return pool
+
+
 #-----------------------------------------------------------------------------
 # River
 #-----------------------------------------------------------------------------
-def random_river(game_map):
-    """Grow a river between two pools of water."""
-    r1 = random.choice(game_map.floor.rooms)
-    while r1.terrain != Terrain.POOL:
-        r1 = random.choice(game_map.floor.rooms)
-    r2 = random.choice(game_map.floor.rooms)
-    while r1 == r2 or r2.terrain != Terrain.POOL:
-        r2 = random.choice(game_map.floor.rooms)
-    river = River(game_map, r1, r2)
-    return river
-
-
 class River:
     """A river connecting two pools of water.
 
@@ -217,6 +205,18 @@ class River:
         return x, y
 
 
+def random_river(game_map):
+    """Grow a river between two pools of water."""
+    r1 = random.choice(game_map.floor.rooms)
+    while r1.terrain != Terrain.POOL:
+        r1 = random.choice(game_map.floor.rooms)
+    r2 = random.choice(game_map.floor.rooms)
+    while r1 == r2 or r2.terrain != Terrain.POOL:
+        r2 = random.choice(game_map.floor.rooms)
+    river = River(game_map, r1, r2)
+    return river
+
+
 #-----------------------------------------------------------------------------
 # Grass
 #-----------------------------------------------------------------------------
@@ -233,8 +233,6 @@ class PatchOfGrass(Growable):
     def make(x, y):
         return Grass.make(x, y)
         
-
-
 def random_grass(game_map, grass_room_proportion):
     """Grow grass in a random room on the game map."""
     pinned_room = random.choice(game_map.floor.rooms)

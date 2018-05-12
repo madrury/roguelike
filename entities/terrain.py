@@ -5,6 +5,7 @@ from etc.colors import COLORS
 from components.shimmer import WaterShimmer
 from components.burnable import GrassBurnable, WaterBurnable
 
+
 class Water:
 
     @staticmethod
