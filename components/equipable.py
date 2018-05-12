@@ -1,5 +1,3 @@
-
-
 class ArmorEquipable:
 
     def __init__(self, damage_filters=None):

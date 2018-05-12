@@ -1,6 +1,7 @@
 from etc.enum import ItemGroups
 from game_objects.items import (
     HealthPotion, MagicMissileScroll, FireblastScroll, ThrowingKnife)
+from game_objects.armor import LeatherArmor
 
 
 ITEM_GROUPS = {
@@ -10,13 +11,15 @@ ITEM_GROUPS = {
     ItemGroups.MAGIC_MISSILE_SCROLL: [MagicMissileScroll]*2,
     ItemGroups.FIREBLAST_SCROLL: [FireblastScroll],
     ItemGroups.THROWING_KNIFE: [ThrowingKnife],
+    ItemGroups.LEATHER_ARMOR: [LeatherArmor],
 }
 
 ITEM_SCHEDULE = [
     (0.6, ItemGroups.NONE),
-    (0.4*0.0, ItemGroups.ONE_HEALTH_POTION),
+    (0.4*0.2, ItemGroups.ONE_HEALTH_POTION),
     (0.4*0.0, ItemGroups.TWO_HEALTH_POTIONS),
-    (0.4*1.0, ItemGroups.MAGIC_MISSILE_SCROLL),
-    (0.4*0.0, ItemGroups.FIREBLAST_SCROLL),
-    (0.4*0.0, ItemGroups.THROWING_KNIFE)
+    (0.4*0.2, ItemGroups.MAGIC_MISSILE_SCROLL),
+    (0.4*0.1, ItemGroups.FIREBLAST_SCROLL),
+    (0.4*0.4, ItemGroups.THROWING_KNIFE),
+    (0.4*0.1, ItemGroups.LEATHER_ARMOR)
 ]
