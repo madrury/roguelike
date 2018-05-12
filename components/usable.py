@@ -3,6 +3,15 @@ from messages import Message
 from etc.enum import ResultTypes, Animations, EntityTypes, Elements
 
 
+class NullUsable:
+    
+    def use(self, game_map, user, entities):
+        return []
+
+    def __bool__(self):
+        return False
+
+
 class HealthPotionUsable:
     """A health potion.
 
@@ -17,7 +26,7 @@ class HealthPotionUsable:
       The amount of healing in this potion.
     """
     def __init__(self, healing=5):
-        self.name = "Healing Hotion"
+        self.name = "Healing Potion"
         self.healing = healing
 
     def use(self, game_map, reciever, entities):

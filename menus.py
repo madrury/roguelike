@@ -69,7 +69,7 @@ def invetory_menu(header, inventory, inventory_width,
         options = [item.name for item in inventory.items]
         if highlight_attr:
             highlight = [
-                COLORS['white'] if getattr(item.item, highlight_attr) 
+                COLORS['white'] if getattr(item, highlight_attr) 
                 else COLORS['medium_grey'] 
                 for item in inventory.items]
         else:
