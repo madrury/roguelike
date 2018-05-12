@@ -1,5 +1,5 @@
 from etc.enum import MonsterGroups
-from entities.monsters import Orc, Troll, Kruthik
+from game_objects.monsters import Orc, Troll, Kruthik
 
 
 MONSTER_GROUPS = {

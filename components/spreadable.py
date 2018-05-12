@@ -4,7 +4,7 @@ from entity import get_entities_at_location
 from etc.config import PROBABILITIES
 from etc.enum import ResultTypes
 from utils.utils import adjacent_coordinates, random_adjacent
-import entities.various
+import game_objects.various
 
 
 class FireSpreadable:
@@ -43,7 +43,7 @@ class SteamSpreadable:
                 game_map.within_bounds(new_x, new_y)):
                 new_p_spread = max(0, self.p_spread - 0.4)
                 new_p_dissipate = min(1, self.owner.dissipatable.p_dissipate + 0.4)
-                steam = entities.various.Steam.make(
+                steam = game_objects.various.Steam.make(
                     game_map, new_x, new_y,
                     p_spread=new_p_spread,
                     p_dissipate=new_p_dissipate)

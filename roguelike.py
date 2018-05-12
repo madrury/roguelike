@@ -22,7 +22,7 @@ from spawnable.monster_groups import MONSTER_SCHEDULE, MONSTER_GROUPS
 from spawnable.item_groups import ITEM_SCHEDULE, ITEM_GROUPS
 from spawnable.terrain import add_random_terrain
 from spawnable.spawnable import spawn_entities
-from entities.items import (
+from game_objects.items import (
     HealthPotion, MagicMissileScroll, FireblastScroll, ThrowingKnife)
 from animations.animations import construct_animation
 

@@ -6,7 +6,7 @@ from entity import Entity
 from etc.enum import Terrain, EntityTypes, RenderOrder
 from etc.colors import COLORS
 from utils.utils import adjacent_coordinates, random_adjacent
-from entities.terrain import Water, Grass
+from game_objects.terrain import Water, Grass
 from components.shimmer import WaterShimmer
 from components.burnable import GrassBurnable, WaterBurnable
 

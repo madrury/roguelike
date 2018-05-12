@@ -1,5 +1,5 @@
 from etc.enum import ItemGroups
-from entities.items import (
+from game_objects.items import (
     HealthPotion, MagicMissileScroll, FireblastScroll, ThrowingKnife)
 
 
