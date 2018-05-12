@@ -20,6 +20,8 @@ from enum import Enum, auto
 #   The inventory screen is open for dropping items.
 # ENEMY_TURN:
 #   It is the enemy's turn to take action.
+# EQUIP_INVENTORY:
+#   The inventory screen is open for equipping items.
 # PLAYER_DEAD:
 #   The player is dead.
 # PLAYER_TURN:
@@ -32,6 +34,7 @@ class GameStates(Enum):
     CURSOR_INPUT = auto()
     DROP_INVENTORY = auto()
     ENEMY_TURN = auto() 
+    EQUIP_INVENTORY = auto()
     PLAYER_DEAD = auto()
     PLAYER_TURN = auto() 
     #TODO: Change this name to USE_INVENTORY
@@ -64,6 +67,10 @@ class GameStates(Enum):
 #   A message that the player has died.  TODO: Depreciate this.
 # DROP_INVENTORY: boolean
 #   Open the inventory for dropping items.
+# EQUIP: (equipable_entity, entity):
+#   Equip equipable_entity onto entity.
+# EQUIP_INVENTORY: boolean
+#   Open the inventory for equipping items.
 # EXIT: boolean
 #   Exit a menu, or the game.
 # FULLSCREEN: boolean
@@ -103,6 +110,7 @@ class ResultTypes(Enum):
     DEATH_MESSAGE = auto()
     CHANGE_SWIM_STAMINA = auto()
     DROP_INVENTORY = auto()
+    EQUIP_INVENTORY = auto()
     EXIT = auto()
     FULLSCREEN = auto()
     HEAL = auto()

@@ -78,8 +78,8 @@ def main():
     player.inventory.extend([FireblastScroll.make(0, 0) for _ in range(3)])
 
     # Setup player equimpent, for testing
-    leather_armor = LeatherArmor.make(0, 0, modifier=100)
-    leather_armor.equipable.equip(player)
+    #leather_armor = LeatherArmor.make(0, 0, modifier=100)
+    #leather_armor.equipable.equip(player)
 
     # Generate the map and place player, monsters, and items.
     floor = make_floor(FLOOR_CONFIG, ROOM_CONFIG)
@@ -170,7 +170,7 @@ def main():
         # Render any menus.
         #---------------------------------------------------------------------
         menu_states = (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY,
-                       GameStates.THROW_INVENTORY)
+                       GameStates.THROW_INVENTORY, GameStates.EQUIP_INVENTORY)
         if game_state in menu_states:
             if game_state == GameStates.SHOW_INVENTORY:
                 invetory_message = "Press the letter next to the item to use it.\n"
@@ -181,6 +181,9 @@ def main():
             elif game_state == GameStates.THROW_INVENTORY:
                 invetory_message = "Press the letter next to the item to throw it.\n"
                 highlight_attr = "throwable"
+            elif game_state == GameStates.EQUIP_INVENTORY:
+                invetory_message = "Press the letter next to the item to equip it.\n"
+                highlight_attr = "equipable"
             menu_console, menu_x, menu_y = invetory_menu(
                 invetory_message, player.inventory,
                 inventory_width=50,
@@ -204,7 +207,7 @@ def main():
         root_console.blit(panel_console, 0, PANEL_CONFIG['y'],
                           SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
         if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY,
-                          GameStates.THROW_INVENTORY):
+                          GameStates.THROW_INVENTORY, GameStates.EQUIP_INVENTORY):
             root_console.blit(menu_console, menu_x, menu_y,
                               SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
         tdl.flush()
@@ -221,7 +224,8 @@ def main():
         input_states = (
             GameStates.PLAYER_TURN, GameStates.SHOW_INVENTORY,
             GameStates.DROP_INVENTORY, GameStates.THROW_INVENTORY,
-            GameStates.CURSOR_INPUT, GameStates.PLAYER_DEAD)
+            GameStates.EQUIP_INVENTORY, GameStates.CURSOR_INPUT,
+            GameStates.PLAYER_DEAD)
         for event in tdl.event.get():
             if event.type == 'KEYDOWN':
                 user_input = event
@@ -296,7 +300,7 @@ def main():
         # instruction on the queue.
         #----------------------------------------------------------------------
         elif (game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY,
-                             GameStates.THROW_INVENTORY)
+                             GameStates.THROW_INVENTORY, GameStates.EQUIP_INVENTORY)
             and inventory_index is not None
             and inventory_index < len(player.inventory.items)
             and previous_game_state != GameStates.PLAYER_DEAD):
@@ -310,6 +314,9 @@ def main():
                     entity.throwable.throw(game_map, player, entities))
             elif game_state == GameStates.DROP_INVENTORY:
                 player_turn_results.extend(player.inventory.drop(entity))
+            elif game_state == GameStates.EQUIP_INVENTORY:
+                # TODO: Do this with message passing.
+                entity.equipable.equip(player)
             game_state, previous_game_state = previous_game_state, game_state
 
         #----------------------------------------------------------------------
@@ -546,13 +553,19 @@ def main():
             previous_game_state = game_state
             game_state = GameStates.THROW_INVENTORY
 
+        equip_inventory = action.get(ResultTypes.EQUIP_INVENTORY)
+        if game_state == GameStates.PLAYER_TURN and equip_inventory:
+            previous_game_state = game_state
+            game_state = GameStates.EQUIP_INVENTORY
+
         exit = action.get(ResultTypes.EXIT)
         if exit:
             if game_state == GameStates.CURSOR_INPUT:
                 cursor.clear()
             if game_state in (
                 GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY,
-                GameStates.THROW_INVENTORY, GameStates.CURSOR_INPUT):
+                GameStates.THROW_INVENTORY, GameStates.EQUIP_INVENTORY,
+                GameStates.CURSOR_INPUT):
                 game_state, previous_game_state = (
                     previous_game_state, game_state)
             else:
