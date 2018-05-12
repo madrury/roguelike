@@ -17,8 +17,8 @@ from components.inventory import Inventory
 from components.burnable import AliveBurnable
 from components.scaldable import AliveScaldable
 from components.swimmable import Swimmable
-from map.map import GameMap
-from map.floor import make_floor
+from generation.map import GameMap
+from generation.floor import make_floor
 from spawnable.monsters import MONSTER_SCHEDULE, MONSTER_GROUPS
 from spawnable.items import ITEM_SCHEDULE, ITEM_GROUPS
 from spawnable.terrain import add_random_terrain

@@ -1,8 +1,8 @@
 import random
 import numpy as np
 
-from .room import PinnedDungeonRoom, random_dungeon_room
-from .tunnel import random_tunnel_between_pinned_rooms
+from generation.room import PinnedDungeonRoom, random_dungeon_room
+from generation.tunnel import random_tunnel_between_pinned_rooms
 
 
 def make_floor(floor_config, room_config):
