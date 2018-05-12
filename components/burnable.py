@@ -2,13 +2,13 @@ from messages import Message
 from etc.enum import ResultTypes, Elements
 from etc.colors import COLORS
 from etc.config import PROBABILITIES
-import spawnable.various
+import entities.various
 
 
 class ItemBurnable:
     """Items are destroyed when they burn, and spawn fire."""
     def burn(self, game_map):
-        fire = spawnable.various.Fire.make(
+        fire = entities.various.Fire.make(
             game_map, self.owner.x, self.owner.y)
         return [{
             ResultTypes.REMOVE_ENTITY: self.owner,
@@ -33,7 +33,7 @@ class GrassBurnable:
 
     def burn(self, game_map):
         game_map.terrain[self.owner.x, self.owner.y] = False
-        fire = spawnable.various.Fire.maybe_make(
+        fire = entities.various.Fire.maybe_make(
             game_map, self.owner.x, self.owner.y, p=self.p_fire)
         if fire:
             return [{
@@ -47,7 +47,7 @@ class GrassBurnable:
 class WaterBurnable:
     """When water burns, it spawns a steam entity within the same square."""
     def burn(self, game_map):
-        steam = spawnable.various.Steam.make(
+        steam = entities.various.Steam.make(
             game_map, self.owner.x, self.owner.y)
         if steam:
             return [{ResultTypes.ADD_ENTITY: steam}]
