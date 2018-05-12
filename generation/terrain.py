@@ -20,16 +20,14 @@ def add_random_terrain(game_map, entities, terrain_config):
     for _ in range(n_pools):
         pool = random_pool(game_map, 
                            pool_room_proportion=pool_room_proportion)
-        pool.write_to_game_map()
-        entities.extend(pool.get_entities())
+        entities.extend(pool.get_entities(game_map))
 
     min_rivers, max_rivers = (
         terrain_config['min_rivers'], terrain_config['max_rivers'])
     n_rivers = random.randint(min_rivers, max_rivers)
     for _ in range(n_rivers):
         river = random_river(game_map)
-        river.write_to_game_map()
-        entities.extend(river.get_entities())
+        entities.extend(river.get_entities(game_map))
 
     
     min_grass, max_grass = (
@@ -38,7 +36,7 @@ def add_random_terrain(game_map, entities, terrain_config):
     n_grass = random.randint(min_grass, max_grass)
     for _ in range(n_grass):
         grass = random_grass(game_map, grass_room_proportion)
-        entities.extend(grass.get_entities())
+        entities.extend(grass.get_entities(game_map))
 
 
 class Growable:
@@ -107,8 +105,8 @@ class Growable:
                 self.game_map.terrain[x, y] = True
                 self.coords.append((x, y))
 
-    def get_entities(self):
-        return [self.make(x, y) for x, y in self]
+    def get_entities(self, game_map):
+        return [self.make(game_map, x, y) for x, y in self]
 
 
 #-----------------------------------------------------------------------------
@@ -120,15 +118,9 @@ class Pool(Growable):
         super().__init__(game_map, room)
         room.terrain = Terrain.POOL
 
-
-    def write_to_game_map(self):
-        for x, y in self:
-            self.game_map.water[x, y] = True
-            self.game_map.make_transparent_and_walkable(x, y)
-
     @staticmethod
-    def make(x, y):
-        return Water.make(x, y)
+    def make(game_map, x, y):
+        return Water.make(game_map, x, y)
 
 
 def random_pool(game_map, pool_room_proportion):
@@ -171,11 +163,6 @@ class River:
             self.dest_point[0], self.dest_point[1]))
         self.grow(width)
 
-    def write_to_game_map(self):
-        for x, y in self.coords:
-            self.game_map.water[x, y] = True
-            self.game_map.make_transparent_and_walkable(x, y)
-
     def grow(self, width=1):
         """Choose a random point in both the source and destination pool, and
         fill the path between them with water terain.
@@ -190,11 +177,11 @@ class River:
             self.coords.update(new_coords)
 
     @staticmethod
-    def make(x, y):
-        return Water.make(x, y)
+    def make(game_map, x, y):
+        return Water.make(game_map, x, y)
 
-    def get_entities(self):
-        return [self.make(x, y) for x, y in self.coords]
+    def get_entities(self, game_map):
+        return [self.make(game_map, x, y) for x, y in self.coords]
 
     def get_random_pool_point(self, room):
         if room.terrain != Terrain.POOL:
@@ -230,8 +217,8 @@ class PatchOfGrass(Growable):
         room.terrain = Terrain.GRASS
 
     @staticmethod
-    def make(x, y):
-        return Grass.make(x, y)
+    def make(game_map, x, y):
+        return Grass.make(game_map, x, y)
         
 def random_grass(game_map, grass_room_proportion):
     """Grow grass in a random room on the game map."""

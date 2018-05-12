@@ -9,7 +9,9 @@ from components.burnable import GrassBurnable, WaterBurnable
 class Water:
 
     @staticmethod
-    def make(x, y):
+    def make(game_map, x, y):
+        game_map.water[x, y] = True
+        game_map.make_transparent_and_walkable(x, y)
         fg_color = random_light_water()
         bg_color = random_light_water()
         dark_fg_color = random_dark_water()
@@ -31,7 +33,7 @@ class Water:
 class Grass:
 
     @staticmethod
-    def make(x, y):
+    def make(game_map, x, y):
         fg_color = random_light_green()
         # Shift down the green component to make the grass dark.
         bg_color = (fg_color[0], fg_color[1] - 60, fg_color[2])
