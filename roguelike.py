@@ -17,7 +17,6 @@ from components.inventory import Inventory
 from components.burnable import AliveBurnable
 from components.scaldable import AliveScaldable
 from components.swimmable import Swimmable
-from generation.map import GameMap
 from generation.floor import make_floor
 from spawnable.monsters import MONSTER_SCHEDULE, MONSTER_GROUPS
 from spawnable.items import ITEM_SCHEDULE, ITEM_GROUPS
@@ -28,11 +27,12 @@ from spawnable.items import (
 from animations.animations import construct_animation
 
 from cursor import Cursor
-from input_handlers import handle_keys
-from messages import Message, MessageLog
-from entity import Entity, get_blocking_entity_at_location
-from menus import invetory_menu
 from death_functions import kill_monster, kill_player, make_corpse
+from entity import Entity, get_blocking_entity_at_location
+from input_handlers import handle_keys
+from map import GameMap
+from menus import invetory_menu
+from messages import Message, MessageLog
 from status_bar import StatusBar
 
 
