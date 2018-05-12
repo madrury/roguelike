@@ -101,6 +101,7 @@ class GameStates(Enum):
 #   Show the inventory menu.
 #.............................................................................
 class ResultTypes(Enum):
+    ADD_DAMAGE_TRANSFORMERS = auto()
     ADD_ENTITY = auto()
     ANIMATION = auto()
     CURSOR_MODE = auto()
@@ -123,6 +124,7 @@ class ResultTypes(Enum):
     MOVE_TOWARDS = auto()
     MOVE_RANDOM_ADJACENT = auto()
     PICKUP = auto()
+    REMOVE_DAMAGE_TRANSFORMERS = auto()
     REMOVE_ENTITY = auto()
     SHOW_INVENTORY = auto()
     THROW_INVENTORY = auto()

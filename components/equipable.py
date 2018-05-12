@@ -1,3 +1,8 @@
+from etc.enum import ResultTypes
+from etc.colors import COLORS
+from messages import Message
+
+
 class ArmorEquipable:
 
     def __init__(self, damage_transformers=None):
@@ -7,11 +12,19 @@ class ArmorEquipable:
                 self.damage_transformers.append(transformer)
 
     def equip(self, entity):
-        if not hasattr(entity, "harmable"):
-            raise AttributeError("Non harmable entities cannot equip Armor")
-        for transformer in self.damage_transformers:
-            entity.harmable.damage_transformers.append(transformer)
+        results = []
+        message = f"{entity.name} equipped {self.owner.name}"
+        results.append({
+            ResultTypes.MESSAGE: Message(message, COLORS['white']),
+            ResultTypes.ADD_DAMAGE_TRANSFORMERS: (
+                entity, self.damage_transformers)})
+        return results
 
     def unequip(self, entity):
-        for transformer in self.damage_transformers:
-            entity.harmable.damage_transformers.remove(transformer)
+        results = []
+        message = f"{entity.name} un-equipped {self.owner.name}"
+        results.append({
+            ResultTypes.MESSAGE: Message(message, COLORS['white']),
+            ResultTypes.REMOVE_DAMAGE_TRANSFORMERS: (
+                entity, self.damage_transformers)})
+        return results

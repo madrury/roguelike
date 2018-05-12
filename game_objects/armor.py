@@ -18,5 +18,5 @@ class LeatherArmor:
         return Entity(x, y, '&', COLORS['violet'], name,
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
-                      equipable=ArmorEquipable(damage_transformer=[
+                      equipable=ArmorEquipable(damage_transformers=[
                           damage_transformer]))

@@ -316,8 +316,7 @@ def main():
             elif game_state == GameStates.DROP_INVENTORY:
                 player_turn_results.extend(player.inventory.drop(entity))
             elif game_state == GameStates.EQUIP_INVENTORY:
-                # TODO: Do this with message passing.
-                entity.equipable.equip(player)
+                player_turn_results.extend(entity.equipable.equip(player))
             game_state, previous_game_state = previous_game_state, game_state
 
         #----------------------------------------------------------------------
@@ -348,6 +347,8 @@ def main():
         while game_state != GameStates.ANIMATION_PLAYING and player_turn_results != []:
             result = player_turn_results.pop()
 
+            add_damage_transfomers = result.get(
+                ResultTypes.ADD_DAMAGE_TRANSFORMERS)
             animation = result.get(ResultTypes.ANIMATION)
             cursor_mode = result.get(ResultTypes.CURSOR_MODE)
             damage = result.get(ResultTypes.DAMAGE)
@@ -360,6 +361,8 @@ def main():
             message = result.get(ResultTypes.MESSAGE)
             move = result.get(ResultTypes.MOVE)
             new_entity = result.get(ResultTypes.ADD_ENTITY)
+            remove_damage_transfomers = result.get(
+                ResultTypes.REMOVE_DAMAGE_TRANSFORMERS)
             remove_entity = result.get(ResultTypes.REMOVE_ENTITY)
 
             # Move the player.
@@ -369,13 +372,6 @@ def main():
             # Add to the message log.
             if message:
                 message_log.add_message(message)
-            # Handle damage dealt.
-            if damage:
-                target, amount, element = damage
-                damage_result = target.harmable.harm(amount, element)
-                enemy_turn_results.extend(damage_result)
-                if target not in harmed_queue:
-                    harmed_queue.appendleft(target)
             # Add an item to the inventory.
             if item_added:
                 player.inventory.add(item_added)
@@ -394,10 +390,33 @@ def main():
                 entities.append(item_dropped)
                 game_state, previous_game_state = (
                     GameStates.ENEMY_TURN, game_state)
+            # Damage an entity.
+            if damage:
+                target, amount, element = damage
+                damage_result = target.harmable.harm(amount, element)
+                enemy_turn_results.extend(damage_result)
+                if target not in harmed_queue:
+                    harmed_queue.appendleft(target)
             # Heal an entity
             if heal:
                 target, amount = heal
                 target.harmable.heal(amount)
+            # Don defensive equipment.
+            if add_damage_transfomers:
+                entity, transformers = add_damage_transfomers
+                if not hasattr(entity, "harmable"):
+                    raise AttributeError(
+                        "Non harmable entities cannot equip Armor")
+                for transformer in transformers:
+                    entity.harmable.damage_transformers.append(transformer)
+            # Remove defensive equipment.
+            if remove_damage_transfomers:
+                entity, transformers = remove_damage_transfomers
+                if not hasattr(entity, "harmable"):
+                    raise AttributeError(
+                        "Non harmable entities cannot un-equip Armor")
+                for transformer in transformers:
+                    entity.harmable.damage_transformers.remove(transformer)
             # Add a new entity to the game.
             if new_entity:
                 entity = new_entity

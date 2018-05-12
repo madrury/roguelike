@@ -20,21 +20,21 @@ class Harmable:
     defense: int
       The natural defense of this entity to resist damage.
 
-    damage_filters: List[DamageFilter]
-      A list of filters to reduce (or increase) incoming damage.  Granted by
+    damage_transformers: List[DamageFilter]
+      A list of transformers to reduce (or increase) incoming damage.  Granted by
       armor or status.
 
     status_bar: StatusBar
       An object that can render a status bar, displaying the entities current hp.
     """
-    def __init__(self, hp, defense, damage_filters=None):
+    def __init__(self, hp, defense, damage_transformers=None):
         self.max_hp = hp
         self.hp = hp
         self.defense = defense
-        self.damage_filters = []
-        if damage_filters:
-            for filter in damage_filters:
-                self.damage_filters.append(filter)
+        self.damage_transformers = []
+        if damage_transformers:
+            for transformer in damage_transformers:
+                self.damage_transformers.append(transformer)
         self.status_bar = StatusBar(
             total_width=PANEL_CONFIG['bar_width'],
             bar_colors=STATUS_BAR_COLORS['hp_bar'])
@@ -43,11 +43,11 @@ class Harmable:
         """Apply damage from an element.
 
         It is not neccesarrly that the entity take all of the damage.  The
-        entity may have equipment or resistances that grant them filters for
+        entity may have equipment or resistances that grant them transformers for
         incomping damage.
         """
-        for filter in self.damage_filters:
-            amount = filter.filter_damage(amount, element)
+        for transformer in self.damage_transformers:
+            amount = transformer.transform_damage(amount, element)
         self.hp -= amount
         results = []
         if self.hp <= 0:
