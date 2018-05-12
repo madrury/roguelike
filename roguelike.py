@@ -295,19 +295,11 @@ def main():
 
             entity = player.inventory.items[inventory_index]
             if game_state == GameStates.SHOW_INVENTORY:
-                try:
-                    player_turn_results.extend(
-                        entity.item.use(game_map, player, entities))
-                except AttributeError:
-                    player_turn_results.extend(
-                        entity.usable.use(game_map, player, entities))
+                player_turn_results.extend(
+                    entity.usable.use(game_map, player, entities))
             elif game_state == GameStates.THROW_INVENTORY:
-                try:
-                    player_turn_results.extend(
-                        entity.item.throw(game_map, player, entities))
-                except AttributeError:
-                    player_turn_results.extend(
-                        entity.throwable.throw(game_map, player, entities))
+                player_turn_results.extend(
+                    entity.throwable.throw(game_map, player, entities))
             elif game_state == GameStates.DROP_INVENTORY:
                 player_turn_results.extend(player.inventory.drop(entity))
             game_state, previous_game_state = previous_game_state, game_state
