@@ -166,7 +166,7 @@ def main():
         if game_state in menu_states:
             if game_state == GameStates.SHOW_INVENTORY:
                 invetory_message = "Press the letter next to the item to use it.\n"
-                highlight_attr = None
+                highlight_attr = "usable"
             elif game_state == GameStates.DROP_INVENTORY:
                 invetory_message = "Press the letter next to the item to drop it.\n"
                 highlight_attr = None
