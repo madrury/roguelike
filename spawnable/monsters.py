@@ -1,6 +1,5 @@
 from entity import Entity
 
-from spawnable.spawnable import Spawnable
 from etc.colors import COLORS
 from etc.enum import RenderOrder, EntityTypes, MonsterGroups, RoutingOptions
 from components.ai import BasicMonster, HuntingMonster, SkitteringMonster
@@ -10,7 +9,7 @@ from components.burnable import AliveBurnable
 from components.scaldable import AliveScaldable
 
 
-class Kruthik(Spawnable):
+class Kruthik():
 
     @staticmethod
     def make(x, y):
@@ -30,7 +29,7 @@ class Kruthik(Spawnable):
             scaldable=AliveScaldable())
 
 
-class Orc(Spawnable):
+class Orc():
     
     @staticmethod
     def make(x, y):
@@ -50,7 +49,7 @@ class Orc(Spawnable):
             scaldable=AliveScaldable())
 
 
-class Troll(Spawnable):
+class Troll():
          
     @staticmethod
     def make(x, y):

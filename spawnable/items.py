@@ -1,6 +1,5 @@
 from entity import Entity
 
-from spawnable.spawnable import Spawnable
 from etc.colors import COLORS
 from etc.enum import EntityTypes, RenderOrder, ItemGroups
 from components.item import (
@@ -9,7 +8,7 @@ from components.item import (
 from components.burnable import ItemBurnable
 
 
-class HealthPotion(Spawnable):
+class HealthPotion():
 
     @staticmethod
     def make(x, y):
@@ -19,7 +18,7 @@ class HealthPotion(Spawnable):
                       item=HealthPotionComponent())
 
 
-class MagicMissileScroll(Spawnable):
+class MagicMissileScroll():
 
     @staticmethod
     def make(x, y):
@@ -30,7 +29,7 @@ class MagicMissileScroll(Spawnable):
                       burnable=ItemBurnable())
 
 
-class FireblastScroll(Spawnable):
+class FireblastScroll():
 
     @staticmethod
     def make(x, y):
@@ -41,7 +40,7 @@ class FireblastScroll(Spawnable):
                       burnable=ItemBurnable())
 
 
-class ThrowingKnife(Spawnable):
+class ThrowingKnife():
 
     @staticmethod
     def make(x, y):
