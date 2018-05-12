@@ -3,10 +3,9 @@ from entity import Entity
 from etc.colors import COLORS
 from etc.enum import EntityTypes, RenderOrder, ItemGroups
 from components.item import (
-    MagicMissileComponent,
     FireblastComponent, ThrowingKnifeComponent)
 
-from components.usable import HealthPotionUsable
+from components.usable import HealthPotionUsable, MagicMissileUsable
 from components.throwable import HealthPotionThrowable
 from components.burnable import ItemBurnable
 
@@ -29,8 +28,8 @@ class MagicMissileScroll:
         return Entity(x, y, '%', COLORS['violet'], 'Scroll of Magic Missile',
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
-                      item=MagicMissileComponent(),
-                      burnable=ItemBurnable())
+                      burnable=ItemBurnable(),
+                      usable=MagicMissileUsable())
 
 
 class FireblastScroll:
