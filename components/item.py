@@ -15,63 +15,6 @@ class Item:
         return [{ResultTypes.MESSAGE: message}]
 
 
-class FireblastComponent(Item):
-    """A fireblast spell.
-
-    Fireblast is an area of effect spell centered at the player.  The fireblast spell:
-
-      - Deals non-elemental damage to all harmable entities within a given
-        radius (this is the concussion blast).
-      - Burns all burnable entities within a given radius.
-
-    Attributes
-    ----------
-    name: str
-      The name of the component.
-
-    targeting: ItemTargeting entry.
-      The targeting style of this item.  The fireblast spell targets all
-      entities within a given radius.
-
-    throwable: bool
-      The fireblast scroll cannot be thrown.
-
-    damage: int
-      Amount of concussion damage.
-
-    radius: int
-      The radius of the fireblast.
-    """
-    def __init__(self, damage=6, radius=4):
-        self.name = "Scroll of Fireblast"
-        self.targeting = ItemTargeting.WITHIN_RADIUS
-        self.throwable = False
-        self.damage = damage
-        self.radius = radius
-
-    def use(self, game_map, user, entities):
-        results = []
-        harmable_within_radius = (
-            user.get_all_entities_with_component_within_radius(
-                entities, "harmable", self.radius))
-        burnable_within_radius = (
-            user.get_all_entities_with_component_within_radius(
-                entities, "burnable", self.radius))
-        for entity in (x for x in harmable_within_radius if x != user):
-            text = "The {} is caught in the fireblast!".format(
-                entity.name)
-            message = Message(text, COLORS.get('white'))
-            results.append({ResultTypes.DAMAGE: (
-                                entity, self.damage, Elements.NONE),
-                            ResultTypes.MESSAGE: message})
-        for entity in (x for x in burnable_within_radius if x != user):
-            results.extend(entity.burnable.burn(game_map))
-        results.append({ResultTypes.ITEM_CONSUMED: (True, self.owner),
-                        ResultTypes.ANIMATION: (
-                             Animations.FIREBLAST, (user.x, user.y), self.radius)})
-        return results
-
-
 class ThrowingKnifeComponent(Item):
     """A throwing kife.
 
