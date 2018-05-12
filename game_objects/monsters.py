@@ -6,6 +6,7 @@ from components.ai import BasicMonster, HuntingMonster, SkitteringMonster
 from components.attacker import Attacker
 from components.harmable import Harmable
 from components.burnable import AliveBurnable
+from components.movable import Movable
 from components.scaldable import AliveScaldable
 
 
@@ -26,6 +27,7 @@ class Kruthik:
             harmable=Harmable(hp=1, defense=0),
             ai=SkitteringMonster(),
             burnable=AliveBurnable(),
+            movable=Movable(),
             scaldable=AliveScaldable())
 
 
@@ -46,6 +48,7 @@ class Orc:
             harmable=Harmable(hp=10, defense=0),
             ai=BasicMonster(),
             burnable=AliveBurnable(),
+            movable=Movable(),
             scaldable=AliveScaldable())
 
 
@@ -66,4 +69,5 @@ class Troll:
             harmable=Harmable(hp=16, defense=1),
             ai=HuntingMonster(),
             burnable=AliveBurnable(),
+            movable=Movable(),
             scaldable=AliveScaldable())

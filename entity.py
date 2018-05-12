@@ -1,9 +1,7 @@
 import math
 import random
 
-import tcod
 
-from pathfinding import get_shortest_path
 from etc.enum import EntityTypes, RenderOrder, RoutingOptions
 
 
@@ -59,30 +57,42 @@ class Entity:
     -------------------
     These optional attributes add custom behaviour to entities.
 
+    ai: AI object.
+      Contains AI logic for monsters.
+
     attacker: Attacker object
       Manages entities attack attributes.
+
+    burnable: Burnable object.
+      Contains logic for results of attempting to burn the entity.
+
+    dissipatable: Dissipatable object.
+      Contains logic for the object spontaneously dissapating.
 
     harmable: Harmable object
       Manages entities HP attributes.
 
-    ai: AI object.
-      Contains AI logic for monsters.
+    inventory: Inventory object.
+      Contains logic for managing an inventory.
 
     item: Item object
       Contains logic for using as an item.
 
-    inventory: Inventory object.
-      Contains logic for managing an inventory.
+    movable: Movable object.
+      Inteface for moving the entity.
+
+    scaldable: Scaldable object.
+      Interface for scalding an object.
 
     shimmer: Shimmer object.
       Contains logic for changing the color of the entity according to certain
       triggers.
 
-    burnable: Burnable object.
-      Contains logic for results of attempting to burn the entity.
-
     spreadable: Spreadable object.
       Contains logic for an entity to self propagate across the map.
+
+    swimmable: Swimmable object.
+      Containins stats and logic for the entity swimming.
     """
     def __init__(self,
                  x, y, char, fg_color, name, *,
@@ -103,6 +113,7 @@ class Entity:
                  harmable=None,
                  inventory=None,
                  item=None,
+                 movable=None,
                  scaldable=None,
                  shimmer=None,
                  spreadable=None,
@@ -134,6 +145,7 @@ class Entity:
         self.add_component(harmable, "harmable")
         self.add_component(inventory, "inventory")
         self.add_component(item, "item")
+        self.add_component(movable, "movable")
         self.add_component(scaldable, "scaldable")
         self.add_component(shimmer, "shimmer")
         self.add_component(spreadable, "spreadable")
@@ -150,41 +162,6 @@ class Entity:
         if component:
             component.owner = self
         setattr(self, component_name, component)
-
-    def move(self, game_map, dx, dy):
-        new_x, new_y = self.x + dx, self.y + dy
-        game_map.blocked[self.x, self.y] = False
-        game_map.blocked[new_x, new_y] = True
-        self.x += dx
-        self.y += dy
-
-    def move_towards(self, target_x, target_y, game_map, entities):
-        path = get_shortest_path(
-            game_map, (self.x, self.y), (target_x, target_y),
-            routing_avoid=self.routing_avoid)
-        if path == []:
-            path = get_shortest_path(
-                game_map, (self.x, self.y), (target_x, target_y),
-                routing_avoid=[])
-        if len(path) > 1:
-            dx, dy = path[0][0] - self.x, path[0][1] - self.y
-            self._move_if_able(dx, dy, game_map, entities)
-
-    def move_to_random_adjacent(self, game_map, entities):
-        dx, dy = random.choice([
-            (-1, 1), (0, 1), (1, 1),
-            (-1, 0),         (1, 0),
-            (-1, -1), (0, -1), (1, -1)])
-        self._move_if_able(dx, dy, game_map, entities)
-
-    def _move_if_able(self, dx, dy, game_map, entities):
-        target_location = (self.x + dx, self.y + dy)
-        is_walkable = game_map.walkable[target_location]
-        is_blocked = get_blocking_entity_at_location(
-            entities, target_location[0], target_location[1])
-        water_if_able = self.swims or not game_map.water[target_location]
-        if is_walkable and not is_blocked and water_if_able:
-            self.move(game_map, dx, dy)
 
     def distance_to(self, other):
         dx = other.x - self.x

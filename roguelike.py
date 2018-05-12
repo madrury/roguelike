@@ -11,20 +11,21 @@ from etc.enum import (
     EntityTypes, GameStates, ItemTargeting, RenderOrder, Animations,
     ResultTypes)
 
+from animations.animations import construct_animation
 from components.attacker import Attacker
+from components.burnable import AliveBurnable
 from components.harmable import Harmable
 from components.inventory import Inventory
-from components.burnable import AliveBurnable
+from components.movable import Movable
 from components.scaldable import AliveScaldable
 from components.swimmable import Swimmable
-from generation.floor import make_floor
-from generation.terrain import add_random_terrain
-from generation.spawn_entities import spawn_entities
-from generation.monster_groups import MONSTER_SCHEDULE, MONSTER_GROUPS
-from generation.item_groups import ITEM_SCHEDULE, ITEM_GROUPS
 from game_objects.items import (
     HealthPotion, MagicMissileScroll, FireblastScroll, ThrowingKnife)
-from animations.animations import construct_animation
+from generation.floor import make_floor
+from generation.item_groups import ITEM_SCHEDULE, ITEM_GROUPS
+from generation.monster_groups import MONSTER_SCHEDULE, MONSTER_GROUPS
+from generation.spawn_entities import spawn_entities
+from generation.terrain import add_random_terrain
 
 from cursor import Cursor
 from death_functions import kill_monster, kill_player, make_corpse
@@ -59,6 +60,7 @@ def main():
                     attacker=Attacker(power=PLAYER_CONFIG["power"]),
                     harmable=Harmable(hp=PLAYER_CONFIG["hp"],
                                       defense=PLAYER_CONFIG["defense"]),
+                    movable=Movable(),
                     burnable=AliveBurnable(),
                     scaldable=AliveScaldable(),
                     swimmable=Swimmable(PLAYER_CONFIG["swim_stamina"]),
@@ -346,7 +348,7 @@ def main():
 
             # Move the player.
             if move:
-                player.move(game_map, *move)
+                player.movable.move(game_map, *move)
                 fov_recompute = True
             # Add to the message log.
             if message:
@@ -477,12 +479,12 @@ def main():
             # Handle a move towards action.  Move towards a target.
             if move_towards:
                monster, target_x, target_y = move_towards
-               monster.move_towards(target_x, target_y, game_map, entities)
+               monster.movable.move_towards(target_x, target_y, game_map, entities)
             # Handle a move random adjacent action.  Move to a random adjacent
             # square.
             if move_random_adjacent:
                monster = move_random_adjacent
-               monster.move_to_random_adjacent(game_map, entities)
+               monster.movable.move_to_random_adjacent(game_map, entities)
             # Handle a simple message.
             if message:
                 message_log.add_message(message)
