@@ -79,10 +79,6 @@ def main():
     player.inventory.extend([MagicMissileScroll.make(0, 0) for _ in range(3)])
     player.inventory.extend([FireblastScroll.make(0, 0) for _ in range(3)])
 
-    # Setup player equimpent, for testing
-    #leather_armor = LeatherArmor.make(0, 0, modifier=100)
-    #leather_armor.equipable.equip(player)
-
     # Generate the map and place player, monsters, and items.
     floor = make_floor(FLOOR_CONFIG, ROOM_CONFIG)
     game_map = GameMap(floor, map_console)
@@ -90,11 +86,6 @@ def main():
     game_map.place_player(player)
     spawn_entities(MONSTER_SCHEDULE, MONSTER_GROUPS, game_map, entities)
     spawn_entities(ITEM_SCHEDULE, ITEM_GROUPS, game_map, entities)
-
-    # DEBUG: The entire dungeon is explored.
-    #game_map.explored[:, :] = True
-    #for entity in entities:
-    #    entity.seen = True
 
     #-------------------------------------------------------------------------
     # Game State Varaibles
@@ -176,20 +167,10 @@ def main():
         menu_states = (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY,
                        GameStates.THROW_INVENTORY, GameStates.EQUIP_INVENTORY)
         if game_state in menu_states:
-            if game_state == GameStates.SHOW_INVENTORY:
-                invetory_message = "Press the letter next to the item to use it.\n"
-                highlight_attr = "usable"
-            elif game_state == GameStates.DROP_INVENTORY:
-                invetory_message = "Press the letter next to the item to drop it.\n"
-                highlight_attr = None
-            elif game_state == GameStates.THROW_INVENTORY:
-                invetory_message = "Press the letter next to the item to throw it.\n"
-                highlight_attr = "throwable"
-            elif game_state == GameStates.EQUIP_INVENTORY:
-                invetory_message = "Press the letter next to the item to equip it.\n"
-                highlight_attr = "equipable"
+            inventory_message, highlight_attr = construct_inventory_data(
+                game_state)
             menu_console, menu_x, menu_y = invetory_menu(
-                invetory_message, player.inventory,
+                inventory_message, player.inventory,
                 inventory_width=50,
                 screen_width=SCREEN_WIDTH,
                 screen_height=SCREEN_HEIGHT,
@@ -231,6 +212,7 @@ def main():
             GameStates.DROP_INVENTORY, GameStates.THROW_INVENTORY,
             GameStates.EQUIP_INVENTORY, GameStates.CURSOR_INPUT,
             GameStates.PLAYER_DEAD)
+        # TODO: Factor as get_user_input function.
         if not skip_player_input:
             for event in tdl.event.get():
                 if event.type == 'KEYDOWN':
@@ -311,20 +293,21 @@ def main():
             and inventory_index < len(player.inventory.items)
             and previous_game_state != GameStates.PLAYER_DEAD):
 
-            entity = player.inventory.items[inventory_index]
+            item = player.inventory.items[inventory_index]
+            #TODO: Factor out as process_selected_item function.
             if game_state == GameStates.SHOW_INVENTORY:
                 player_turn_results.extend(
-                    entity.usable.use(game_map, player, entities))
+                    item.usable.use(game_map, player, entities))
             elif game_state == GameStates.THROW_INVENTORY:
                 player_turn_results.extend(
-                    entity.throwable.throw(game_map, player, entities))
+                    item.throwable.throw(game_map, player, entities))
             elif game_state == GameStates.DROP_INVENTORY:
-                player_turn_results.extend(player.inventory.drop(entity))
+                player_turn_results.extend(player.inventory.drop(item))
             elif game_state == GameStates.EQUIP_INVENTORY:
-                if entity.equipable.equipped:
-                    player_turn_results.extend(entity.equipable.remove(player))
+                if item.equipable.equipped:
+                    player_turn_results.extend(item.equipable.remove(player))
                 else:
-                    player_turn_results.extend(entity.equipable.equip(player))
+                    player_turn_results.extend(item.equipable.equip(player))
             game_state, previous_game_state = previous_game_state, game_state
 
         #----------------------------------------------------------------------
@@ -430,6 +413,7 @@ def main():
             # Don defensive equipment.
             if equip_armor:
                 entity, armor = equip_armor
+                # TODO: Factor out as equip_armor
                 if not hasattr(entity, "harmable"):
                     raise AttributeError(
                         "Non harmable entities cannot equip Armor")
@@ -667,6 +651,22 @@ def main():
         #---------------------------------------------------------------------
         if game_state == GameStates.PLAYER_DEAD:
             continue
+
+
+def construct_inventory_data(game_state):
+    if game_state == GameStates.SHOW_INVENTORY:
+        invetory_message = "Press the letter next to the item to use it.\n"
+        highlight_attr = "usable"
+    elif game_state == GameStates.DROP_INVENTORY:
+        invetory_message = "Press the letter next to the item to drop it.\n"
+        highlight_attr = None
+    elif game_state == GameStates.THROW_INVENTORY:
+        invetory_message = "Press the letter next to the item to throw it.\n"
+        highlight_attr = "throwable"
+    elif game_state == GameStates.EQUIP_INVENTORY:
+        invetory_message = "Press the letter next to the item to equip it.\n"
+        highlight_attr = "equipable"
+    return invetory_message, highlight_attr
 
 
 if __name__ == '__main__':
