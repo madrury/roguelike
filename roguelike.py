@@ -12,6 +12,8 @@ from etc.enum import (
     ResultTypes, Elements,
     INVENTORY_STATES, INPUT_STATES, CANCEL_STATES)
 
+from utils.debug import highlight_array
+
 from animations.animations import construct_animation
 from components.attacker import Attacker
 from components.burnable import AliveBurnable
@@ -189,6 +191,9 @@ def main():
             if animation_finished:
                 skip_player_input = True
                 game_state, previous_game_state = previous_game_state, game_state
+
+        # DEBUG
+        highlight_array(game_map.steam, game_map)
 
         #---------------------------------------------------------------------
         # Blit the subconsoles to the main console and flush all rendering.
