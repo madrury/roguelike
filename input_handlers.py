@@ -21,6 +21,8 @@ def handle_keys(user_input, game_state):
       A dictionary telling the game engine what action to take in response
       to this event.
     """
+    if user_input == None:
+        return {}
     if game_state == GameStates.PLAYER_TURN:
         return handle_player_turn_keys(user_input)
     elif game_state == GameStates.PLAYER_DEAD:
