@@ -1,8 +1,10 @@
 from messages import Message
+from status_bar import StatusBar
+from utils.utils import random_adjacent
 from etc.enum import ResultTypes, Elements
 from etc.config import PANEL_CONFIG 
 from etc.colors import STATUS_BAR_COLORS
-from status_bar import StatusBar
+import game_objects.monsters
 
 
 class Harmable:
@@ -39,7 +41,7 @@ class Harmable:
             total_width=PANEL_CONFIG['bar_width'],
             bar_colors=STATUS_BAR_COLORS['hp_bar'])
 
-    def harm(self, amount, element):
+    def harm(self, game_map, amount, element):
         """Apply damage from an element.
 
         It is not neccesarrly that the entity take all of the damage.  The
@@ -72,6 +74,24 @@ class Harmable:
             name=self.owner.name + ' HP',
             maximum=self.max_hp,
             value=self.hp)
+
+
+class PinkJellyHarmable(Harmable):
+
+    def harm(self, game_map, amount, element):
+        for transformer in self.damage_transformers:
+            amount = transformer.transform_damage(amount, element)
+        self.hp -= amount
+        results = []
+        if self.hp > 0:
+            # Spawn a new jelly with the same hp.
+            x, y = random_adjacent((self.owner.x, self.owner.y))
+            jelly = game_objects.monsters.PinkJelly.make_if_possible(
+                game_map, x, y, hp=self.hp)
+            results.append({ResultTypes.ADD_ENTITY: jelly})
+        if self.hp <= 0:
+            results.append({ResultTypes.DEAD_ENTITY: self.owner})
+        return results
 
 
 class NullHarmable:

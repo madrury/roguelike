@@ -4,10 +4,10 @@ from etc.colors import COLORS
 from etc.enum import RenderOrder, EntityTypes, MonsterGroups, RoutingOptions
 from components.ai import BasicMonster, HuntingMonster, SkitteringMonster
 from components.attacker import Attacker
-from components.harmable import Harmable
 from components.burnable import AliveBurnable
 from components.movable import Movable
 from components.scaldable import AliveScaldable
+import components.harmable
 
 
 class Kruthik:
@@ -24,7 +24,7 @@ class Kruthik:
                            RoutingOptions.AVOID_MONSTERS,
                            RoutingOptions.AVOID_STEAM],
             attacker=Attacker(power=2),
-            harmable=Harmable(hp=1, defense=0),
+            harmable=components.harmable.Harmable(hp=1, defense=0),
             ai=SkitteringMonster(),
             burnable=AliveBurnable(),
             movable=Movable(),
@@ -45,11 +45,39 @@ class Orc:
                            RoutingOptions.AVOID_MONSTERS,
                            RoutingOptions.AVOID_STEAM],
             attacker=Attacker(power=3),
-            harmable=Harmable(hp=10, defense=0),
+            harmable=components.harmable.Harmable(hp=10, defense=0),
             ai=BasicMonster(),
             burnable=AliveBurnable(),
             movable=Movable(),
             scaldable=AliveScaldable())
+
+
+class PinkJelly:
+
+    @staticmethod
+    def make(x, y, hp=20):
+        return Entity(
+            x, y, 'J', COLORS['pink_jelly'], 'Pink Jelly', 
+            entity_type=EntityTypes.MONSTER,
+            blocks=True,
+            render_order=RenderOrder.ACTOR,
+            routing_avoid=[RoutingOptions.AVOID_WATER,
+                           RoutingOptions.AVOID_FIRE,
+                           RoutingOptions.AVOID_MONSTERS,
+                           RoutingOptions.AVOID_STEAM],
+            attacker=Attacker(power=3),
+            harmable=components.harmable.PinkJellyHarmable(
+                hp=hp, defense=0),
+            ai=BasicMonster(),
+            burnable=AliveBurnable(),
+            movable=Movable(),
+            scaldable=AliveScaldable())
+
+    def make_if_possible(game_map, x, y, hp=20):
+        if (game_map.within_bounds(x, y) 
+            and not game_map.blocked[x, y]
+            and not game_map.water[x, y]):
+            return PinkJelly.make(x, y, hp=hp)
 
 
 class Troll:
@@ -65,8 +93,8 @@ class Troll:
                            RoutingOptions.AVOID_FIRE,
                            RoutingOptions.AVOID_MONSTERS,
                            RoutingOptions.AVOID_STEAM],
-            attacker=Attacker(power=4),
-            harmable=Harmable(hp=16, defense=1),
+            attacker=Attacker(power=5),
+            harmable=components.harmable.Harmable(hp=16, defense=1),
             ai=HuntingMonster(),
             burnable=AliveBurnable(),
             movable=Movable(),

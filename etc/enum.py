@@ -202,3 +202,4 @@ class MonsterGroups(Enum):
     SINGLE_TROLL = auto() 
     TWO_ORCS_AND_TROLL = auto()
     KRUTHIK_SQARM = auto()
+    PINK_JELLY = auto()
