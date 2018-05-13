@@ -439,7 +439,9 @@ def main():
             # Add a new entity to the game.
             if new_entity:
                 entity = new_entity
-                entities.append(entity)
+                if not game_map.blocked[entity.x, entity.y]:
+                    game_map.blocked[entitly.x, entity.y] = True
+                    entities.append(entity)
             # Remove an entity from the game.
             if remove_entity:
                 entity = remove_entity
