@@ -370,9 +370,9 @@ def main():
                     GameStates.ENEMY_TURN, game_state)
             # Damage an entity.
             if damage:
-                target, amount, element = damage
+                target, amount, elements = damage
                 damage_result = target.harmable.harm(
-                    game_map, amount, element)
+                    game_map, amount, elements)
                 enemy_turn_results.extend(damage_result)
                 if target not in harmed_queue:
                     harmed_queue.appendleft(target)
@@ -492,9 +492,9 @@ def main():
                 message_log.add_message(message)
             # Handle damage dealt.
             if damage:
-                target, amount, element = damage
+                target, amount, elements = damage
                 damage_result = target.harmable.harm(
-                    game_map, amount, element)
+                    game_map, amount, elements)
                 enemy_turn_results.extend(damage_result)
                 if target != player and target not in harmed_queue:
                     harmed_queue.appendleft(target)

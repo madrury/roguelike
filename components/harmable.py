@@ -41,15 +41,15 @@ class Harmable:
             total_width=PANEL_CONFIG['bar_width'],
             bar_colors=STATUS_BAR_COLORS['hp_bar'])
 
-    def harm(self, game_map, amount, element):
-        """Apply damage from an element.
+    def harm(self, game_map, amount, elements):
+        """Apply damage from an element or elements.
 
         It is not neccesarrly that the entity take all of the damage.  The
         entity may have equipment or resistances that grant them transformers for
         incomping damage.
         """
         for transformer in self.damage_transformers:
-            amount = transformer.transform_damage(amount, element)
+            amount = transformer.transform_damage(amount, elements)
         self.hp -= amount
         results = []
         if self.hp <= 0:
@@ -78,9 +78,9 @@ class Harmable:
 
 class PinkJellyHarmable(Harmable):
 
-    def harm(self, game_map, amount, element):
+    def harm(self, game_map, amount, elements):
         for transformer in self.damage_transformers:
-            amount = transformer.transform_damage(amount, element)
+            amount = transformer.transform_damage(amount, elements)
         self.hp -= amount
         results = []
         if self.hp > 0:
@@ -96,10 +96,10 @@ class PinkJellyHarmable(Harmable):
 
 class NullHarmable:
 
-    def harm(self, game_map, amount, element):
+    def harm(self, game_map, amount, elements):
         return []
 
-    def heal(self, amount, element):
+    def heal(self, amount, elements):
         return []
 
     def render_status_bar(self, panel, x, y):

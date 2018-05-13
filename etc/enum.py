@@ -76,8 +76,8 @@ CANCEL_STATES = {
 #   Enter cursor mode.
 # CURSOR_SELECT: boolean
 #   The user has selected a map tile while in cursor model.
-# DAMAGE: (entity, amount)
-#   Deal damage to an entity
+# DAMAGE: (entity, amount, elements)
+#   Deal damage to an entity of some elemental types.
 # DEAD_ENTITY: entity
 #   An entity has died.
 # DEATH_MESSAGE: Message object

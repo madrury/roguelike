@@ -100,7 +100,7 @@ class MagicMissileUsable:
                     monster.name)
                 message = Message(text, COLORS.get('white'))
                 results.append({ResultTypes.DAMAGE: (
-                                   monster, self.damage, Elements.NONE),
+                                   monster, self.damage, [Elements.NONE]),
                                 ResultTypes.MESSAGE: message})
             animations = [
                 (Animations.MAGIC_MISSILE, (user.x, user.y), (monster.x, monster.y))
@@ -155,7 +155,7 @@ class FireblastUsable:
             text = f"The {entity.name} is caught in the fireblast!"
             message = Message(text, COLORS.get('white'))
             results.append({ResultTypes.DAMAGE: (
-                                entity, self.damage, Elements.NONE),
+                                entity, self.damage, [Elements.NONE]),
                             ResultTypes.MESSAGE: message})
         for entity in (x for x in burnable_within_radius if x != user):
             results.extend(entity.burnable.burn(game_map))

@@ -101,7 +101,7 @@ class ThrowingKnifeCallback:
                 monster.name)
             results.append({
                 ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
-                ResultTypes.DAMAGE: (monster, self.owner.damage, Elements.NONE),
+                ResultTypes.DAMAGE: (monster, self.owner.damage, [Elements.NONE]),
                 ResultTypes.ITEM_CONSUMED: (True, self.owner.owner),
                 ResultTypes.ANIMATION: (
                     Animations.THROWING_KNIFE,

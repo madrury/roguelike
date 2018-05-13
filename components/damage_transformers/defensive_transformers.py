@@ -7,14 +7,14 @@ class ElementalTransformer:
       The amount to reduce damage.
 
     element: Element
-      The element whose damage to reduce.
+      The elements whose damage to reduce.
     """
-    def __init__(self, strength, element):
+    def __init__(self, strength, elements):
         self.strength = strength
-        self.element = element
+        self.elements = set(elements)
 
-    def transform_damage(self, amount, element):
-        if element == self.element:
+    def transform_damage(self, amount, elements):
+        if self.elements.intersection(elements):
             return max(0, amount - self.strength)
         return amount
 

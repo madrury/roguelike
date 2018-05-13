@@ -18,7 +18,7 @@ class Swimmable:
         if self.stamina > 0:
             results.append({ResultTypes.CHANGE_SWIM_STAMINA: (self.owner, -1)})
         if self.stamina <= 0:
-            results.append({ResultTypes.DAMAGE: (self.owner, 5, Elements.WATER)})
+            results.append({ResultTypes.DAMAGE: (self.owner, 5, [elements.WATER])})
         return results
 
     def rest(self):
