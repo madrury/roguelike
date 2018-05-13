@@ -387,23 +387,7 @@ def main():
             # Remove defensive equipment.
             if remove_armor:
                 entity, armor = remove_armor
-                if not hasattr(entity, "harmable"):
-                    raise AttributeError(
-                        "Non harmable entities cannot un-equip Armor")
-                if not entity.equipment.armor or not armor.equipable.equipped:
-                    player_turn_results.append({
-                        ResultTypes.MESSAGE: Message(
-                            f"{entity.name} cannot un-equip {armor.name}",
-                            COLORS['white'])})
-                else:
-                    entity.equipment.armor = None
-                    armor.equipable.equipped = False
-                    entity.harmable.remove_damage_transformers(
-                        armor.equipable.damage_transformers)
-                    player_turn_results.append({
-                        ResultTypes.MESSAGE: Message(
-                            f"{entity.name} removed {armor.name}",
-                            COLORS['white'])})
+                entity_remove_armor(entity, armor, player_turn_results)
             # Add a new entity to the game.
             if new_entity:
                 entity = new_entity

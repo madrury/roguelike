@@ -11,19 +11,26 @@ class Inventory:
         results = []
         if len(self.items) >= self.capacity:
             results.append({
-                ResultTypes.MESSAGE: Message('You cannot carry any more items.')})
+                ResultTypes.MESSAGE: Message(
+                    f'{self.owner.name} cannot carry any more items.')})
         else:
             results.append({
                 ResultTypes.ITEM_ADDED: item,
-                ResultTypes.MESSAGE: Message('You pick up the {0}.'.format(item.name))})
+                ResultTypes.MESSAGE: Message(
+                    f'{self.owner.name} picks up the {item.name}.')})
         return results
 
     def drop(self, item):
         results = []
-        message = Message(f'You dropped the {item.name}')
-        results.append({
-            ResultTypes.ITEM_DROPPED: item,
-            ResultTypes.MESSAGE: message})
+        if item.equipable and item.equipable.equipped:
+            message = Message(
+                f'{self.owner.name} cannot drop {item.name}, as it is currently equipped.')
+            results.append({ResultTypes.MESSAGE: message})
+        else:
+            message = Message(f'{self.owner.name} dropped the {item.name}')
+            results.append({
+                ResultTypes.ITEM_DROPPED: item,
+                ResultTypes.MESSAGE: message})
         return results
 
     def add(self, item):
