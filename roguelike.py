@@ -262,16 +262,7 @@ def main():
         # the players space, put a pickup action on the queue.
         #----------------------------------------------------------------------
         elif pickup and game_state == GameStates.PLAYER_TURN:
-            # TODO: Create pickup_entity function.
-            for entity in entities:
-                if (entity.pickupable
-                    and entity.x == player.x and entity.y == player.y):
-                    pickup_results = player.inventory.pickup(entity)
-                    player_turn_results.extend(pickup_results)
-                    break
-            else:
-                player_turn_results.append({
-                    ResultTypes.MESSAGE: Message("There is nothing to pick up!")})
+            pickup_entity(entities, player, player_turn_results)
             game_state = GameStates.ENEMY_TURN
         #----------------------------------------------------------------------
         # Player Inventory use / drop
@@ -323,10 +314,6 @@ def main():
         while game_state != GameStates.ANIMATION_PLAYING and player_turn_results != []:
 
             result = player_turn_results.pop()
-
-            print()
-            print("Player turn.")
-            print(result)
 
             animation = result.get(ResultTypes.ANIMATION)
             cursor_mode = result.get(ResultTypes.CURSOR_MODE)
@@ -708,6 +695,17 @@ def player_move_or_attack(move, *,
             player_turn_results.extend(attack_results)
         else:
             player_turn_results.append({ResultTypes.MOVE: (dx, dy)})
+
+def pickup_entity(entities, player, player_turn_results):
+    for entity in entities:
+        if (entity.pickupable
+            and entity.x == player.x and entity.y == player.y):
+            pickup_results = player.inventory.pickup(entity)
+            player_turn_results.extend(pickup_results)
+            break
+    else:
+        player_turn_results.append({
+            ResultTypes.MESSAGE: Message("There is nothing to pick up!")})
 
 
 if __name__ == '__main__':
