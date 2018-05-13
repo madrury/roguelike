@@ -4,7 +4,12 @@ from messages import Message
 
 
 class ArmorEquipable:
+    """Equippable armor.
 
+    The behaviour of armor is govened by a list od damage_transformers.  These
+    object has a transform_damage method which is used (in the case of armor)
+    to reduce or nullify damage.
+    """
     def __init__(self, damage_transformers=None):
         self.equipped = False
         self.damage_transformers = []
