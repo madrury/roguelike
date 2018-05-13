@@ -66,7 +66,7 @@ def invetory_menu(header, inventory, inventory_width,
         options = ['Invetory is Empty']
         highlight = [COLORS['white']]
     else:
-        options = [item.name for item in inventory.items]
+        options = make_inventory_options(inventory)
         if highlight_attr:
             highlight = [
                 COLORS['white'] if getattr(item, highlight_attr) 
@@ -76,3 +76,12 @@ def invetory_menu(header, inventory, inventory_width,
             highlight = [COLORS['white'] for item in inventory.items]
     return menu(header, options, inventory_width,
                 screen_width, screen_height, highlight=highlight)
+
+def make_inventory_options(inventory):
+    options = []
+    for item in inventory.items:
+        option = item.name
+        if item.equipable:
+            option = option + ["", " (Equipped)"][int(item.equipable.equipped)]
+        options.append(option)
+    return options
