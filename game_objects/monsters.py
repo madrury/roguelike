@@ -15,7 +15,7 @@ class Kruthik:
     @staticmethod
     def make(x, y):
         return Entity(
-            x, y, 'k', COLORS['desaturated_green'], 'Kruthik', 
+            x, y, 'k', COLORS['kruthik'], 'Kruthik', 
             entity_type=EntityTypes.MONSTER,
             blocks=True,
             render_order=RenderOrder.ACTOR,
@@ -36,7 +36,7 @@ class Orc:
     @staticmethod
     def make(x, y):
         return Entity(
-            x, y, 'O', COLORS['desaturated_green'], 'Orc', 
+            x, y, 'O', COLORS['orc'], 'Orc', 
             entity_type=EntityTypes.MONSTER,
             blocks=True,
             render_order=RenderOrder.ACTOR,
@@ -57,7 +57,7 @@ class Troll:
     @staticmethod
     def make(x, y):
         return Entity(
-            x, y, 'T', COLORS['darker_green'], 'Troll', 
+            x, y, 'T', COLORS['troll'], 'Troll', 
             entity_type=EntityTypes.MONSTER,
             blocks=True,
             render_order=RenderOrder.ACTOR,
