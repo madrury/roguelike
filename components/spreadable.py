@@ -40,7 +40,8 @@ class SteamSpreadable:
         adjacent = adjacent_coordinates((self.owner.x, self.owner.y))
         for new_x, new_y in adjacent:
             if (random.uniform(0, 1) < self.p_spread and 
-                game_map.within_bounds(new_x, new_y)):
+                game_map.within_bounds(new_x, new_y) and
+                game_map.walkable[new_x, new_y]):
                 new_p_spread = max(0, self.p_spread - 0.4)
                 new_p_dissipate = min(1, self.owner.dissipatable.p_dissipate + 0.4)
                 steam = game_objects.various.Steam.make(

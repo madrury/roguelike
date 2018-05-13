@@ -96,7 +96,7 @@ class PinkJellyHarmable(Harmable):
 
 class NullHarmable:
 
-    def harm(self, amount, element):
+    def harm(self, game_map, amount, element):
         return []
 
     def heal(self, amount, element):
