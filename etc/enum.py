@@ -128,6 +128,7 @@ class ResultTypes(Enum):
     REMOVE_ARMOR = auto()
     REMOVE_DAMAGE_TRANSFORMERS = auto()
     REMOVE_ENTITY = auto()
+    RESTORE_PLAYER_INPUT = auto()
     SHOW_INVENTORY = auto()
     THROW_INVENTORY = auto()
 

@@ -104,6 +104,8 @@ def main():
     # Initial values for game states
     game_state = GameStates.PLAYER_TURN
     previous_game_state = game_state
+    # Used for control flow after and animation.
+    skip_player_input = False
     # We only want to recompute the fov when needed.  For example, if the
     # player just used an item and has not moved, the fov will be the same.
     fov_recompute = True
@@ -200,6 +202,7 @@ def main():
             animation_finished = animation_player.next_frame()
             sleep(ANIMATION_INTERVAL)
             if animation_finished:
+                skip_player_input = True
                 game_state, previous_game_state = previous_game_state, game_state
 
         #---------------------------------------------------------------------
@@ -228,12 +231,13 @@ def main():
             GameStates.DROP_INVENTORY, GameStates.THROW_INVENTORY,
             GameStates.EQUIP_INVENTORY, GameStates.CURSOR_INPUT,
             GameStates.PLAYER_DEAD)
-        for event in tdl.event.get():
-            if event.type == 'KEYDOWN':
-                user_input = event
-                break
-        else:
-            user_input = None
+        if not skip_player_input:
+            for event in tdl.event.get():
+                if event.type == 'KEYDOWN':
+                    user_input = event
+                    break
+            else:
+                user_input = None
         if game_state in input_states and not user_input:
             continue
         action = handle_keys(user_input, game_state)
@@ -366,7 +370,26 @@ def main():
             new_entity = result.get(ResultTypes.ADD_ENTITY)
             remove_armor = result.get(ResultTypes.REMOVE_ARMOR)
             remove_entity = result.get(ResultTypes.REMOVE_ENTITY)
+            restore_player_input = result.get(ResultTypes.RESTORE_PLAYER_INPUT)
 
+            # Play an animation.
+            if restore_player_input:
+                skip_player_input = False
+            if animation:
+                animation_player = construct_animation(
+                    animation, game_map, player=player)
+                # We want to play the animiation immediately, and then continue
+                # to process everything else after it completes.  So remove the
+                # enimation data from teh results structure, and push the rest
+                # back on top of the stack.
+                result.pop(ResultTypes.ANIMATION)
+                player_turn_results.append(result)
+                skip_player_input = True
+                player_turn_results.append(
+                    {ResultTypes.RESTORE_PLAYER_INPUT: True})
+                game_state, previous_game_state = (
+                    GameStates.ANIMATION_PLAYING, game_state)
+                break
             # Move the player.
             if move:
                 player.movable.move(game_map, *move)
@@ -472,12 +495,6 @@ def main():
                     player.x, player.y, game_map, callback=callback)
                 game_state, previous_game_state = (
                     GameStates.CURSOR_INPUT, game_state)
-            # Play an animation.
-            if animation:
-                animation_player = construct_animation(
-                    animation, game_map, player=player)
-                game_state, previous_game_state = (
-                    GameStates.ANIMATION_PLAYING, game_state)
 
         #---------------------------------------------------------------------
         # Post player turn checks.
