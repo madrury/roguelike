@@ -212,16 +212,10 @@ def main():
             GameStates.DROP_INVENTORY, GameStates.THROW_INVENTORY,
             GameStates.EQUIP_INVENTORY, GameStates.CURSOR_INPUT,
             GameStates.PLAYER_DEAD)
-        # TODO: Factor as get_user_input function.
         if not skip_player_input:
-            for event in tdl.event.get():
-                if event.type == 'KEYDOWN':
-                    user_input = event
-                    break
-            else:
-                user_input = None
-        if game_state in input_states and not user_input:
-            continue
+            user_input = get_user_input()
+            if game_state in input_states and not user_input:
+                continue
         action = handle_keys(user_input, game_state)
 
         #----------------------------------------------------------------------
@@ -667,6 +661,15 @@ def construct_inventory_data(game_state):
         invetory_message = "Press the letter next to the item to equip it.\n"
         highlight_attr = "equipable"
     return invetory_message, highlight_attr
+
+def get_user_input():
+    for event in tdl.event.get():
+        if event.type == 'KEYDOWN':
+            user_input = event
+            break
+    else:
+        user_input = None
+    return user_input
 
 
 if __name__ == '__main__':
