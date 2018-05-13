@@ -6,6 +6,7 @@ from messages import Message
 class ArmorEquipable:
 
     def __init__(self, damage_transformers=None):
+        self.equipped = False
         self.damage_transformers = []
         if damage_transformers:
             for transformer in damage_transformers:
@@ -13,18 +14,12 @@ class ArmorEquipable:
 
     def equip(self, entity):
         results = []
-        message = f"{entity.name} equipped {self.owner.name}"
         results.append({
-            ResultTypes.MESSAGE: Message(message, COLORS['white']),
-            ResultTypes.ADD_DAMAGE_TRANSFORMERS: (
-                entity, self.damage_transformers)})
+            ResultTypes.EQUIP_ARMOR: (entity, self.owner)})
         return results
 
     def unequip(self, entity):
         results = []
-        message = f"{entity.name} un-equipped {self.owner.name}"
         results.append({
-            ResultTypes.MESSAGE: Message(message, COLORS['white']),
-            ResultTypes.REMOVE_DAMAGE_TRANSFORMERS: (
-                entity, self.damage_transformers)})
+            ResultTypes.UNEQUIP_ARMOR: (entity, self.owner)})
         return results

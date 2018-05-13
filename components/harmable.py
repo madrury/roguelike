@@ -58,6 +58,14 @@ class Harmable:
         """Restore some amount of hp."""
         self.hp += min(amount, self.max_hp - self.hp)
 
+    def add_damage_transformers(self, transformers):
+        for transformer in transformers:
+            self.damage_transformers.append(transformer)
+
+    def remove_damage_transformers(self, transformers):
+        for transformer in transformers:
+            self.damage_transformers.remove(transformer)
+
     def render_status_bar(self, panel, x, y):
         self.status_bar.render(
             panel, x, y, 

@@ -16,6 +16,7 @@ from components.attacker import Attacker
 from components.burnable import AliveBurnable
 from components.damage_transformers.defensive_transformers import (
     ElementalTransformer)
+from components.equipment import Equipment
 from components.harmable import Harmable
 from components.inventory import Inventory
 from components.movable import Movable
@@ -29,7 +30,6 @@ from generation.item_groups import ITEM_SCHEDULE, ITEM_GROUPS
 from generation.monster_groups import MONSTER_SCHEDULE, MONSTER_GROUPS
 from generation.spawn_entities import spawn_entities
 from generation.terrain import add_random_terrain
-
 
 from cursor import Cursor
 from death_functions import kill_monster, kill_player, make_corpse
@@ -65,6 +65,7 @@ def main():
                     harmable=Harmable(
                         hp=PLAYER_CONFIG["hp"],
                         defense=PLAYER_CONFIG["defense"]),
+                    equipment=Equipment(),
                     movable=Movable(),
                     burnable=AliveBurnable(),
                     scaldable=AliveScaldable(),
@@ -347,13 +348,12 @@ def main():
         while game_state != GameStates.ANIMATION_PLAYING and player_turn_results != []:
             result = player_turn_results.pop()
 
-            add_damage_transfomers = result.get(
-                ResultTypes.ADD_DAMAGE_TRANSFORMERS)
             animation = result.get(ResultTypes.ANIMATION)
             cursor_mode = result.get(ResultTypes.CURSOR_MODE)
             damage = result.get(ResultTypes.DAMAGE)
             dead_entity = result.get(ResultTypes.DEAD_ENTITY)
             death_message = result.get(ResultTypes.DEATH_MESSAGE)
+            equip_armor = result.get(ResultTypes.EQUIP_ARMOR)
             heal = result.get(ResultTypes.HEAL)
             item_added = result.get(ResultTypes.ITEM_ADDED)
             item_consumed = result.get(ResultTypes.ITEM_CONSUMED)
@@ -361,8 +361,7 @@ def main():
             message = result.get(ResultTypes.MESSAGE)
             move = result.get(ResultTypes.MOVE)
             new_entity = result.get(ResultTypes.ADD_ENTITY)
-            remove_damage_transfomers = result.get(
-                ResultTypes.REMOVE_DAMAGE_TRANSFORMERS)
+            remove_armor = result.get(ResultTypes.REMOVE_ARMOR)
             remove_entity = result.get(ResultTypes.REMOVE_ENTITY)
 
             # Move the player.
@@ -402,21 +401,47 @@ def main():
                 target, amount = heal
                 target.harmable.heal(amount)
             # Don defensive equipment.
-            if add_damage_transfomers:
-                entity, transformers = add_damage_transfomers
+            if equip_armor:
+                entity, armor = equip_armor
                 if not hasattr(entity, "harmable"):
                     raise AttributeError(
                         "Non harmable entities cannot equip Armor")
-                for transformer in transformers:
-                    entity.harmable.damage_transformers.append(transformer)
+                if ((not entity.equipment.armor and armor.equipable.equipped) or
+                    (entity.equipment.armor and not armor.equipable.equipped)):
+                    raise RuntimeError(
+                        f"Armor {armor.name} and {entity.name} are in an"
+                         "inconsisent state.")
+                if entity.equipment.armor or armor.equipable.equipped:
+                    player_turn_results.append({
+                        ResultTypes.MESSAGE: Message(
+                            f"{entity.name} cannot equip {armor.name}",
+                            COLORS['white'])})
+                else:
+                    entity.equipment.armor = armor
+                    armor.equipable.equipped = True
+                    entity.harmable.add_damage_transformers(
+                        armor.equipable.damage_transformers)
             # Remove defensive equipment.
-            if remove_damage_transfomers:
-                entity, transformers = remove_damage_transfomers
+            if remove_armor:
+                entity, armor = remove_armor
                 if not hasattr(entity, "harmable"):
                     raise AttributeError(
                         "Non harmable entities cannot un-equip Armor")
-                for transformer in transformers:
-                    entity.harmable.damage_transformers.remove(transformer)
+                if ((not entity.equipment.armor and armor.equipable.equipped) or
+                    (entity.equipment.armor and not armor.equipable.equipped)):
+                    raise RuntimeError(
+                        f"Armor {armor.name} and {entity.name} are in an"
+                         "inconsisent state.")
+                if not entity.equipment.armor or not armor.equipable.equipped:
+                    player_turn_results.append({
+                        ResultTypes.MESSAGE: Message(
+                            f"{entity.name} cannot un-equip {armor.name}",
+                            COLORS['white'])})
+                else:
+                    entity.equipment.armor = None
+                    armor.equipable.equipped = False
+                    entity.harmable.remove_damage_transformers(
+                        armor.equipable.damage_transformers)
             # Add a new entity to the game.
             if new_entity:
                 entity = new_entity

@@ -69,6 +69,12 @@ class Entity:
     dissipatable: Dissipatable object.
       Contains logic for the object spontaneously dissapating.
 
+    equipable: Equipable object.
+      Contains logic for equipping the entity onto another entity.
+
+    equipment: Equipment objec.
+      Manages what the entity currently has equipped.
+
     harmable: Harmable object
       Manages entities HP attributes.
 
@@ -117,6 +123,7 @@ class Entity:
                  burnable=None,
                  dissipatable=None,
                  equipable=None,
+                 equipment=None,
                  harmable=None,
                  inventory=None,
                  item=None,
@@ -152,6 +159,7 @@ class Entity:
         self.add_component(burnable, "burnable")
         self.add_component(dissipatable, "dissipatable")
         self.add_component(equipable, "equipable")
+        self.add_component(equipment, "equipment")
         self.add_component(harmable, "harmable")
         self.add_component(inventory, "inventory")
         self.add_component(item, "item")
