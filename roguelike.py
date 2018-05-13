@@ -244,6 +244,7 @@ def main():
         # Unless the player moves, we do not need to recompute the fov.
         fov_recompute = False
         if move and game_state == GameStates.PLAYER_TURN:
+            # TODO: Create move_or_attack
             dx, dy = move
             destination_x, destination_y = player.x + dx, player.y + dy
             if game_map.walkable[destination_x, destination_y]:
@@ -264,6 +265,7 @@ def main():
         # the players space, put a pickup action on the queue.
         #----------------------------------------------------------------------
         elif pickup and game_state == GameStates.PLAYER_TURN:
+            # TODO: Create pickup_entity function.
             for entity in entities:
                 if (entity.pickupable
                     and entity.x == player.x and entity.y == player.y):
@@ -288,20 +290,12 @@ def main():
             and previous_game_state != GameStates.PLAYER_DEAD):
 
             item = player.inventory.items[inventory_index]
-            #TODO: Factor out as process_selected_item function.
-            if game_state == GameStates.SHOW_INVENTORY:
-                player_turn_results.extend(
-                    item.usable.use(game_map, player, entities))
-            elif game_state == GameStates.THROW_INVENTORY:
-                player_turn_results.extend(
-                    item.throwable.throw(game_map, player, entities))
-            elif game_state == GameStates.DROP_INVENTORY:
-                player_turn_results.extend(player.inventory.drop(item))
-            elif game_state == GameStates.EQUIP_INVENTORY:
-                if item.equipable.equipped:
-                    player_turn_results.extend(item.equipable.remove(player))
-                else:
-                    player_turn_results.extend(item.equipable.equip(player))
+            process_selected_item(item, 
+                                  player=player,
+                                  entities=entities,
+                                  game_map=game_map, 
+                                  game_state=game_state, 
+                                  player_turn_results=player_turn_results)
             game_state, previous_game_state = previous_game_state, game_state
 
         #----------------------------------------------------------------------
@@ -670,6 +664,26 @@ def get_user_input():
     else:
         user_input = None
     return user_input
+
+def process_selected_item(item, *,
+                          player=None,
+                          entities=None,
+                          game_state=None,
+                          game_map=None, 
+                          player_turn_results=None): 
+    if game_state == GameStates.SHOW_INVENTORY:
+        if item.usable:
+            player_turn_results.extend(item.usable.use(game_map, player, entities))
+    elif game_state == GameStates.THROW_INVENTORY:
+        if item.throwable:
+            player_turn_results.extend(item.throwable.throw(game_map, player, entities))
+    elif game_state == GameStates.EQUIP_INVENTORY:
+        if item.equipable and item.equipable.equipped:
+            player_turn_results.extend(item.equipable.remove(player))
+        elif item.equipable:
+            player_turn_results.extend(item.equipable.equip(player))
+    elif game_state == GameStates.DROP_INVENTORY:
+        player_turn_results.extend(player.inventory.drop(item))
 
 
 if __name__ == '__main__':
