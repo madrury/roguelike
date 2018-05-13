@@ -249,20 +249,12 @@ def main():
         # Unless the player moves, we do not need to recompute the fov.
         fov_recompute = False
         if move and game_state == GameStates.PLAYER_TURN:
-            # TODO: Create move_or_attack
-            dx, dy = move
-            destination_x, destination_y = player.x + dx, player.y + dy
-            if game_map.walkable[destination_x, destination_y]:
-                blocker = get_blocking_entity_at_location(
-                    entities, destination_x, destination_y)
-                # If you attempted to walk into a square occupied by an entity,
-                # and that entity is not yourself.
-                if blocker and blocker != player:
-                    attack_results = player.attacker.attack(blocker)
-                    player_turn_results.extend(attack_results)
-                else:
-                    player_turn_results.append({ResultTypes.MOVE: (dx, dy)})
-                game_state = GameStates.ENEMY_TURN
+            player_move_or_attack(move, 
+                                  player=player, 
+                                  entities=entities, 
+                                  game_map=game_map, 
+                                  player_turn_results=player_turn_results)
+            game_state = GameStates.ENEMY_TURN
         #----------------------------------------------------------------------
         # Player Pickup
         #......................................................................
@@ -689,6 +681,24 @@ def process_selected_item(item, *,
             player_turn_results.extend(item.equipable.equip(player))
     elif game_state == GameStates.DROP_INVENTORY:
         player_turn_results.extend(player.inventory.drop(item))
+
+def player_move_or_attack(move, *,
+                          player=None, 
+                          entities=None, 
+                          game_map=None,
+                          player_turn_results=None):
+    dx, dy = move
+    destination_x, destination_y = player.x + dx, player.y + dy
+    if game_map.walkable[destination_x, destination_y]:
+        blocker = get_blocking_entity_at_location(
+            entities, destination_x, destination_y)
+        # If you attempted to walk into a square occupied by an entity,
+        # and that entity is not yourself.
+        if blocker and blocker != player:
+            attack_results = player.attacker.attack(blocker)
+            player_turn_results.extend(attack_results)
+        else:
+            player_turn_results.append({ResultTypes.MOVE: (dx, dy)})
 
 
 if __name__ == '__main__':
