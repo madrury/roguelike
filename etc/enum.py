@@ -192,6 +192,7 @@ class ItemGroups(Enum):
     FIREBLAST_SCROLL = auto()
     THROWING_KNIFE = auto()
     LEATHER_ARMOR = auto()
+    LEATHER_ARMOR_OF_FIRE_RESIST = auto()
 
 
 class MonsterGroups(Enum):
