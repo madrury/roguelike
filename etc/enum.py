@@ -41,6 +41,23 @@ class GameStates(Enum):
     SHOW_INVENTORY = auto()
     THROW_INVENTORY = auto()
 
+# Game states where an inventory is displayed.
+INVENTORY_STATES = {
+    GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY,
+    GameStates.THROW_INVENTORY, GameStates.EQUIP_INVENTORY}
+
+# Game states accepting of user input.
+INPUT_STATES = {
+    GameStates.PLAYER_TURN, GameStates.SHOW_INVENTORY,
+    GameStates.DROP_INVENTORY, GameStates.THROW_INVENTORY,
+    GameStates.EQUIP_INVENTORY, GameStates.CURSOR_INPUT,
+    GameStates.PLAYER_DEAD}
+
+# Game states that can be canceled out of.
+CANCEL_STATES = {
+    GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY,
+    GameStates.THROW_INVENTORY, GameStates.EQUIP_INVENTORY,
+    GameStates.CURSOR_INPUT}
 
 #-----------------------------------------------------------------------------
 # The various results of actions and thier consequences in the game.

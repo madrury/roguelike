@@ -1,4 +1,4 @@
-from etc.enum import GameStates, ResultTypes
+from etc.enum import GameStates, ResultTypes, INVENTORY_STATES
 
 def handle_keys(user_input, game_state):
     """Consider user input and return a consequent action.
@@ -27,8 +27,7 @@ def handle_keys(user_input, game_state):
         return handle_player_turn_keys(user_input)
     elif game_state == GameStates.PLAYER_DEAD:
         return handle_player_dead_keys(user_input)
-    elif game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY, 
-                        GameStates.THROW_INVENTORY, GameStates.EQUIP_INVENTORY):
+    elif game_state in INVENTORY_STATES:
         return handle_inventory_keys(user_input)
     elif game_state == GameStates.CURSOR_INPUT:
         return handle_cursor_keys(user_input)

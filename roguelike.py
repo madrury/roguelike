@@ -9,7 +9,8 @@ from etc.config import (
    ANIMATION_INTERVAL, INVENTORY_WIDTH, SHIMMER_INTERVAL)
 from etc.enum import (
     EntityTypes, GameStates, ItemTargeting, RenderOrder, Animations,
-    ResultTypes, Elements)
+    ResultTypes, Elements,
+    INVENTORY_STATES, INPUT_STATES, CANCEL_STATES)
 
 from animations.animations import construct_animation
 from components.attacker import Attacker
@@ -169,9 +170,7 @@ def main():
         #---------------------------------------------------------------------
         # Render any menus.
         #---------------------------------------------------------------------
-        menu_states = (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY,
-                       GameStates.THROW_INVENTORY, GameStates.EQUIP_INVENTORY)
-        if game_state in menu_states:
+        if game_state in INVENTORY_STATES:
             inventory_message, highlight_attr = construct_inventory_data(
                 game_state)
             menu_console, menu_x, menu_y = invetory_menu(
@@ -197,8 +196,7 @@ def main():
         root_console.blit(game_map.console, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
         root_console.blit(panel_console, 0, PANEL_CONFIG['y'],
                           SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
-        if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY,
-                          GameStates.THROW_INVENTORY, GameStates.EQUIP_INVENTORY):
+        if game_state in INVENTORY_STATES:
             root_console.blit(menu_console, menu_x, menu_y,
                               SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
         tdl.flush()
@@ -212,14 +210,9 @@ def main():
         #---------------------------------------------------------------------
         # Get key input from the player.
         #---------------------------------------------------------------------
-        input_states = (
-            GameStates.PLAYER_TURN, GameStates.SHOW_INVENTORY,
-            GameStates.DROP_INVENTORY, GameStates.THROW_INVENTORY,
-            GameStates.EQUIP_INVENTORY, GameStates.CURSOR_INPUT,
-            GameStates.PLAYER_DEAD)
         if not skip_player_input:
             user_input = get_user_input()
-            if game_state in input_states and not user_input:
+            if game_state in INPUT_STATES and not user_input:
                 continue
         action = handle_keys(user_input, game_state)
 
@@ -271,12 +264,12 @@ def main():
         # Check which state we are in (using or dropping) and put an
         # instruction on the queue.
         #----------------------------------------------------------------------
-        elif (game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY,
-                             GameStates.THROW_INVENTORY, GameStates.EQUIP_INVENTORY)
-            and inventory_index is not None
-            and inventory_index < len(player.inventory.items)
-            and previous_game_state != GameStates.PLAYER_DEAD):
-
+        elif (game_state in INVENTORY_STATES
+              and inventory_index is not None
+              and inventory_index < len(player.inventory.items)
+              # The inventory can be opened after the player has died, but we
+              # don't want to let them use any items.
+              and previous_game_state != GameStates.PLAYER_DEAD):
             item = player.inventory.items[inventory_index]
             process_selected_item(item, 
                                   player=player,
@@ -575,10 +568,7 @@ def main():
         if exit:
             if game_state == GameStates.CURSOR_INPUT:
                 cursor.clear()
-            if game_state in (
-                GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY,
-                GameStates.THROW_INVENTORY, GameStates.EQUIP_INVENTORY,
-                GameStates.CURSOR_INPUT):
+            if game_state in CANCEL_STATES:
                 game_state, previous_game_state = (
                     previous_game_state, game_state)
             else:
@@ -615,6 +605,7 @@ def main():
         #---------------------------------------------------------------------
         if game_state == GameStates.PLAYER_DEAD:
             continue
+
 
 
 def construct_inventory_data(game_state):
