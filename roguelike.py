@@ -321,7 +321,12 @@ def main():
         # empty.
         #----------------------------------------------------------------------
         while game_state != GameStates.ANIMATION_PLAYING and player_turn_results != []:
+
             result = player_turn_results.pop()
+
+            print()
+            print("Player turn.")
+            print(result)
 
             animation = result.get(ResultTypes.ANIMATION)
             cursor_mode = result.get(ResultTypes.CURSOR_MODE)
@@ -440,7 +445,7 @@ def main():
             if new_entity:
                 entity = new_entity
                 if not game_map.blocked[entity.x, entity.y]:
-                    game_map.blocked[entitly.x, entity.y] = True
+                    game_map.blocked[entity.x, entity.y] = True
                     entities.append(entity)
             # Remove an entity from the game.
             if remove_entity:
@@ -553,7 +558,9 @@ def main():
             # Add a new entity to the game.
             if new_entity:
                 entity = new_entity
-                entities.append(entity)
+                if not game_map.blocked[entity.x, entity.y]:
+                    game_map.blocked[entity.x, entity.y] = True
+                    entities.append(entity)
             # Remove an entity from the game.
             if remove_entity:
                 entity = remove_entity
