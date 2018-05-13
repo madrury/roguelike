@@ -317,7 +317,10 @@ def main():
             elif game_state == GameStates.DROP_INVENTORY:
                 player_turn_results.extend(player.inventory.drop(entity))
             elif game_state == GameStates.EQUIP_INVENTORY:
-                player_turn_results.extend(entity.equipable.equip(player))
+                if entity.equipable.equipped:
+                    player_turn_results.extend(entity.equipable.remove(player))
+                else:
+                    player_turn_results.extend(entity.equipable.equip(player))
             game_state, previous_game_state = previous_game_state, game_state
 
         #----------------------------------------------------------------------
@@ -406,11 +409,6 @@ def main():
                 if not hasattr(entity, "harmable"):
                     raise AttributeError(
                         "Non harmable entities cannot equip Armor")
-                if ((not entity.equipment.armor and armor.equipable.equipped) or
-                    (entity.equipment.armor and not armor.equipable.equipped)):
-                    raise RuntimeError(
-                        f"Armor {armor.name} and {entity.name} are in an"
-                         "inconsisent state.")
                 if entity.equipment.armor or armor.equipable.equipped:
                     player_turn_results.append({
                         ResultTypes.MESSAGE: Message(
@@ -421,17 +419,16 @@ def main():
                     armor.equipable.equipped = True
                     entity.harmable.add_damage_transformers(
                         armor.equipable.damage_transformers)
+                    player_turn_results.append({
+                        ResultTypes.MESSAGE: Message(
+                            f"{entity.name} equipped {armor.name}",
+                            COLORS['white'])})
             # Remove defensive equipment.
             if remove_armor:
                 entity, armor = remove_armor
                 if not hasattr(entity, "harmable"):
                     raise AttributeError(
                         "Non harmable entities cannot un-equip Armor")
-                if ((not entity.equipment.armor and armor.equipable.equipped) or
-                    (entity.equipment.armor and not armor.equipable.equipped)):
-                    raise RuntimeError(
-                        f"Armor {armor.name} and {entity.name} are in an"
-                         "inconsisent state.")
                 if not entity.equipment.armor or not armor.equipable.equipped:
                     player_turn_results.append({
                         ResultTypes.MESSAGE: Message(
@@ -442,6 +439,10 @@ def main():
                     armor.equipable.equipped = False
                     entity.harmable.remove_damage_transformers(
                         armor.equipable.damage_transformers)
+                    player_turn_results.append({
+                        ResultTypes.MESSAGE: Message(
+                            f"{entity.name} removed {armor.name}",
+                            COLORS['white'])})
             # Add a new entity to the game.
             if new_entity:
                 entity = new_entity

@@ -18,8 +18,8 @@ class ArmorEquipable:
             ResultTypes.EQUIP_ARMOR: (entity, self.owner)})
         return results
 
-    def unequip(self, entity):
+    def remove(self, entity):
         results = []
         results.append({
-            ResultTypes.UNEQUIP_ARMOR: (entity, self.owner)})
+            ResultTypes.REMOVE_ARMOR: (entity, self.owner)})
         return results
