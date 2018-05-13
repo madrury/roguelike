@@ -390,24 +390,7 @@ def main():
             # Don defensive equipment.
             if equip_armor:
                 entity, armor = equip_armor
-                # TODO: Factor out as equip_armor
-                if not hasattr(entity, "harmable"):
-                    raise AttributeError(
-                        "Non harmable entities cannot equip Armor")
-                if entity.equipment.armor or armor.equipable.equipped:
-                    player_turn_results.append({
-                        ResultTypes.MESSAGE: Message(
-                            f"{entity.name} cannot equip {armor.name}",
-                            COLORS['white'])})
-                else:
-                    entity.equipment.armor = armor
-                    armor.equipable.equipped = True
-                    entity.harmable.add_damage_transformers(
-                        armor.equipable.damage_transformers)
-                    player_turn_results.append({
-                        ResultTypes.MESSAGE: Message(
-                            f"{entity.name} equipped {armor.name}",
-                            COLORS['white'])})
+                entity_equip_armor(entity, armor, player_turn_results)
             # Remove defensive equipment.
             if remove_armor:
                 entity, armor = remove_armor
@@ -707,6 +690,24 @@ def pickup_entity(entities, player, player_turn_results):
         player_turn_results.append({
             ResultTypes.MESSAGE: Message("There is nothing to pick up!")})
 
+def entity_equip_armor(entity, armor, turn_results):
+    if not hasattr(entity, "harmable"):
+        raise AttributeError(
+            "Non harmable entities cannot equip Armor")
+    if entity.equipment.armor or armor.equipable.equipped:
+        turn_results.append({
+            ResultTypes.MESSAGE: Message(
+                f"{entity.name} cannot equip {armor.name}",
+                COLORS['white'])})
+    else:
+        entity.equipment.armor = armor
+        armor.equipable.equipped = True
+        entity.harmable.add_damage_transformers(
+            armor.equipable.damage_transformers)
+        turn_results.append({
+            ResultTypes.MESSAGE: Message(
+                f"{entity.name} equipped {armor.name}",
+                COLORS['white'])})
 
 if __name__ == '__main__':
     main()
