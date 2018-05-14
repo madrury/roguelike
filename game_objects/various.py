@@ -30,7 +30,7 @@ class Fire:
                 entity_type=EntityTypes.FIRE,
                 render_order=RenderOrder.TERRAIN,
                 shimmer=FireShimmer(),
-                #spreadable=FireSpreadable(),
+                spreadable=FireSpreadable(),
                 dissipatable=FireDissipatable())
 
     def maybe_make(game_map, x, y, p):

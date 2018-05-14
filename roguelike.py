@@ -87,8 +87,8 @@ def main():
     game_map = GameMap(floor, map_console)
     terrain = add_random_terrain(game_map, entities, TERRAIN_CONFIG)
     game_map.place_player(player)
-    #spawn_entities(MONSTER_SCHEDULE, MONSTER_GROUPS, game_map, entities)
-    #spawn_entities(ITEM_SCHEDULE, ITEM_GROUPS, game_map, entities)
+    spawn_entities(MONSTER_SCHEDULE, MONSTER_GROUPS, game_map, entities)
+    spawn_entities(ITEM_SCHEDULE, ITEM_GROUPS, game_map, entities)
 
     #-------------------------------------------------------------------------
     # Game State Varaibles
