@@ -519,7 +519,7 @@ def main():
                 entity.commitable.delete(game_map, entities)
             # Handle death.
             if dead_entity == player:
-                enemy_turn_results.extend(kill_player(player, COLORS))
+                enemy_turn_results.extend(kill_player(player))
                 game_state = GameStates.PLAYER_DEAD
             elif dead_entity:
                 enemy_turn_results.extend(
