@@ -60,3 +60,16 @@ class SteamCommitable:
                  "non-steam space.")
         game_map.steam[self.owner.x, self.owner.y] = False
         entities.remove(self.owner)
+
+
+class TerrainCommitable:
+
+    def commit(self, game_map, entities):
+        if not game_map.terrain[self.owner.x, self.owner.y]:
+            game_map.terrain[self.owner.x, self.owner.y] = True
+            entities.append(self.owner)
+
+    def delete(self, game_map, entities):
+        if self.owner in entities:
+            game_map.terrain[self.owner.x, self.owner.y] = False
+            entities.remove(self.owner)

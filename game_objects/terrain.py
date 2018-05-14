@@ -4,7 +4,7 @@ from etc.enum import Terrain, EntityTypes, RenderOrder
 from etc.colors import COLORS
 
 from components.burnable import GrassBurnable, WaterBurnable
-from components.commitable import BaseCommitable
+from components.commitable import TerrainCommitable
 from components.shimmer import WaterShimmer
 
 
@@ -48,4 +48,4 @@ class Grass:
             entity_type=EntityTypes.TERRAIN,
             render_order=RenderOrder.TERRAIN,
             burnable=GrassBurnable(),
-            commitable=BaseCommitable())
+            commitable=TerrainCommitable())
