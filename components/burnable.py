@@ -32,7 +32,6 @@ class GrassBurnable:
         self.p_fire = p_fire
 
     def burn(self, game_map):
-        game_map.terrain[self.owner.x, self.owner.y] = False
         fire = game_objects.various.Fire.maybe_make(
             game_map, self.owner.x, self.owner.y, p=self.p_fire)
         if fire:
