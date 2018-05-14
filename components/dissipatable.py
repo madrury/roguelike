@@ -10,7 +10,6 @@ class FireDissipatable:
 
     def dissipate(self, game_map):
         if random.uniform(0, 1) < self.p:
-            game_map.fire[self.owner.x, self.owner.y] = False
             return [{ResultTypes.REMOVE_ENTITY: self.owner}]
         else:
             return []
@@ -31,7 +30,6 @@ class SteamDissipatable:
             self.frame += 1
             return []
         elif random.uniform(0, 1) < self.p_dissipate:
-            game_map.steam[self.owner.x, self.owner.y] = False
             return [{ResultTypes.REMOVE_ENTITY: self.owner}]
         else:
             return []

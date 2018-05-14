@@ -2,8 +2,10 @@ from entity import Entity
 from colors import random_light_green, random_light_water, random_dark_water
 from etc.enum import Terrain, EntityTypes, RenderOrder
 from etc.colors import COLORS
-from components.shimmer import WaterShimmer
+
 from components.burnable import GrassBurnable, WaterBurnable
+from components.commitable import BaseCommitable
+from components.shimmer import WaterShimmer
 
 
 class Water:
@@ -45,4 +47,5 @@ class Grass:
             visible_out_of_fov=True,
             entity_type=EntityTypes.TERRAIN,
             render_order=RenderOrder.TERRAIN,
-            burnable=GrassBurnable())
+            burnable=GrassBurnable(),
+            commitable=BaseCommitable())

@@ -5,6 +5,7 @@ from etc.enum import RenderOrder, EntityTypes, MonsterGroups, RoutingOptions
 from components.ai import BasicMonster, HuntingMonster, SkitteringMonster
 from components.attacker import Attacker
 from components.burnable import AliveBurnable
+from components.commitable import BlockingCommitable
 from components.movable import Movable
 from components.scaldable import AliveScaldable
 import components.harmable
@@ -23,10 +24,11 @@ class Kruthik:
                            RoutingOptions.AVOID_FIRE,
                            RoutingOptions.AVOID_MONSTERS,
                            RoutingOptions.AVOID_STEAM],
-            attacker=Attacker(power=2),
-            harmable=components.harmable.Harmable(hp=1, defense=0),
             ai=SkitteringMonster(),
+            attacker=Attacker(power=2),
             burnable=AliveBurnable(),
+            commitable=BlockingCommitable(),
+            harmable=components.harmable.Harmable(hp=1, defense=0),
             movable=Movable(),
             scaldable=AliveScaldable())
 
@@ -44,10 +46,11 @@ class Orc:
                            RoutingOptions.AVOID_FIRE,
                            RoutingOptions.AVOID_MONSTERS,
                            RoutingOptions.AVOID_STEAM],
-            attacker=Attacker(power=3),
-            harmable=components.harmable.Harmable(hp=10, defense=0),
             ai=BasicMonster(),
+            attacker=Attacker(power=3),
             burnable=AliveBurnable(),
+            commitable=BlockingCommitable(),
+            harmable=components.harmable.Harmable(hp=10, defense=0),
             movable=Movable(),
             scaldable=AliveScaldable())
 
@@ -65,11 +68,12 @@ class PinkJelly:
                            RoutingOptions.AVOID_FIRE,
                            RoutingOptions.AVOID_MONSTERS,
                            RoutingOptions.AVOID_STEAM],
+            ai=BasicMonster(),
             attacker=Attacker(power=3),
+            burnable=AliveBurnable(),
+            commitable=BlockingCommitable(),
             harmable=components.harmable.PinkJellyHarmable(
                 hp=hp, defense=0),
-            ai=BasicMonster(),
-            burnable=AliveBurnable(),
             movable=Movable(),
             scaldable=AliveScaldable())
 
@@ -98,5 +102,6 @@ class Troll:
             harmable=components.harmable.Harmable(hp=16, defense=1),
             ai=HuntingMonster(),
             burnable=AliveBurnable(),
+            commitable=BlockingCommitable(),
             movable=Movable(),
             scaldable=AliveScaldable())

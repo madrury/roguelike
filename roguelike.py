@@ -398,14 +398,11 @@ def main():
             # Add a new entity to the game.
             if new_entity:
                 entity = new_entity
-                if not entity.blocks or not game_map.blocked[entity.x, entity.y]:
-                    if entity.blocks:
-                        game_map.blocked[entity.x, entity.y] = True
-                    entities.append(entity)
+                entity.commitable.commit(game_map, entities)
             # Remove an entity from the game.
             if remove_entity:
                 entity = remove_entity
-                entities.remove(entity)
+                entity.commitable.delete(game_map, entities)
             # Handle death
             if dead_entity == player:
                 player_turn_results.extend(kill_player(player))
@@ -513,18 +510,11 @@ def main():
             # Add a new entity to the game.
             if new_entity:
                 entity = new_entity
-                if not entity.blocks or not game_map.blocked[entity.x, entity.y]:
-                    if entity.blocks:
-                        game_map.blocked[entity.x, entity.y] = True
-                    entities.append(entity)
+                entity.commitable.commit(game_map, entities)
             # Remove an entity from the game.
             if remove_entity:
                 entity = remove_entity
-                # For example: different fires can spread to the same space in
-                # one turn, which results in two requests to remove grass in
-                # that space.
-                if entity in entities:
-                    entities.remove(entity)
+                entity.commitable.delete(game_map, entities)
             # Handle death.
             if dead_entity == player:
                 enemy_turn_results.extend(kill_player(player, COLORS))

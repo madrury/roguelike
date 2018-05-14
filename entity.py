@@ -66,6 +66,9 @@ class Entity:
     burnable: Burnable object.
       Contains logic for results of attempting to burn the entity.
 
+    commitable: Commitable object.
+      Contains logic for commiting and deleting an entity to/from the game.
+
     dissipatable: Dissipatable object.
       Contains logic for the object spontaneously dissapating.
 
@@ -121,6 +124,7 @@ class Entity:
                  ai=None,
                  attacker=None,
                  burnable=None,
+                 commitable=None,
                  dissipatable=None,
                  equipable=None,
                  equipment=None,
@@ -157,6 +161,7 @@ class Entity:
         self.add_component(ai, "ai")
         self.add_component(attacker, "attacker")
         self.add_component(burnable, "burnable")
+        self.add_component(commitable, "commitable")
         self.add_component(dissipatable, "dissipatable")
         self.add_component(equipable, "equipable")
         self.add_component(equipment, "equipment")
