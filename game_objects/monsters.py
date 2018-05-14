@@ -80,7 +80,6 @@ class PinkJelly:
     def make_if_possible(game_map, x, y, hp=20):
         if (game_map.within_bounds(x, y) 
             and game_map.walkable[x, y]
-            and not game_map.blocked[x, y]
             and not game_map.water[x, y]):
             return PinkJelly.make(x, y, hp=hp)
 
