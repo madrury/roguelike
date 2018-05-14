@@ -15,15 +15,16 @@ class FireSpreadable:
         self.p_spread = p
 
     def spread(self, game_map, entities_list):
-        new_x, new_y = random_adjacent((self.owner.x, self.owner.y))
-        entities_at_location = get_entities_at_location(entities_list, new_x, new_y)
-        burnable_entities = [entity for entity in entities_at_location
-                             if entity.burnable]
-        results = []
-        for entity in burnable_entities:
-            if random.uniform(0, 1) < self.p_spread:
-                results.extend(entity.burnable.burn(game_map))
-        return results
+#        new_x, new_y = random_adjacent((self.owner.x, self.owner.y))
+#        entities_at_location = get_entities_at_location(entities_list, new_x, new_y)
+#        burnable_entities = [entity for entity in entities_at_location
+#                             if entity.burnable]
+#        results = []
+#        for entity in burnable_entities:
+#            if random.uniform(0, 1) < self.p_spread:
+#                results.extend(entity.burnable.burn(game_map))
+#        return results
+         return []
 
 
 class SteamSpreadable:

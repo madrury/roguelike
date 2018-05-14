@@ -87,8 +87,8 @@ def main():
     game_map = GameMap(floor, map_console)
     terrain = add_random_terrain(game_map, entities, TERRAIN_CONFIG)
     game_map.place_player(player)
-    spawn_entities(MONSTER_SCHEDULE, MONSTER_GROUPS, game_map, entities)
-    spawn_entities(ITEM_SCHEDULE, ITEM_GROUPS, game_map, entities)
+    #spawn_entities(MONSTER_SCHEDULE, MONSTER_GROUPS, game_map, entities)
+    #spawn_entities(ITEM_SCHEDULE, ITEM_GROUPS, game_map, entities)
 
     #-------------------------------------------------------------------------
     # Game State Varaibles
@@ -193,7 +193,9 @@ def main():
                 game_state, previous_game_state = previous_game_state, game_state
 
         # DEBUG
-        highlight_array(game_map.steam, game_map)
+        highlight_array(game_map.blocked, game_map, COLORS['cursor_tail'])
+        highlight_array(game_map.fire, game_map, COLORS['darker_red'])
+        highlight_array(game_map.steam, game_map, COLORS['desaturated_green'])
 
         #---------------------------------------------------------------------
         # Blit the subconsoles to the main console and flush all rendering.
@@ -396,8 +398,9 @@ def main():
             # Add a new entity to the game.
             if new_entity:
                 entity = new_entity
-                if not game_map.blocked[entity.x, entity.y]:
-                    game_map.blocked[entity.x, entity.y] = True
+                if not entity.blocks or not game_map.blocked[entity.x, entity.y]:
+                    if entity.blocks:
+                        game_map.blocked[entity.x, entity.y] = True
                     entities.append(entity)
             # Remove an entity from the game.
             if remove_entity:
@@ -510,8 +513,9 @@ def main():
             # Add a new entity to the game.
             if new_entity:
                 entity = new_entity
-                if not game_map.blocked[entity.x, entity.y]:
-                    game_map.blocked[entity.x, entity.y] = True
+                if not entity.blocks or not game_map.blocked[entity.x, entity.y]:
+                    if entity.blocks:
+                        game_map.blocked[entity.x, entity.y] = True
                     entities.append(entity)
             # Remove an entity from the game.
             if remove_entity:
