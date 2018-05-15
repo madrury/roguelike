@@ -16,6 +16,7 @@ from utils.debug import highlight_array
 
 from animations.animations import construct_animation
 from components.attacker import Attacker
+from components.burnable import AliveBurnable
 from components.equipment import Equipment
 from components.harmable import Harmable
 from components.inventory import Inventory
@@ -39,12 +40,6 @@ from map import GameMap
 from menus import invetory_menu
 from messages import Message, MessageLog
 from status_bar import StatusBar
-
-# TEMP IMPORTS for debugging.
-from components.burnable import AliveBurnable
-from components.damage_transformers.defensive_transformers import (
-    ElementalTransformer)
-from components.callbacks.damage_callbacks import ReflectCallback
 
 
 def main():
