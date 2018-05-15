@@ -40,6 +40,7 @@ class Harmable:
         self.hp = hp
         self.defense = defense
         self.damage_transformers = []
+        self.damage_callbacks = []
         if damage_transformers:
             for transformer in damage_transformers:
                 self.damage_transformers.append(transformer)
@@ -61,6 +62,10 @@ class Harmable:
             amount = transformer.transform_damage(amount, elements)
         self.hp -= amount
         results = []
+        if self.hp >= 0:
+            for callback in self.damage_callbacks:
+                results.extend(
+                    callback.execute(self.owner, source, amount, elements))
         if self.hp <= 0:
             results.append({ResultTypes.DEAD_ENTITY: self.owner})
         return results
@@ -87,7 +92,7 @@ class Harmable:
 
 class PinkJellyHarmable(Harmable):
 
-    def harm(self, game_map, amount, elements):
+    def harm(self, game_map, source, amount, elements):
         for transformer in self.damage_transformers:
             amount = transformer.transform_damage(amount, elements)
         self.hp -= amount
@@ -105,7 +110,7 @@ class PinkJellyHarmable(Harmable):
 
 class NullHarmable:
 
-    def harm(self, game_map, amount, elements):
+    def harm(self, game_map, source, amount, elements):
         return []
 
     def heal(self, amount, elements):
