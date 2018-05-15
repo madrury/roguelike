@@ -211,6 +211,7 @@ class ItemGroups(Enum):
     THROWING_KNIFE = auto()
     LEATHER_ARMOR = auto()
     LEATHER_ARMOR_OF_FIRE_RESIST = auto()
+    REFLECT_SUIT = auto()
 
 
 class MonsterGroups(Enum):

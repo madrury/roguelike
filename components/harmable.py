@@ -57,6 +57,9 @@ class Harmable:
         It is not neccesarrly that the entity take all of the damage.  The
         entity may have equipment or resistances that grant them transformers for
         incomping damage.
+
+        Damage can be responded to by providing callbacks in the
+        damage_callbacks list.  These are called whenver this method is called.
         """
         for transformer in self.damage_transformers:
             amount = transformer.transform_damage(amount, elements)
@@ -81,6 +84,14 @@ class Harmable:
     def remove_damage_transformers(self, transformers):
         for transformer in transformers:
             self.damage_transformers.remove(transformer)
+
+    def add_damage_callbacks(self, callbacks):
+        for callback in callbacks:
+            self.damage_callbacks.append(callback)
+
+    def remove_damage_callbacks(self, callbacks):
+        for callback in callbacks:
+            self.damage_callbacks.remove(callback)
 
     def render_status_bar(self, panel, x, y):
         self.status_bar.render(

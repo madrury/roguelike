@@ -10,12 +10,17 @@ class ArmorEquipable:
     object has a transform_damage method which is used (in the case of armor)
     to reduce or nullify damage.
     """
-    def __init__(self, damage_transformers=None):
+    def __init__(self, *, damage_transformers=None, damage_callbacks=None):
         self.equipped = False
         self.damage_transformers = []
+        self.damage_callbacks = []
         if damage_transformers:
             for transformer in damage_transformers:
                 self.damage_transformers.append(transformer)
+        if damage_callbacks:
+            for callback in damage_callbacks:
+                self.damage_callbacks.append(callback)
+            
 
     def equip(self, entity):
         results = []

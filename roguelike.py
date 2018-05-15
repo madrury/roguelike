@@ -70,8 +70,7 @@ def main():
                     attacker=Attacker(power=PLAYER_CONFIG["power"]),
                     harmable=Harmable(
                         hp=PLAYER_CONFIG["hp"],
-                        defense=PLAYER_CONFIG["defense"],
-                        damage_callbacks=[ReflectCallback()]),
+                        defense=PLAYER_CONFIG["defense"]),
                     equipment=Equipment(),
                     movable=Movable(),
                     burnable=AliveBurnable(),
@@ -684,6 +683,8 @@ def entity_equip_armor(entity, armor, turn_results):
         armor.equipable.equipped = True
         entity.harmable.add_damage_transformers(
             armor.equipable.damage_transformers)
+        entity.harmable.add_damage_callbacks(
+            armor.equipable.damage_callbacks)
         turn_results.append({
             ResultTypes.MESSAGE: Message(
                 f"{entity.name} equipped {armor.name}",
@@ -703,6 +704,8 @@ def entity_remove_armor(entity, armor, turn_results):
         armor.equipable.equipped = False
         entity.harmable.remove_damage_transformers(
             armor.equipable.damage_transformers)
+        entity.harmable.remove_damage_callbacks(
+            armor.equipable.damage_callbacks)
         turn_results.append({
             ResultTypes.MESSAGE: Message(
                 f"{entity.name} removed {armor.name}",
