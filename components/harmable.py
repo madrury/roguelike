@@ -22,14 +22,20 @@ class Harmable:
     defense: int
       The natural defense of this entity to resist damage.
 
-    damage_transformers: List[DamageFilter]
+    damage_callbacks: List[DamageFilter]
       A list of transformers to reduce (or increase) incoming damage.  Granted by
       armor or status.
+
+    damage_transformers: List[DamageFilter]
+      A list of callbacks to call when a damage event is triggered.  Useful for
+      things like counterattacks, status triggers, etc.
 
     status_bar: StatusBar
       An object that can render a status bar, displaying the entities current hp.
     """
-    def __init__(self, hp, defense, damage_transformers=None):
+    def __init__(self, hp, defense, *,
+                 damage_transformers=None,
+                 damage_callbacks=None):
         self.max_hp = hp
         self.hp = hp
         self.defense = defense
@@ -37,11 +43,14 @@ class Harmable:
         if damage_transformers:
             for transformer in damage_transformers:
                 self.damage_transformers.append(transformer)
+        if damage_callbacks:
+            for callback in damage_callbacks:
+                self.damage_callbacks.append(callback)
         self.status_bar = StatusBar(
             total_width=PANEL_CONFIG['bar_width'],
             bar_colors=STATUS_BAR_COLORS['hp_bar'])
 
-    def harm(self, game_map, amount, elements):
+    def harm(self, game_map, source, amount, elements):
         """Apply damage from an element or elements.
 
         It is not neccesarrly that the entity take all of the damage.  The
