@@ -6,7 +6,7 @@ from etc.enum import ResultTypes, Animations, Elements
 
 class NullThrowable:
 
-    def throw(self, game_map, throw, entities):
+    def throw(self, game_map, throw):
         return []
 
     def __bool__(self):
@@ -19,9 +19,9 @@ class HealthPotionThrowable:
         self.name = "Healing Potion"
         self.healing = healing
 
-    def throw(self, game_map, thrower, entities):
+    def throw(self, game_map, thrower):
         """Throw the health potion at a target."""
-        callback = HealthPotionCallback(self, game_map, thrower, entities)
+        callback = HealthPotionCallback(self, game_map, thrower)
         return [
             {ResultTypes.CURSOR_MODE: (thrower.x, thrower.y, callback)}]
 
@@ -31,16 +31,15 @@ class HealthPotionCallback:
     
     Called after the player enters a cursor selection.
     """
-    def __init__(self, owner, game_map, user, entities):
+    def __init__(self, owner, game_map, user):
         self.owner = owner
         self.game_map = game_map
         self.user = user
-        self.entities = entities
 
     def execute(self, x, y):
         results = []
         target = get_first_blocking_entity_along_path(
-            self.game_map, self.entities, (self.user.x, self.user.y), (x, y))
+            self.game_map, (self.user.x, self.user.y), (x, y))
         if target:
             text = "The health potion heals the {}'s wounds".format(
                 target.name)
@@ -75,8 +74,8 @@ class ThrowingKnifeThrowable:
     def __init__(self, damage=5):
         self.damage = damage
 
-    def throw(self, game_map, user, entities):
-        callback = ThrowingKnifeCallback(self, game_map, user, entities)
+    def throw(self, game_map, user):
+        callback = ThrowingKnifeCallback(self, game_map, user)
         return [
             {ResultTypes.CURSOR_MODE: (user.x, user.y, callback)}]
 
@@ -86,16 +85,15 @@ class ThrowingKnifeCallback:
     
     Called after the player enters a cursor selection.
     """
-    def __init__(self, owner, game_map, user, entities):
+    def __init__(self, owner, game_map, user):
         self.owner = owner
         self.game_map = game_map
         self.user = user
-        self.entities = entities
 
     def execute(self, x, y):
         results = []
         monster = get_first_blocking_entity_along_path(
-            self.game_map, self.entities, (self.user.x, self.user.y), (x, y))
+            self.game_map, (self.user.x, self.user.y), (x, y))
         if monster and monster.harmable:
             text = "The throwing knife pierces the {}'s flesh.".format(
                 monster.name)
