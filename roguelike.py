@@ -400,11 +400,11 @@ def main():
             # Add a new entity to the game.
             if new_entity:
                 entity = new_entity
-                entity.commitable.commit(game_map, entities)
+                entity.commitable.commit(game_map)
             # Remove an entity from the game.
             if remove_entity:
                 entity = remove_entity
-                entity.commitable.delete(game_map, entities)
+                entity.commitable.delete(game_map)
             # Handle death
             if dead_entity == player:
                 player_turn_results.extend(kill_player(player))
@@ -512,11 +512,11 @@ def main():
             # Add a new entity to the game.
             if new_entity:
                 entity = new_entity
-                entity.commitable.commit(game_map, entities)
+                entity.commitable.commit(game_map)
             # Remove an entity from the game.
             if remove_entity:
                 entity = remove_entity
-                entity.commitable.delete(game_map, entities)
+                entity.commitable.delete(game_map)
             # Handle death.
             if dead_entity == player:
                 enemy_turn_results.extend(kill_player(player))
