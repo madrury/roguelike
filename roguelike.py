@@ -88,6 +88,8 @@ def main():
     spawn_entities(MONSTER_SCHEDULE, MONSTER_GROUPS, game_map, entities)
     spawn_entities(ITEM_SCHEDULE, ITEM_GROUPS, game_map, entities)
 
+    game_map.entities = entities # TEMP.
+
     #-------------------------------------------------------------------------
     # Game State Varaibles
     #-------------------------------------------------------------------------

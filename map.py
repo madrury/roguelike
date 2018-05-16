@@ -24,6 +24,9 @@ class GameMap(Map):
     console: tdl.Console object
       The console to draw the dungeon floor on.
 
+    entities: List[Entity]
+      List of entities currently on the map.
+
     Attributes on Parent
     --------------------
     walkable: np.array of bool
@@ -67,6 +70,7 @@ class GameMap(Map):
         super().__init__(width, height)
         self.floor = floor
         self.console = console
+        self.entities = []
         # These need to be int8's to work with the tcod pathfinder
         self.explored = np.zeros((width, height), dtype=np.int8)
         self.water = np.zeros((width, height), dtype=np.int8)
