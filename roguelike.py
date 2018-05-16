@@ -488,7 +488,7 @@ def main():
             # Handle a move towards action.  Move towards a target.
             if move_towards:
                monster, target_x, target_y = move_towards
-               monster.movable.move_towards(target_x, target_y, game_map, entities)
+               monster.movable.move_towards(target_x, target_y, game_map)
             # Handle a move random adjacent action.  Move to a random adjacent
             # square.
             if move_random_adjacent:
