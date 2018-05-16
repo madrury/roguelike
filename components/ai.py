@@ -13,7 +13,7 @@ class BasicMonster:
             if monster.distance_to(target) >= 2:
                 results.append({ResultTypes.MOVE_TOWARDS: (monster, target.x, target.y)})
             elif target.harmable and target.harmable.hp > 0:
-                attack_results = monster.attacker.attack(target)
+                attack_results = monster.attacker.attack(game_map, None, target)
                 results.extend(attack_results)
         return results
 
@@ -33,7 +33,7 @@ class HuntingMonster:
             results.append({ResultTypes.MOVE_TOWARDS: (monster, target.x, target.y)})
         elif (monster.distance_to(target) <= 2 and 
               target.harmable and target.harmable.hp > 0):
-            attack_results = monster.attacker.attack(target)
+            attack_results = monster.attacker.attack(game_map, None, target)
             results.extend(attack_results)
         return results
 

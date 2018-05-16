@@ -42,6 +42,8 @@ from messages import Message, MessageLog
 from status_bar import StatusBar
 
 
+from components.callbacks.target_callbacks import LanceCallback
+
 def main():
 
     tdl.set_font('arial10x10.png', greyscale=True, altLayout=True)
@@ -62,7 +64,9 @@ def main():
                     PLAYER_CONFIG["name"],
                     blocks=True,
                     render_order=RenderOrder.ACTOR,
-                    attacker=Attacker(power=PLAYER_CONFIG["power"]),
+                    attacker=Attacker(
+                        power=PLAYER_CONFIG["power"],
+                        target_callback=LanceCallback()),
                     harmable=Harmable(
                         hp=PLAYER_CONFIG["hp"],
                         defense=PLAYER_CONFIG["defense"]),
@@ -648,7 +652,7 @@ def player_move_or_attack(move, *,
         # If you attempted to walk into a square occupied by an entity,
         # and that entity is not yourself.
         if blocker and blocker != player:
-            attack_results = player.attacker.attack(blocker)
+            attack_results = player.attacker.attack(game_map, entities, blocker)
             player_turn_results.extend(attack_results)
         else:
             player_turn_results.append({ResultTypes.MOVE: (dx, dy)})
