@@ -449,7 +449,7 @@ def main():
                 # Fire and gas spreads.
                 if entity.spreadable:
                     enemy_turn_results.extend(
-                        entity.spreadable.spread(game_map, entities))
+                        entity.spreadable.spread(game_map))
                 # Fire and gas dissipates.
                 if entity.dissipatable:
                     enemy_turn_results.extend(
@@ -646,7 +646,7 @@ def player_move_or_attack(move, *,
     destination_x, destination_y = player.x + dx, player.y + dy
     if game_map.walkable[destination_x, destination_y]:
         blocker = get_blocking_entity_at_location(
-            entities, destination_x, destination_y)
+            game_map, destination_x, destination_y)
         # If you attempted to walk into a square occupied by an entity,
         # and that entity is not yourself.
         if blocker and blocker != player:
