@@ -265,11 +265,7 @@ def get_blocking_entity_at_location(game_map, x, y):
 def get_first_blocking_entity_along_path(game_map, source, target):
     path = game_map.compute_path(source[0], source[1], target[0], target[1])
     for p in path:
-        entity = get_blocking_entity_at_location(game_map.entities, p[0], p[1])
+        entity = get_blocking_entity_at_location(game_map, p[0], p[1])
         if entity:
             return entity
     return None
-
-
-
-

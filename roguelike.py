@@ -628,7 +628,7 @@ def process_selected_item(item, *,
             player_turn_results.extend(item.usable.use(game_map, player, entities))
     elif game_state == GameStates.THROW_INVENTORY:
         if item.throwable:
-            player_turn_results.extend(item.throwable.throw(game_map, player, entities))
+            player_turn_results.extend(item.throwable.throw(game_map, player))
     elif game_state == GameStates.EQUIP_INVENTORY:
         if item.equipable and item.equipable.equipped:
             player_turn_results.extend(item.equipable.remove(player))
