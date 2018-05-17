@@ -625,7 +625,7 @@ def process_selected_item(item, *,
                           player_turn_results=None): 
     if game_state == GameStates.SHOW_INVENTORY:
         if item.usable:
-            player_turn_results.extend(item.usable.use(game_map, player, entities))
+            player_turn_results.extend(item.usable.use(game_map, player))
     elif game_state == GameStates.THROW_INVENTORY:
         if item.throwable:
             player_turn_results.extend(item.throwable.throw(game_map, player))
