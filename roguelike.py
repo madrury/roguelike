@@ -458,14 +458,14 @@ def main():
                 if entity.entity_type == EntityTypes.FIRE:
                     burnable_entities_at_position = (
                         entity.get_all_entities_with_component_in_same_position(
-                            entities, "burnable"))
+                            game_map, "burnable"))
                     for e in burnable_entities_at_position:
                         enemy_turn_results.extend(e.burnable.burn(game_map))
                 # Steam scalds entities in the same space.
                 if entity.entity_type == EntityTypes.STEAM:
                     scaldable_entities_at_position = (
                         entity.get_all_entities_with_component_in_same_position(
-                            entities, "scaldable"))
+                            game_map, "scaldable"))
                     for e in scaldable_entities_at_position:
                         enemy_turn_results.extend(e.scaldable.scald(game_map))
             game_state = GameStates.PLAYER_TURN

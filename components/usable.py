@@ -91,7 +91,7 @@ class MagicMissileUsable:
         """
         results = []
         closest_monsters = user.get_n_closest_entities_of_type(
-            game_map.entities, target_type, self.n_targets)
+            game_map, target_type, self.n_targets)
         if closest_monsters:
             for monster in (m for m in closest_monsters 
                             if user.distance_to(m) <= self.spell_range):
@@ -146,10 +146,10 @@ class FireblastUsable:
         results = []
         harmable_within_radius = (
             user.get_all_entities_with_component_within_radius(
-                game_map.entities, "harmable", self.radius))
+                game_map, "harmable", self.radius))
         burnable_within_radius = (
             user.get_all_entities_with_component_within_radius(
-                game_map.entities, "burnable", self.radius))
+                game_map, "burnable", self.radius))
         for entity in (x for x in harmable_within_radius if x != user):
             text = f"The {entity.name} is caught in the fireblast!"
             message = Message(text, COLORS.get('white'))
