@@ -1,4 +1,5 @@
 from entity import get_blocking_entity_at_location
+from utils.utils import adjacent_coordinates
 
 class LanceCallback:
 
@@ -15,4 +16,16 @@ class LanceCallback:
                 game_map, target.x + 2*dx, target.y + 2*dy)
             if new_target:
                 targets.append(new_target)
+        return targets
+
+class AxeCallback:
+
+    def execute(self, game_map, target, source):
+        adj = adjacent_coordinates((source.x, source.y))
+        targets = []
+        for x, y in adj:
+            if game_map.within_bounds(x, y):
+                target = get_blocking_entity_at_location(game_map, x, y)
+                if target:
+                    targets.append(target)
         return targets
