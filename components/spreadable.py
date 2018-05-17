@@ -14,9 +14,9 @@ class FireSpreadable:
     def __init__(self, p=PROBABILITIES['fire_spread']):
         self.p_spread = p
 
-    def spread(self, game_map, entities_list):
+    def spread(self, game_map):
         new_x, new_y = random_adjacent((self.owner.x, self.owner.y))
-        entities_at_location = get_entities_at_location(entities_list, new_x, new_y)
+        entities_at_location = get_entities_at_location(game_map, new_x, new_y)
         burnable_entities = [entity for entity in entities_at_location
                              if entity.burnable]
         results = []
@@ -35,7 +35,7 @@ class SteamSpreadable:
     def __init__(self, p=PROBABILITIES["steam_spread"]):
         self.p_spread = p
 
-    def spread(self, game_map, entities_list, p=PROBABILITIES["steam_spread"]):
+    def spread(self, game_map, p=PROBABILITIES["steam_spread"]):
         results = []
         adjacent = adjacent_coordinates((self.owner.x, self.owner.y))
         for new_x, new_y in adjacent:

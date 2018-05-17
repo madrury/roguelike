@@ -11,7 +11,7 @@ from components.shimmer import WaterShimmer
 from components.burnable import GrassBurnable, WaterBurnable
 
 
-def add_random_terrain(game_map, entities, terrain_config):
+def add_random_terrain(game_map, terrain_config):
     floor = game_map.floor
     min_pools, max_pools = (
         terrain_config['min_pools'], terrain_config['max_pools'])
@@ -20,14 +20,14 @@ def add_random_terrain(game_map, entities, terrain_config):
     for _ in range(n_pools):
         pool = random_pool(game_map, 
                            pool_room_proportion=pool_room_proportion)
-        entities.extend(pool.get_entities(game_map))
+        game_map.entities.extend(pool.get_entities(game_map))
 
     min_rivers, max_rivers = (
         terrain_config['min_rivers'], terrain_config['max_rivers'])
     n_rivers = random.randint(min_rivers, max_rivers)
     for _ in range(n_rivers):
         river = random_river(game_map)
-        entities.extend(river.get_entities(game_map))
+        game_map.entities.extend(river.get_entities(game_map))
 
     
     min_grass, max_grass = (
@@ -36,7 +36,7 @@ def add_random_terrain(game_map, entities, terrain_config):
     n_grass = random.randint(min_grass, max_grass)
     for _ in range(n_grass):
         grass = random_grass(game_map, grass_room_proportion)
-        entities.extend(grass.get_entities(game_map))
+        game_map.entities.extend(grass.get_entities(game_map))
 
 
 class Growable:

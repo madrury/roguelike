@@ -5,7 +5,7 @@ from etc.enum import ResultTypes, Animations, EntityTypes, Elements
 
 class NullUsable:
     
-    def use(self, game_map, user, entities):
+    def use(self, game_map, user):
         return []
 
     def __bool__(self):
@@ -29,7 +29,7 @@ class HealthPotionUsable:
         self.name = "Healing Potion"
         self.healing = healing
 
-    def use(self, game_map, reciever, entities):
+    def use(self, game_map, reciever):
         """Use the health potion on a reciever."""
         results = []
         if reciever.harmable.hp == reciever.harmable.max_hp:
@@ -75,8 +75,7 @@ class MagicMissileUsable:
         self.spell_range = spell_range
         self.n_targets = n_targets
 
-    def use(self, game_map, user, entities, 
-            target_type=EntityTypes.MONSTER):
+    def use(self, game_map, user, target_type=EntityTypes.MONSTER):
         """Cast the magic missile spell.
 
         Parameters
@@ -92,7 +91,7 @@ class MagicMissileUsable:
         """
         results = []
         closest_monsters = user.get_n_closest_entities_of_type(
-            entities, target_type, self.n_targets)
+            game_map, target_type, self.n_targets)
         if closest_monsters:
             for monster in (m for m in closest_monsters 
                             if user.distance_to(m) <= self.spell_range):
@@ -143,14 +142,14 @@ class FireblastUsable:
         self.damage = damage
         self.radius = radius
 
-    def use(self, game_map, user, entities):
+    def use(self, game_map, user):
         results = []
         harmable_within_radius = (
             user.get_all_entities_with_component_within_radius(
-                entities, "harmable", self.radius))
+                game_map, "harmable", self.radius))
         burnable_within_radius = (
             user.get_all_entities_with_component_within_radius(
-                entities, "burnable", self.radius))
+                game_map, "burnable", self.radius))
         for entity in (x for x in harmable_within_radius if x != user):
             text = f"The {entity.name} is caught in the fireblast!"
             message = Message(text, COLORS.get('white'))
