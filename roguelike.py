@@ -56,6 +56,13 @@ def main():
     panel_console = tdl.Console(SCREEN_WIDTH, PANEL_CONFIG['height'])
     message_log = MessageLog(MESSAGE_CONFIG)
 
+    # Generate the map and place player, monsters, and items.
+    floor = make_floor(FLOOR_CONFIG, ROOM_CONFIG)
+    game_map = GameMap(floor, map_console)
+    terrain = add_random_terrain(game_map, TERRAIN_CONFIG)
+    spawn_entities(MONSTER_SCHEDULE, MONSTER_GROUPS, game_map)
+    spawn_entities(ITEM_SCHEDULE, ITEM_GROUPS, game_map)
+
     # This is you.  Kill some Orcs.
     player = Entity(0, 0, PLAYER_CONFIG["char"], 
                     COLORS[PLAYER_CONFIG["color"]], 
@@ -72,23 +79,14 @@ def main():
                     scaldable=AliveScaldable(),
                     swimmable=Swimmable(PLAYER_CONFIG["swim_stamina"]),
                     inventory=Inventory(PLAYER_CONFIG["inventory_size"]))
-    entities = [player]
+    game_map.place_player(player)
+    game_map.entities.append(player)
 
     # Setup Initial Inventory, for testing.
     player.inventory.extend([HealthPotion.make(0, 0) for _ in range(3)])
     player.inventory.extend([ThrowingKnife.make(0, 0) for _ in range(3)])
     player.inventory.extend([MagicMissileScroll.make(0, 0) for _ in range(3)])
     player.inventory.extend([FireblastScroll.make(0, 0) for _ in range(3)])
-
-    # Generate the map and place player, monsters, and items.
-    floor = make_floor(FLOOR_CONFIG, ROOM_CONFIG)
-    game_map = GameMap(floor, map_console)
-    terrain = add_random_terrain(game_map, entities, TERRAIN_CONFIG)
-    game_map.place_player(player)
-    spawn_entities(MONSTER_SCHEDULE, MONSTER_GROUPS, game_map, entities)
-    spawn_entities(ITEM_SCHEDULE, ITEM_GROUPS, game_map, entities)
-
-    game_map.entities = entities # TEMP.
 
     #-------------------------------------------------------------------------
     # Game State Varaibles
@@ -143,14 +141,14 @@ def main():
         # Shimmer the colors of entities that shimmer.
         #---------------------------------------------------------------------
         if game_loop % SHIMMER_INTERVAL == 0:
-            for entity in entities:
+            for entity in game_map.entities:
                 if entity.shimmer:
                     entity.shimmer.shimmer()
 
         #---------------------------------------------------------------------
         # Render and display the dungeon and its inhabitates.
         #---------------------------------------------------------------------
-        game_map.update_and_draw_all(entities, fov_recompute)
+        game_map.update_and_draw_all(game_map.entities, fov_recompute)
 
         #---------------------------------------------------------------------
         # Render the UI
@@ -214,7 +212,7 @@ def main():
         # Clear all the entities drawn to the consoles, else we will re-draw
         # them in the same positions next game loop.
         #---------------------------------------------------------------------
-        game_map.undraw_all(entities)
+        game_map.undraw_all(game_map.entities)
 
         #---------------------------------------------------------------------
         # Get key input from the player.
@@ -253,7 +251,6 @@ def main():
         if move and game_state == GameStates.PLAYER_TURN:
             player_move_or_attack(move, 
                                   player=player, 
-                                  entities=entities, 
                                   game_map=game_map, 
                                   player_turn_results=player_turn_results)
             game_state = GameStates.ENEMY_TURN
@@ -264,7 +261,7 @@ def main():
         # the players space, put a pickup action on the queue.
         #----------------------------------------------------------------------
         elif pickup and game_state == GameStates.PLAYER_TURN:
-            pickup_entity(entities, player, player_turn_results)
+            pickup_entity(game_map, player, player_turn_results)
             game_state = GameStates.ENEMY_TURN
         #----------------------------------------------------------------------
         # Player Inventory use / drop
@@ -282,7 +279,6 @@ def main():
             item = player.inventory.items[inventory_index]
             process_selected_item(item, 
                                   player=player,
-                                  entities=entities,
                                   game_map=game_map, 
                                   game_state=game_state, 
                                   player_turn_results=player_turn_results)
@@ -362,7 +358,7 @@ def main():
             # Add an item to the inventory.
             if item_added:
                 player.inventory.add(item_added)
-                entities.remove(item_added)
+                game_map.entities.remove(item_added)
             # Remove consumed items from inventory
             if item_consumed:
                 consumed, item = item_consumed
@@ -374,7 +370,7 @@ def main():
             if item_dropped:
                 player.inventory.remove(item_dropped)
                 item_dropped.x, item_dropped.y = player.x, player.y
-                entities.append(item_dropped)
+                game_map.entities.append(item_dropped)
                 game_state, previous_game_state = (
                     GameStates.ENEMY_TURN, game_state)
             # Damage an entity.
@@ -441,7 +437,7 @@ def main():
         # All enemies and hazardous terrain and entities take thier turns.
         #---------------------------------------------------------------------
         if game_state == GameStates.ENEMY_TURN:
-            for entity in entities:
+            for entity in game_map.entities:
                 # Enemies move and attack if possible.
                 if entity.ai:
                     enemy_turn_results.extend(entity.ai.take_turn(
@@ -493,7 +489,7 @@ def main():
             # square.
             if move_random_adjacent:
                monster = move_random_adjacent
-               monster.movable.move_to_random_adjacent(game_map, entities)
+               monster.movable.move_to_random_adjacent(game_map)
             # Handle a simple message.
             if message:
                 message_log.add_message(message)
@@ -619,7 +615,6 @@ def get_user_input():
 
 def process_selected_item(item, *,
                           player=None,
-                          entities=None,
                           game_state=None,
                           game_map=None, 
                           player_turn_results=None): 
@@ -639,7 +634,6 @@ def process_selected_item(item, *,
 
 def player_move_or_attack(move, *,
                           player=None, 
-                          entities=None, 
                           game_map=None,
                           player_turn_results=None):
     dx, dy = move
@@ -655,8 +649,8 @@ def player_move_or_attack(move, *,
         else:
             player_turn_results.append({ResultTypes.MOVE: (dx, dy)})
 
-def pickup_entity(entities, player, player_turn_results):
-    for entity in entities:
+def pickup_entity(game_map, player, player_turn_results):
+    for entity in game_map.entities:
         if (entity.pickupable
             and entity.x == player.x and entity.y == player.y):
             pickup_results = player.inventory.pickup(entity)
