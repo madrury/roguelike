@@ -118,7 +118,6 @@ CANCEL_STATES = {
 #   Show the inventory menu.
 #.............................................................................
 class ResultTypes(Enum):
-    ADD_DAMAGE_TRANSFORMERS = auto()
     ADD_ENTITY = auto()
     ANIMATION = auto()
     CURSOR_MODE = auto()
@@ -129,6 +128,7 @@ class ResultTypes(Enum):
     CHANGE_SWIM_STAMINA = auto()
     DROP_INVENTORY = auto()
     EQUIP_ARMOR = auto()
+    EQUIP_WEAPON = auto()
     EQUIP_INVENTORY = auto()
     EXIT = auto()
     FULLSCREEN = auto()
@@ -143,7 +143,7 @@ class ResultTypes(Enum):
     MOVE_RANDOM_ADJACENT = auto()
     PICKUP = auto()
     REMOVE_ARMOR = auto()
-    REMOVE_DAMAGE_TRANSFORMERS = auto()
+    REMOVE_WEAPON = auto()
     REMOVE_ENTITY = auto()
     RESTORE_PLAYER_INPUT = auto()
     SHOW_INVENTORY = auto()

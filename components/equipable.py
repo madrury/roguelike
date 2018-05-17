@@ -41,7 +41,7 @@ class WeaponEquipable:
                           target_callback=None):
         self.equipped = False
         self.damage_transformers = []
-        self.target_callbacks = target_callback
+        self.target_callback = target_callback
         if damage_transformers:
             for transformer in damage_transformers:
                 self.damage_transformers.append(transformer)

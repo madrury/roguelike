@@ -300,6 +300,7 @@ def main():
             dead_entity = result.get(ResultTypes.DEAD_ENTITY)
             death_message = result.get(ResultTypes.DEATH_MESSAGE)
             equip_armor = result.get(ResultTypes.EQUIP_ARMOR)
+            equip_weapon = result.get(ResultTypes.EQUIP_WEAPON)
             heal = result.get(ResultTypes.HEAL)
             item_added = result.get(ResultTypes.ITEM_ADDED)
             item_consumed = result.get(ResultTypes.ITEM_CONSUMED)
@@ -308,6 +309,7 @@ def main():
             move = result.get(ResultTypes.MOVE)
             new_entity = result.get(ResultTypes.ADD_ENTITY)
             remove_armor = result.get(ResultTypes.REMOVE_ARMOR)
+            remove_weapon = result.get(ResultTypes.REMOVE_WEAPON)
             remove_entity = result.get(ResultTypes.REMOVE_ENTITY)
             restore_player_input = result.get(ResultTypes.RESTORE_PLAYER_INPUT)
 
@@ -370,10 +372,18 @@ def main():
             if equip_armor:
                 entity, armor = equip_armor
                 entity_equip_armor(entity, armor, player_turn_results)
+            # Don offensive equipment.
+            if equip_weapon:
+                entity, weapon = equip_weapon
+                entity_equip_weapon(entity, weapon, player_turn_results)
             # Remove defensive equipment.
             if remove_armor:
                 entity, armor = remove_armor
                 entity_remove_armor(entity, armor, player_turn_results)
+            # Remove offensive equipment.
+            if remove_weapon:
+                entity, weapon = remove_weapon
+                entity_remove_weapon(entity, weapon, player_turn_results)
             # Add a new entity to the game.
             if new_entity:
                 entity = new_entity
@@ -695,6 +705,26 @@ def entity_equip_armor(entity, armor, turn_results):
                 f"{entity.name} equipped {armor.name}",
                 COLORS['white'])})
 
+def entity_equip_weapon(entity, weapon, turn_results):
+    if not hasattr(entity, "attacker"):
+        raise AttributeError(
+            "Non harmable entities cannot equip Weapons")
+    if entity.equipment.weapon or weapon.equipable.equipped:
+        turn_results.append({
+            ResultTypes.MESSAGE: Message(
+                f"{entity.name} cannot equip {weapon.name}",
+                COLORS['white'])})
+    else:
+        entity.equipment.weapon = weapon
+        weapon.equipable.equipped = True
+        entity.attacker.add_damage_transformers(
+            weapon.equipable.damage_transformers)
+        entity.attacker.target_callback = weapon.equipable.target_callback
+        turn_results.append({
+            ResultTypes.MESSAGE: Message(
+                f"{entity.name} equipped {weapon.name}",
+                COLORS['white'])})
+
 def entity_remove_armor(entity, armor, turn_results):
     if not hasattr(entity, "harmable"):
         raise AttributeError(
@@ -714,6 +744,26 @@ def entity_remove_armor(entity, armor, turn_results):
         turn_results.append({
             ResultTypes.MESSAGE: Message(
                 f"{entity.name} removed {armor.name}",
+                COLORS['white'])})
+
+def entity_remove_weapon(entity, weapon, turn_results):
+    if not hasattr(entity, "attacker"):
+        raise AttributeError(
+            "Non harmable entities cannot un-equip Weapons")
+    if not entity.equipment.weapon or not weapon.equipable.equipped:
+        turn_results.append({
+            ResultTypes.MESSAGE: Message(
+                f"{entity.name} cannot un-equip {weapon.name}",
+                COLORS['white'])})
+    else:
+        entity.equipment.weapon = None
+        weapon.equipable.equipped = False
+        entity.attacker.remove_damage_transformers(
+            weapon.equipable.damage_transformers)
+        entity.attacker.target_callback = None
+        turn_results.append({
+            ResultTypes.MESSAGE: Message(
+                f"{entity.name} un-equipped {weapon.name}",
                 COLORS['white'])})
 
 if __name__ == '__main__':
