@@ -49,7 +49,7 @@ class ThrowingKnife:
 
     @staticmethod
     def make(x, y):
-        return Entity(x, y, chr(24), COLORS['white'], 'Throwing Knife',
+        return Entity(x, y, chr(24), COLORS['violet'], 'Throwing Knife',
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
                       usable=NullUsable(),

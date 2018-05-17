@@ -658,7 +658,7 @@ def player_move_or_attack(move, *,
         # If you attempted to walk into a square occupied by an entity,
         # and that entity is not yourself.
         if blocker and blocker != player:
-            attack_results = player.attacker.attack(game_map, entities, blocker)
+            attack_results = player.attacker.attack(game_map, blocker)
             player_turn_results.extend(attack_results)
         else:
             player_turn_results.append({ResultTypes.MOVE: (dx, dy)})

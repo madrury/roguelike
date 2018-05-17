@@ -15,7 +15,7 @@ class Attacker:
             for transformer in damage_transformers:
                 self.damage_transformers.append(transformer)
 
-    def attack(self, game_map, entities, target):
+    def attack(self, game_map, target):
         results = []
         if target.harmable is None:
             message = Message(
@@ -25,7 +25,7 @@ class Attacker:
         # Collect list of targets.
         if self.target_callback:
             targets = self.target_callback.execute(
-                game_map, entities, target, self.owner)
+                game_map, target, self.owner)
         else:
             targets = [target]
         # Base damage is the attacker's power.

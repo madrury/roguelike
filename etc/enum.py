@@ -209,6 +209,7 @@ class ItemGroups(Enum):
     MAGIC_MISSILE_SCROLL = auto()
     FIREBLAST_SCROLL = auto()
     THROWING_KNIFE = auto()
+    LANCE = auto()
     LEATHER_ARMOR = auto()
     LEATHER_ARMOR_OF_FIRE_RESIST = auto()
     REFLECT_SUIT = auto()
