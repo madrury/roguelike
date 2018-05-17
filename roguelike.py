@@ -54,39 +54,10 @@ def main():
        title='Roguelike Tutorial Game')
     map_console = tdl.Console(SCREEN_WIDTH, SCREEN_HEIGHT)
     panel_console = tdl.Console(SCREEN_WIDTH, PANEL_CONFIG['height'])
-    message_log = MessageLog(MESSAGE_CONFIG)
 
-    # Generate the map and place player, monsters, and items.
-    floor = make_floor(FLOOR_CONFIG, ROOM_CONFIG)
-    game_map = GameMap(floor, map_console)
-    terrain = add_random_terrain(game_map, TERRAIN_CONFIG)
-    spawn_entities(MONSTER_SCHEDULE, MONSTER_GROUPS, game_map)
-    spawn_entities(ITEM_SCHEDULE, ITEM_GROUPS, game_map)
+    game_map = create_map(map_console)
+    player = create_player(game_map)
 
-    # This is you.  Kill some Orcs.
-    player = Entity(0, 0, PLAYER_CONFIG["char"], 
-                    COLORS[PLAYER_CONFIG["color"]], 
-                    PLAYER_CONFIG["name"],
-                    blocks=True,
-                    render_order=RenderOrder.ACTOR,
-                    attacker=Attacker(power=PLAYER_CONFIG["power"]),
-                    harmable=Harmable(
-                        hp=PLAYER_CONFIG["hp"],
-                        defense=PLAYER_CONFIG["defense"]),
-                    equipment=Equipment(),
-                    movable=Movable(),
-                    burnable=AliveBurnable(),
-                    scaldable=AliveScaldable(),
-                    swimmable=Swimmable(PLAYER_CONFIG["swim_stamina"]),
-                    inventory=Inventory(PLAYER_CONFIG["inventory_size"]))
-    game_map.place_player(player)
-    game_map.entities.append(player)
-
-    # Setup Initial Inventory, for testing.
-    player.inventory.extend([HealthPotion.make(0, 0) for _ in range(3)])
-    player.inventory.extend([ThrowingKnife.make(0, 0) for _ in range(3)])
-    player.inventory.extend([MagicMissileScroll.make(0, 0) for _ in range(3)])
-    player.inventory.extend([FireblastScroll.make(0, 0) for _ in range(3)])
 
     #-------------------------------------------------------------------------
     # Game State Varaibles
@@ -96,17 +67,24 @@ def main():
     # Initial values for game states
     game_state = GameStates.PLAYER_TURN
     previous_game_state = game_state
-    # Used for control flow after and animation.
+    # Control flow after and animation:
+    #   After an animation finishes, we need to continue processing the stack
+    #   of player turn results.  This flag will skip the gathering of user
+    #   input which ususally occurs before processing the player turn stack.
     skip_player_input = False
     # We only want to recompute the fov when needed.  For example, if the
     # player just used an item and has not moved, the fov will be the same.
     fov_recompute = True
-    # Data needed to play an animation.
+    # This will be populated when we are playing an animation.  Call
+    # .next_frame on this object to draw the next frame of the animation. This
+    # method returns False until the animation is finished, after the last
+    # frame is player, will return True.
     animation_player = None
     # A queue for storing enemy targets that have taken damage.  Used to render
     # enemy health bars in the UI.
     harmed_queue = deque(maxlen=3)
-    # A cursor object for allowing the user to select a space on the map.
+    # A cursor object for allowing the user to select a space on the map, will
+    # be populated when the game state is in cursor select mode.
     cursor = None
     # A list of recently dead enemies.  We need this to defer drawing thier
     # corpses until *after* any animations have finished.
@@ -114,6 +92,8 @@ def main():
     # Stacks for holding the results of player and enemy turns.
     player_turn_results = []
     enemy_turn_results = []
+    # Log of game messages.
+    message_log = MessageLog(MESSAGE_CONFIG)
 
     #-------------------------------------------------------------------------
     # Main Game Loop.
@@ -588,6 +568,39 @@ def main():
             continue
 
 
+def create_map(map_console):
+    floor = make_floor(FLOOR_CONFIG, ROOM_CONFIG)
+    game_map = GameMap(floor, map_console)
+    terrain = add_random_terrain(game_map, TERRAIN_CONFIG)
+    spawn_entities(MONSTER_SCHEDULE, MONSTER_GROUPS, game_map)
+    spawn_entities(ITEM_SCHEDULE, ITEM_GROUPS, game_map)
+    return game_map
+
+def create_player(game_map):
+    # This is you.  Kill some Orcs.
+    player = Entity(0, 0, PLAYER_CONFIG["char"], 
+                    COLORS[PLAYER_CONFIG["color"]], 
+                    PLAYER_CONFIG["name"],
+                    blocks=True,
+                    render_order=RenderOrder.ACTOR,
+                    attacker=Attacker(power=PLAYER_CONFIG["power"]),
+                    harmable=Harmable(
+                        hp=PLAYER_CONFIG["hp"],
+                        defense=PLAYER_CONFIG["defense"]),
+                    equipment=Equipment(),
+                    movable=Movable(),
+                    burnable=AliveBurnable(),
+                    scaldable=AliveScaldable(),
+                    swimmable=Swimmable(PLAYER_CONFIG["swim_stamina"]),
+                    inventory=Inventory(PLAYER_CONFIG["inventory_size"]))
+    game_map.place_player(player)
+    game_map.entities.append(player)
+    # Setup Initial Inventory, for testing.
+    player.inventory.extend([HealthPotion.make(0, 0) for _ in range(3)])
+    player.inventory.extend([ThrowingKnife.make(0, 0) for _ in range(3)])
+    player.inventory.extend([MagicMissileScroll.make(0, 0) for _ in range(3)])
+    player.inventory.extend([FireblastScroll.make(0, 0) for _ in range(3)])
+    return player
 
 def construct_inventory_data(game_state):
     if game_state == GameStates.SHOW_INVENTORY:
