@@ -148,7 +148,7 @@ def main():
         #---------------------------------------------------------------------
         # Render and display the dungeon and its inhabitates.
         #---------------------------------------------------------------------
-        game_map.update_and_draw_all(game_map.entities, fov_recompute)
+        game_map.update_and_draw_all(fov_recompute)
 
         #---------------------------------------------------------------------
         # Render the UI
@@ -212,7 +212,7 @@ def main():
         # Clear all the entities drawn to the consoles, else we will re-draw
         # them in the same positions next game loop.
         #---------------------------------------------------------------------
-        game_map.undraw_all(game_map.entities)
+        game_map.undraw_all()
 
         #---------------------------------------------------------------------
         # Get key input from the player.

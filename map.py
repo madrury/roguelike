@@ -165,15 +165,15 @@ class GameMap(Map):
         self.update_position(x, y, char, fg, bg)
         self.console.draw_char(x, y, char, fg, bg)
 
-    def update_and_draw_all(self, entities, fov_recompute=False):
+    def update_and_draw_all(self, fov_recompute=False):
         self.update_and_draw_layout(fov_recompute)
         entities_in_render_order = sorted(
-            entities, key=lambda x: x.render_order.value)
+            self.entities, key=lambda x: x.render_order.value)
         for entity in entities_in_render_order:
             self.update_and_draw_entity(entity)
 
-    def undraw_all(self, entities):
-        for entity in entities:
+    def undraw_all(self):
+        for entity in self.entities:
             self.undraw_entity(entity)
 
     def update_and_draw_layout(self, fov_recompute=False):
