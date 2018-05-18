@@ -16,7 +16,7 @@ class Lance:
         name = 'Lance ' + f'(+{modifier})'
 #        damage_transformer = ElementalTransformer(
 #            base_offense + modifier, [Elements.NONE])
-        return Entity(x, y, CHARS['up_arrow'] , COLORS['violet'], name,
+        return Entity(x, y, CHARS['weapon'] , COLORS['violet'], name,
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
                       equipable=WeaponEquipable(
@@ -30,7 +30,7 @@ class Axe:
     def make(x, y, modifier=0):
         base_offense = 2
         name = 'Axe ' + f'(+{modifier})'
-        return Entity(x, y, CHARS['up_arrow'], COLORS['violet'], name,
+        return Entity(x, y, CHARS['weapon'], COLORS['violet'], name,
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
                       equipable=WeaponEquipable(

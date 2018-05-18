@@ -46,7 +46,7 @@ from components.callbacks.target_callbacks import LanceCallback
 
 def main():
 
-    tdl.set_font('arial10x10.png', greyscale=True, altLayout=True)
+    tdl.set_font('consolas10x10.png', greyscale=True, altLayout=True)
 
     # Setup playscreen with two consoles:
     #  - A place to draw the playscreen with the map and entities.

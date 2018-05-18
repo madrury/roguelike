@@ -2,6 +2,7 @@ from entity import Entity
 from colors import random_light_green, random_light_water, random_dark_water
 from etc.enum import Terrain, EntityTypes, RenderOrder
 from etc.colors import COLORS
+from etc.chars import CHARS
 
 from components.burnable import GrassBurnable, WaterBurnable
 from components.commitable import TerrainCommitable
@@ -40,7 +41,7 @@ class Grass:
         # Shift down the green component to make the grass dark.
         bg_color = (fg_color[0], fg_color[1] - 60, fg_color[2])
         return Entity(
-            x, y, '"',
+            x, y, CHARS['grass'],
             name="Grass",
             fg_color=fg_color,
             dark_fg_color=bg_color,
