@@ -40,6 +40,63 @@ def random_adjacent(center):
         (x - 1, y - 1), (x, y - 1), (x + 1, y + 1)]
     return random.choice(candidates)
 
+#-----------------------------------------------------------------------------
+# Entity Finders
+#-----------------------------------------------------------------------------
+def distance_to(source, target):
+    dx = target[0] - source[0]
+    dy = target[1] - source[1]
+    return math.sqrt(dx*dx + dy*dy)
+
+def get_closest_entity_of_type(position, game_map, entity_type):
+    """Get the closest entity of a given type from a list of entities."""
+    closest = None
+    closest_distance = math.inf
+    for entity in game_map.entities:
+        distance_to = distance_to(position, (entity.x, entity.y))
+        if (entity.entity_type == entity_type and
+            distance_to < closest_distance):
+            closest = entity
+            closest_distance = distance_to
+    return closest
+
+def get_n_closest_entities_of_type(position, game_map, entity_type, n):
+    entities_of_type = [
+        e for e in game_map.entities if e.entity_type == entity_type]
+    entities_of_type = sorted(
+        entities_of_type, key=lambda e: distance_to(position, (e.x, e.y)))
+    if len(entities_of_type) < n:
+        return entities_of_type
+    else:
+        return entities_of_type[:n]
+
+def get_all_entities_of_type_within_radius(
+    position, game_map, entity_type, radius):
+    """Get all the entities of a given type within a given range."""
+    within_radius = []
+    for entity in game_map.entities:
+        if (distance_to(position, (entity.x, entity.y)) <= radius and
+            entity.entity_type == entity_type):
+            within_radius.append(entity)
+    return within_radius
+
+def get_all_entities_of_type_in_position(position, game_map, entity_type):
+    return get_all_entities_of_type_within_radius(
+        position, game_map, entity_type, radius=0)
+
+def get_all_entities_with_component_within_radius(
+    position, game_map, component, radius):
+    """Get all the entities of a given type within a given range."""
+    within_radius = []
+    for entity in game_map.entities:
+        if (distance_to(position, (entity.x, entity.y)) <= radius 
+            and getattr(entity, component)):
+            within_radius.append(entity)
+    return within_radius
+
+def get_all_entities_with_component_in_position(position, game_map, component):
+    return get_all_entities_with_component_within_radius(
+        position, game_map, component, radius=0)
 
 def get_entities_at_location(game_map, x, y):
     entities_at_location = []
