@@ -419,10 +419,19 @@ def main():
         # If the player is swimming, decrease the swim stamina.  Otherwise,
         # recover swim stamina.
         if game_state == GameStates.ENEMY_TURN:
+            # Check if the player entered water.
+            # TODO: Swap this with an encroach check into a water tile.
             if game_map.water[player.x, player.y]:
                 enemy_turn_results.extend(player.swimmable.swim())
             else:
                 enemy_turn_results.extend(player.swimmable.rest())
+            # Interact with encroached entity.
+            entities = player.get_all_entities_with_component_in_same_position(
+                game_map, "encroachable")
+            if entities:
+                for entity in entities:
+                    enemy_turn_results.extend(
+                        entity.encroachable.encroach(game_map, player))
 
         #---------------------------------------------------------------------
         # All enemies and hazardous terrain and entities take thier turns.
