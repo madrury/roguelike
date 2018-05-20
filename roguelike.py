@@ -73,9 +73,6 @@ def main():
     #   of player turn results.  This flag will skip the gathering of user
     #   input which ususally occurs before processing the player turn stack.
     skip_player_input = False
-    # We only want to recompute the fov when needed.  For example, if the
-    # player just used an item and has not moved, the fov will be the same.
-    fov_recompute = True
     # This will be populated when we are playing an animation.  Call
     # .next_frame on this object to draw the next frame of the animation. This
     # method returns False until the animation is finished, after the last
@@ -109,14 +106,13 @@ def main():
         user_input = None
 
         #---------------------------------------------------------------------
-        # If needed, recompute the player's field of view.
+        # Recompute the player's field of view.
         #---------------------------------------------------------------------
-        if fov_recompute:
-            game_map.compute_fov(
-                player.x, player.y,
-                fov=FOV_CONFIG["algorithm"],
-                radius=FOV_CONFIG["radius"],
-                light_walls=FOV_CONFIG["light_walls"])
+        game_map.compute_fov(
+            player.x, player.y,
+            fov=FOV_CONFIG["algorithm"],
+            radius=FOV_CONFIG["radius"],
+            light_walls=FOV_CONFIG["light_walls"])
         
         #---------------------------------------------------------------------
         # Shimmer the colors of entities that shimmer.
@@ -129,7 +125,7 @@ def main():
         #---------------------------------------------------------------------
         # Render and display the dungeon and its inhabitates.
         #---------------------------------------------------------------------
-        game_map.update_and_draw_all(fov_recompute)
+        game_map.update_and_draw_all()
 
         #---------------------------------------------------------------------
         # Render the UI
@@ -228,7 +224,6 @@ def main():
         # queue.
         #----------------------------------------------------------------------
         # Unless the player moves, we do not need to recompute the fov.
-        fov_recompute = False
         if move and game_state == GameStates.PLAYER_TURN:
             player_move_or_attack(move, 
                                   player=player, 
@@ -334,7 +329,6 @@ def main():
             # Move the player.
             if move:
                 player.movable.move(game_map, *move)
-                fov_recompute = True
             # Add to the message log.
             if message:
                 message_log.add_message(message)
@@ -388,6 +382,7 @@ def main():
             if new_entity:
                 entity = new_entity
                 entity.commitable.commit(game_map)
+                player_turn_results.extend(encroach_on_all(game_map, entity))
             # Remove an entity from the game.
             if remove_entity:
                 entity = remove_entity
@@ -426,12 +421,7 @@ def main():
             else:
                 enemy_turn_results.extend(player.swimmable.rest())
             # Interact with encroached entity.
-            entities = player.get_all_entities_with_component_in_same_position(
-                game_map, "encroachable")
-            if entities:
-                for entity in entities:
-                    enemy_turn_results.extend(
-                        entity.encroachable.encroach(game_map, player))
+            enemy_turn_results.extend(encroach_on_all(player, game_map))
 
         #---------------------------------------------------------------------
         # All enemies and hazardous terrain and entities take thier turns.
@@ -692,6 +682,16 @@ def pickup_entity(game_map, player, player_turn_results):
     else:
         player_turn_results.append({
             ResultTypes.MESSAGE: Message("There is nothing to pick up!")})
+
+def encroach_on_all(encroacher, game_map):
+    results = []
+    entities = encroacher.get_all_entities_with_component_in_same_position(
+        game_map, "encroachable")
+    if entities:
+        for entity in entities:
+            results.extend(
+                entity.encroachable.encroach(game_map, encroacher))
+    return results
 
 def entity_equip_armor(entity, armor, turn_results):
     if not hasattr(entity, "harmable"):

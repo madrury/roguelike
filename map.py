@@ -172,8 +172,8 @@ class GameMap(Map):
         self.update_position(x, y, char, fg, bg)
         self.console.draw_char(x, y, char, fg, bg)
 
-    def update_and_draw_all(self, fov_recompute=False):
-        self.update_and_draw_layout(fov_recompute)
+    def update_and_draw_all(self):
+        self.update_and_draw_layout()
         entities_in_render_order = sorted(
             self.entities, key=lambda x: x.render_order.value)
         for entity in entities_in_render_order:
@@ -183,7 +183,7 @@ class GameMap(Map):
         for entity in self.entities:
             self.undraw_entity(entity)
 
-    def update_and_draw_layout(self, fov_recompute=False):
+    def update_and_draw_layout(self):
         for x, y in self:
             wall = not self.transparent[x, y]
             if self.fov[x, y]:
