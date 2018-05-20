@@ -26,7 +26,7 @@ def add_random_terrain(game_map, terrain_config):
     n_rivers = random.randint(min_rivers, max_rivers)
     for _ in range(n_rivers):
         river = random_river(game_map)
-        game_map.entities.extend(river.get_entities(game_map))
+        terrain.extend(river.get_entities(game_map))
 
     terrain.extend(
         random_growable(game_map, random_grass,
