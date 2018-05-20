@@ -185,7 +185,7 @@ class GameMap(Map):
 
     def update_and_draw_layout(self):
         for x, y in self:
-            wall = not self.transparent[x, y]
+            wall = not self.shrub[x, y] and not self.transparent[x, y]
             if self.fov[x, y]:
                 if wall:
                     self.update_and_draw_char(
