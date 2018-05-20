@@ -218,7 +218,7 @@ class FireblastAnimation:
             (self.source[0], self.source[1]), blast_radius)
         for x, y in blast_coordinates:
             if (self.game_map.within_bounds(x, y) and 
-                self.game_map.fov[x, y] and 
+                (self.game_map.fov[x, y] or self.game_map.shrub[x, y]) and 
                 self.game_map.walkable[x, y]):
                 self.game_map.draw_char(
                     x, y, '^', random_red_or_yellow(), random_red_or_yellow())
