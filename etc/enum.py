@@ -160,6 +160,12 @@ class EntityTypes(Enum):
     STEAM = auto()
 
 
+class CursorTypes(Enum):
+    PATH = auto()
+    RAY = auto()
+    ADJACENT = auto()
+
+
 class Animations(Enum):
     CONCATINATED = auto()
     HEALTH_POTION = auto()

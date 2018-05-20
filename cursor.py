@@ -1,4 +1,5 @@
 from etc.colors import COLORS
+from etc.enum import CursorTypes
 
 
 class Cursor:
@@ -35,7 +36,8 @@ class Cursor:
       callback should return a list of turn result dictionaries to be added to
       the player turn results stack.
     """
-    def __init__(self, x, y, game_map, callback):
+    def __init__(self, x, y, game_map, callback, *,
+                 cursor_type=CursorTypes.PATH):
         self.source = (x, y)
         self.x = x
         self.y = y
@@ -43,6 +45,7 @@ class Cursor:
         self.previous_y = None
         self.cursor_color = COLORS['cursor']
         self.path_color = COLORS['cursor_tail']
+        self.cursor_type = cursor_type
         self.game_map = game_map
         self.callback = callback
 
@@ -58,14 +61,22 @@ class Cursor:
         return self.callback.execute(self.x, self.y)
 
     def draw(self):
-        path = self.game_map.compute_path(
-            self.source[0], self.source[1], self.x, self.y)
-        for x, y in path[:-1]:
+        for x, y in self._path_iter():
             self.game_map.highlight_position(x, y, self.path_color)
         self.game_map.highlight_position(self.x, self.y, self.cursor_color)
 
     def clear(self):
+        for x, y in self._path_iter():
+            self.game_map.draw_position(x, y)
+
+    def _path_iter(self):
         path = self.game_map.compute_path(
             self.source[0], self.source[1], self.x, self.y)
-        for x, y in path:
-            self.game_map.draw_position(x, y)
+        if self.cursor_type == CursorTypes.PATH:
+            cursor_iter = iter(path[:-1])
+        elif self.cursor_type == CursorTypes.ADJACENT:
+            cursor_iter = iter(path[:2])
+        else:
+           raise NotImplementedError(
+               f"CursorType {self.cursor_type} not implemented.")
+        return cursor_iter
