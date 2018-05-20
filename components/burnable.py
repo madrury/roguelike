@@ -3,6 +3,7 @@ from etc.enum import ResultTypes, Elements
 from etc.colors import COLORS
 from etc.config import PROBABILITIES
 import game_objects.various
+import game_objects.terrain
 
 
 class ItemBurnable:
@@ -23,8 +24,8 @@ class AliveBurnable:
 
 
 class GrassBurnable:
-    """When grass burns, the grass entity is removed from the game and replaced
-    with a fire entity.
+    """When grass burns, the grass entity is removed from the game and
+    (sometimes) replaced with a fire entity.
     
     Grass does not alway burn, it only catched fire with a fixed probability.
     """
@@ -34,13 +35,18 @@ class GrassBurnable:
     def burn(self, game_map):
         fire = game_objects.various.Fire.maybe_make(
             game_map, self.owner.x, self.owner.y, p=self.p_fire)
+        burned_grass = game_objects.terrain.BurnedGrass.maybe_make(
+            game_map, self.owner.x, self.owner.y)
+        results = []
+        # The order of events here is important.  We need to remove the terrain
+        # entity (grass) from the tile before adding the new terrain (burned
+        # grass), since each tile can only hold one terrain.
+        if burned_grass:
+            results.append({ResultTypes.ADD_ENTITY: burned_grass})
         if fire:
-            return [{
-                ResultTypes.REMOVE_ENTITY: self.owner,
-                ResultTypes.ADD_ENTITY: fire}] 
-        else:
-            return [{
-                ResultTypes.REMOVE_ENTITY: self.owner}]
+            results.append({ResultTypes.ADD_ENTITY: fire})
+        results.append({ResultTypes.REMOVE_ENTITY: self.owner})        
+        return results
 
 
 class WaterBurnable:

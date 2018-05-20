@@ -1,10 +1,13 @@
+import random
+
 from entity import Entity
-from colors import random_light_green, random_light_water, random_dark_water
+from colors import (
+    random_light_green, random_light_water, random_dark_water, random_dark_grey)
 from etc.enum import Terrain, EntityTypes, RenderOrder
 from etc.colors import COLORS
 from etc.chars import CHARS
 
-from components.burnable import GrassBurnable, WaterBurnable
+import components.burnable
 from components.commitable import TerrainCommitable
 from components.shimmer import WaterShimmer
 
@@ -30,7 +33,7 @@ class Water:
             entity_type=EntityTypes.TERRAIN,
             render_order=RenderOrder.TERRAIN,
             shimmer=WaterShimmer(),
-            burnable=WaterBurnable())
+            burnable=components.burnable.WaterBurnable())
 
 
 class Grass:
@@ -48,5 +51,29 @@ class Grass:
             visible_out_of_fov=True,
             entity_type=EntityTypes.TERRAIN,
             render_order=RenderOrder.TERRAIN,
-            burnable=GrassBurnable(),
+            burnable=components.burnable.GrassBurnable(),
             commitable=TerrainCommitable())
+
+
+class BurnedGrass:
+
+    @staticmethod
+    def make(game_map, x, y):
+        fg_color = random_dark_grey()
+        return Entity(
+            x, y, CHARS['grass'],
+            name="Burned Grass",
+            fg_color=fg_color,
+            dark_fg_color=fg_color,
+            visible_out_of_fov=True,
+            entity_type=EntityTypes.TERRAIN,
+            render_order=RenderOrder.TERRAIN,
+            commitable=TerrainCommitable())
+
+    @staticmethod
+    def maybe_make(game_map, x, y, p=0.5):
+        spawn = random.uniform(0, 1) < p
+        if spawn:
+            return BurnedGrass.make(game_map, x, y)
+        else:
+            return None

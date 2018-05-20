@@ -28,6 +28,10 @@ def random_grey():
     g = int(random.uniform(200, 250))
     return (g, g, g)
 
+def random_dark_grey():
+    g = int(random.uniform(40, 130))
+    return (g, g, g)
+
 def random_light_water():
     return (40, 40, int(random.uniform(200, 255)))
 
