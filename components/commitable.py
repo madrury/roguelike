@@ -73,3 +73,11 @@ class TerrainCommitable:
         if self.owner in game_map.entities:
             game_map.terrain[self.owner.x, self.owner.y] = False
             game_map.entities.remove(self.owner)
+
+
+class ShrubCommitable(TerrainCommitable):
+
+    def commit(self, game_map):
+        super().commit(game_map)
+        game_map.transparent[self.owner.x, self.owner.y] = False
+

@@ -8,7 +8,7 @@ from etc.colors import COLORS
 from etc.chars import CHARS
 
 import components.burnable
-from components.commitable import TerrainCommitable
+from components.commitable import TerrainCommitable, ShrubCommitable
 from components.shimmer import WaterShimmer
 
 
@@ -96,4 +96,4 @@ class Shrub:
             entity_type=EntityTypes.TERRAIN,
             render_order=RenderOrder.TERRAIN,
             burnable=components.burnable.GrassBurnable(),
-            commitable=TerrainCommitable())
+            commitable=ShrubCommitable())
