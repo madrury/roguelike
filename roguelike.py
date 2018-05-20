@@ -13,7 +13,8 @@ from etc.enum import (
     INVENTORY_STATES, INPUT_STATES, CANCEL_STATES)
 
 from utils.debug import highlight_array
-from utils.utils import get_blocking_entity_at_location
+from utils.utils import (
+    get_blocking_entity_at_location, get_all_entities_with_component_in_position)
 
 from animations.animations import construct_animation
 from components.attacker import Attacker
@@ -447,15 +448,15 @@ def main():
                 # Fire burns entities in the same space.
                 if entity.entity_type == EntityTypes.FIRE:
                     burnable_entities_at_position = (
-                        entity.get_all_entities_with_component_in_same_position(
-                            game_map, "burnable"))
+                        get_all_entities_with_component_in_position(
+                            (entity.x, entity.y), game_map, "burnable"))
                     for e in burnable_entities_at_position:
                         enemy_turn_results.extend(e.burnable.burn(game_map))
                 # Steam scalds entities in the same space.
                 if entity.entity_type == EntityTypes.STEAM:
                     scaldable_entities_at_position = (
-                        entity.get_all_entities_with_component_in_same_position(
-                            game_map, "scaldable"))
+                        get_all_entities_with_component_in_position(
+                            (entity.x, entity.y), game_map, "scaldable"))
                     for e in scaldable_entities_at_position:
                         enemy_turn_results.extend(e.scaldable.scald(game_map))
             game_state = GameStates.PLAYER_TURN
@@ -690,8 +691,8 @@ def pickup_entity(game_map, player, player_turn_results):
 
 def encroach_on_all(encroacher, game_map):
     results = []
-    entities = encroacher.get_all_entities_with_component_in_same_position(
-        game_map, "encroachable")
+    entities = get_all_entities_with_component_in_position(
+        (encroacher.x, encroacher.y), game_map, "encroachable")
     if entities:
         for entity in entities:
             results.extend(

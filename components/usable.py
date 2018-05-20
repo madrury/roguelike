@@ -2,6 +2,9 @@ from etc.colors import COLORS
 from messages import Message
 from etc.enum import (
     ResultTypes, CursorTypes, Animations, EntityTypes, Elements)
+from utils.utils import (
+    distance_to, get_all_entities_with_component_within_radius,
+    get_n_closest_entities_of_type)
 
 
 class NullUsable:
@@ -91,17 +94,18 @@ class MagicMissileUsable:
           The type of target for the spell to seek.
         """
         results = []
-        closest_monsters = user.get_n_closest_entities_of_type(
-            game_map, target_type, self.n_targets)
+        closest_monsters = get_n_closest_entities_of_type(
+            (user.x, user.y), game_map, target_type, self.n_targets)
         if closest_monsters:
-            for monster in (m for m in closest_monsters 
-                            if user.distance_to(m) <= self.spell_range):
-                text = 'A shining magic missile pierces the {}'.format(
-                    monster.name)
-                message = Message(text, COLORS.get('white'))
-                results.append({ResultTypes.DAMAGE: (
-                                   monster, None, self.damage, [Elements.NONE]),
-                                ResultTypes.MESSAGE: message})
+            for monster in closest_monsters:
+                distance = distance_to((user.x, user.y), (monster.x, monster.y))
+                if distance <= self.spell_range:
+                    text = 'A shining magic missile pierces the {}'.format(
+                        monster.name)
+                    message = Message(text, COLORS.get('white'))
+                    results.append({ResultTypes.DAMAGE: (
+                                        monster, None, self.damage, [Elements.NONE]),
+                                    ResultTypes.MESSAGE: message})
             animations = [
                 (Animations.MAGIC_MISSILE, (user.x, user.y), (monster.x, monster.y))
                 for monster in closest_monsters]
@@ -146,11 +150,11 @@ class FireblastUsable:
     def use(self, game_map, user):
         results = []
         harmable_within_radius = (
-            user.get_all_entities_with_component_within_radius(
-                game_map, "harmable", self.radius))
+            get_all_entities_with_component_within_radius(
+                (user.x, user.y), game_map, "harmable", self.radius))
         burnable_within_radius = (
-            user.get_all_entities_with_component_within_radius(
-                game_map, "burnable", self.radius))
+            get_all_entities_with_component_within_radius(
+                (user.x, user.y), game_map, "burnable", self.radius))
         for entity in (x for x in harmable_within_radius if x != user):
             text = f"The {entity.name} is caught in the fireblast!"
             message = Message(text, COLORS.get('white'))

@@ -1,4 +1,5 @@
 from etc.enum import ResultTypes
+from utils.utils import distance_to
 
 class BasicMonster:
     """Simple monster ai.
@@ -9,8 +10,9 @@ class BasicMonster:
     def take_turn(self, target, game_map):
         results = []
         monster = self.owner
+        distance = distance_to((monster.x, monster.y), (target.x, target.y)) 
         if game_map.fov[monster.x, monster.y]:
-            if monster.distance_to(target) >= 2:
+            if distance >= 2:
                 results.append({ResultTypes.MOVE_TOWARDS: (monster, target.x, target.y)})
             elif target.harmable and target.harmable.hp > 0:
                 attack_results = monster.attacker.attack(game_map, target)
@@ -29,9 +31,10 @@ class HuntingMonster:
     def take_turn(self, target, game_map):
         results = []
         monster = self.owner
-        if 2 <= monster.distance_to(target) <= self.sensing_range:
+        distance =distance_to((monster.x, monster.y), (target.x, target.y)) 
+        if 2 <= distance <= self.sensing_range:
             results.append({ResultTypes.MOVE_TOWARDS: (monster, target.x, target.y)})
-        elif (monster.distance_to(target) <= 2 and 
+        elif (distance <= 2 and 
               target.harmable and target.harmable.hp > 0):
             attack_results = monster.attacker.attack(game_map, target)
             results.extend(attack_results)
@@ -50,9 +53,10 @@ class SkitteringMonster:
     def take_turn(self, target, game_map):
         results = []
         monster = self.owner
+        distance =distance_to((monster.x, monster.y), (target.x, target.y)) 
         if game_map.fov[monster.x, monster.y]:
-            if monster.distance_to(target) > self.skitering_range:
+            if distance > self.skitering_range:
                 results.append({ResultTypes.MOVE_RANDOM_ADJACENT: monster})
-            elif monster.distance_to(target) <= self.skitering_range:
+            elif distance <= self.skitering_range:
                 results.append({ResultTypes.MOVE_TOWARDS: (monster, target.x, target.y)})
         return results
