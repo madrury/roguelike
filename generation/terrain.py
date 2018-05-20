@@ -13,14 +13,11 @@ from components.burnable import GrassBurnable, WaterBurnable
 
 def add_random_terrain(game_map, terrain_config):
     floor = game_map.floor
-    min_pools, max_pools = (
-        terrain_config['min_pools'], terrain_config['max_pools'])
-    pool_room_proportion = terrain_config['pool_room_proportion']
-    n_pools = random.randint(min_pools, max_pools)
-    for _ in range(n_pools):
-        pool = random_pool(game_map, 
-                           pool_room_proportion=pool_room_proportion)
-        game_map.entities.extend(pool.get_entities(game_map))
+
+    add_random_growable(game_map, random_pool,
+                        min_terrains=terrain_config['min_pools'],
+                        max_terrains=terrain_config['max_pools'],
+                        terrain_proportion=terrain_config['pool_room_proportion'])
 
     min_rivers, max_rivers = (
         terrain_config['min_rivers'], terrain_config['max_rivers'])
@@ -29,21 +26,24 @@ def add_random_terrain(game_map, terrain_config):
         river = random_river(game_map)
         game_map.entities.extend(river.get_entities(game_map))
 
-    min_grass, max_grass = (
-        terrain_config['min_grass'], terrain_config['max_grass'])
-    grass_room_proportion = terrain_config['grass_room_proportion']
-    n_grass = random.randint(min_grass, max_grass)
-    for _ in range(n_grass):
-        grass = random_grass(game_map, grass_room_proportion)
-        game_map.entities.extend(grass.get_entities(game_map))
 
-    min_shrubs, max_shrubs = (
-        terrain_config['min_shrubs'], terrain_config['max_shrubs'])
-    shrubs_room_proportion = terrain_config['shrubs_room_proportion']
-    n_shrubs = random.randint(min_shrubs, max_shrubs)
-    for _ in range(n_shrubs):
-        shrubs = random_shrubs(game_map, shrubs_room_proportion)
-        game_map.entities.extend(shrubs.get_entities(game_map))
+    add_random_growable(game_map, random_grass,
+                        min_terrains=terrain_config['min_grass'],
+                        max_terrains=terrain_config['max_grass'],
+                        terrain_proportion=terrain_config['grass_room_proportion'])
+
+    add_random_growable(game_map, random_shrubs,
+                        min_terrains=terrain_config['min_shrubs'],
+                        max_terrains=terrain_config['max_shrubs'],
+                        terrain_proportion=terrain_config['shrubs_room_proportion'])
+
+
+def add_random_growable(game_map, terrain_creator, *,
+                        min_terrains, max_terrains, terrain_proportion):
+    n_terrains = random.randint(min_terrains, max_terrains)
+    for _ in range(n_terrains):
+        terrain = terrain_creator(game_map, proportion=terrain_proportion)
+        game_map.entities.extend(terrain.get_entities(game_map))
 
 
 class Growable:
@@ -130,7 +130,7 @@ class Pool(Growable):
         return Water.make(game_map, x, y)
 
 
-def random_pool(game_map, pool_room_proportion):
+def random_pool(game_map, proportion):
     """Grow a pool of water in a random room on a map."""
     pinned_room = random.choice(game_map.floor.rooms)
     while pinned_room.terrain != None:
@@ -138,7 +138,7 @@ def random_pool(game_map, pool_room_proportion):
     pool = Pool(game_map, pinned_room)
     pool.seed()
     pool.grow(stay_in_room=False,
-              proportion=pool_room_proportion)
+              proportion=proportion)
     return pool
 
 
@@ -234,14 +234,14 @@ class PatchOfGrass(Growable):
     def make(game_map, x, y):
         return Grass.make(game_map, x, y)
         
-def random_grass(game_map, grass_room_proportion):
+def random_grass(game_map, proportion):
     """Grow grass in a random room on the game map."""
     pinned_room = random.choice(game_map.floor.rooms)
     while pinned_room.terrain != None:
         pinned_room = random.choice(game_map.floor.rooms)
     grass = PatchOfGrass(game_map, pinned_room)
     # TODO: Move constant to config.
-    grass.grow(stay_in_room=True, proportion=grass_room_proportion)
+    grass.grow(stay_in_room=True, proportion=proportion)
     return grass
 
 
@@ -258,11 +258,11 @@ class PatchOfShrubs(Growable):
     def make(game_map, x, y):
         return Shrub.make(game_map, x, y)
 
-def random_shrubs(game_map, shrub_room_proportion):
+def random_shrubs(game_map, proportion):
     """Grow grass in a random room on the game map."""
     pinned_room = random.choice(game_map.floor.rooms)
     while pinned_room.terrain != None:
         pinned_room = random.choice(game_map.floor.rooms)
     shrubs = PatchOfShrubs(game_map, pinned_room)
-    shrubs.grow(stay_in_room=True, proportion=shrub_room_proportion)
+    shrubs.grow(stay_in_room=True, proportion=proportion)
     return shrubs
