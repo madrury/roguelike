@@ -80,8 +80,10 @@ class ShrubCommitable(TerrainCommitable):
     def commit(self, game_map):
         super().commit(game_map)
         game_map.transparent[self.owner.x, self.owner.y] = False
+        game_map.shrub[self.owner.x, self.owner.y] = True
 
     def delete(self, game_map):
         super().delete(game_map)
         game_map.transparent[self.owner.x, self.owner.y] = True
+        game_map.shrub[self.owner.x, self.owner.y] = False
 

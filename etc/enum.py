@@ -201,6 +201,7 @@ class RoutingOptions(Enum):
     AVOID_MONSTERS = auto()
     AVOID_STEAM = auto()
     AVOID_WATER = auto()
+    AVOID_SHRUBS = auto()
 
 
 class ItemGroups(Enum):

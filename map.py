@@ -50,6 +50,12 @@ class GameMap(Map):
     fire: np.array of bool
       Is the tile currently on fire?
 
+    shrub: np.array of bool
+      Does the tile currently contain a shrub?
+
+    steam: np.array of bool
+      Does he tile currently contain steam?
+
     blocked: np.array of bool
       Is there currently a blocking entity in this spot?
 
@@ -75,6 +81,7 @@ class GameMap(Map):
         self.explored = np.zeros((width, height), dtype=np.int8)
         self.water = np.zeros((width, height), dtype=np.int8)
         self.fire = np.zeros((width, height), dtype=np.int8)
+        self.shrub = np.zeros((width, height), dtype=np.int8)
         self.steam = np.zeros((width, height), dtype=np.int8)
         self.terrain = np.zeros((width, height), dtype=np.int8)
         self.blocked = np.zeros((width, height), dtype=np.int8)
