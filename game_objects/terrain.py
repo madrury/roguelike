@@ -77,3 +77,22 @@ class BurnedGrass:
             return BurnedGrass.make(game_map, x, y)
         else:
             return None
+
+
+class Shrub:
+
+    @staticmethod
+    def make(game_map, x, y):
+        fg_color = random_light_green()
+        # Shift down the green component to make the grass dark.
+        bg_color = (fg_color[0], fg_color[1] - 60, fg_color[2])
+        return Entity(
+            x, y, CHARS['shrub'],
+            name="Shrub",
+            fg_color=fg_color,
+            dark_fg_color=bg_color,
+            visible_out_of_fov=True,
+            entity_type=EntityTypes.TERRAIN,
+            render_order=RenderOrder.TERRAIN,
+            burnable=components.burnable.GrassBurnable(),
+            commitable=TerrainCommitable())

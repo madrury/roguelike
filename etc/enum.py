@@ -173,6 +173,7 @@ class Animations(Enum):
 class Terrain(Enum):
     POOL = auto()
     GRASS = auto()
+    SHRUBS = auto()
 
 
 class RenderOrder(Enum):

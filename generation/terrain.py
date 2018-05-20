@@ -6,7 +6,7 @@ from entity import Entity
 from etc.enum import Terrain, EntityTypes, RenderOrder
 from etc.colors import COLORS
 from utils.utils import adjacent_coordinates, random_adjacent
-from game_objects.terrain import Water, Grass
+from game_objects.terrain import Water, Grass, Shrub
 from components.shimmer import WaterShimmer
 from components.burnable import GrassBurnable, WaterBurnable
 
@@ -29,7 +29,6 @@ def add_random_terrain(game_map, terrain_config):
         river = random_river(game_map)
         game_map.entities.extend(river.get_entities(game_map))
 
-    
     min_grass, max_grass = (
         terrain_config['min_grass'], terrain_config['max_grass'])
     grass_room_proportion = terrain_config['grass_room_proportion']
@@ -37,6 +36,14 @@ def add_random_terrain(game_map, terrain_config):
     for _ in range(n_grass):
         grass = random_grass(game_map, grass_room_proportion)
         game_map.entities.extend(grass.get_entities(game_map))
+
+    min_shrubs, max_shrubs = (
+        terrain_config['min_shrubs'], terrain_config['max_shrubs'])
+    shrubs_room_proportion = terrain_config['shrubs_room_proportion']
+    n_shrubs = random.randint(min_shrubs, max_shrubs)
+    for _ in range(n_shrubs):
+        shrubs = random_shrubs(game_map, shrubs_room_proportion)
+        game_map.entities.extend(shrubs.get_entities(game_map))
 
 
 class Growable:
@@ -158,19 +165,26 @@ class River:
         self.game_map = game_map
         self.source_point = self.get_random_pool_point(source_room)
         self.dest_point = self.get_random_pool_point(dest_room)
-        self.coords = set(game_map.compute_path(
-            self.source_point[0], self.source_point[1],
-            self.dest_point[0], self.dest_point[1]))
-        self.grow(width)
+        self.coords = set()
+        self.grow()
+        self.thicken(width)
 
-    def grow(self, width=1):
+    def grow(self):
         """Choose a random point in both the source and destination pool, and
         fill the path between them with water terain.
         """
+        x0, y0 = self.source_point
+        x1, y1 = self.dest_point
+        path = self.game_map.compute_path(x0, y0, x1, y1)
+        for x, y in path:
+            self.game_map.terrain[x, y] = True
+            self.coords.add((x, y))
+
+    def thicken(self, width=1):
         for _ in range(width - 1):
-            new_coords = set()
             for river_coord in self.coords:
                 for coord in adjacent_coordinates(river_coord):
+                    x, y = coord
                     if not self.game_map.terrain[x, y]:
                         self.game_map.terrain[x, y] = True
                         new_coords.add(coord)
@@ -229,3 +243,26 @@ def random_grass(game_map, grass_room_proportion):
     # TODO: Move constant to config.
     grass.grow(stay_in_room=True, proportion=grass_room_proportion)
     return grass
+
+
+#-----------------------------------------------------------------------------
+# Field of Shrubs
+#-----------------------------------------------------------------------------
+class PatchOfShrubs(Growable):
+
+    def __init__(self, game_map, room):
+        super().__init__(game_map, room)
+        room.terrain = Terrain.SHRUBS
+
+    @staticmethod
+    def make(game_map, x, y):
+        return Shrub.make(game_map, x, y)
+
+def random_shrubs(game_map, shrub_room_proportion):
+    """Grow grass in a random room on the game map."""
+    pinned_room = random.choice(game_map.floor.rooms)
+    while pinned_room.terrain != None:
+        pinned_room = random.choice(game_map.floor.rooms)
+    shrubs = PatchOfShrubs(game_map, pinned_room)
+    shrubs.grow(stay_in_room=True, proportion=shrub_room_proportion)
+    return shrubs

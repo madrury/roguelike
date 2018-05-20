@@ -26,7 +26,10 @@ TERRAIN_CONFIG = {
     'max_rivers': 3,
     'min_grass': 1,
     'max_grass': 3,
-    'grass_room_proportion': 2.0
+    'grass_room_proportion': 2.0,
+    'min_shrubs': 1,
+    'max_shrubs': 3,
+    'shrubs_room_proportion': 2.0
 }
 
 PANEL_CONFIG = {
