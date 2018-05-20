@@ -10,6 +10,7 @@ from etc.chars import CHARS
 import components.burnable
 from components.commitable import TerrainCommitable, ShrubCommitable
 from components.shimmer import WaterShimmer
+from components.encroachable import ShrubEncroachable
 
 
 class Water:
@@ -96,4 +97,5 @@ class Shrub:
             entity_type=EntityTypes.TERRAIN,
             render_order=RenderOrder.TERRAIN,
             burnable=components.burnable.GrassBurnable(),
-            commitable=ShrubCommitable())
+            commitable=ShrubCommitable(),
+            encroachable=ShrubEncroachable())

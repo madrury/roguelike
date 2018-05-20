@@ -71,6 +71,9 @@ class Entity:
     dissipatable: Dissipatable object.
       Contains logic for the object spontaneously dissapating.
 
+    encroachable: Encroachable object.
+      Contains logic for responding to an entity entering the space.
+
     equipable: Equipable object.
       Contains logic for equipping the entity onto another entity.
 
@@ -125,6 +128,7 @@ class Entity:
                  burnable=None,
                  commitable=None,
                  dissipatable=None,
+                 encroachable=None,
                  equipable=None,
                  equipment=None,
                  harmable=None,
@@ -162,6 +166,7 @@ class Entity:
         self.add_component(burnable, "burnable")
         self.add_component(commitable, "commitable")
         self.add_component(dissipatable, "dissipatable")
+        self.add_component(encroachable, "encroachable")
         self.add_component(equipable, "equipable")
         self.add_component(equipment, "equipment")
         self.add_component(harmable, "harmable")
