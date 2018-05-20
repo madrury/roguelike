@@ -3,7 +3,9 @@ from messages import Message
 from etc.enum import (
     ResultTypes, CursorTypes, Animations, EntityTypes, Elements)
 from utils.utils import (
-    distance_to, get_all_entities_with_component_within_radius,
+    distance_to,
+    get_all_entities_with_component_within_radius,
+    get_all_entities_with_component_in_position,
     get_n_closest_entities_of_type)
 
 
@@ -190,7 +192,9 @@ class TorchCallback:
         self.user = user
 
     def execute(self, x, y):
-        resutls = []
+        results = []
+        burnable_entities = get_all_entities_with_component_in_position(
+            (x, y), self.game_map, "burnable")
+        for entity in burnable_entities:
+            results.extend(entity.burnable.burn(self.game_map))
         return results
-        
-
