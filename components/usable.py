@@ -162,3 +162,28 @@ class FireblastUsable:
                         ResultTypes.ANIMATION: (
                              Animations.FIREBLAST, (user.x, user.y), self.radius)})
         return results
+
+
+class TorchUsable:
+    
+    def __init__(self, damage=2):
+        self.name = "Torch"
+        self.damage = damage
+
+    def use(self, game_map, user):
+        callback = TorchCallback(self, game_map, user)
+        return [
+            {ResultTypes.CURSOR_MODE: (
+                user.x, user.y, callback, CursorTypes.ADJACENT)}]
+
+
+class TorchCallback:
+
+    def __init__(self, owner, game_map, user):
+        self.owner = owner
+        self.game_map = game_map
+        self.user = user
+
+    def execute(self, x, y):
+        print(f"Torch targeting {x}, {y}")
+

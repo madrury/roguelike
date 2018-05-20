@@ -402,9 +402,11 @@ def main():
                 break
             # Enter cursor select mode.
             if cursor_mode:
-                x, y, callback = cursor_mode
+                x, y, callback, mode = cursor_mode
                 cursor = Cursor(
-                    player.x, player.y, game_map, callback=callback)
+                    player.x, player.y, game_map,
+                    callback=callback,
+                    cursor_type=mode)
                 game_state, previous_game_state = (
                     GameStates.CURSOR_INPUT, game_state)
 

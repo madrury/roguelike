@@ -1,7 +1,7 @@
 from etc.colors import COLORS
 from messages import Message
 from entity import get_first_blocking_entity_along_path
-from etc.enum import ResultTypes, Animations, Elements
+from etc.enum import ResultTypes, CursorTypes, Animations, Elements
 
 
 class NullThrowable:
@@ -23,7 +23,8 @@ class HealthPotionThrowable:
         """Throw the health potion at a target."""
         callback = HealthPotionCallback(self, game_map, thrower)
         return [
-            {ResultTypes.CURSOR_MODE: (thrower.x, thrower.y, callback)}]
+            {ResultTypes.CURSOR_MODE: (
+                thrower.x, thrower.y, callback, CursorTypes.PATH)}]
 
 
 class HealthPotionCallback:
@@ -77,7 +78,8 @@ class ThrowingKnifeThrowable:
     def throw(self, game_map, user):
         callback = ThrowingKnifeCallback(self, game_map, user)
         return [
-            {ResultTypes.CURSOR_MODE: (user.x, user.y, callback)}]
+            {ResultTypes.CURSOR_MODE: (
+                user.x, user.y, callback, CursorTypes.PATH)}]
 
 
 class ThrowingKnifeCallback:
