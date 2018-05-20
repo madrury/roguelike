@@ -1,6 +1,7 @@
 from etc.colors import COLORS
 from messages import Message
-from etc.enum import ResultTypes, Animations, EntityTypes, Elements
+from etc.enum import (
+    ResultTypes, CursorTypes, Animations, EntityTypes, Elements)
 
 
 class NullUsable:

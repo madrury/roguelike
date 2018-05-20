@@ -24,7 +24,8 @@ from components.movable import Movable
 from components.scaldable import AliveScaldable
 from components.swimmable import Swimmable
 from game_objects.items import (
-    HealthPotion, MagicMissileScroll, FireblastScroll, ThrowingKnife)
+    HealthPotion, MagicMissileScroll, FireblastScroll, ThrowingKnife,
+    Torch)
 from game_objects.armor import LeatherArmor
 from generation.floor import make_floor
 from generation.item_groups import ITEM_SCHEDULE, ITEM_GROUPS
@@ -612,6 +613,7 @@ def create_player(game_map):
     player.inventory.extend([ThrowingKnife.make(0, 0) for _ in range(3)])
     player.inventory.extend([MagicMissileScroll.make(0, 0) for _ in range(3)])
     player.inventory.extend([FireblastScroll.make(0, 0) for _ in range(3)])
+    player.inventory.extend([Torch.make(0, 0) for _ in range(3)])
     return player
 
 def construct_inventory_data(game_state):

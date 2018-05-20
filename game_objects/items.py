@@ -4,7 +4,8 @@ from etc.colors import COLORS
 from etc.enum import EntityTypes, RenderOrder, ItemGroups
 
 from components.usable import (
-    NullUsable, HealthPotionUsable, MagicMissileUsable, FireblastUsable)
+    NullUsable, HealthPotionUsable, MagicMissileUsable, FireblastUsable,
+    TorchUsable)
 from components.throwable import (
     NullThrowable, HealthPotionThrowable, ThrowingKnifeThrowable)
 from components.burnable import ItemBurnable
@@ -54,3 +55,14 @@ class ThrowingKnife:
                       render_order=RenderOrder.ITEM,
                       usable=NullUsable(),
                       throwable=ThrowingKnifeThrowable())
+
+
+class Torch:
+
+    @staticmethod
+    def make(x, y):
+        return Entity(x, y, '/', COLORS['violet'], 'Torch',
+                      entity_type=EntityTypes.ITEM,
+                      render_order=RenderOrder.ITEM,
+                      usable=TorchUsable(),
+                      throwable=NullThrowable())

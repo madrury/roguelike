@@ -75,7 +75,7 @@ class Cursor:
         if self.cursor_type == CursorTypes.PATH:
             cursor_iter = iter(path[:-1])
         elif self.cursor_type == CursorTypes.ADJACENT:
-            cursor_iter = iter(path[:2])
+            cursor_iter = iter(path[:1])
         else:
            raise NotImplementedError(
                f"CursorType {self.cursor_type} not implemented.")
