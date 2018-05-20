@@ -1,9 +1,9 @@
 import random
 
-from entity import get_entities_at_location
 from etc.config import PROBABILITIES
 from etc.enum import ResultTypes
-from utils.utils import adjacent_coordinates, random_adjacent
+from utils.utils import (
+    adjacent_coordinates, random_adjacent, get_entities_at_location)
 import game_objects.various
 
 

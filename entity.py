@@ -249,27 +249,3 @@ class Entity:
     def get_all_entities_with_component_in_same_position(self, game_map, component):
         return self.get_all_entities_with_component_within_radius(
             game_map, component, radius=0)
-
-
-
-def get_entities_at_location(game_map, x, y):
-    entities_at_location = []
-    for entity in game_map.entities:
-        if entity.x == x and entity.y == y:
-            entities_at_location.append(entity)
-    return entities_at_location
-
-def get_blocking_entity_at_location(game_map, x, y):
-    """Get a blocking entity at a location, if any, from a list of entities."""
-    for entity in game_map.entities:
-        if entity.blocks and entity.x == x and entity.y == y:
-            return entity
-    return None
-
-def get_first_blocking_entity_along_path(game_map, source, target):
-    path = game_map.compute_path(source[0], source[1], target[0], target[1])
-    for p in path:
-        entity = get_blocking_entity_at_location(game_map, p[0], p[1])
-        if entity:
-            return entity
-    return None

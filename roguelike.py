@@ -13,6 +13,7 @@ from etc.enum import (
     INVENTORY_STATES, INPUT_STATES, CANCEL_STATES)
 
 from utils.debug import highlight_array
+from utils.utils import get_blocking_entity_at_location
 
 from animations.animations import construct_animation
 from components.attacker import Attacker
@@ -35,7 +36,7 @@ from generation.terrain import add_random_terrain
 
 from cursor import Cursor
 from death_functions import kill_monster, kill_player, make_corpse
-from entity import Entity, get_blocking_entity_at_location
+from entity import Entity
 from input_handlers import handle_keys
 from map import GameMap
 from menus import invetory_menu

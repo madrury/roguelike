@@ -1,5 +1,4 @@
-from entity import get_blocking_entity_at_location
-from utils.utils import adjacent_coordinates
+from utils.utils import adjacent_coordinates, get_blocking_entity_at_location
 
 class LanceCallback:
 

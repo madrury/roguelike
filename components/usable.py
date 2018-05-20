@@ -186,5 +186,7 @@ class TorchCallback:
         self.user = user
 
     def execute(self, x, y):
-        print(f"Torch targeting {x}, {y}")
+        resutls = []
+        return results
+        
 

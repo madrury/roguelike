@@ -1,6 +1,6 @@
 from etc.colors import COLORS
 from messages import Message
-from entity import get_first_blocking_entity_along_path
+from utils.utils import get_first_blocking_entity_along_path
 from etc.enum import ResultTypes, CursorTypes, Animations, Elements
 
 
