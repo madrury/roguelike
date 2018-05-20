@@ -52,7 +52,7 @@ class Cursor:
     def move(self, dx, dy):
         self.clear()
         x, y, = self.x + dx, self.y + dy
-        if self.game_map.walkable[x, y] and self.game_map.fov[x, y]:
+        if self._position_valid(x, y):
             self.previous_x, self.previous_y = self.x, self.y
             self.x, self.y = x, y
 
@@ -68,6 +68,18 @@ class Cursor:
     def clear(self):
         for x, y in self._path_iter():
             self.game_map.draw_position(x, y)
+
+    def _position_valid(self, x, y):
+        if self.cursor_type == CursorTypes.PATH:
+            return self.game_map.walkable[x, y] and self.game_map.fov[x, y]
+        elif self.cursor_type == CursorTypes.ADJACENT:
+            return (self.game_map.walkable[x, y] 
+                    and self.game_map.fov[x, y]
+                    and len(self.game_map.compute_path(
+                        self.source[0], self.source[1], x, y)) <= 1)
+        else:
+            return True
+
 
     def _path_iter(self):
         path = self.game_map.compute_path(
