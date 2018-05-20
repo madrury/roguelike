@@ -33,7 +33,8 @@ class Water:
             entity_type=EntityTypes.TERRAIN,
             render_order=RenderOrder.TERRAIN,
             shimmer=WaterShimmer(),
-            burnable=components.burnable.WaterBurnable())
+            burnable=components.burnable.WaterBurnable(),
+            commitable=TerrainCommitable())
 
 
 class Grass:

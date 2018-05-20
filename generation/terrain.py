@@ -14,10 +14,12 @@ from components.burnable import GrassBurnable, WaterBurnable
 def add_random_terrain(game_map, terrain_config):
     floor = game_map.floor
 
-    add_random_growable(game_map, random_pool,
+    terrain = []
+    terrain.extend(
+        random_growable(game_map, random_pool,
                         min_terrains=terrain_config['min_pools'],
                         max_terrains=terrain_config['max_pools'],
-                        terrain_proportion=terrain_config['pool_room_proportion'])
+                        terrain_proportion=terrain_config['pool_room_proportion']))
 
     min_rivers, max_rivers = (
         terrain_config['min_rivers'], terrain_config['max_rivers'])
@@ -26,24 +28,34 @@ def add_random_terrain(game_map, terrain_config):
         river = random_river(game_map)
         game_map.entities.extend(river.get_entities(game_map))
 
-
-    add_random_growable(game_map, random_grass,
+    terrain.extend(
+        random_growable(game_map, random_grass,
                         min_terrains=terrain_config['min_grass'],
                         max_terrains=terrain_config['max_grass'],
-                        terrain_proportion=terrain_config['grass_room_proportion'])
-
-    add_random_growable(game_map, random_shrubs,
+                        terrain_proportion=terrain_config['grass_room_proportion']))
+    terrain.extend(
+        random_growable(game_map, random_shrubs,
                         min_terrains=terrain_config['min_shrubs'],
                         max_terrains=terrain_config['max_shrubs'],
-                        terrain_proportion=terrain_config['shrubs_room_proportion'])
+                        terrain_proportion=terrain_config['shrubs_room_proportion']))
+    # We've been using this array to track when terrain was generated in a tile
+    # through the terrain generation process.  Now we want to commit them to
+    # the map, but the array will block terrain from being places anywhere that
+    # it contains a true.  We just want to force commit all the terrain we
+    # generated, so we zero out the array first.
+    game_map.terrain[:, :] = 0
+    for t in terrain:
+        t.commitable.commit(game_map)
 
 
-def add_random_growable(game_map, terrain_creator, *,
+def random_growable(game_map, terrain_creator, *,
                         min_terrains, max_terrains, terrain_proportion):
     n_terrains = random.randint(min_terrains, max_terrains)
+    terrain = []
     for _ in range(n_terrains):
-        terrain = terrain_creator(game_map, proportion=terrain_proportion)
-        game_map.entities.extend(terrain.get_entities(game_map))
+        t = terrain_creator(game_map, proportion=terrain_proportion)
+        terrain.extend(t.get_entities(game_map))
+    return terrain
 
 
 class Growable:
