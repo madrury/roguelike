@@ -35,6 +35,12 @@ class Cursor:
       callback is called, passing in the x, y position of the cursor.  This
       callback should return a list of turn result dictionaries to be added to
       the player turn results stack.
+
+    cursor_type: CursorTypes object.
+      The type of election mode.  Options are PATH (draw a path from the player
+      to the cursor), ADJACENT (only adjacent squares are selectable, and RAY
+      (all tiles along a ray from the source through the current position of
+      the cursor are highlighted).
     """
     def __init__(self, x, y, game_map, callback, *,
                  cursor_type=CursorTypes.PATH):
@@ -79,7 +85,6 @@ class Cursor:
                         self.source[0], self.source[1], x, y)) <= 1)
         else:
             return True
-
 
     def _path_iter(self):
         path = self.game_map.compute_path(

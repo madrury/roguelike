@@ -172,7 +172,11 @@ class FireblastUsable:
 
 
 class TorchUsable:
-    
+    """A burning torch.
+
+    The torch can only target adjacent tile.  It burns any burnable entites
+    residing in the targeted tile.
+    """
     def __init__(self, damage=2):
         self.name = "Torch"
         self.damage = damage
