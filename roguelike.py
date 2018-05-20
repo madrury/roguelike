@@ -355,7 +355,7 @@ def main():
                 target, source, amount, elements = damage
                 damage_result = target.harmable.harm(
                     game_map, source, amount, elements)
-                enemy_turn_results.extend(damage_result)
+                player_turn_results.extend(damage_result)
                 if target not in harmed_queue:
                     harmed_queue.appendleft(target)
             # Heal an entity
@@ -382,7 +382,7 @@ def main():
             if new_entity:
                 entity = new_entity
                 entity.commitable.commit(game_map)
-                player_turn_results.extend(encroach_on_all(game_map, entity))
+                player_turn_results.extend(encroach_on_all(entity, game_map))
             # Remove an entity from the game.
             if remove_entity:
                 entity = remove_entity
