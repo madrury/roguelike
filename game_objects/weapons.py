@@ -3,6 +3,7 @@ from etc.colors import COLORS
 from etc.chars import CHARS
 from etc.enum import EntityTypes, RenderOrder
 
+from components.commitable import BaseCommitable
 from components.equipable import WeaponEquipable
 from components.callbacks.target_callbacks import (
     LanceCallback, AxeCallback)
@@ -19,6 +20,7 @@ class Lance:
         return Entity(x, y, CHARS['weapon'] , COLORS['violet'], name,
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
+                      commitable=BaseCommitable(),
                       equipable=WeaponEquipable(
                           #damage_transformers=[damage_transformer],
                           target_callback=LanceCallback()))
@@ -33,5 +35,6 @@ class Axe:
         return Entity(x, y, CHARS['weapon'], COLORS['violet'], name,
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
+                      commitable=BaseCommitable(),
                       equipable=WeaponEquipable(
                           target_callback=AxeCallback()))

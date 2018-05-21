@@ -2,6 +2,8 @@ from entity import Entity
 
 from etc.colors import COLORS
 from etc.enum import EntityTypes, RenderOrder, ItemGroups, Elements
+
+from components.commitable import BaseCommitable
 from components.equipable import ArmorEquipable
 from components.damage_transformers.defensive_transformers import (
     ElementalTransformer)
@@ -19,6 +21,7 @@ class LeatherArmor:
         return Entity(x, y, '&', COLORS['violet'], name,
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
+                      commitable=BaseCommitable(),
                       equipable=ArmorEquipable(damage_transformers=[
                           damage_transformer]))
 
@@ -33,6 +36,7 @@ class LeatherArmorOfFireResist:
         return Entity(x, y, '&', COLORS['violet'], name,
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
+                      commitable=BaseCommitable(),
                       equipable=ArmorEquipable(damage_transformers=[damage_transformer]))
 
 class ReflectSuit:
@@ -45,4 +49,5 @@ class ReflectSuit:
         return Entity(x, y, '&', COLORS['violet'], name,
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
+                      commitable=BaseCommitable(),
                       equipable=ArmorEquipable(damage_callbacks=[damage_callback]))

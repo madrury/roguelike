@@ -338,7 +338,7 @@ def main():
             # Add an item to the inventory.
             if item_added:
                 player.inventory.add(item_added)
-                game_map.entities.remove(item_added)
+                item_added.commitable.delete(game_map)
             # Remove consumed items from inventory
             if item_consumed:
                 consumed, item = item_consumed
