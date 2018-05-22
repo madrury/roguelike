@@ -4,6 +4,7 @@ from etc.colors import COLORS
 from etc.enum import EntityTypes, RenderOrder, ItemGroups
 
 from components.burnable import ItemBurnable
+from components.consumable import Consumable
 from components.commitable import BaseCommitable
 from components.usable import (
     NullUsable, HealthPotionUsable, MagicMissileUsable, FireblastUsable,
@@ -58,6 +59,7 @@ class ThrowingKnife:
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
                       commitable=BaseCommitable(),
+                      consumable=Consumable(uses=5),
                       usable=NullUsable(),
                       throwable=ThrowingKnifeThrowable())
 

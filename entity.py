@@ -126,6 +126,7 @@ class Entity:
                  ai=None,
                  attacker=None,
                  burnable=None,
+                 consumable=None,
                  commitable=None,
                  dissipatable=None,
                  encroachable=None,
@@ -164,6 +165,7 @@ class Entity:
         self.add_component(ai, "ai")
         self.add_component(attacker, "attacker")
         self.add_component(burnable, "burnable")
+        self.add_component(consumable, "consumable")
         self.add_component(commitable, "commitable")
         self.add_component(dissipatable, "dissipatable")
         self.add_component(encroachable, "encroachable")

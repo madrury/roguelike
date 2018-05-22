@@ -647,6 +647,11 @@ def process_selected_item(item, *,
                           game_state=None,
                           game_map=None, 
                           player_turn_results=None): 
+    if (game_state in INVENTORY_STATES 
+        and game_state != GameStates.DROP_INVENTORY):
+        if item.consumable:
+            player_turn_results.extend(item.consumable.consume())
+    # Check which inventory screen we are on and call the appropriate method.
     if game_state == GameStates.SHOW_INVENTORY:
         if item.usable:
             player_turn_results.extend(item.usable.use(game_map, player))

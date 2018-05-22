@@ -97,21 +97,19 @@ class ThrowingKnifeCallback:
         monster = get_first_blocking_entity_along_path(
             self.game_map, (self.user.x, self.user.y), (x, y))
         if monster and monster.harmable:
-            text = "The throwing knife pierces the {}'s flesh.".format(
-                monster.name)
+            text = f"The throwing knife pierces the {monster.name}'s flesh."
             results.append({
                 ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
                 ResultTypes.DAMAGE: (monster, None, self.owner.damage, [Elements.NONE]),
-                ResultTypes.ITEM_CONSUMED: (True, self.owner.owner),
                 ResultTypes.ANIMATION: (
                     Animations.THROWING_KNIFE,
                     (self.user.x, self.user.y),
-                    (monster.x, monster.y))})
+                    (monster.x, monster.y))
+            })
         else:
             # Todo: Have the knife drop on the ground.
             text = "The throwing knife clatters to the ground"
             results.append({
                 ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
-                ResultTypes.ITEM_CONSUMED: (True, self.owner.owner)
             })
         return results
