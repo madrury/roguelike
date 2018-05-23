@@ -2,6 +2,14 @@ import math
 import random
 import numpy as np
 
+
+def flatten_list_of_dictionaries(list_of_dictionaries):
+    ret = []
+    for d in list_of_dictionaries:
+        for k, v in d.items():
+            ret.append({k: v})
+    return ret
+
 def choose_from_list_of_tuples(list_of_tuples):
     """Randomly sample from a catagorical distribution defined by a list
     of (probability, catagory) tuples.

@@ -14,7 +14,9 @@ from etc.enum import (
 
 from utils.debug import highlight_array
 from utils.utils import (
-    get_blocking_entity_at_location, get_all_entities_with_component_in_position)
+    flatten_list_of_dictionaries,
+    get_blocking_entity_at_location,
+    get_all_entities_with_component_in_position)
 
 from animations.animations import construct_animation
 from components.attacker import Attacker
@@ -286,7 +288,13 @@ def main():
         # the stack, so we continually process the results stack until it is
         # empty.
         #----------------------------------------------------------------------
-        while game_state != GameStates.ANIMATION_PLAYING and player_turn_results != []:
+        while (game_state not in (GameStates.CURSOR_INPUT, GameStates.ANIMATION_PLAYING)
+              and player_turn_results != []):
+
+            # Sort the turn results stack by the priority order.
+            player_turn_results = sorted(
+                flatten_list_of_dictionaries(player_turn_results),
+                key = lambda d: list(d.keys())[0])
 
             result = player_turn_results.pop()
 
@@ -333,6 +341,7 @@ def main():
                 game_state, previous_game_state = (
                     GameStates.ANIMATION_PLAYING, game_state)
                 break
+            # Drop into cursor input mode.
             if cursor_mode:
                 x, y, callback, mode = cursor_mode
                 cursor = Cursor(player.x, player.y, game_map,
@@ -660,14 +669,10 @@ def process_selected_item(item, *,
         if item.usable:
             player_turn_results.extend(item.usable.use(game_map, player))
             player_turn_results.extend(item.consumable.consume())
-    # NOTE: The order of actions here is delecate.  We need to call the use
-    # method BEFORE the consumable, since they both send resuests to change the
-    # game state, and the change to the enemys turn must be processed BEFORE
-    # the CURSOR input mode.
     elif game_state == GameStates.THROW_INVENTORY:
         if item.throwable:
-            player_turn_results.extend(item.consumable.consume())
             player_turn_results.extend(item.throwable.throw(game_map, player))
+            player_turn_results.extend(item.consumable.consume())
     elif game_state == GameStates.EQUIP_INVENTORY:
         if item.equipable and item.equipable.equipped:
             player_turn_results.extend(item.equipable.remove(player))

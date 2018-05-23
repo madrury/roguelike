@@ -121,9 +121,13 @@ CANCEL_STATES = {
 #   Show the inventory menu.
 #.............................................................................
 class ResultTypes(Enum):
+
+    # We need this enum to have an order, since there are certain turn results
+    # that must be processed first.
+    def __lt__(self, other):
+        return self.value < other.value
+
     ADD_ENTITY = auto()
-    ANIMATION = auto()
-    CURSOR_MODE = auto()
     CURSOR_SELECT = auto()
     DAMAGE = auto()
     DEAD_ENTITY = auto()
@@ -152,6 +156,9 @@ class ResultTypes(Enum):
     RESTORE_PLAYER_INPUT = auto()
     SHOW_INVENTORY = auto()
     THROW_INVENTORY = auto()
+    # These two must be processed first!
+    CURSOR_MODE = 98
+    ANIMATION = 99
 
 
 class EntityTypes(Enum):
