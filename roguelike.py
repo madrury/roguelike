@@ -398,7 +398,12 @@ def main():
             if death_message:
                 message_log.add_message(death_message)
                 break
+            # End the player's turn
+            if end_turn:
+                game_state, previous_game_state = (
+                    GameStates.ENEMY_TURN, game_state)
             # Enter cursor select mode.
+            # TODO: Figure out a better way to manage game state priority.
             if cursor_mode:
                 x, y, callback, mode = cursor_mode
                 cursor = Cursor(
@@ -407,10 +412,6 @@ def main():
                     cursor_type=mode)
                 game_state, previous_game_state = (
                     GameStates.CURSOR_INPUT, game_state)
-            # End the player's turn
-            if end_turn:
-                game_state, previous_game_state = (
-                    GameStates.ENEMY_TURN, game_state)
 
         #---------------------------------------------------------------------
         # Post player turn checks.
@@ -649,12 +650,12 @@ def process_selected_item(item, *,
     # Check which inventory screen we are on and call the appropriate method.
     if game_state == GameStates.SHOW_INVENTORY:
         if item.usable:
-            player_turn_results.extend(item.consumable.consume())
             player_turn_results.extend(item.usable.use(game_map, player))
+            player_turn_results.extend(item.consumable.consume())
     elif game_state == GameStates.THROW_INVENTORY:
         if item.throwable:
-            player_turn_results.extend(item.consumable.consume())
             player_turn_results.extend(item.throwable.throw(game_map, player))
+            player_turn_results.extend(item.consumable.consume())
     elif game_state == GameStates.EQUIP_INVENTORY:
         if item.equipable and item.equipable.equipped:
             player_turn_results.extend(item.equipable.remove(player))
