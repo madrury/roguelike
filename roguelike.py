@@ -232,7 +232,6 @@ def main():
                                   player=player, 
                                   game_map=game_map, 
                                   player_turn_results=player_turn_results)
-            game_state = GameStates.ENEMY_TURN
         #----------------------------------------------------------------------
         # Player Pickup
         #......................................................................
@@ -241,7 +240,6 @@ def main():
         #----------------------------------------------------------------------
         elif pickup and game_state == GameStates.PLAYER_TURN:
             pickup_entity(game_map, player, player_turn_results)
-            game_state = GameStates.ENEMY_TURN
         #----------------------------------------------------------------------
         # Player Inventory use / drop
         #......................................................................
@@ -297,6 +295,7 @@ def main():
             damage = result.get(ResultTypes.DAMAGE)
             dead_entity = result.get(ResultTypes.DEAD_ENTITY)
             death_message = result.get(ResultTypes.DEATH_MESSAGE)
+            end_turn = result.get(ResultTypes.END_TURN)
             equip_armor = result.get(ResultTypes.EQUIP_ARMOR)
             equip_weapon = result.get(ResultTypes.EQUIP_WEAPON)
             heal = result.get(ResultTypes.HEAL)
@@ -344,15 +343,11 @@ def main():
                 consumed, item = item_consumed
                 if consumed:
                     player.inventory.remove(item)
-                    game_state, previous_game_state = (
-                        GameStates.ENEMY_TURN, game_state)
             # Remove dropped items from inventory and place on the map
             if item_dropped:
                 player.inventory.remove(item_dropped)
                 item_dropped.x, item_dropped.y = player.x, player.y
                 game_map.entities.append(item_dropped)
-                game_state, previous_game_state = (
-                    GameStates.ENEMY_TURN, game_state)
             # Damage an entity.
             if damage:
                 target, source, amount, elements = damage
@@ -412,6 +407,10 @@ def main():
                     cursor_type=mode)
                 game_state, previous_game_state = (
                     GameStates.CURSOR_INPUT, game_state)
+            # End the player's turn
+            if end_turn:
+                game_state, previous_game_state = (
+                    GameStates.ENEMY_TURN, game_state)
 
         #---------------------------------------------------------------------
         # Post player turn checks.
@@ -647,16 +646,14 @@ def process_selected_item(item, *,
                           game_state=None,
                           game_map=None, 
                           player_turn_results=None): 
-    if (game_state in INVENTORY_STATES 
-        and game_state != GameStates.DROP_INVENTORY):
-        if item.consumable:
-            player_turn_results.extend(item.consumable.consume())
     # Check which inventory screen we are on and call the appropriate method.
     if game_state == GameStates.SHOW_INVENTORY:
         if item.usable:
+            player_turn_results.extend(item.consumable.consume())
             player_turn_results.extend(item.usable.use(game_map, player))
     elif game_state == GameStates.THROW_INVENTORY:
         if item.throwable:
+            player_turn_results.extend(item.consumable.consume())
             player_turn_results.extend(item.throwable.throw(game_map, player))
     elif game_state == GameStates.EQUIP_INVENTORY:
         if item.equipable and item.equipable.equipped:
@@ -681,7 +678,9 @@ def player_move_or_attack(move, *,
             attack_results = player.attacker.attack(game_map, blocker)
             player_turn_results.extend(attack_results)
         else:
-            player_turn_results.append({ResultTypes.MOVE: (dx, dy)})
+            player_turn_results.append({
+                ResultTypes.END_TURN: True,
+                ResultTypes.MOVE: (dx, dy)})
 
 def pickup_entity(game_map, player, player_turn_results):
     for entity in game_map.entities:

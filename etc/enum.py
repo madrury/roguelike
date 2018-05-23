@@ -76,7 +76,7 @@ CANCEL_STATES = {
 #   Enter cursor mode.
 # CURSOR_SELECT: boolean
 #   The user has selected a map tile while in cursor model.
-# DAMAGE: (entity, amount, elements)
+# DAMAGE: (entity, source, amount, elements)
 #   Deal damage to an entity of some elemental types.
 # DEAD_ENTITY: entity
 #   An entity has died.
@@ -84,6 +84,8 @@ CANCEL_STATES = {
 #   A message that the player has died.  TODO: Depreciate this.
 # DROP_INVENTORY: boolean
 #   Open the inventory for dropping items.
+# END_TURN: bool
+#   End the players turn.
 # EQUIP: (equipable_entity, entity):
 #   Equip equipable_entity onto entity.
 # EQUIP_INVENTORY: boolean
@@ -114,7 +116,8 @@ CANCEL_STATES = {
 # MOVE_RANDOM_ADJACENT: entity
 #   Attempt to move the entity to a random adjacent square.
 # PICKUP: bool 
-#   Pickup an item at the current position.  # SHOW_INVENTORy: bool
+#   Pickup an item at the current position.  
+# SHOW_INVENTORy: bool
 #   Show the inventory menu.
 #.............................................................................
 class ResultTypes(Enum):
@@ -127,6 +130,7 @@ class ResultTypes(Enum):
     DEATH_MESSAGE = auto()
     CHANGE_SWIM_STAMINA = auto()
     DROP_INVENTORY = auto()
+    END_TURN = auto()
     EQUIP_ARMOR = auto()
     EQUIP_WEAPON = auto()
     EQUIP_INVENTORY = auto()

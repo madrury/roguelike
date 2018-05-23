@@ -11,10 +11,12 @@ class Inventory:
         results = []
         if len(self.items) >= self.capacity:
             results.append({
+                ResultTypes.END_TURN: True,
                 ResultTypes.MESSAGE: Message(
                     f'{self.owner.name} cannot carry any more items.')})
         else:
             results.append({
+                ResultTypes.END_TURN: True,
                 ResultTypes.ITEM_ADDED: item,
                 ResultTypes.MESSAGE: Message(
                     f'{self.owner.name} picks up the {item.name}.')})
@@ -25,10 +27,13 @@ class Inventory:
         if item.equipable and item.equipable.equipped:
             message = Message(
                 f'{self.owner.name} cannot drop {item.name}, as it is currently equipped.')
-            results.append({ResultTypes.MESSAGE: message})
+            results.append({
+                ResultTypes.END_TURN: True,
+                ResultTypes.MESSAGE: message})
         else:
             message = Message(f'{self.owner.name} dropped the {item.name}')
             results.append({
+                ResultTypes.END_TURN: True,
                 ResultTypes.ITEM_DROPPED: item,
                 ResultTypes.MESSAGE: message})
         return results

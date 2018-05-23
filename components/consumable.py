@@ -3,7 +3,7 @@ from etc.enum import ResultTypes
 
 class Consumable:
 
-    def __init__(self, *, uses=5):
+    def __init__(self, *, uses=1):
         self.uses = uses
 
     def consume(self):
@@ -12,6 +12,10 @@ class Consumable:
                                "uses.")
         self.uses -=1
         if self.uses == 0:
-            return [{ResultTypes.ITEM_CONSUMED: (True, self.owner)}]
+            print("Item consumed")
+            return [{
+                ResultTypes.ITEM_CONSUMED: (True, self.owner),
+                ResultTypes.END_TURN: True}]
         else:
-            return []
+            return [{
+                ResultTypes.END_TURN: True}]

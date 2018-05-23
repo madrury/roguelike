@@ -52,7 +52,6 @@ class HealthPotionCallback:
             results.append({
                 ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
                 ResultTypes.HEAL: (target, self.owner.healing),
-                ResultTypes.ITEM_CONSUMED: (True, self.owner.owner),
                 ResultTypes.ANIMATION: (
                     Animations.CONCATINATED, (throw_animation, heal_animation))
             }),
@@ -63,7 +62,6 @@ class HealthPotionCallback:
             spill_animation = (Animations.HEALTH_POTION, (x, y))
             results.append({
                 ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
-                ResultTypes.ITEM_CONSUMED: (True, self.owner.owner),
                 ResultTypes.ANIMATION: (
                     Animations.CONCATINATED, (throw_animation, spill_animation))
             })

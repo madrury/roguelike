@@ -40,6 +40,8 @@ class Attacker:
         # Do transformed damage to all targets.
         for transformer, target in product(self.damage_transformers, targets):
             results.extend(transformer.transform_damage(target, self.owner, damage))
+        # Attacking ends the current turn.
+        results.append({ResultTypes.END_TURN: True})
         return results
 
     def add_damage_transformers(self, transformers):

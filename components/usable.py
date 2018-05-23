@@ -41,13 +41,11 @@ class HealthPotionUsable:
         if reciever.harmable.hp == reciever.harmable.max_hp:
             message = Message(f'{reciever.name} is already at full health.', 
                               COLORS.get('white'))
-            results.append({ResultTypes.ITEM_CONSUMED: (False, self.owner), 
-                            ResultTypes.MESSAGE: message})
+            results.append({ResultTypes.MESSAGE: message})
         else:
             message = Message(f"{reciever.name}'s wounds start to heal.", 
                               COLORS.get('green'))
-            results.append({ResultTypes.ITEM_CONSUMED: (True, self.owner),
-                            ResultTypes.HEAL: (reciever, self.healing),
+            results.append({ResultTypes.HEAL: (reciever, self.healing),
                             ResultTypes.MESSAGE: message,
                             ResultTypes.ANIMATION: (
                                 Animations.HEALTH_POTION, 
@@ -112,15 +110,13 @@ class MagicMissileUsable:
                 (Animations.MAGIC_MISSILE, (user.x, user.y), (monster.x, monster.y))
                 for monster in closest_monsters]
             results.append({
-                ResultTypes.ITEM_CONSUMED: (True, self.owner),
                 ResultTypes.ANIMATION: (
                     Animations.SIMULTANEOUS, animations)})               
         else:
             message = Message(
                 "A shining magic missile streaks into the darkness.",
                 COLORS.get('white'))
-            results.append({ResultTypes.ITEM_CONSUMED: (True, self.owner),
-                            ResultTypes.MESSAGE: message})
+            results.append({ResultTypes.MESSAGE: message})
         return results
 
 
@@ -165,9 +161,9 @@ class FireblastUsable:
                             ResultTypes.MESSAGE: message})
         for entity in (x for x in burnable_within_radius if x != user):
             results.extend(entity.burnable.burn(game_map))
-        results.append({ResultTypes.ITEM_CONSUMED: (True, self.owner),
-                        ResultTypes.ANIMATION: (
-                             Animations.FIREBLAST, (user.x, user.y), self.radius)})
+        results.append({
+            ResultTypes.ANIMATION: (
+                Animations.FIREBLAST, (user.x, user.y), self.radius)})
         return results
 
 
