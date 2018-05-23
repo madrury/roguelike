@@ -322,11 +322,29 @@ def main():
                 # back on top of the stack.
                 result.pop(ResultTypes.ANIMATION)
                 player_turn_results.append(result)
+                # After the animation finishes, we do not want to get input
+                # from the player before continuing to process the results
+                # stack, so set a flag signaling to skip this step, and then
+                # push a message that will restore it once we come back to
+                # continue processing the stack.
                 skip_player_input = True
                 player_turn_results.append(
                     {ResultTypes.RESTORE_PLAYER_INPUT: True})
                 game_state, previous_game_state = (
                     GameStates.ANIMATION_PLAYING, game_state)
+                break
+            if cursor_mode:
+                x, y, callback, mode = cursor_mode
+                cursor = Cursor(player.x, player.y, game_map,
+                                callback=callback,
+                                cursor_type=mode)
+                # Same as with animations, we want to switch to cursor mode
+                # immediately. So remove the CURSOR_MODE from the results
+                # structure, and push the rest back on top of the stack.
+                result.pop(ResultTypes.CURSOR_MODE)
+                player_turn_results.append(result)
+                game_state, previous_game_state = (
+                    GameStates.CURSOR_INPUT, game_state)
                 break
             # Move the player.
             if move:
@@ -402,16 +420,6 @@ def main():
             if end_turn:
                 game_state, previous_game_state = (
                     GameStates.ENEMY_TURN, game_state)
-            # Enter cursor select mode.
-            # TODO: Figure out a better way to manage game state priority.
-            if cursor_mode:
-                x, y, callback, mode = cursor_mode
-                cursor = Cursor(
-                    player.x, player.y, game_map,
-                    callback=callback,
-                    cursor_type=mode)
-                game_state, previous_game_state = (
-                    GameStates.CURSOR_INPUT, game_state)
 
         #---------------------------------------------------------------------
         # Post player turn checks.
@@ -644,18 +652,22 @@ def get_user_input():
 
 def process_selected_item(item, *,
                           player=None,
-                          game_state=None,
                           game_map=None, 
-                          player_turn_results=None): 
+                          game_state=None,
+                          player_turn_results=None):
     # Check which inventory screen we are on and call the appropriate method.
     if game_state == GameStates.SHOW_INVENTORY:
         if item.usable:
             player_turn_results.extend(item.usable.use(game_map, player))
             player_turn_results.extend(item.consumable.consume())
+    # NOTE: The order of actions here is delecate.  We need to call the use
+    # method BEFORE the consumable, since they both send resuests to change the
+    # game state, and the change to the enemys turn must be processed BEFORE
+    # the CURSOR input mode.
     elif game_state == GameStates.THROW_INVENTORY:
         if item.throwable:
-            player_turn_results.extend(item.throwable.throw(game_map, player))
             player_turn_results.extend(item.consumable.consume())
+            player_turn_results.extend(item.throwable.throw(game_map, player))
     elif game_state == GameStates.EQUIP_INVENTORY:
         if item.equipable and item.equipable.equipped:
             player_turn_results.extend(item.equipable.remove(player))
