@@ -14,6 +14,10 @@ def get_key_from_single_key_dict(d):
     print(d)
     return list(d)[0]
 
+def unpack_single_key_dict(d):
+    k = list(d)[0]
+    return k, d[k]
+
 def choose_from_list_of_tuples(list_of_tuples):
     """Randomly sample from a catagorical distribution defined by a list
     of (probability, catagory) tuples.

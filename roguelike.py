@@ -15,6 +15,7 @@ from etc.enum import (
 from utils.debug import highlight_array
 from utils.utils import (
     flatten_list_of_dictionaries,
+    unpack_single_key_dict,
     get_key_from_single_key_dict,
     get_blocking_entity_at_location,
     get_all_entities_with_component_in_position)
@@ -298,33 +299,14 @@ def main():
                 key = lambda d: get_key_from_single_key_dict(d))
 
             result = player_turn_results.pop()
+            result_type, result_data = unpack_single_key_dict(result)
 
-            animation = result.get(ResultTypes.ANIMATION)
-            cursor_mode = result.get(ResultTypes.CURSOR_MODE)
-            damage = result.get(ResultTypes.DAMAGE)
-            dead_entity = result.get(ResultTypes.DEAD_ENTITY)
-            death_message = result.get(ResultTypes.DEATH_MESSAGE)
-            end_turn = result.get(ResultTypes.END_TURN)
-            equip_armor = result.get(ResultTypes.EQUIP_ARMOR)
-            equip_weapon = result.get(ResultTypes.EQUIP_WEAPON)
-            heal = result.get(ResultTypes.HEAL)
-            item_added = result.get(ResultTypes.ITEM_ADDED)
-            item_consumed = result.get(ResultTypes.ITEM_CONSUMED)
-            item_dropped = result.get(ResultTypes.ITEM_DROPPED)
-            message = result.get(ResultTypes.MESSAGE)
-            move = result.get(ResultTypes.MOVE)
-            new_entity = result.get(ResultTypes.ADD_ENTITY)
-            remove_armor = result.get(ResultTypes.REMOVE_ARMOR)
-            remove_weapon = result.get(ResultTypes.REMOVE_WEAPON)
-            remove_entity = result.get(ResultTypes.REMOVE_ENTITY)
-            restore_player_input = result.get(ResultTypes.RESTORE_PLAYER_INPUT)
-
-            # Play an animation.
-            if restore_player_input:
+            if result_type == ResultTypes.RESTORE_PLAYER_INPUT:
                 skip_player_input = False
-            if animation:
+            # Play an animation.
+            if result_type == ResultTypes.ANIMATION:
                 animation_player = construct_animation(
-                    animation, game_map, player=player)
+                    result_data, game_map, player=player)
                 # We want to play the animiation immediately, and then continue
                 # to process everything else after it completes.  So remove the
                 # enimation data from teh results structure, and push the rest
@@ -343,8 +325,8 @@ def main():
                     GameStates.ANIMATION_PLAYING, game_state)
                 break
             # Drop into cursor input mode.
-            if cursor_mode:
-                x, y, callback, mode = cursor_mode
+            if result_type == ResultTypes.CURSOR_MODE:
+                x, y, callback, mode = result_data
                 cursor = Cursor(player.x, player.y, game_map,
                                 callback=callback,
                                 cursor_type=mode)
@@ -357,77 +339,82 @@ def main():
                     GameStates.CURSOR_INPUT, game_state)
                 break
             # Move the player.
-            if move:
-                player.movable.move(game_map, *move)
+            if result_type == ResultTypes.MOVE:
+                player.movable.move(game_map, *result_data)
             # Add to the message log.
-            if message:
-                message_log.add_message(message)
+            if result_type == ResultTypes.MESSAGE:
+                message_log.add_message(result_data)
             # Add an item to the inventory.
-            if item_added:
+            if result_type == ResultTypes.ITEM_ADDED:
+                item_added = result_data
                 player.inventory.add(item_added)
                 item_added.commitable.delete(game_map)
             # Remove consumed items from inventory
-            if item_consumed:
-                consumed, item = item_consumed
+            if result_type == ResultTypes.ITEM_CONSUMED:
+                consumed, item = result_data
                 if consumed:
                     player.inventory.remove(item)
             # Remove dropped items from inventory and place on the map
-            if item_dropped:
+            if result_type == ResultTypes.ITEM_DROPPED:
+                item_dropped = result_data
                 player.inventory.remove(item_dropped)
                 item_dropped.x, item_dropped.y = player.x, player.y
                 game_map.entities.append(item_dropped)
             # Damage an entity.
-            if damage:
-                target, source, amount, elements = damage
+            if result_type == ResultTypes.DAMAGE:
+                target, source, amount, elements = result_data
                 damage_result = target.harmable.harm(
                     game_map, source, amount, elements)
                 player_turn_results.extend(damage_result)
                 if target not in harmed_queue:
                     harmed_queue.appendleft(target)
             # Heal an entity
-            if heal:
-                target, amount = heal
+            if result_type == ResultTypes.HEAL:
+                target, amount = result_data
                 target.harmable.heal(amount)
             # Don defensive equipment.
-            if equip_armor:
-                entity, armor = equip_armor
+            if result_type == ResultTypes.EQUIP_ARMOR:
+                entity, armor = result_data
                 entity_equip_armor(entity, armor, player_turn_results)
             # Don offensive equipment.
-            if equip_weapon:
-                entity, weapon = equip_weapon
+            if result_type == ResultTypes.EQUIP_WEAPON:
+                entity, weapon = result_data
                 entity_equip_weapon(entity, weapon, player_turn_results)
             # Remove defensive equipment.
-            if remove_armor:
-                entity, armor = remove_armor
+            if result_type == ResultTypes.REMOVE_ARMOR:
+                entity, armor = result_data
                 entity_remove_armor(entity, armor, player_turn_results)
             # Remove offensive equipment.
-            if remove_weapon:
-                entity, weapon = remove_weapon
+            if result_type == ResultTypes.REMOVE_WEAPON:
+                entity, weapon = result_data
                 entity_remove_weapon(entity, weapon, player_turn_results)
             # Add a new entity to the game.
-            if new_entity:
-                entity = new_entity
+            if result_type == ResultTypes.ADD_ENTITY:
+                entity = result_data
                 entity.commitable.commit(game_map)
                 player_turn_results.extend(encroach_on_all(entity, game_map))
             # Remove an entity from the game.
-            if remove_entity:
-                entity = remove_entity
+            if result_type == ResultTypes.REMOVE_ENTITY:
+                entity = result_data
                 entity.commitable.delete(game_map)
             # Handle death
-            if dead_entity == player:
-                player_turn_results.extend(kill_player(player))
-                game_state = GameStates.PLAYER_DEAD
-            elif dead_entity:
-                player_turn_results.extend(
-                    kill_monster(dead_entity, game_map))
-                dead_entities.append(dead_entity)
+            if result_type == ResultTypes.DEAD_ENTITY:
+                dead_entity = result_data
+                if dead_entity == player:
+                    player_turn_results.extend(kill_player(player))
+                    game_state = GameStates.PLAYER_DEAD
+                elif dead_entity:
+                    player_turn_results.extend(
+                        kill_monster(dead_entity, game_map))
+                    dead_entities.append(dead_entity)
             # Handle a player death message.  Death messages are special in
             # that they immediately break out of the game loop.
-            if death_message:
+            if result_type == ResultTypes.DEATH_MESSAGE:
+                death_message = result_data
                 message_log.add_message(death_message)
                 break
             # End the player's turn
-            if end_turn:
+            if result_type == ResultTypes.END_TURN:
                 game_state, previous_game_state = (
                     GameStates.ENEMY_TURN, game_state)
 
