@@ -4,7 +4,7 @@ from etc.colors import COLORS
 from etc.enum import EntityTypes, RenderOrder, ItemGroups
 
 from components.burnable import ItemBurnable
-from components.consumable import Consumable
+from components.consumable import FinitelyConsumable, InfinitelyConsumable
 from components.commitable import BaseCommitable
 from components.usable import (
     NullUsable, HealthPotionUsable, MagicMissileUsable, FireblastUsable,
@@ -21,7 +21,7 @@ class HealthPotion:
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
                       commitable=BaseCommitable(),
-                      consumable=Consumable(uses=1),
+                      consumable=FinitelyConsumable(uses=1),
                       usable=HealthPotionUsable(),
                       throwable=HealthPotionThrowable())
 
@@ -34,7 +34,7 @@ class MagicMissileScroll:
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
                       commitable=BaseCommitable(),
-                      consumable=Consumable(uses=1),
+                      consumable=FinitelyConsumable(uses=1),
                       burnable=ItemBurnable(),
                       usable=MagicMissileUsable(),
                       throwable=NullThrowable())
@@ -48,7 +48,7 @@ class FireblastScroll:
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
                       commitable=BaseCommitable(),
-                      consumable=Consumable(uses=1),
+                      consumable=FinitelyConsumable(uses=1),
                       burnable=ItemBurnable(),
                       usable=FireblastUsable(),
                       throwable=NullThrowable())
@@ -62,7 +62,7 @@ class ThrowingKnife:
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
                       commitable=BaseCommitable(),
-                      consumable=Consumable(uses=5),
+                      consumable=FinitelyConsumable(uses=5),
                       usable=NullUsable(),
                       throwable=ThrowingKnifeThrowable())
 
@@ -75,5 +75,6 @@ class Torch:
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
                       commitable=BaseCommitable(),
+                      consumable=InfinitelyConsumable(),
                       usable=TorchUsable(),
                       throwable=NullThrowable())

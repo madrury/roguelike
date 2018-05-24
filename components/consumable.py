@@ -1,7 +1,13 @@
 from etc.enum import ResultTypes
 
 
-class Consumable:
+class InfinitelyConsumable:
+
+    def consume(self):
+        return []
+
+
+class FinitelyConsumable:
 
     def __init__(self, *, uses=1):
         self.uses = uses
