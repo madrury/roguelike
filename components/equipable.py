@@ -3,7 +3,15 @@ from etc.colors import COLORS
 from messages import Message
 
 
-class ArmorEquipable:
+class BaseEquipable:
+    """Just provide an default display in the inventory indicating whether the
+    item is equipped or not.
+    """
+    def make_menu_display(self):
+        return ["", "(E)"][int(self.equipped)]
+
+
+class ArmorEquipable(BaseEquipable):
     """Equippable armor.
 
     The behaviour of armor is govened by a list of damage_transformers and
@@ -34,8 +42,13 @@ class ArmorEquipable:
         return results
 
 
-class WeaponEquipable:
+class WeaponEquipable(BaseEquipable):
+    """Equippable armor.
 
+    The behaviour of a weapon is govened by a list of damage_transformers and a
+    target_callback.  When a weapon is equipped, these are copied into
+    corresponding slots on the entities attacker component.
+    """
     def __init__(self, *, damage_transformers=None,
                           damage_callbacks=None,
                           target_callback=None):

@@ -5,7 +5,7 @@ import string
 from etc.colors import COLORS
 
 
-def menu(header, options, width, screen_width, screen_height, highlight):
+def menu(header, options, width, screen_width, screen_height, colors):
     """Draw a generic menu with a header and options for selection.
 
     Arguments
@@ -24,6 +24,10 @@ def menu(header, options, width, screen_width, screen_height, highlight):
 
     screen_height: int
       The height of the screen into which the menu will be drawn.
+
+    colors: List[(int, int, int)]
+      Colors to draw the description of the item.  Used to grey out items that
+      are not selectable though the currently displayed menu.
 
     Returns
     -------
@@ -51,8 +55,8 @@ def menu(header, options, width, screen_width, screen_height, highlight):
         window.draw_str(edge_buffer, i + border_buffer, header_wrapped[i])
     # Write all the options.
     options_buffer = border_buffer + header_height + header_buffer
-    options_highlight = zip(options, highlight)
-    iter_options = enumerate(enumerate(options_highlight, start=options_buffer))
+    options_colors = zip(options, colors)
+    iter_options = enumerate(enumerate(options_colors, start=options_buffer))
     for i, (y, (option, color)) in iter_options:
         text = '(' + string.ascii_lowercase[i] + ') ' + option
         window.draw_str(edge_buffer, y, text, fg=color) 
@@ -75,13 +79,19 @@ def invetory_menu(header, inventory, inventory_width,
         else:
             highlight = [COLORS['white'] for item in inventory.items]
     return menu(header, options, inventory_width,
-                screen_width, screen_height, highlight=highlight)
+                screen_width, screen_height, colors=highlight)
 
 def make_inventory_options(inventory):
     options = []
     for item in inventory.items:
-        option = item.name
-        if item.equipable:
-            option = option + ["", " (Equipped)"][int(item.equipable.equipped)]
+        option = make_item_menu_display(item)
         options.append(option)
     return options
+
+def make_item_menu_display(item):
+    option = item.name
+    if item.equipable:
+        option += " " + item.equipable.make_menu_display()
+    if item.consumable:
+        option += " " + item.consumable.make_menu_display()
+    return option

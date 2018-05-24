@@ -2,14 +2,13 @@ import tdl
 from time import sleep
 from collections import deque
 
-from etc.colors import COLORS, STATUS_BAR_COLORS
+from etc.colors import COLORS
 from etc.config import (
    SCREEN_WIDTH, SCREEN_HEIGHT, FLOOR_CONFIG, ROOM_CONFIG, TERRAIN_CONFIG,
    PANEL_CONFIG, MESSAGE_CONFIG, FOV_CONFIG, PLAYER_CONFIG, 
    ANIMATION_INTERVAL, INVENTORY_WIDTH, SHIMMER_INTERVAL)
 from etc.enum import (
-    EntityTypes, GameStates, ItemTargeting, RenderOrder, Animations,
-    ResultTypes, Elements,
+    EntityTypes, GameStates, RenderOrder, Animations, ResultTypes,
     INVENTORY_STATES, INPUT_STATES, CANCEL_STATES)
 
 from utils.debug import highlight_array
@@ -32,7 +31,6 @@ from components.swimmable import Swimmable
 from game_objects.items import (
     HealthPotion, MagicMissileScroll, FireblastScroll, ThrowingKnife,
     Torch)
-from game_objects.armor import LeatherArmor
 from generation.floor import make_floor
 from generation.item_groups import ITEM_SCHEDULE, ITEM_GROUPS
 from generation.monster_groups import MONSTER_SCHEDULE, MONSTER_GROUPS
@@ -46,10 +44,7 @@ from input_handlers import handle_keys
 from map import GameMap
 from menus import invetory_menu
 from messages import Message, MessageLog
-from status_bar import StatusBar
 
-
-from components.callbacks.target_callbacks import LanceCallback
 
 def main():
 
@@ -607,10 +602,10 @@ def create_player(game_map):
     game_map.entities.append(player)
     # Setup Initial Inventory, for testing.
     player.inventory.extend([HealthPotion.make(0, 0) for _ in range(3)])
-    player.inventory.extend([ThrowingKnife.make(0, 0) for _ in range(3)])
+    player.inventory.extend([ThrowingKnife.make(0, 0)])
     player.inventory.extend([MagicMissileScroll.make(0, 0) for _ in range(3)])
     player.inventory.extend([FireblastScroll.make(0, 0) for _ in range(3)])
-    player.inventory.extend([Torch.make(0, 0) for _ in range(3)])
+    player.inventory.extend([Torch.make(0, 0)])
     return player
 
 def construct_inventory_data(game_state):
