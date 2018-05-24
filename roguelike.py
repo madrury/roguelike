@@ -15,6 +15,7 @@ from etc.enum import (
 from utils.debug import highlight_array
 from utils.utils import (
     flatten_list_of_dictionaries,
+    get_key_from_single_key_dict,
     get_blocking_entity_at_location,
     get_all_entities_with_component_in_position)
 
@@ -294,7 +295,7 @@ def main():
             # Sort the turn results stack by the priority order.
             player_turn_results = sorted(
                 flatten_list_of_dictionaries(player_turn_results),
-                key = lambda d: list(d.keys())[0])
+                key = lambda d: get_key_from_single_key_dict(d))
 
             result = player_turn_results.pop()
 

@@ -10,6 +10,10 @@ def flatten_list_of_dictionaries(list_of_dictionaries):
             ret.append({k: v})
     return ret
 
+def get_key_from_single_key_dict(d):
+    print(d)
+    return list(d)[0]
+
 def choose_from_list_of_tuples(list_of_tuples):
     """Randomly sample from a catagorical distribution defined by a list
     of (probability, catagory) tuples.
