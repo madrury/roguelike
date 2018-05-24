@@ -217,6 +217,7 @@ def main():
         # on the queue are constantly popped and dealt with until the queue is
         # empty, after which we pass the turn.
         #----------------------------------------------------------------------
+        # TODO: Intorduce an new enumeration to deal with this.
         cursor_select = action.get(ResultTypes.CURSOR_SELECT)
         inventory_index = action.get(ResultTypes.INVENTORY_INDEX)
         move = action.get(ResultTypes.MOVE)
@@ -290,7 +291,6 @@ def main():
         # the stack, so we continually process the results stack until it is
         # empty.
         #----------------------------------------------------------------------
-        print()
         while (game_state not in (GameStates.CURSOR_INPUT, GameStates.ANIMATION_PLAYING)
               and player_turn_results != []):
 
@@ -301,7 +301,6 @@ def main():
 
             result = player_turn_results.pop()
             result_type, result_data = unpack_single_key_dict(result)
-            print(result_type, " :: ", result_data)
 
             if result_type == ResultTypes.RESTORE_PLAYER_INPUT:
                 skip_player_input = False
@@ -309,12 +308,6 @@ def main():
             if result_type == ResultTypes.ANIMATION:
                 animation_player = construct_animation(
                     result_data, game_map, player=player)
-                # We want to play the animiation immediately, and then continue
-                # to process everything else after it completes.  So remove the
-                # enimation data from teh results structure, and push the rest
-                # back on top of the stack.
-                result.pop(ResultTypes.ANIMATION)
-                player_turn_results.append(result)
                 # After the animation finishes, we do not want to get input
                 # from the player before continuing to process the results
                 # stack, so set a flag signaling to skip this step, and then
@@ -332,11 +325,6 @@ def main():
                 cursor = Cursor(player.x, player.y, game_map,
                                 callback=callback,
                                 cursor_type=mode)
-                # Same as with animations, we want to switch to cursor mode
-                # immediately. So remove the CURSOR_MODE from the results
-                # structure, and push the rest back on top of the stack.
-                result.pop(ResultTypes.CURSOR_MODE)
-                player_turn_results.append(result)
                 game_state, previous_game_state = (
                     GameStates.CURSOR_INPUT, game_state)
                 break
