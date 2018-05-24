@@ -25,7 +25,10 @@ class FinitelyConsumable:
                 ResultTypes.END_TURN: True}]
 
     def make_menu_display(self):
-        return f"[{self.uses}]"
+        if self.uses <= 1:
+            return ""
+        else:
+            return f"[{self.uses}]"
 
 
 class InfinitelyConsumable:
