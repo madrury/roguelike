@@ -113,7 +113,8 @@ class PinkJellyHarmable(Harmable):
             x, y = random_adjacent((self.owner.x, self.owner.y))
             jelly = game_objects.monsters.PinkJelly.make_if_possible(
                 game_map, x, y, hp=self.hp)
-            results.append({ResultTypes.ADD_ENTITY: jelly})
+            if jelly:
+                results.append({ResultTypes.ADD_ENTITY: jelly})
         if self.hp <= 0:
             results.append({ResultTypes.DEAD_ENTITY: self.owner})
         return results

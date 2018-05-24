@@ -11,7 +11,6 @@ def flatten_list_of_dictionaries(list_of_dictionaries):
     return ret
 
 def get_key_from_single_key_dict(d):
-    print(d)
     return list(d)[0]
 
 def unpack_single_key_dict(d):

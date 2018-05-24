@@ -290,6 +290,7 @@ def main():
         # the stack, so we continually process the results stack until it is
         # empty.
         #----------------------------------------------------------------------
+        print()
         while (game_state not in (GameStates.CURSOR_INPUT, GameStates.ANIMATION_PLAYING)
               and player_turn_results != []):
 
@@ -300,6 +301,7 @@ def main():
 
             result = player_turn_results.pop()
             result_type, result_data = unpack_single_key_dict(result)
+            print(result_type, " :: ", result_data)
 
             if result_type == ResultTypes.RESTORE_PLAYER_INPUT:
                 skip_player_input = False
