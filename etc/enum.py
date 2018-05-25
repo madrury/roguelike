@@ -128,20 +128,14 @@ class ResultTypes(Enum):
         return self.value < other.value
 
     ADD_ENTITY = auto()
-    CURSOR_SELECT = auto()
     DAMAGE = auto()
     DEAD_ENTITY = auto()
     DEATH_MESSAGE = auto()
     CHANGE_SWIM_STAMINA = auto()
-    DROP_INVENTORY = auto()
     END_TURN = auto()
     EQUIP_ARMOR = auto()
     EQUIP_WEAPON = auto()
-    EQUIP_INVENTORY = auto()
-    EXIT = auto()
-    FULLSCREEN = auto()
     HEAL = auto()
-    INVENTORY_INDEX = auto()
     ITEM_ADDED = auto()
     ITEM_CONSUMED = auto()
     ITEM_DROPPED = auto()
@@ -149,16 +143,26 @@ class ResultTypes(Enum):
     MOVE = auto()
     MOVE_TOWARDS = auto()
     MOVE_RANDOM_ADJACENT = auto()
-    PICKUP = auto()
     REMOVE_ARMOR = auto()
     REMOVE_WEAPON = auto()
     REMOVE_ENTITY = auto()
     RESTORE_PLAYER_INPUT = auto()
-    SHOW_INVENTORY = auto()
-    THROW_INVENTORY = auto()
     # These two must be processed first!
     CURSOR_MODE = 98
     ANIMATION = 99
+
+
+class InputTypes(Enum):
+    CURSOR_SELECT = auto()
+    INVENTORY_INDEX = auto()
+    MOVE = auto()
+    PICKUP = auto()
+    SHOW_INVENTORY = auto()
+    DROP_INVENTORY = auto()
+    THROW_INVENTORY = auto()
+    EQUIP_INVENTORY = auto()
+    FULLSCREEN = auto()
+    EXIT = auto()
 
 
 class EntityTypes(Enum):

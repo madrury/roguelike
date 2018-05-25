@@ -8,7 +8,7 @@ from etc.config import (
    PANEL_CONFIG, MESSAGE_CONFIG, FOV_CONFIG, PLAYER_CONFIG, 
    ANIMATION_INTERVAL, INVENTORY_WIDTH, SHIMMER_INTERVAL)
 from etc.enum import (
-    EntityTypes, GameStates, RenderOrder, Animations, ResultTypes,
+    ResultTypes, InputTypes, EntityTypes, GameStates, RenderOrder, Animations,
     INVENTORY_STATES, INPUT_STATES, CANCEL_STATES)
 
 from utils.debug import highlight_array
@@ -212,11 +212,10 @@ def main():
         # on the queue are constantly popped and dealt with until the queue is
         # empty, after which we pass the turn.
         #----------------------------------------------------------------------
-        # TODO: Intorduce an new enumeration to deal with this.
-        cursor_select = action.get(ResultTypes.CURSOR_SELECT)
-        inventory_index = action.get(ResultTypes.INVENTORY_INDEX)
-        move = action.get(ResultTypes.MOVE)
-        pickup = action.get(ResultTypes.PICKUP)
+        cursor_select = action.get(InputTypes.CURSOR_SELECT)
+        inventory_index = action.get(InputTypes.INVENTORY_INDEX)
+        move = action.get(InputTypes.MOVE)
+        pickup = action.get(InputTypes.PICKUP)
 
         #----------------------------------------------------------------------
         # Player Move Action
@@ -510,27 +509,27 @@ def main():
         #---------------------------------------------------------------------
         # Handle meta actions,
         #---------------------------------------------------------------------
-        show_invetory = action.get(ResultTypes.SHOW_INVENTORY)
+        show_invetory = action.get(InputTypes.SHOW_INVENTORY)
         if game_state == GameStates.PLAYER_TURN and show_invetory:
             previous_game_state = game_state
             game_state = GameStates.SHOW_INVENTORY
 
-        drop_inventory = action.get(ResultTypes.DROP_INVENTORY)
+        drop_inventory = action.get(InputTypes.DROP_INVENTORY)
         if game_state == GameStates.PLAYER_TURN and drop_inventory:
             previous_game_state = game_state
             game_state = GameStates.DROP_INVENTORY
 
-        throw_inventory = action.get(ResultTypes.THROW_INVENTORY)
+        throw_inventory = action.get(InputTypes.THROW_INVENTORY)
         if game_state == GameStates.PLAYER_TURN and throw_inventory:
             previous_game_state = game_state
             game_state = GameStates.THROW_INVENTORY
 
-        equip_inventory = action.get(ResultTypes.EQUIP_INVENTORY)
+        equip_inventory = action.get(InputTypes.EQUIP_INVENTORY)
         if game_state == GameStates.PLAYER_TURN and equip_inventory:
             previous_game_state = game_state
             game_state = GameStates.EQUIP_INVENTORY
 
-        exit = action.get(ResultTypes.EXIT)
+        exit = action.get(InputTypes.EXIT)
         if exit:
             if game_state == GameStates.CURSOR_INPUT:
                 cursor.clear()
@@ -541,10 +540,7 @@ def main():
                 # Hard exit the game.
                 return True
 
-        #---------------------------------------------------------------------
-        # Toggle fullscreen mode.
-        #---------------------------------------------------------------------
-        fullscreen = action.get(ResultTypes.FULLSCREEN)
+        fullscreen = action.get(InputTypes.FULLSCREEN)
         if fullscreen:
             tdl.set_fullscreen(not tdl.get_fullscreen())
 
