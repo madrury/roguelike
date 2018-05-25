@@ -55,7 +55,7 @@ class Negate:
 
 
 class IsAdjacent:
-
+    """Return sucess is owner is adjacent to target."""
     def tick(self, owner, target, game_map, context):
         distance = distance_to((owner.x, owner.y), (target.x, target.y)) 
         if distance < 2:
@@ -65,7 +65,7 @@ class IsAdjacent:
 
 
 class WithinFov:
-
+    """Return success if owner is in the players fov."""
     def tick(self, owner, target, game_map, context):
         if game_map.fov[owner.x, owner.y]:
             return TreeStates.SUCCESS, []
@@ -73,7 +73,9 @@ class WithinFov:
 
 
 class WithinRadius:
-
+    """Return success if the distance between owner and target is less than or
+    equal to some radius.
+    """
     def __init__(self, radius):
         self.radius = radius
 
@@ -86,21 +88,21 @@ class WithinRadius:
 
 
 class MoveTowards:
-
+    """Move the owner towards a target."""
     def tick(self, owner, target, game_map, context):
         results = [{ResultTypes.MOVE_TOWARDS: (owner, target.x, target.y)}]
         return TreeStates.SUCCESS, results
 
 
 class Skitter:
-
+    """Move the owner to a random adjacent tile."""
     def tick(self, owner, target, game_map, context):
         results = [{ResultTypes.MOVE_RANDOM_ADJACENT: owner}]
         return TreeStates.SUCCESS, results
 
 
 class Attack:
-
+    """The owner attackes the target."""
     def tick(self, owner, target, game_map, context):
         if owner.attacker and target.harmable and target.harmable.hp > 0:
             return (TreeStates.SUCCESS,
