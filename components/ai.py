@@ -1,22 +1,39 @@
 from etc.enum import ResultTypes
 from utils.utils import distance_to
 
+from behaviour_tree import (
+    Selection, Sequence, Negate, IsAdjacent, WithinFov, Attack, MoveTowards)
+
+
+#class BasicMonster:
+#    def take_turn(self, target, game_map):
+#        results = []
+#        monster = self.owner
+#        distance = distance_to((monster.x, monster.y), (target.x, target.y)) 
+#        if game_map.fov[monster.x, monster.y]:
+#            if distance >= 2:
+#                results.append({ResultTypes.MOVE_TOWARDS: (monster, target.x, target.y)})
+#            elif target.harmable and target.harmable.hp > 0:
+#                attack_results = monster.attacker.attack(game_map, target)
+#                results.extend(attack_results)
+#        return results
+
 class BasicMonster:
     """Simple monster ai.
 
     When in the players POV, attempt to move towards the player.  If adjacent
     to the player, attack.
     """
+    tree = Selection(
+        Sequence(
+            IsAdjacent(),
+            Attack()),
+        Sequence(
+            WithinFov(),
+            MoveTowards()))
+
     def take_turn(self, target, game_map):
-        results = []
-        monster = self.owner
-        distance = distance_to((monster.x, monster.y), (target.x, target.y)) 
-        if game_map.fov[monster.x, monster.y]:
-            if distance >= 2:
-                results.append({ResultTypes.MOVE_TOWARDS: (monster, target.x, target.y)})
-            elif target.harmable and target.harmable.hp > 0:
-                attack_results = monster.attacker.attack(game_map, target)
-                results.extend(attack_results)
+        _, results = self.tree.tick(self.owner, target, game_map, {})
         return results
 
 
