@@ -92,6 +92,13 @@ class MoveTowards:
         return TreeStates.SUCCESS, results
 
 
+class Skitter:
+
+    def tick(self, owner, target, game_map, context):
+        results = [{ResultTypes.MOVE_RANDOM_ADJACENT: owner}]
+        return TreeStates.SUCCESS, results
+
+
 class Attack:
 
     def tick(self, owner, target, game_map, context):
