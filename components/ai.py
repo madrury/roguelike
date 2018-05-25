@@ -12,14 +12,15 @@ class BasicMonster:
     When in the players POV, attempt to move towards the player.  If adjacent
     to the player, attack.
     """
-    tree = Selection(
-        Sequence(
-            IsAdjacent(),
-            Attack()),
-        Sequence(
-            WithinFov(),
-            MoveTowards()),
-        TravelToRandomPosition())
+    def __init__(self):
+        self.tree = Selection(
+            Sequence(
+                IsAdjacent(),
+                Attack()),
+            Sequence(
+                WithinFov(),
+                MoveTowards()),
+            TravelToRandomPosition())
 
     def take_turn(self, target, game_map):
         _, results = self.tree.tick(self.owner, target, game_map, {})
