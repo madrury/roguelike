@@ -72,6 +72,19 @@ class WithinFov:
         return TreeStates.FAILURE, []
 
 
+class WithinRadius:
+
+    def __init__(self, radius):
+        self.radius = radius
+
+    def tick(self, owner, target, game_map, context):
+        distance = distance_to((owner.x, owner.y), (target.x, target.y)) 
+        if distance <= self.radius: 
+            return TreeStates.SUCCESS, []
+        else:
+            return TreeStates.FAILURE, []
+
+
 class MoveTowards:
 
     def tick(self, owner, target, game_map, context):
@@ -87,4 +100,3 @@ class Attack:
                     owner.attacker.attack(game_map, target))
         else:
             return TreeStates.FAILURE, []
-
