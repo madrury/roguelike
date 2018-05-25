@@ -1,7 +1,9 @@
 from enum import Enum, auto
 
+from pathfinding import get_shortest_path
 from etc.enum import ResultTypes
-from utils.utils import distance_to
+from utils.utils import distance_to, random_walkable_position
+
 
 
 class TreeStates(Enum):
@@ -91,6 +93,28 @@ class MoveTowards:
     """Move the owner towards a target."""
     def tick(self, owner, target, game_map, context):
         results = [{ResultTypes.MOVE_TOWARDS: (owner, target.x, target.y)}]
+        return TreeStates.SUCCESS, results
+
+
+class TravelToRandomPosition:
+
+    def __init__(self):
+        self.target_position = None
+        self.target_path = None
+
+    def tick(self, owner, target, game_map, context):
+        if not self.target_position:
+            self.target_position = random_walkable_position(game_map, owner)
+        self.path = get_shortest_path(
+            game_map,
+            (owner.x, owner.y),
+            self.target_position,
+            routing_avoid=owner.routing_avoid)
+        if len(self.path) <= 2:
+            self.target_position = None
+            return TreeStates.SUCCESS, []
+        results = [{
+            ResultTypes.MOVE_TOWARDS: (owner, self.path[1][0], self.path[1][1])}]
         return TreeStates.SUCCESS, results
 
 

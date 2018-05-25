@@ -2,6 +2,8 @@ import math
 import random
 import numpy as np
 
+from pathfinding import make_walkable_array
+
 
 def flatten_list_of_dictionaries(list_of_dictionaries):
     ret = []
@@ -48,6 +50,10 @@ def adjacent_coordinates(center):
                 (-1, -1), (0, -1), (1, -1)]
         return [(center[0] + dx, center[1] + dy) for dx, dy in dxdy]
 
+
+#-----------------------------------------------------------------------------
+# Choosing random map positions.
+#-----------------------------------------------------------------------------
 def random_adjacent(center):
     x, y = center
     candidates = [
@@ -55,6 +61,15 @@ def random_adjacent(center):
         (x - 1, y),                 (x + 1, y),
         (x - 1, y - 1), (x, y - 1), (x + 1, y + 1)]
     return random.choice(candidates)
+
+def random_walkable_position(game_map, entity):
+    walkable_array =  make_walkable_array(game_map, entity.routing_avoid) 
+    x, y = (random.choice(range(0, game_map.width)), 
+            random.choice(range(0, game_map.height)))
+    while not walkable_array[x, y]:
+        x, y = (random.choice(range(0, game_map.width)), 
+                random.choice(range(0, game_map.height)))
+    return (x, y)
 
 #-----------------------------------------------------------------------------
 # Entity Finders

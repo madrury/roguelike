@@ -3,7 +3,7 @@ from utils.utils import distance_to
 
 from behaviour_tree import (
     Selection, Sequence, Negate, IsAdjacent, WithinFov, Attack, MoveTowards, 
-    WithinRadius, Skitter)
+    WithinRadius, Skitter, TravelToRandomPosition)
 
 
 class BasicMonster:
@@ -18,7 +18,8 @@ class BasicMonster:
             Attack()),
         Sequence(
             WithinFov(),
-            MoveTowards()))
+            MoveTowards()),
+        TravelToRandomPosition())
 
     def take_turn(self, target, game_map):
         _, results = self.tree.tick(self.owner, target, game_map, {})
@@ -38,7 +39,8 @@ class HuntingMonster:
                 Attack()),
             Sequence(
                 WithinRadius(radius=sensing_range),
-                MoveTowards()))
+                MoveTowards()),
+            TravelToRandomPosition())
 
     def take_turn(self, target, game_map):
         _, results = self.tree.tick(self.owner, target, game_map, {})
