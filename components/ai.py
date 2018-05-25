@@ -1,9 +1,11 @@
 from etc.enum import ResultTypes
 from utils.utils import distance_to
 
-from behaviour_tree import (
-    Selection, Sequence, Negate, IsAdjacent, WithinFov, Attack, MoveTowards, 
-    WithinRadius, Skitter, TravelToRandomPosition)
+from components.behaviour_trees.composite import (
+    Selection, Sequence, Negate)
+from components.behaviour_trees.leaf import (
+    IsAdjacent, WithinFov, Attack, MoveTowards, WithinRadius, Skitter, 
+    TravelToRandomPosition)
 
 
 class BasicMonster:

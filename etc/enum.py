@@ -171,6 +171,12 @@ class EntityTypes(Enum):
     STEAM = auto()
 
 
+class TreeStates(Enum):
+    SUCCESS = auto()
+    FAILURE = auto()
+    RUNNING = auto()
+
+
 class CursorTypes(Enum):
     PATH = auto()
     RAY = auto()
