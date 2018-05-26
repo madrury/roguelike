@@ -2,9 +2,9 @@ from entity import Entity
 
 from etc.colors import COLORS
 from etc.enum import RenderOrder, EntityTypes, MonsterGroups, RoutingOptions
-from components.ai import BasicMonster, HuntingMonster, SkitteringMonster
+from components.ai import BasicMonster, HuntingMonster, SkitteringMonster, ZombieMonster
 from components.attacker import Attacker
-from components.burnable import AliveBurnable
+from components.burnable import AliveBurnable, ZombieBurnable
 from components.commitable import BlockingCommitable
 from components.movable import Movable
 from components.scaldable import AliveScaldable
@@ -100,10 +100,34 @@ class Troll:
                            RoutingOptions.AVOID_SHRUBS,
                            RoutingOptions.AVOID_MONSTERS,
                            RoutingOptions.AVOID_STEAM],
-            attacker=Attacker(power=5),
-            harmable=components.harmable.Harmable(hp=16, defense=1),
+            attacker=Attacker(power=6),
+            harmable=components.harmable.Harmable(hp=20, defense=1),
             ai=HuntingMonster(),
             burnable=AliveBurnable(),
+            commitable=BlockingCommitable(),
+            movable=Movable(),
+            scaldable=AliveScaldable())
+
+
+class Zombie:
+
+
+    @staticmethod
+    def make(x, y):
+        return Entity(
+            x, y, 'Z', COLORS['zombie'], 'Zombie', 
+            entity_type=EntityTypes.MONSTER,
+            blocks=True,
+            render_order=RenderOrder.ACTOR,
+            routing_avoid=[RoutingOptions.AVOID_WATER,
+                           RoutingOptions.AVOID_FIRE,
+                           RoutingOptions.AVOID_SHRUBS,
+                           RoutingOptions.AVOID_MONSTERS,
+                           RoutingOptions.AVOID_STEAM],
+            attacker=Attacker(power=3),
+            harmable=components.harmable.Harmable(hp=20, defense=0),
+            ai=ZombieMonster(),
+            burnable=ZombieBurnable(),
             commitable=BlockingCommitable(),
             movable=Movable(),
             scaldable=AliveScaldable())

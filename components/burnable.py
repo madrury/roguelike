@@ -23,6 +23,14 @@ class AliveBurnable:
         return [{ResultTypes.DAMAGE: (self.owner, None, 5, [Elements.FIRE])}]
 
 
+class ZombieBurnable:
+    def burn(self, game_map):
+        fire = game_objects.various.Fire.make(game_map, self.owner.x, self.owner.y)
+        return [{
+            ResultTypes.ADD_ENTITY: fire,
+            ResultTypes.DEAD_ENTITY: self.owner}]
+
+
 class GrassBurnable:
     """When grass burns, the grass entity is removed from the game and
     (sometimes) replaced with a fire entity.

@@ -29,6 +29,22 @@ class BasicMonster:
         return results
 
 
+class ZombieMonster:
+
+    def __init__(self):
+        self.tree = Selection(
+            Sequence(
+                IsAdjacent(),
+                Attack()),
+            Sequence(
+                WithinRadius(radius=6),
+                MoveTowards()))
+
+    def take_turn(self, target, game_map):
+        _, results = self.tree.tick(self.owner, target, game_map, {})
+        return results
+
+
 class HuntingMonster:
     """A more dangerous monster.
 

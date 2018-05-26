@@ -253,3 +253,4 @@ class MonsterGroups(Enum):
     TWO_ORCS_AND_TROLL = auto()
     KRUTHIK_SQARM = auto()
     PINK_JELLY = auto()
+    ZOMBIE = auto()

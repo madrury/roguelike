@@ -171,7 +171,7 @@ def main():
 
         # DEBUG
         # These switched highlight the various game state arrays.
-        highlight_array(game_map.blocked, game_map, COLORS['cursor_tail'])
+        # highlight_array(game_map.blocked, game_map, COLORS['cursor_tail'])
         #highlight_array(game_map.fire, game_map, COLORS['darker_red'])
         #highlight_array(game_map.steam, game_map, COLORS['desaturated_green'])
         #highlight_array(game_map.terrain, game_map, COLORS['cursor_tail'])
@@ -405,11 +405,8 @@ def main():
         #---------------------------------------------------------------------
         # Post player turn checks.
         #---------------------------------------------------------------------
-        # If the player is swimming, decrease the swim stamina.  Otherwise,
-        # recover swim stamina.
         if game_state == GameStates.ENEMY_TURN:
             # Check if the player entered water.
-            # TODO: Swap this with an encroach check into a water tile.
             if game_map.water[player.x, player.y]:
                 enemy_turn_results.extend(player.swimmable.swim())
             else:

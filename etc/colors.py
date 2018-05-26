@@ -10,6 +10,7 @@ COLORS = {
     'troll': (128, 128, 0),
     'kruthik': (160, 82, 45),
     'pink_jelly': (255, 20, 147),
+    'zombie': (145, 145, 0),
 
     'cursor': (255, 215, 0),
     'cursor_tail': (220, 180, 0), 
