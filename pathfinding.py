@@ -1,4 +1,5 @@
 import tcod
+from dijkstra_map.dijkstra_map import DijkstraMap
 
 from etc.enum import RoutingOptions
 
@@ -34,6 +35,19 @@ def get_shortest_path(game_map, source, target, routing_avoid=None):
     pathfinder = tcod.path.AStar(walkable.T, diagonal=1.0)
     path = pathfinder.get_path(source[0], source[1], target[0], target[1])
     return path
+
+def get_path_to_radius_of_target(game_map, source, target, radius, 
+                                 routing_avoid=None):
+    walkable = make_walkable_array(game_map, routing_avoid=routing_avoid) 
+    walkable[source[0], source[1]] = True
+    walkable[target[0], target[1]] = True
+    dm = DijkstraMap(walkable)
+    dm.set_square_sources(target, radius)
+    dm.build()
+    #print()
+    #for row in dm.dmap:
+    #    print(" ".join(str(x) for x in row))
+    return dm.get_descent_path(source)
 
 def make_walkable_array(game_map, routing_avoid=None):
     if not routing_avoid:

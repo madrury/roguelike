@@ -5,7 +5,7 @@ from components.behaviour_trees.composite import (
     Selection, Sequence, Negate)
 from components.behaviour_trees.leaf import (
     IsAdjacent, WithinFov, Attack, MoveTowards, WithinRadius, Skitter, 
-    TravelToRandomPosition)
+    TravelToRandomPosition, MoveTowardsRadius)
 
 
 class BasicMonster:
@@ -21,7 +21,7 @@ class BasicMonster:
                 Attack()),
             Sequence(
                 WithinFov(),
-                MoveTowards()),
+                MoveTowardsRadius(radius=5)),
             TravelToRandomPosition())
 
     def take_turn(self, target, game_map):

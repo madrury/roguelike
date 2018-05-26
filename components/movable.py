@@ -4,6 +4,12 @@ from pathfinding import get_shortest_path
 
 class Movable:
 
+    def set_position(self, game_map, x, y):
+        if self.owner.blocks:
+            game_map.blocked[self.owner.x, self.owner.y] = False
+            game_map.blocked[x, y] = True
+        self.owner.x, self.owner.y = x, y
+
     def move(self, game_map, dx, dy):
         x, y = self.owner.x, self.owner.y
         new_x, new_y = x + dx, y + dy

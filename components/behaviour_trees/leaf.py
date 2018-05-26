@@ -1,6 +1,6 @@
 from etc.enum import TreeStates
 
-from pathfinding import get_shortest_path
+from pathfinding import get_shortest_path, get_path_to_radius_of_target
 from etc.enum import ResultTypes
 from utils.utils import distance_to, random_walkable_position
 
@@ -42,6 +42,28 @@ class MoveTowards:
     """Move the owner towards a target."""
     def tick(self, owner, target, game_map, context):
         results = [{ResultTypes.MOVE_TOWARDS: (owner, target.x, target.y)}]
+        return TreeStates.SUCCESS, results
+
+
+class MoveTowardsRadius:
+
+    def __init__(self, radius):
+        self.radius = radius
+
+    def tick(self, owner, target, game_map, context):
+        path = get_path_to_radius_of_target(
+            game_map, 
+            (owner.x, owner.y),
+            (target.x, target.y),
+            radius=self.radius)
+        print("Enitity current position: ", (owner.x, owner.y))
+        print("Player current position: ", (target.x, target.y))
+        print("Path to radius: ", path)
+        print()
+        if len(path) <= 2:
+            return TreeStates.SUCCESS, []
+        results = [{
+            ResultTypes.SET_POSITION: (owner, path[1][0], path[1][1])}]
         return TreeStates.SUCCESS, results
 
 

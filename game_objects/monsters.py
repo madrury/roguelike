@@ -59,7 +59,7 @@ class Orc:
 class PinkJelly:
 
     @staticmethod
-    def make(x, y, hp=20):
+    def make(x, y, *, hp=20):
         return Entity(
             x, y, 'J', COLORS['pink_jelly'], 'Pink Jelly', 
             entity_type=EntityTypes.MONSTER,
@@ -110,7 +110,6 @@ class Troll:
 
 
 class Zombie:
-
 
     @staticmethod
     def make(x, y):

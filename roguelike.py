@@ -457,11 +457,16 @@ def main():
             damage = result.get(ResultTypes.DAMAGE)
             dead_entity = result.get(ResultTypes.DEAD_ENTITY)
             message = result.get(ResultTypes.MESSAGE)
+            set_position = result.get(ResultTypes.SET_POSITION)
             move_random_adjacent = result.get(ResultTypes.MOVE_RANDOM_ADJACENT)
             move_towards = result.get(ResultTypes.MOVE_TOWARDS)
             new_entity = result.get(ResultTypes.ADD_ENTITY)
             remove_entity = result.get(ResultTypes.REMOVE_ENTITY)
 
+            # Handle a move action
+            if set_position:
+               monster, x, y = set_position
+               monster.movable.set_position(game_map, x, y)
             # Handle a move towards action.  Move towards a target.
             if move_towards:
                monster, target_x, target_y = move_towards

@@ -45,10 +45,10 @@ def coordinates_within_circle(center, radius):
     return circle
 
 def adjacent_coordinates(center):
-        dxdy = [(-1, 1), (0, 1), (1, 1),
-                (-1, 0),         (1, 0),
-                (-1, -1), (0, -1), (1, -1)]
-        return [(center[0] + dx, center[1] + dy) for dx, dy in dxdy]
+    dxdy = [(-1, 1), (0, 1), (1, 1),
+            (-1, 0),         (1, 0),
+            (-1, -1), (0, -1), (1, -1)]
+    return [(center[0] + dx, center[1] + dy) for dx, dy in dxdy]
 
 
 #-----------------------------------------------------------------------------

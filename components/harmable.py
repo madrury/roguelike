@@ -102,7 +102,9 @@ class Harmable:
 
 
 class PinkJellyHarmable(Harmable):
-
+    """Spawns another copy of a Pink Jelly in a random adjacent space when
+    harmed.
+    """
     def harm(self, game_map, source, amount, elements):
         for transformer in self.damage_transformers:
             amount = transformer.transform_damage(amount, elements)

@@ -147,6 +147,7 @@ class ResultTypes(Enum):
     REMOVE_WEAPON = auto()
     REMOVE_ENTITY = auto()
     RESTORE_PLAYER_INPUT = auto()
+    SET_POSITION = auto()
     # These two must be processed first!
     CURSOR_MODE = 98
     ANIMATION = 99
@@ -154,15 +155,15 @@ class ResultTypes(Enum):
 
 class InputTypes(Enum):
     CURSOR_SELECT = auto()
+    DROP_INVENTORY = auto()
+    EQUIP_INVENTORY = auto()
+    EXIT = auto()
+    FULLSCREEN = auto()
     INVENTORY_INDEX = auto()
     MOVE = auto()
     PICKUP = auto()
     SHOW_INVENTORY = auto()
-    DROP_INVENTORY = auto()
     THROW_INVENTORY = auto()
-    EQUIP_INVENTORY = auto()
-    FULLSCREEN = auto()
-    EXIT = auto()
 
 
 class EntityTypes(Enum):

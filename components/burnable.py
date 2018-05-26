@@ -24,8 +24,10 @@ class AliveBurnable:
 
 
 class ZombieBurnable:
+    """Imediately kill the zombie and spawn a fire in their space."""
     def burn(self, game_map):
-        fire = game_objects.various.Fire.make(game_map, self.owner.x, self.owner.y)
+        fire = game_objects.various.Fire.make(
+            game_map, self.owner.x, self.owner.y)
         return [{
             ResultTypes.ADD_ENTITY: fire,
             ResultTypes.DEAD_ENTITY: self.owner}]
