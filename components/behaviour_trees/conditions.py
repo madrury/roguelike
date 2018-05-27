@@ -46,7 +46,6 @@ class AtLInfinityRadius:
     def tick(self, owner, target, game_map, context):
         l_inf_distance = max(abs(owner.x - target.x), abs(owner.y - target.y))
         if l_inf_distance == self.radius:
-            print("At radius")
             return TreeStates.SUCCESS, []
         else:
             return TreeStates.FAILURE, []
