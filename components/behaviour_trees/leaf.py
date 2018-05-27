@@ -46,7 +46,7 @@ class MoveTowards:
 
 
 class MoveTowardsRadius:
-
+    """Seek to stay a fixed radius from a target."""
     def __init__(self, radius):
         self.radius = radius
 
@@ -55,12 +55,9 @@ class MoveTowardsRadius:
             game_map, 
             (owner.x, owner.y),
             (target.x, target.y),
-            radius=self.radius)
-        print("Enitity current position: ", (owner.x, owner.y))
-        print("Player current position: ", (target.x, target.y))
-        print("Path to radius: ", path)
-        print()
-        if len(path) <= 2:
+            radius=self.radius,
+            routing_avoid=owner.routing_avoid)
+        if len(path) <= 1:
             return TreeStates.SUCCESS, []
         results = [{
             ResultTypes.SET_POSITION: (owner, path[1][0], path[1][1])}]

@@ -2,6 +2,7 @@ import tcod
 from dijkstra_map.dijkstra_map import DijkstraMap
 
 from etc.enum import RoutingOptions
+from utils.debug import draw_dijkstra_map
 
 
 def get_shortest_path(game_map, source, target, routing_avoid=None):
@@ -44,9 +45,6 @@ def get_path_to_radius_of_target(game_map, source, target, radius,
     dm = DijkstraMap(walkable)
     dm.set_square_sources(target, radius)
     dm.build()
-    #print()
-    #for row in dm.dmap:
-    #    print(" ".join(str(x) for x in row))
     return dm.get_descent_path(source)
 
 def make_walkable_array(game_map, routing_avoid=None):

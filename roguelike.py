@@ -176,6 +176,7 @@ def main():
         #highlight_array(game_map.steam, game_map, COLORS['desaturated_green'])
         #highlight_array(game_map.terrain, game_map, COLORS['cursor_tail'])
 
+
         #---------------------------------------------------------------------
         # Blit the subconsoles to the main console and flush all rendering.
         #---------------------------------------------------------------------
@@ -466,7 +467,7 @@ def main():
             # Handle a move action
             if set_position:
                monster, x, y = set_position
-               monster.movable.set_position(game_map, x, y)
+               monster.movable.set_position_if_able(game_map, x, y)
             # Handle a move towards action.  Move towards a target.
             if move_towards:
                monster, target_x, target_y = move_towards
@@ -574,9 +575,9 @@ def main():
 def create_map(map_console):
     floor = make_floor(FLOOR_CONFIG, ROOM_CONFIG)
     game_map = GameMap(floor, map_console)
-    terrain = add_random_terrain(game_map, TERRAIN_CONFIG)
+    #terrain = add_random_terrain(game_map, TERRAIN_CONFIG)
     spawn_entities(MONSTER_SCHEDULE, MONSTER_GROUPS, game_map)
-    spawn_entities(ITEM_SCHEDULE, ITEM_GROUPS, game_map)
+    #spawn_entities(ITEM_SCHEDULE, ITEM_GROUPS, game_map)
     return game_map
 
 def create_player(game_map):

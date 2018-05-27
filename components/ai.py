@@ -21,7 +21,7 @@ class BasicMonster:
                 Attack()),
             Sequence(
                 WithinFov(),
-                MoveTowardsRadius(radius=5)),
+                MoveTowardsRadius(radius=3)),
             TravelToRandomPosition())
 
     def take_turn(self, target, game_map):
