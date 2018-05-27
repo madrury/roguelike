@@ -2,6 +2,7 @@ from entity import Entity
 
 from etc.colors import COLORS
 from etc.enum import RenderOrder, EntityTypes, MonsterGroups, RoutingOptions
+
 from components.ai import (
     BasicMonster, HuntingMonster, SkitteringMonster, ZombieMonster, 
     NecromancerMonster)
@@ -10,6 +11,7 @@ from components.burnable import AliveBurnable, ZombieBurnable
 from components.commitable import BlockingCommitable
 from components.movable import Movable
 from components.scaldable import AliveScaldable
+from components.spreadable import ZombieSpreadable
 import components.harmable
 
 
@@ -131,7 +133,8 @@ class Zombie:
             burnable=ZombieBurnable(),
             commitable=BlockingCommitable(),
             movable=Movable(),
-            scaldable=AliveScaldable())
+            scaldable=AliveScaldable(),
+            spreadable=ZombieSpreadable())
 
 
 class Necromancer:

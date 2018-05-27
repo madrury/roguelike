@@ -33,3 +33,17 @@ class SteamDissipatable:
             return [{ResultTypes.REMOVE_ENTITY: self.owner}]
         else:
             return []
+
+
+class NecroticSoilDissipatable:
+
+    def __init__(self, n_frames=3):
+        self.n_frames = n_frames
+        self.frame = 0
+
+    def dissipate(self, game_map):
+        if self.frame < self.n_frames:
+            self.frame += 1
+            return []
+        else:
+            return [{ResultTypes.REMOVE_ENTITY: self.owner}]

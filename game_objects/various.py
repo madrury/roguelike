@@ -2,13 +2,15 @@ import random
 
 from colors import random_red_or_yellow, random_grey
 from entity import Entity
+from etc.colors import COLORS
 from etc.enum import EntityTypes, RenderOrder
 from etc.config import PROBABILITIES
 
-from components.commitable import FireCommitable, SteamCommitable
-from components.dissipatable import FireDissipatable, SteamDissipatable
+from components.commitable import BaseCommitable, FireCommitable, SteamCommitable
+from components.dissipatable import FireDissipatable, SteamDissipatable, NecroticSoilDissipatable
 from components.shimmer import FireShimmer, SteamShimmer
 from components.spreadable import FireSpreadable, SteamSpreadable
+import components.encroachable
 
 
 class Fire:
@@ -66,3 +68,19 @@ class Steam:
             dissipatable=SteamDissipatable(p=p_dissipate),
             shimmer=SteamShimmer(),
             spreadable=SteamSpreadable(p=p_spread))
+
+
+class NecroticSoil:
+
+    @staticmethod
+    def make(game_map, x, y):
+        fg_color = COLORS['necrotic_soil']
+        return Entity(
+            x, y, '.',
+            name="Necrotic Soil",
+            fg_color=fg_color,
+            visible_out_of_fov=True,
+            entity_type=EntityTypes.TERRAIN,
+            render_order=RenderOrder.TERRAIN,
+            commitable=BaseCommitable(),
+            encroachable=components.encroachable.NecroticSoilEncroachable())

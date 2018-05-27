@@ -222,6 +222,7 @@ class Elements(Enum):
     NONE = auto()
     FIRE = auto()
     WATER = auto()
+    NECROTIC = auto()
 
 
 class RoutingOptions(Enum):
