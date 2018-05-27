@@ -2,7 +2,9 @@ from entity import Entity
 
 from etc.colors import COLORS
 from etc.enum import RenderOrder, EntityTypes, MonsterGroups, RoutingOptions
-from components.ai import BasicMonster, HuntingMonster, SkitteringMonster, ZombieMonster, SeekingRadiusMonster
+from components.ai import (
+    BasicMonster, HuntingMonster, SkitteringMonster, ZombieMonster, 
+    NecromancerMonster)
 from components.attacker import Attacker
 from components.burnable import AliveBurnable, ZombieBurnable
 from components.commitable import BlockingCommitable
@@ -47,7 +49,7 @@ class Orc:
                            RoutingOptions.AVOID_SHRUBS,
                            RoutingOptions.AVOID_MONSTERS,
                            RoutingOptions.AVOID_STEAM],
-            ai=SeekingRadiusMonster(),
+            ai=NecromancerMonster(),
             attacker=Attacker(power=3),
             burnable=AliveBurnable(),
             commitable=BlockingCommitable(),

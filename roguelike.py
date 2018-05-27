@@ -175,7 +175,7 @@ def main():
         #highlight_array(game_map.fire, game_map, COLORS['darker_red'])
         #highlight_array(game_map.steam, game_map, COLORS['desaturated_green'])
         #highlight_array(game_map.terrain, game_map, COLORS['cursor_tail'])
-        draw_dijkstra_map_of_radius(game_map, player, radius=3)
+        #draw_dijkstra_map_of_radius(game_map, player, radius=3)
 
 
         #---------------------------------------------------------------------

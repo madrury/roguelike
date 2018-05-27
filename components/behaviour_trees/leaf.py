@@ -2,40 +2,7 @@ from etc.enum import TreeStates
 
 from pathfinding import get_shortest_path, get_path_to_radius_of_target
 from etc.enum import ResultTypes
-from utils.utils import distance_to, random_walkable_position
-
-
-class IsAdjacent:
-    """Return sucess is owner is adjacent to target."""
-    def tick(self, owner, target, game_map, context):
-        distance = distance_to((owner.x, owner.y), (target.x, target.y)) 
-        if distance < 2:
-            return TreeStates.SUCCESS, []
-        else:
-            return TreeStates.FAILURE, []
-
-
-class WithinFov:
-    """Return success if owner is in the players fov."""
-    def tick(self, owner, target, game_map, context):
-        if game_map.fov[owner.x, owner.y]:
-            return TreeStates.SUCCESS, []
-        return TreeStates.FAILURE, []
-
-
-class WithinRadius:
-    """Return success if the distance between owner and target is less than or
-    equal to some radius.
-    """
-    def __init__(self, radius):
-        self.radius = radius
-
-    def tick(self, owner, target, game_map, context):
-        distance = distance_to((owner.x, owner.y), (target.x, target.y)) 
-        if distance <= self.radius: 
-            return TreeStates.SUCCESS, []
-        else:
-            return TreeStates.FAILURE, []
+from utils.utils import random_walkable_position, random_adjacent
 
 
 class MoveTowards:
@@ -45,7 +12,7 @@ class MoveTowards:
         return TreeStates.SUCCESS, results
 
 
-class SeekTowardsRadius:
+class SeekTowardsLInfinityRadius:
     """Seek to stay a fixed radius from a target."""
     def __init__(self, radius):
         self.radius = radius
@@ -103,3 +70,18 @@ class Attack:
                     owner.attacker.attack(game_map, target))
         else:
             return TreeStates.FAILURE, []
+
+
+class SpawnEntity:
+
+    def __init__(self, maker):
+        self.maker = maker
+
+    def tick(self, owner, target, game_map, context):
+        x, y = random_adjacent((owner.x, owner.y))
+        if not game_map.blocked[x, y]:
+            print(x, y)
+            entity = self.maker.make(x, y)
+            if entity:
+                return TreeStates.SUCCESS, [{ResultTypes.ADD_ENTITY: entity}]
+        return TreeStates.FAILURE, []

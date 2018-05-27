@@ -4,8 +4,12 @@ from utils.utils import distance_to
 from components.behaviour_trees.composite import (
     Selection, Sequence, Negate)
 from components.behaviour_trees.leaf import (
-    IsAdjacent, WithinFov, Attack, MoveTowards, WithinRadius, Skitter, 
-    TravelToRandomPosition, SeekTowardsRadius)
+     Attack, MoveTowards, Skitter, TravelToRandomPosition,
+     SeekTowardsLInfinityRadius, SpawnEntity)
+from components.behaviour_trees.conditions import (
+    IsAdjacent, WithinFov, WithinRadius, AtLInfinityRadius, CoinFlip)
+
+import game_objects.monsters
 
 
 class BasicMonster:
@@ -29,16 +33,17 @@ class BasicMonster:
         return results
 
 
-class SeekingRadiusMonster:
+class NecromancerMonster:
 
     def __init__(self, move_towards_radius=6, seeking_radius=3):
         self.tree = Selection(
             Sequence(
-                IsAdjacent(),
-                Attack()),
+                AtLInfinityRadius(radius=seeking_radius),
+                CoinFlip(p=0.5),
+                SpawnEntity(game_objects.monsters.Zombie)),
             Sequence(
                 WithinRadius(radius=move_towards_radius),
-                SeekTowardsRadius(radius=seeking_radius)),
+                SeekTowardsLInfinityRadius(radius=seeking_radius)),
             TravelToRandomPosition())
 
     def take_turn(self, target, game_map):
