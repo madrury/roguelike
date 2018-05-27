@@ -39,7 +39,7 @@ class NecromancerMonster:
         self.tree = Selection(
             Sequence(
                 AtLInfinityRadius(radius=seeking_radius),
-                CoinFlip(p=0.5),
+                CoinFlip(p=0.3),
                 SpawnEntity(game_objects.monsters.Zombie)),
             Sequence(
                 WithinRadius(radius=move_towards_radius),

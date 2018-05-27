@@ -255,3 +255,4 @@ class MonsterGroups(Enum):
     KRUTHIK_SQARM = auto()
     PINK_JELLY = auto()
     ZOMBIE = auto()
+    NECROMANCER = auto()

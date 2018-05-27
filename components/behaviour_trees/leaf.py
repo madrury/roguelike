@@ -79,8 +79,9 @@ class SpawnEntity:
 
     def tick(self, owner, target, game_map, context):
         x, y = random_adjacent((owner.x, owner.y))
-        if not game_map.blocked[x, y]:
-            print(x, y)
+        if (game_map.walkable[x, y]
+            and not game_map.blocked[x, y]
+            and not game_map.water[x, y])
             entity = self.maker.make(x, y)
             if entity:
                 return TreeStates.SUCCESS, [{ResultTypes.ADD_ENTITY: entity}]

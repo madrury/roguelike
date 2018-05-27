@@ -49,7 +49,7 @@ class Orc:
                            RoutingOptions.AVOID_SHRUBS,
                            RoutingOptions.AVOID_MONSTERS,
                            RoutingOptions.AVOID_STEAM],
-            ai=NecromancerMonster(),
+            ai=BasicMonster(),
             attacker=Attacker(power=3),
             burnable=AliveBurnable(),
             commitable=BlockingCommitable(),
@@ -132,3 +132,27 @@ class Zombie:
             commitable=BlockingCommitable(),
             movable=Movable(),
             scaldable=AliveScaldable())
+
+
+class Necromancer:
+    
+    @staticmethod
+    def make(x, y):
+        return Entity(
+            x, y, 'N', COLORS['necromancer'], 'Necromancer', 
+            entity_type=EntityTypes.MONSTER,
+            blocks=True,
+            render_order=RenderOrder.ACTOR,
+            routing_avoid=[RoutingOptions.AVOID_WATER,
+                           RoutingOptions.AVOID_FIRE,
+                           RoutingOptions.AVOID_SHRUBS,
+                           RoutingOptions.AVOID_MONSTERS,
+                           RoutingOptions.AVOID_STEAM],
+            ai=NecromancerMonster(),
+            attacker=Attacker(power=5),
+            burnable=AliveBurnable(),
+            commitable=BlockingCommitable(),
+            harmable=components.harmable.Harmable(hp=20, defense=0),
+            movable=Movable(),
+            scaldable=AliveScaldable())
+
