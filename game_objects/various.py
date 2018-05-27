@@ -83,4 +83,5 @@ class NecroticSoil:
             entity_type=EntityTypes.TERRAIN,
             render_order=RenderOrder.TERRAIN,
             commitable=BaseCommitable(),
+            dissipatable=NecroticSoilDissipatable(),
             encroachable=components.encroachable.NecroticSoilEncroachable())

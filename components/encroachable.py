@@ -21,6 +21,7 @@ class NecroticSoilEncroachable:
 
     def encroach(self, game_map, encroacher):
         results = []
-        results.append({ResultTypes.DAMAGE: (
-            encroacher, None, self.damage, Elements.NECROTIC)})
+        if encroacher.harmable:
+            results.append({ResultTypes.DAMAGE: (
+                encroacher, None, self.damage, Elements.NECROTIC)})
         return results
