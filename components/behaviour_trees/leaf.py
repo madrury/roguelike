@@ -45,7 +45,7 @@ class MoveTowards:
         return TreeStates.SUCCESS, results
 
 
-class MoveTowardsRadius:
+class SeekTowardsRadius:
     """Seek to stay a fixed radius from a target."""
     def __init__(self, radius):
         self.radius = radius

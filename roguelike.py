@@ -11,7 +11,7 @@ from etc.enum import (
     ResultTypes, InputTypes, EntityTypes, GameStates, RenderOrder, Animations,
     INVENTORY_STATES, INPUT_STATES, CANCEL_STATES)
 
-from utils.debug import highlight_array
+from utils.debug import highlight_array, draw_dijkstra_map_of_radius
 from utils.utils import (
     flatten_list_of_dictionaries,
     unpack_single_key_dict,
@@ -175,6 +175,7 @@ def main():
         #highlight_array(game_map.fire, game_map, COLORS['darker_red'])
         #highlight_array(game_map.steam, game_map, COLORS['desaturated_green'])
         #highlight_array(game_map.terrain, game_map, COLORS['cursor_tail'])
+        draw_dijkstra_map_of_radius(game_map, player, radius=3)
 
 
         #---------------------------------------------------------------------
@@ -575,9 +576,9 @@ def main():
 def create_map(map_console):
     floor = make_floor(FLOOR_CONFIG, ROOM_CONFIG)
     game_map = GameMap(floor, map_console)
-    #terrain = add_random_terrain(game_map, TERRAIN_CONFIG)
+    terrain = add_random_terrain(game_map, TERRAIN_CONFIG)
     spawn_entities(MONSTER_SCHEDULE, MONSTER_GROUPS, game_map)
-    #spawn_entities(ITEM_SCHEDULE, ITEM_GROUPS, game_map)
+    spawn_entities(ITEM_SCHEDULE, ITEM_GROUPS, game_map)
     return game_map
 
 def create_player(game_map):

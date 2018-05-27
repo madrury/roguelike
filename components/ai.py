@@ -5,7 +5,7 @@ from components.behaviour_trees.composite import (
     Selection, Sequence, Negate)
 from components.behaviour_trees.leaf import (
     IsAdjacent, WithinFov, Attack, MoveTowards, WithinRadius, Skitter, 
-    TravelToRandomPosition, MoveTowardsRadius)
+    TravelToRandomPosition, SeekTowardsRadius)
 
 
 class BasicMonster:
@@ -21,7 +21,7 @@ class BasicMonster:
                 Attack()),
             Sequence(
                 WithinFov(),
-                MoveTowardsRadius(radius=3)),
+                MoveTowards()),
             TravelToRandomPosition())
 
     def take_turn(self, target, game_map):
@@ -29,16 +29,17 @@ class BasicMonster:
         return results
 
 
-class ZombieMonster:
+class SeekingRadiusMonster:
 
-    def __init__(self):
+    def __init__(self, move_towards_radius=6, seeking_radius=3):
         self.tree = Selection(
             Sequence(
                 IsAdjacent(),
                 Attack()),
             Sequence(
-                WithinRadius(radius=6),
-                MoveTowards()))
+                WithinRadius(radius=move_towards_radius),
+                SeekTowardsRadius(radius=seeking_radius)),
+            TravelToRandomPosition())
 
     def take_turn(self, target, game_map):
         _, results = self.tree.tick(self.owner, target, game_map, {})
@@ -60,6 +61,22 @@ class HuntingMonster:
                 WithinRadius(radius=sensing_range),
                 MoveTowards()),
             TravelToRandomPosition())
+
+    def take_turn(self, target, game_map):
+        _, results = self.tree.tick(self.owner, target, game_map, {})
+        return results
+
+
+class ZombieMonster:
+    """Similar to a HuntingMonster, but will not wander."""
+    def __init__(self, move_towards_radius=6):
+        self.tree = Selection(
+            Sequence(
+                IsAdjacent(),
+                Attack()),
+            Sequence(
+                WithinRadius(radius=move_towards_radius),
+                MoveTowards()))
 
     def take_turn(self, target, game_map):
         _, results = self.tree.tick(self.owner, target, game_map, {})
