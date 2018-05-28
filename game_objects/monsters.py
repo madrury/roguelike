@@ -130,7 +130,11 @@ class Zombie:
                            RoutingOptions.AVOID_MONSTERS,
                            RoutingOptions.AVOID_STEAM],
             attacker=Attacker(power=3),
-            harmable=components.harmable.Harmable(hp=20, defense=0),
+            harmable=components.harmable.Harmable(
+                hp=10, defense=0,
+                damage_transformers=[
+                    ElementalTransformer([Elements.FIRE], multiplyer=2),
+                    ElementalTransformer([Elements.HEALING], multiplyer=-1)]),
             ai=ZombieMonster(),
             burnable=ZombieBurnable(),
             commitable=BlockingCommitable(),
@@ -160,7 +164,8 @@ class Necromancer:
             harmable=components.harmable.Harmable(
                 hp=20, defense=0,
                 damage_transformers=[
-                    ElementalTransformer([Elements.FIRE], multiplyer=2)]),
+                    ElementalTransformer([Elements.FIRE], multiplyer=2),
+                    ElementalTransformer([Elements.HEALING], multiplyer=-1)]),
             movable=Movable(),
             scaldable=AliveScaldable())
 

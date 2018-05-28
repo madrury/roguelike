@@ -15,7 +15,8 @@ class NullThrowable:
 
 class HealthPotionThrowable:
 
-    def __init__(self, healing=5):
+    # TODO: Move to config.py
+    def __init__(self, healing=20):
         self.name = "Healing Potion"
         self.healing = healing
 

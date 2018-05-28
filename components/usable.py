@@ -31,6 +31,7 @@ class HealthPotionUsable:
     healing: int
       The amount of healing in this potion.
     """
+    # TODO: Move to config.py
     def __init__(self, healing=20):
         self.name = "Healing Potion"
         self.healing = healing
