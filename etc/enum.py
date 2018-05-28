@@ -237,6 +237,7 @@ class ItemGroups(Enum):
     TWO_HEALTH_POTIONS = auto()
     MAGIC_MISSILE_SCROLL = auto()
     FIREBLAST_SCROLL = auto()
+    WATERBLAST_SCROLL = auto()
     THROWING_KNIFE = auto()
     LANCE = auto()
     AXE = auto()

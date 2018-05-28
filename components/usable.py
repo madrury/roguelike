@@ -1,6 +1,6 @@
 from etc.colors import COLORS
 from messages import Message
-from game_events import fireblast
+from game_events import fireblast, waterblast
 
 from etc.enum import (
     ResultTypes, CursorTypes, Animations, EntityTypes, Elements)
@@ -152,6 +152,29 @@ class FireblastUsable:
     def use(self, game_map, user):
         center = (user.x, user.y)
         results = fireblast(game_map, center,
+                            radius=self.radius,
+                            damage=self.damage,
+                            user=user)
+        return results
+
+
+class WaterblastUsable:
+    """A fireblast spell.
+
+    Fireblast is an area of effect spell centered at the player.  The fireblast spell:
+
+      - Deals water-elemental damage to all harmable entities within a given
+        radius.
+      - Spawns water terrain within the given radius of the player.
+    """
+    def __init__(self, damage=6, radius=4):
+        self.name = "Scroll of Waterblast"
+        self.damage = damage
+        self.radius = radius
+
+    def use(self, game_map, user):
+        center = (user.x, user.y)
+        results = waterblast(game_map, center,
                             radius=self.radius,
                             damage=self.damage,
                             user=user)

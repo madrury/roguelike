@@ -8,7 +8,7 @@ from components.consumable import FinitelyConsumable, InfinitelyConsumable
 from components.commitable import BaseCommitable
 from components.usable import (
     NullUsable, HealthPotionUsable, MagicMissileUsable, FireblastUsable,
-    TorchUsable)
+    TorchUsable, WaterblastUsable)
 from components.throwable import (
     NullThrowable, HealthPotionThrowable, ThrowingKnifeThrowable)
 
@@ -51,6 +51,20 @@ class FireblastScroll:
                       consumable=FinitelyConsumable(uses=1),
                       burnable=ItemBurnable(),
                       usable=FireblastUsable(),
+                      throwable=NullThrowable())
+
+
+class WaterblastScroll:
+
+    @staticmethod
+    def make(x, y):
+        return Entity(x, y, '%', COLORS['violet'], 'Scroll of Waterblast',
+                      entity_type=EntityTypes.ITEM,
+                      render_order=RenderOrder.ITEM,
+                      commitable=BaseCommitable(),
+                      consumable=FinitelyConsumable(uses=1),
+                      burnable=ItemBurnable(),
+                      usable=WaterblastUsable(),
                       throwable=NullThrowable())
 
 

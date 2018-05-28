@@ -1,6 +1,7 @@
 from etc.enum import ItemGroups
 from game_objects.items import (
-    HealthPotion, MagicMissileScroll, FireblastScroll, ThrowingKnife)
+    HealthPotion, MagicMissileScroll, FireblastScroll, WaterblastScroll,
+    ThrowingKnife)
 from game_objects.armor import (
     LeatherArmor, LeatherArmorOfFireResist, ReflectSuit)
 from game_objects.weapons import Lance, Axe
@@ -12,6 +13,7 @@ ITEM_GROUPS = {
     ItemGroups.TWO_HEALTH_POTIONS: [HealthPotion]*2,
     ItemGroups.MAGIC_MISSILE_SCROLL: [MagicMissileScroll]*2,
     ItemGroups.FIREBLAST_SCROLL: [FireblastScroll],
+    ItemGroups.WATERBLAST_SCROLL: [WaterblastScroll],
     ItemGroups.THROWING_KNIFE: [ThrowingKnife],
     ItemGroups.LANCE: [Lance],
     ItemGroups.AXE: [Axe],
@@ -27,10 +29,11 @@ ITEM_SCHEDULE = [
     (1.0*0.0, ItemGroups.TWO_HEALTH_POTIONS),
     (1.0*0.0, ItemGroups.MAGIC_MISSILE_SCROLL),
     (1.0*0.0, ItemGroups.FIREBLAST_SCROLL),
+    (1.0*1.0, ItemGroups.WATERBLAST_SCROLL),
     (1.0*0.0, ItemGroups.THROWING_KNIFE),
-    (1.0*0.1, ItemGroups.LANCE),
-    (1.0*0.7, ItemGroups.AXE),
+    (1.0*0.0, ItemGroups.LANCE),
+    (1.0*0.0, ItemGroups.AXE),
     (1.0*0.0, ItemGroups.LEATHER_ARMOR),
-    (1.0*0.1, ItemGroups.REFLECT_SUIT),
-    (1.0*0.1, ItemGroups.LEATHER_ARMOR_OF_FIRE_RESIST)
+    (1.0*0.0, ItemGroups.REFLECT_SUIT),
+    (1.0*0.0, ItemGroups.LEATHER_ARMOR_OF_FIRE_RESIST)
 ]
