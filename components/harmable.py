@@ -129,11 +129,13 @@ class FireBloatHarmable(Harmable):
     """Explodes into a fireblast when harmed."""
     def harm(self, game_map, source, amount, elements):
         # TODO: Move to config.py
-        results = fireblast(
-            game_map,
-            (self.owner.x, self.owner.y),
-            radius=3,
-            damage=6)
+        results = []
+        if Elements.WATER not in elements:
+            results.extend(fireblast(
+                game_map,
+                (self.owner.x, self.owner.y),
+                radius=3,
+                damage=6))
         results.append({ResultTypes.DEAD_ENTITY: self.owner})
         return results
 
