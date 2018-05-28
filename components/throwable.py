@@ -1,7 +1,7 @@
-from etc.colors import COLORS
 from messages import Message
-from utils.utils import get_first_blocking_entity_along_path
+from etc.colors import COLORS
 from etc.enum import ResultTypes, CursorTypes, Animations, Elements
+from utils.utils import get_first_blocking_entity_along_path
 
 
 class NullThrowable:
@@ -51,7 +51,8 @@ class HealthPotionCallback:
                 Animations.HEALTH_POTION, (target.x, target.y))
             results.append({
                 ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
-                ResultTypes.HEAL: (target, self.owner.healing),
+                ResultTypes.DAMAGE: (
+                    target, None, -self.owner.healing, [Elements.HEALING]),
                 ResultTypes.ANIMATION: (
                     Animations.CONCATINATED, (throw_animation, heal_animation))
             }),

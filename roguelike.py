@@ -354,10 +354,6 @@ def main():
                 player_turn_results.extend(damage_result)
                 if target not in harmed_queue:
                     harmed_queue.appendleft(target)
-            # Heal an entity
-            if result_type == ResultTypes.HEAL:
-                target, amount = result_data
-                target.harmable.heal(amount)
             # Don defensive equipment.
             if result_type == ResultTypes.EQUIP_ARMOR:
                 entity, armor = result_data

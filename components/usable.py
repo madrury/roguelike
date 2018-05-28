@@ -31,7 +31,7 @@ class HealthPotionUsable:
     healing: int
       The amount of healing in this potion.
     """
-    def __init__(self, healing=5):
+    def __init__(self, healing=20):
         self.name = "Healing Potion"
         self.healing = healing
 
@@ -45,11 +45,13 @@ class HealthPotionUsable:
         else:
             message = Message(f"{reciever.name}'s wounds start to heal.", 
                               COLORS.get('green'))
-            results.append({ResultTypes.HEAL: (reciever, self.healing),
-                            ResultTypes.MESSAGE: message,
-                            ResultTypes.ANIMATION: (
-                                Animations.HEALTH_POTION, 
-                                (reciever.x, reciever.y))})
+            results.append({
+                ResultTypes.DAMAGE: (
+                    reciever, None, -self.healing, [Elements.HEALING]),
+                ResultTypes.MESSAGE: message,
+                ResultTypes.ANIMATION: (
+                    Animations.HEALTH_POTION, 
+                    (reciever.x, reciever.y))})
         return results
 
 

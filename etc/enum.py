@@ -94,8 +94,6 @@ CANCEL_STATES = {
 #   Exit a menu, or the game.
 # FULLSCREEN: boolean
 #   Enter fullscreen mode.
-# HEAL: (entity, amount)
-#   Heal an entity a a given amount.
 # INVENTORY_INDEX: int
 #   The index of an item chosen from the player's inventory.
 # ITEM_ADDED: item
@@ -135,7 +133,6 @@ class ResultTypes(Enum):
     END_TURN = auto()
     EQUIP_ARMOR = auto()
     EQUIP_WEAPON = auto()
-    HEAL = auto()
     ITEM_ADDED = auto()
     ITEM_CONSUMED = auto()
     ITEM_DROPPED = auto()
@@ -220,6 +217,7 @@ class ItemTargeting(Enum):
 
 class Elements(Enum):
     NONE = auto()
+    HEALING = auto()
     FIRE = auto()
     WATER = auto()
     NECROTIC = auto()
