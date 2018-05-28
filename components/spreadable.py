@@ -5,7 +5,7 @@ from etc.enum import ResultTypes, EntityTypes
 from utils.utils import (
     adjacent_coordinates, random_adjacent, get_entities_at_location,
     get_all_entities_of_type_in_position)
-import game_objects.various
+import game_objects.terrain
 
 
 class FireSpreadable:
@@ -62,7 +62,7 @@ class ZombieSpreadable:
             (self.owner.x, self.owner.y), game_map, EntityTypes.TERRAIN) 
          for terrain in current_terrain:
              results.append({ResultTypes.REMOVE_ENTITY: terrain})
-         necrotic_soil = game_objects.various.NecroticSoil.make(
+         necrotic_soil = game_objects.terrain.NecroticSoil.make(
              game_map, self.owner.x, self.owner.y)
          results.append({ResultTypes.ADD_ENTITY: necrotic_soil})
          return results

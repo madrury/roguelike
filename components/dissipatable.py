@@ -37,7 +37,8 @@ class SteamDissipatable:
 
 class NecroticSoilDissipatable:
 
-    def __init__(self, n_frames=3):
+    # TODO: Move to config.
+    def __init__(self, n_frames=6):
         self.n_frames = n_frames
         self.frame = 0
 
