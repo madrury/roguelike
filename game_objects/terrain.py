@@ -8,7 +8,7 @@ from etc.colors import COLORS
 from etc.chars import CHARS
 
 import components.burnable
-from components.commitable import TerrainCommitable, ShrubCommitable
+from components.commitable import TerrainCommitable, ShrubCommitable, BaseCommitable
 from components.dissipatable import NecroticSoilDissipatable
 from components.shimmer import WaterShimmer
 import components.encroachable
@@ -108,12 +108,12 @@ class NecroticSoil:
     def make(game_map, x, y):
         fg_color = COLORS['necrotic_soil']
         return Entity(
-            x, y, '.',
+            x, y, CHARS['soil'],
             name="Necrotic Soil",
             fg_color=fg_color,
             visible_out_of_fov=True,
             entity_type=EntityTypes.TERRAIN,
             render_order=RenderOrder.TERRAIN,
-            commitable=TerrainCommitable(),
+            commitable=BaseCommitable(),
             dissipatable=NecroticSoilDissipatable(),
             encroachable=components.encroachable.NecroticSoilEncroachable())

@@ -5,7 +5,7 @@ from etc.enum import EntityTypes, RenderOrder, ItemGroups, Elements
 
 from components.commitable import BaseCommitable
 from components.equipable import ArmorEquipable
-from components.damage_transformers.defensive_transformers import (
+from components.transformers.damage_transformers import (
     ElementalTransformer)
 from components.callbacks.damage_callbacks import ReflectCallback
 

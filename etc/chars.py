@@ -8,4 +8,5 @@ CHARS = {
     'door': chr(17),
     'grass': chr(18),
     'shrub': chr(31),
+    'soil': chr(9*20 - 4)
 }

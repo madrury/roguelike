@@ -5,14 +5,14 @@ COLORS = {
     'light_ground': (200, 200, 200),
     'light_grass': (0, 150, 0),
     'dark_grass': (0, 80, 0),
-    'necrotic_soil': (66, 66, 66),
+    'necrotic_soil': (90, 60, 30),
 
     'orc': (46, 139, 87),
     'troll': (128, 128, 0),
     'kruthik': (160, 82, 45),
     'pink_jelly': (255, 20, 147),
     'zombie': (145, 145, 0),
-    'necromancer': (20, 20, 20),
+    'necromancer': (50, 50, 50),
 
     'cursor': (255, 215, 0),
     'cursor_tail': (220, 180, 0), 
