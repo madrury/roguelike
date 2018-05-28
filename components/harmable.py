@@ -1,6 +1,6 @@
 from messages import Message
 from status_bar import StatusBar
-from game_events import fireblast
+from game_events import fireblast, waterblast
 
 from utils.utils import random_adjacent
 from etc.enum import ResultTypes, Elements
@@ -136,6 +136,20 @@ class FireBloatHarmable(Harmable):
                 (self.owner.x, self.owner.y),
                 radius=3,
                 damage=6))
+        results.append({ResultTypes.DEAD_ENTITY: self.owner})
+        return results
+
+
+class WaterBloatHarmable(Harmable):
+    """Explodes into a water when harmed."""
+    def harm(self, game_map, source, amount, elements):
+        # TODO: Move to config.py
+        results = []
+        results.extend(waterblast(
+            game_map,
+            (self.owner.x, self.owner.y),
+            radius=3,
+            damage=6))
         results.append({ResultTypes.DEAD_ENTITY: self.owner})
         return results
 

@@ -1,7 +1,8 @@
 from entity import Entity
 
 from etc.colors import COLORS
-from etc.enum import RenderOrder, EntityTypes, MonsterGroups, RoutingOptions, Elements
+from etc.enum import (
+    RenderOrder, EntityTypes, MonsterGroups, RoutingOptions, Elements)
 
 from components.ai import (
     BasicMonster, HuntingMonster, SkitteringMonster, ZombieMonster, 
@@ -133,6 +134,26 @@ class FireBloat:
             harmable=components.harmable.FireBloatHarmable(hp=1, defense=0),
             movable=Movable(),
             scaldable=FireBloatScaldable())
+
+
+class WaterBloat:
+
+    @staticmethod
+    def make(x, y):
+        return Entity(
+            x, y, 'b', COLORS['water_bloat'], 'Water Bloat', 
+            entity_type=EntityTypes.MONSTER,
+            blocks=True,
+            render_order=RenderOrder.ACTOR,
+            routing_avoid=[RoutingOptions.AVOID_SHRUBS,
+                           RoutingOptions.AVOID_MONSTERS,
+                           RoutingOptions.AVOID_FIRE],
+            ai=BasicMonster(),
+            attacker=Attacker(power=1),
+            burnable=AliveBurnable(),
+            commitable=BlockingCommitable(),
+            harmable=components.harmable.WaterBloatHarmable(hp=1, defense=0),
+            movable=Movable())
 
 
 class Zombie:

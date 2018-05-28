@@ -256,5 +256,6 @@ class MonsterGroups(Enum):
     KRUTHIK_SQARM = auto()
     PINK_JELLY = auto()
     FIRE_BLOAT = auto()
+    WATER_BLOAT = auto()
     ZOMBIE = auto()
     NECROMANCER = auto()
