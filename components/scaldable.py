@@ -7,3 +7,9 @@ class AliveScaldable:
     def scald(self, game_map):
         # TODO: Move to config.py
         return [{ResultTypes.DAMAGE: (self.owner, None, 5, [Elements.WATER])}]
+
+
+class FireBloatScaldable:
+    """Steam immediately kills a fire bloat without causing a fireblast."""
+    def scald(self, game_map):
+            return [{ResultTypes.DEAD_ENTITY: self.owner}]

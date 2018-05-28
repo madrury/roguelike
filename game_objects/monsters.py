@@ -10,7 +10,7 @@ from components.attacker import Attacker
 from components.burnable import AliveBurnable, ZombieBurnable
 from components.commitable import BlockingCommitable
 from components.movable import Movable
-from components.scaldable import AliveScaldable
+from components.scaldable import AliveScaldable, FireBloatScaldable
 from components.spreadable import ZombieSpreadable
 import components.harmable
 
@@ -113,6 +113,26 @@ class Troll:
             commitable=BlockingCommitable(),
             movable=Movable(),
             scaldable=AliveScaldable())
+
+
+class FireBloat:
+
+    @staticmethod
+    def make(x, y):
+        return Entity(
+            x, y, 'b', COLORS['fire_bloat'], 'Fire Bloat', 
+            entity_type=EntityTypes.MONSTER,
+            blocks=True,
+            render_order=RenderOrder.ACTOR,
+            routing_avoid=[RoutingOptions.AVOID_SHRUBS,
+                           RoutingOptions.AVOID_MONSTERS,
+                           RoutingOptions.AVOID_STEAM],
+            ai=BasicMonster(),
+            attacker=Attacker(power=1),
+            commitable=BlockingCommitable(),
+            harmable=components.harmable.FireBloatHarmable(hp=1, defense=0),
+            movable=Movable(),
+            scaldable=FireBloatScaldable())
 
 
 class Zombie:

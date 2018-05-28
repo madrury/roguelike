@@ -26,9 +26,9 @@ def construct_animation(animation_data, game_map, player=None):
         _, target = animation_data
         animation_player = HealthPotionAnimation(game_map, target)
     elif animation_type == Animations.FIREBLAST:
-        _, _, radius = animation_data
+        _, center, radius = animation_data
         animation_player = FireblastAnimation(
-            game_map, (player.x, player.y), radius)
+            game_map, center, radius)
     elif animation_type == Animations.CONCATINATED:
         animation_player = ConcatinatedAnimation.construct(
             game_map, animation_data[1])

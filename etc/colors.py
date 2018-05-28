@@ -11,6 +11,7 @@ COLORS = {
     'troll': (128, 128, 0),
     'kruthik': (160, 82, 45),
     'pink_jelly': (255, 20, 147),
+    'fire_bloat': (240, 0, 0),
     'zombie': (145, 145, 0),
     'necromancer': (50, 50, 50),
 

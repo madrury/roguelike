@@ -1,6 +1,6 @@
 from messages import Message
 from etc.colors import COLORS
-from etc.enum import ResultTypes, Animations
+from etc.enum import ResultTypes, Animations, Elements
 
 from utils.utils import (
     get_all_entities_with_component_within_radius)

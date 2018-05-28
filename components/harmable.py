@@ -1,9 +1,12 @@
 from messages import Message
 from status_bar import StatusBar
+from game_events import fireblast
+
 from utils.utils import random_adjacent
 from etc.enum import ResultTypes, Elements
 from etc.config import PANEL_CONFIG 
 from etc.colors import STATUS_BAR_COLORS
+
 import game_objects.monsters
 
 
@@ -119,6 +122,19 @@ class PinkJellyHarmable(Harmable):
                 results.append({ResultTypes.ADD_ENTITY: jelly})
         if self.hp <= 0:
             results.append({ResultTypes.DEAD_ENTITY: self.owner})
+        return results
+
+
+class FireBloatHarmable(Harmable):
+    """Explodes into a fireblast when harmed."""
+    def harm(self, game_map, source, amount, elements):
+        # TODO: Move to config.py
+        results = fireblast(
+            game_map,
+            (self.owner.x, self.owner.y),
+            radius=3,
+            damage=6)
+        results.append({ResultTypes.DEAD_ENTITY: self.owner})
         return results
 
 
