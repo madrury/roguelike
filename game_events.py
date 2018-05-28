@@ -1,4 +1,5 @@
 from messages import Message
+from etc.colors import COLORS
 from etc.enum import ResultTypes, Animations
 
 from utils.utils import (

@@ -6,7 +6,6 @@ from etc.enum import (
     ResultTypes, CursorTypes, Animations, EntityTypes, Elements)
 from utils.utils import (
     distance_to,
-    get_all_entities_with_component_within_radius,
     get_all_entities_with_component_in_position,
     get_n_closest_entities_of_type)
 
