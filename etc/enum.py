@@ -187,12 +187,13 @@ class CursorTypes(Enum):
 
 class Animations(Enum):
     CONCATINATED = auto()
+    FIREBLAST = auto()
     HEALTH_POTION = auto()
     MAGIC_MISSILE = auto()
-    FIREBLAST = auto()
     SIMULTANEOUS = auto()
     THROWING_KNIFE = auto()
     THROW_POTION = auto()
+    WATERBLAST = auto()
 
 
 class Terrain(Enum):

@@ -7,7 +7,8 @@ from etc.enum import Animations
 from etc.config import SCREEN_WIDTH, SCREEN_HEIGHT, PANEL_CONFIG
 from etc.colors import COLORS
 from etc.chars import CHARS
-from colors import COLOR_PATHS, random_yellow, random_red_or_yellow
+from colors import (
+    COLOR_PATHS, random_yellow, random_red_or_yellow, random_light_water)
 
 # TODO: Remove player as an arguement here.  Fireblast anumation should not
 #       rely on the player object.
@@ -28,6 +29,10 @@ def construct_animation(animation_data, game_map, player=None):
     elif animation_type == Animations.FIREBLAST:
         _, center, radius = animation_data
         animation_player = FireblastAnimation(
+            game_map, center, radius)
+    elif animation_type == Animations.WATERBLAST:
+        _, center, radius = animation_data
+        animation_player = WaterblastAnimation(
             game_map, center, radius)
     elif animation_type == Animations.CONCATINATED:
         animation_player = ConcatinatedAnimation.construct(
@@ -206,26 +211,22 @@ class FireblastAnimation:
         return draw_blast(self, char='^', 
                           fg_color_callback=random_red_or_yellow,
                           bg_color_callback=random_red_or_yellow)         
-#        try:
-#            blast_radius = next(self.radius_iter)
-#        # Clear the drawing of the blast, the animation has finished.
-#        except StopIteration:
-#            clear_coordinates = coordinates_within_circle(
-#                (self.source[0], self.source[1]), self.radius)
-#            for x, y in clear_coordinates:
-#                if self.game_map.within_bounds(x, y):
-#                    self.game_map.draw_position(x, y)
-#            return True
-#        # Draw a red circle centered at `source`.
-#        blast_coordinates = coordinates_within_circle(
-#            (self.source[0], self.source[1]), blast_radius)
-#        for x, y in blast_coordinates:
-#            if (self.game_map.within_bounds(x, y) and 
-#                (self.game_map.fov[x, y] or self.game_map.shrub[x, y]) and 
-#                self.game_map.walkable[x, y]):
-#                self.game_map.draw_char(
-#                    x, y, '^', random_red_or_yellow(), random_red_or_yellow())
-#        return False
+
+class WaterblastAnimation:
+    """Animation for casting a waterblast.
+
+    Same as a fireblast animation, but uses water colors.
+    """
+    def __init__(self, game_map, source, radius=4):
+        self.game_map = game_map
+        self.source = source
+        self.radius = radius
+        self.radius_iter = iter(range(radius + 1))
+
+    def next_frame(self):
+        return draw_blast(self, char='~', 
+                          fg_color_callback=random_light_water,
+                          bg_color_callback=random_light_water)         
 
 
 class ThrowingKnifeAnimation:

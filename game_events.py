@@ -62,4 +62,7 @@ def waterblast(game_map, center, *, radius=4, damage=6, user=None):
                 coord, game_map, EntityTypes.TERRAIN, 0)
             for entity in entities:
                 results.append({ResultTypes.REMOVE_ENTITY: entity})
+    results.append({
+        ResultTypes.ANIMATION: (
+            Animations.WATERBLAST, center, radius)})
     return results
