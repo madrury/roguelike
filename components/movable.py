@@ -1,9 +1,10 @@
 import random
 from pathfinding import get_shortest_path
 
+from etc.enum import RoutingOptions
+
 
 class Movable:
-
 
     def move(self, game_map, dx, dy):
         x, y = self.owner.x, self.owner.y
@@ -37,7 +38,9 @@ class Movable:
         target_location = (self.owner.x + dx, self.owner.y + dy)
         is_walkable = game_map.walkable[target_location]
         is_blocked = game_map.blocked[target_location]
-        water_if_able = self.owner.swimmable or not game_map.water[target_location]
+        # TODO: Replace with generic check for safety.
+        water_if_able = (RoutingOptions.AVOID_WATER not in self.owner.routing_avoid
+                         or not game_map.water[target_location])
         if is_walkable and not is_blocked and water_if_able:
             self.move(game_map, dx, dy)
 
