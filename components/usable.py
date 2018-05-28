@@ -1,5 +1,7 @@
 from etc.colors import COLORS
 from messages import Message
+from game_events import fireblast
+
 from etc.enum import (
     ResultTypes, CursorTypes, Animations, EntityTypes, Elements)
 from utils.utils import (
@@ -149,24 +151,11 @@ class FireblastUsable:
         self.radius = radius
 
     def use(self, game_map, user):
-        results = []
-        harmable_within_radius = (
-            get_all_entities_with_component_within_radius(
-                (user.x, user.y), game_map, "harmable", self.radius))
-        burnable_within_radius = (
-            get_all_entities_with_component_within_radius(
-                (user.x, user.y), game_map, "burnable", self.radius))
-        for entity in (x for x in harmable_within_radius if x != user):
-            text = f"The {entity.name} is caught in the fireblast!"
-            message = Message(text, COLORS.get('white'))
-            results.append({ResultTypes.DAMAGE: (
-                                entity, None, self.damage, [Elements.NONE]),
-                            ResultTypes.MESSAGE: message})
-        for entity in (x for x in burnable_within_radius if x != user):
-            results.extend(entity.burnable.burn(game_map))
-        results.append({
-            ResultTypes.ANIMATION: (
-                Animations.FIREBLAST, (user.x, user.y), self.radius)})
+        center = (user.x, user.y)
+        results = fireblast(game_map, center,
+                            radius=self.radius,
+                            damage=self.damage,
+                            user=user)
         return results
 
 
