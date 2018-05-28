@@ -8,7 +8,7 @@ from etc.config import SCREEN_WIDTH, SCREEN_HEIGHT, PANEL_CONFIG
 from etc.colors import COLORS
 from etc.chars import CHARS
 from colors import (
-    COLOR_PATHS, random_yellow, random_red_or_yellow, random_light_water)
+    COLOR_PATHS, random_yellow, random_red_or_yellow, random_light_blue)
 
 # TODO: Remove player as an arguement here.  Fireblast anumation should not
 #       rely on the player object.
@@ -88,6 +88,7 @@ class SimultaneousAnimation:
         for datum in animation_data:
             animations.append(construct_animation(datum, game_map))
         return SimultaneousAnimation(*animations)
+
 
             
 class HealthPotionAnimation:
@@ -225,8 +226,8 @@ class WaterblastAnimation:
 
     def next_frame(self):
         return draw_blast(self, char='~', 
-                          fg_color_callback=random_light_water,
-                          bg_color_callback=random_light_water)         
+                          fg_color_callback=random_light_blue,
+                          bg_color_callback=random_light_blue)         
 
 
 class ThrowingKnifeAnimation:
