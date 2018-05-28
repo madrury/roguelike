@@ -17,7 +17,7 @@ class LeatherArmor:
         base_defense = 2
         name = 'Leather Armor ' + f'(+{modifier})'
         damage_transformer = ElementalTransformer(
-            base_defense + modifier, [Elements.NONE])
+             [Elements.NONE], strength=base_defense + modifier)
         return Entity(x, y, '&', COLORS['violet'], name,
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
@@ -32,7 +32,7 @@ class LeatherArmorOfFireResist:
         base_defense = 2
         name = 'Leather Armor of Fire Resist' + f'(+{modifier})'
         damage_transformer = ElementalTransformer(
-            base_defense + modifier, [Elements.NONE, Elements.FIRE])
+            [Elements.NONE, Elements.FIRE], strength=base_defense + modifier)
         return Entity(x, y, '&', COLORS['violet'], name,
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,

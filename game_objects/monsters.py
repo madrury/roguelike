@@ -160,7 +160,7 @@ class Necromancer:
             harmable=components.harmable.Harmable(
                 hp=20, defense=0,
                 damage_transformers=[
-                    ElementalTransformer(0, [Elements.FIRE], multiplyer=2)]),
+                    ElementalTransformer([Elements.FIRE], multiplyer=2)]),
             movable=Movable(),
             scaldable=AliveScaldable())
 
