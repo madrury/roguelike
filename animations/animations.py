@@ -203,26 +203,29 @@ class FireblastAnimation:
         self.radius_iter = iter(range(radius + 1))
 
     def next_frame(self):
-        try:
-            blast_radius = next(self.radius_iter)
-        # Clear the drawing of the blast, the animation has finished.
-        except StopIteration:
-            clear_coordinates = coordinates_within_circle(
-                (self.source[0], self.source[1]), self.radius)
-            for x, y in clear_coordinates:
-                if self.game_map.within_bounds(x, y):
-                    self.game_map.draw_position(x, y)
-            return True
-        # Draw a red circle centered at `source`.
-        blast_coordinates = coordinates_within_circle(
-            (self.source[0], self.source[1]), blast_radius)
-        for x, y in blast_coordinates:
-            if (self.game_map.within_bounds(x, y) and 
-                (self.game_map.fov[x, y] or self.game_map.shrub[x, y]) and 
-                self.game_map.walkable[x, y]):
-                self.game_map.draw_char(
-                    x, y, '^', random_red_or_yellow(), random_red_or_yellow())
-        return False
+        return draw_blast(self, char='^', 
+                          fg_color_callback=random_red_or_yellow,
+                          bg_color_callback=random_red_or_yellow)         
+#        try:
+#            blast_radius = next(self.radius_iter)
+#        # Clear the drawing of the blast, the animation has finished.
+#        except StopIteration:
+#            clear_coordinates = coordinates_within_circle(
+#                (self.source[0], self.source[1]), self.radius)
+#            for x, y in clear_coordinates:
+#                if self.game_map.within_bounds(x, y):
+#                    self.game_map.draw_position(x, y)
+#            return True
+#        # Draw a red circle centered at `source`.
+#        blast_coordinates = coordinates_within_circle(
+#            (self.source[0], self.source[1]), blast_radius)
+#        for x, y in blast_coordinates:
+#            if (self.game_map.within_bounds(x, y) and 
+#                (self.game_map.fov[x, y] or self.game_map.shrub[x, y]) and 
+#                self.game_map.walkable[x, y]):
+#                self.game_map.draw_char(
+#                    x, y, '^', random_red_or_yellow(), random_red_or_yellow())
+#        return False
 
 
 class ThrowingKnifeAnimation:
@@ -252,6 +255,9 @@ class ThrowingKnifeAnimation:
         self.current_frame = 0
 
     def _get_char(self):
+        """The knife uses a different character depending on the direction it
+        is thrown.
+        """
         if len(self.path) == 1:
             # Nothing to draw.
             return ' '
@@ -270,6 +276,28 @@ class ThrowingKnifeAnimation:
     def next_frame(self):
         return draw_missile(self)
 
+
+def draw_blast(animation, *, char, fg_color_callback, bg_color_callback):
+    try:
+        blast_radius = next(animation.radius_iter)
+    # Clear the drawing of the blast, the animation has finished.
+    except StopIteration:
+        clear_coordinates = coordinates_within_circle(
+            (animation.source[0], animation.source[1]), animation.radius)
+        for x, y in clear_coordinates:
+            if animation.game_map.within_bounds(x, y):
+                animation.game_map.draw_position(x, y)
+        return True
+    # Draw a circle centered at `source`.
+    blast_coordinates = coordinates_within_circle(
+        (animation.source[0], animation.source[1]), blast_radius)
+    for x, y in blast_coordinates:
+        if (animation.game_map.within_bounds(x, y) and 
+            (animation.game_map.fov[x, y] or animation.game_map.shrub[x, y]) and 
+            animation.game_map.walkable[x, y]):
+            animation.game_map.draw_char(
+                x, y, char, fg_color_callback(), bg_color_callback())
+    return False
 
 def draw_missile(animation, fg=None, bg=None):
     """Animate a missile moving from a source to a target.
