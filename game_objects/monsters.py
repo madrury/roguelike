@@ -1,7 +1,7 @@
 from entity import Entity
 
 from etc.colors import COLORS
-from etc.enum import RenderOrder, EntityTypes, MonsterGroups, RoutingOptions
+from etc.enum import RenderOrder, EntityTypes, MonsterGroups, RoutingOptions, Elements
 
 from components.ai import (
     BasicMonster, HuntingMonster, SkitteringMonster, ZombieMonster, 
@@ -13,6 +13,8 @@ from components.movable import Movable
 from components.scaldable import AliveScaldable
 from components.spreadable import ZombieSpreadable
 import components.harmable
+
+from components.transformers.damage_transformers import ElementalTransformer
 
 
 class Kruthik:
@@ -155,7 +157,10 @@ class Necromancer:
             attacker=Attacker(power=5),
             burnable=AliveBurnable(),
             commitable=BlockingCommitable(),
-            harmable=components.harmable.Harmable(hp=20, defense=0),
+            harmable=components.harmable.Harmable(
+                hp=20, defense=0,
+                damage_transformers=[
+                    ElementalTransformer(0, [Elements.FIRE], multiplyer=2)]),
             movable=Movable(),
             scaldable=AliveScaldable())
 
