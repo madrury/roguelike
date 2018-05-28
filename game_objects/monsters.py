@@ -8,7 +8,7 @@ from components.ai import (
     BasicMonster, HuntingMonster, SkitteringMonster, ZombieMonster, 
     NecromancerMonster)
 from components.attacker import Attacker
-from components.burnable import AliveBurnable, ZombieBurnable
+from components.burnable import AliveBurnable, ZombieBurnable, WaterBloatBurnable
 from components.commitable import BlockingCommitable
 from components.movable import Movable
 from components.scaldable import AliveScaldable, FireBloatScaldable
@@ -150,7 +150,7 @@ class WaterBloat:
                            RoutingOptions.AVOID_FIRE],
             ai=BasicMonster(),
             attacker=Attacker(power=1),
-            burnable=AliveBurnable(),
+            burnable=WaterBloatBurnable(),
             commitable=BlockingCommitable(),
             harmable=components.harmable.WaterBloatHarmable(hp=1, defense=0),
             movable=Movable())

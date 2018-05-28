@@ -134,7 +134,7 @@ class FireBloatHarmable(Harmable):
             results.extend(fireblast(
                 game_map,
                 (self.owner.x, self.owner.y),
-                radius=3,
+                radius=2,
                 damage=6))
         results.append({ResultTypes.DEAD_ENTITY: self.owner})
         return results
@@ -148,7 +148,7 @@ class WaterBloatHarmable(Harmable):
         results.extend(waterblast(
             game_map,
             (self.owner.x, self.owner.y),
-            radius=3,
+            radius=2,
             damage=6))
         results.append({ResultTypes.DEAD_ENTITY: self.owner})
         return results

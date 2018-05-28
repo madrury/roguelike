@@ -33,6 +33,17 @@ class ZombieBurnable:
             ResultTypes.DEAD_ENTITY: self.owner}]
 
 
+class WaterBloatBurnable:
+    """Spawn steam and deal fire damage."""
+    def burn(self, game_map):
+        results = [] 
+        steam = game_objects.various.Steam.make(
+            game_map, self.owner.x, self.owner.y)
+        results.append({ResultTypes.ADD_ENTITY: steam})
+        results.append({ResultTypes.DAMAGE: (self.owner, None, 5, [Elements.FIRE])})
+        return results
+
+
 class GrassBurnable:
     """When grass burns, the grass entity is removed from the game and
     (sometimes) replaced with a fire entity.
