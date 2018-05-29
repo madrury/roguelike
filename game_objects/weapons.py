@@ -5,6 +5,8 @@ from etc.enum import EntityTypes, RenderOrder
 
 from components.commitable import BaseCommitable
 from components.equipable import WeaponEquipable
+from components.floatable import Floatable
+
 from components.callbacks.target_callbacks import (
     LanceCallback, AxeCallback)
 
@@ -15,12 +17,12 @@ class Lance:
     def make(x, y, modifier=0):
         base_offense = 3
         name = 'Lance ' + f'(+{modifier})'
-#        damage_transformer = ElementalTransformer(
-#            base_offense + modifier, [Elements.NONE])
         return Entity(x, y, CHARS['weapon'] , COLORS['violet'], name,
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
                       commitable=BaseCommitable(),
+                      floatable=Floatable(),
+                      movable=Movable(),
                       equipable=WeaponEquipable(
                           #damage_transformers=[damage_transformer],
                           target_callback=LanceCallback()))
@@ -36,5 +38,7 @@ class Axe:
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
                       commitable=BaseCommitable(),
+                      floatable=Floatable(),
+                      movable=Movable(),
                       equipable=WeaponEquipable(
                           target_callback=AxeCallback()))

@@ -429,6 +429,10 @@ def main():
                 if entity.dissipatable:
                     enemy_turn_results.extend(
                         entity.dissipatable.dissipate(game_map))
+                # Entities in water float
+                if game_map.water[entity.x, entity.y] and entity.floatable:
+                    enemy_turn_results.extend(
+                        entity.floatable.float(game_map))
                 # Fire burns entities in the same space.
                 if entity.entity_type == EntityTypes.FIRE:
                     burnable_entities_at_position = (

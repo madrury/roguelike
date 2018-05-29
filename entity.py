@@ -132,6 +132,7 @@ class Entity:
                  encroachable=None,
                  equipable=None,
                  equipment=None,
+                 floatable=None,
                  harmable=None,
                  inventory=None,
                  item=None,
@@ -171,6 +172,7 @@ class Entity:
         self.add_component(encroachable, "encroachable")
         self.add_component(equipable, "equipable")
         self.add_component(equipment, "equipment")
+        self.add_component(floatable, "floatable")
         self.add_component(harmable, "harmable")
         self.add_component(inventory, "inventory")
         self.add_component(item, "item")

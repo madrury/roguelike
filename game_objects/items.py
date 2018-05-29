@@ -6,6 +6,8 @@ from etc.enum import EntityTypes, RenderOrder, ItemGroups
 from components.burnable import ItemBurnable
 from components.consumable import FinitelyConsumable, InfinitelyConsumable
 from components.commitable import BaseCommitable
+from components.floatable import Floatable
+from components.movable import Movable
 from components.usable import (
     NullUsable, HealthPotionUsable, MagicMissileUsable, FireblastUsable,
     TorchUsable, WaterblastUsable)
@@ -22,6 +24,8 @@ class HealthPotion:
                       render_order=RenderOrder.ITEM,
                       commitable=BaseCommitable(),
                       consumable=FinitelyConsumable(uses=1),
+                      floatable=Floatable(),
+                      movable=Movable(),
                       usable=HealthPotionUsable(),
                       throwable=HealthPotionThrowable())
 
@@ -33,9 +37,11 @@ class MagicMissileScroll:
         return Entity(x, y, '%', COLORS['violet'], 'Scroll of Magic Missile',
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
+                      burnable=ItemBurnable(),
                       commitable=BaseCommitable(),
                       consumable=FinitelyConsumable(uses=1),
-                      burnable=ItemBurnable(),
+                      floatable=Floatable(),
+                      movable=Movable(),
                       usable=MagicMissileUsable(),
                       throwable=NullThrowable())
 
@@ -47,9 +53,11 @@ class FireblastScroll:
         return Entity(x, y, '%', COLORS['violet'], 'Scroll of Fireblast',
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
+                      burnable=ItemBurnable(),
                       commitable=BaseCommitable(),
                       consumable=FinitelyConsumable(uses=1),
-                      burnable=ItemBurnable(),
+                      floatable=Floatable(),
+                      movable=Movable(),
                       usable=FireblastUsable(),
                       throwable=NullThrowable())
 
@@ -61,9 +69,11 @@ class WaterblastScroll:
         return Entity(x, y, '%', COLORS['violet'], 'Scroll of Waterblast',
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
+                      burnable=ItemBurnable(),
                       commitable=BaseCommitable(),
                       consumable=FinitelyConsumable(uses=1),
-                      burnable=ItemBurnable(),
+                      floatable=Floatable(),
+                      movable=Movable(),
                       usable=WaterblastUsable(),
                       throwable=NullThrowable())
 
@@ -77,6 +87,8 @@ class ThrowingKnife:
                       render_order=RenderOrder.ITEM,
                       commitable=BaseCommitable(),
                       consumable=FinitelyConsumable(uses=5),
+                      floatable=Floatable(),
+                      movable=Movable(),
                       usable=NullUsable(),
                       throwable=ThrowingKnifeThrowable())
 
@@ -90,5 +102,7 @@ class Torch:
                       render_order=RenderOrder.ITEM,
                       commitable=BaseCommitable(),
                       consumable=InfinitelyConsumable(),
+                      floatable=Floatable(),
+                      movable=Movable(),
                       usable=TorchUsable(),
                       throwable=NullThrowable())

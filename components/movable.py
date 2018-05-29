@@ -48,7 +48,8 @@ class Movable:
         target_location = (x, y)
         is_walkable = game_map.walkable[target_location]
         is_blocked = game_map.blocked[target_location]
-        water_if_able = self.owner.swimmable or not game_map.water[target_location]
+        water_if_able = (RoutingOptions.AVOID_WATER not in self.owner.routing_avoid
+                         or not game_map.water[target_location])
         if is_walkable and not is_blocked and water_if_able:
             if self.owner.blocks:
                 game_map.blocked[self.owner.x, self.owner.y] = False

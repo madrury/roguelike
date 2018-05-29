@@ -5,8 +5,10 @@ from etc.enum import EntityTypes, RenderOrder, ItemGroups, Elements
 
 from components.commitable import BaseCommitable
 from components.equipable import ArmorEquipable
+from components.floatable import Floatable
 from components.transformers.damage_transformers import (
     ElementalTransformer)
+
 from components.callbacks.damage_callbacks import ReflectCallback
 
 
@@ -22,6 +24,8 @@ class LeatherArmor:
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
                       commitable=BaseCommitable(),
+                      floatable=Floatable(),
+                      movable=Movable(),
                       equipable=ArmorEquipable(damage_transformers=[
                           damage_transformer]))
 
@@ -37,6 +41,8 @@ class LeatherArmorOfFireResist:
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
                       commitable=BaseCommitable(),
+                      floatable=Floatable(),
+                      movable=Movable(),
                       equipable=ArmorEquipable(damage_transformers=[damage_transformer]))
 
 class ReflectSuit:
@@ -50,4 +56,6 @@ class ReflectSuit:
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
                       commitable=BaseCommitable(),
+                      floatable=Floatable(),
+                      movable=Movable(),
                       equipable=ArmorEquipable(damage_callbacks=[damage_callback]))
