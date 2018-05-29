@@ -4,7 +4,7 @@ from etc.colors import STATUS_BAR_COLORS
 from status_bar import StatusBar
 
 
-class Swimmable:
+class PlayerSwimmable:
 
     def __init__(self, stamina):
         self.max_stamina = stamina

@@ -27,7 +27,7 @@ from components.harmable import Harmable
 from components.inventory import Inventory
 from components.movable import Movable
 from components.scaldable import AliveScaldable
-from components.swimmable import Swimmable
+from components.swimmable import PlayerSwimmable
 from game_objects.items import (
     HealthPotion, MagicMissileScroll, FireblastScroll, ThrowingKnife,
     Torch)
@@ -594,7 +594,7 @@ def create_player(game_map):
                     movable=Movable(),
                     burnable=AliveBurnable(),
                     scaldable=AliveScaldable(),
-                    swimmable=Swimmable(PLAYER_CONFIG["swim_stamina"]),
+                    swimmable=PlayerSwimmable(PLAYER_CONFIG["swim_stamina"]),
                     inventory=Inventory(PLAYER_CONFIG["inventory_size"]))
     game_map.place_player(player)
     game_map.entities.append(player)
