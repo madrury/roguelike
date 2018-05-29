@@ -56,12 +56,12 @@ def waterblast(game_map, center, *, radius=4, damage=6, user=None):
     blast_coordinates = coordinates_within_circle(center, radius)
     for coord in blast_coordinates:
         if game_map.walkable[coord]:
-            water = Water.make(game_map, coord[0], coord[1])
-            results.append({ResultTypes.ADD_ENTITY: water})
             entities = get_all_entities_of_type_within_radius(
                 coord, game_map, EntityTypes.TERRAIN, 0)
             for entity in entities:
                 results.append({ResultTypes.REMOVE_ENTITY: entity})
+            water = Water.make(game_map, coord[0], coord[1])
+            results.append({ResultTypes.ADD_ENTITY: water})
     results.append({
         ResultTypes.ANIMATION: (
             Animations.WATERBLAST, center, radius)})

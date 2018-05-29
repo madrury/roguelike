@@ -175,6 +175,7 @@ def main():
         #highlight_array(game_map.fire, game_map, COLORS['darker_red'])
         #highlight_array(game_map.steam, game_map, COLORS['desaturated_green'])
         #highlight_array(game_map.terrain, game_map, COLORS['cursor_tail'])
+        # highlight_array(game_map.water, game_map, COLORS['cursor_tail'])
         # draw_dijkstra_map_of_radius(game_map, player, radius=3)
 
 
@@ -411,7 +412,6 @@ def main():
                 enemy_turn_results.extend(player.swimmable.swim())
             else:
                 enemy_turn_results.extend(player.swimmable.rest())
-
         #---------------------------------------------------------------------
         # All enemies and hazardous terrain and entities take thier turns.
         #---------------------------------------------------------------------
@@ -421,10 +421,6 @@ def main():
                 if entity.ai:
                     enemy_turn_results.extend(entity.ai.take_turn(
                         player, game_map))
-                # Fire and gas spreads.
-                if entity.spreadable:
-                    enemy_turn_results.extend(
-                        entity.spreadable.spread(game_map))
                 # Fire and gas dissipates.
                 if entity.dissipatable:
                     enemy_turn_results.extend(
@@ -443,6 +439,10 @@ def main():
                             (entity.x, entity.y), game_map, "burnable"))
                     for e in burnable_entities_at_position:
                         enemy_turn_results.extend(e.burnable.burn(game_map))
+                # Fire and gas spreads.
+                if entity.spreadable:
+                    enemy_turn_results.extend(
+                        entity.spreadable.spread(game_map))
                 # Steam scalds entities in the same space.
                 if entity.entity_type == EntityTypes.STEAM:
                     scaldable_entities_at_position = (

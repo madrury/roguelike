@@ -15,8 +15,12 @@ def kill_player(player):
 def kill_monster(monster, game_map):
     game_map.blocked[monster.x, monster.y] = False
     monster.blocks = False
+
     monster.attacker = None
     monster.burnable = None
+    monster.dissapatable = None
+    monster.spreadable = None
+    monster.swimable = None
     monster.floatable = Floatable()
     monster.floatable.owner = monster
     monster.harmable = NullHarmable()
