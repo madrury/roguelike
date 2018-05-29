@@ -404,13 +404,11 @@ def main():
         # Post player turn checks.
         #---------------------------------------------------------------------
         if game_state == GameStates.ENEMY_TURN:
-            # Check if the player entered water.
-            if game_map.water[player.x, player.y]:
-                enemy_turn_results.extend(player.swimmable.swim())
-            else:
-                enemy_turn_results.extend(player.swimmable.rest())
             # Interact with encroached entity.
             enemy_turn_results.extend(encroach_on_all(player, game_map))
+            # The player re-gains swim stamina if they are on dry land.
+            if not game_map.water[player.x, player.y]:
+                enemy_turn_results.extend(player.swimmable.rest())
 
         #---------------------------------------------------------------------
         # All enemies and hazardous terrain and entities take thier turns.

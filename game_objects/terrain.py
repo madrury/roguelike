@@ -34,9 +34,10 @@ class Water:
             visible_out_of_fov=True,
             entity_type=EntityTypes.TERRAIN,
             render_order=RenderOrder.TERRAIN,
-            shimmer=WaterShimmer(),
             burnable=components.burnable.WaterBurnable(),
-            commitable=TerrainCommitable())
+            commitable=TerrainCommitable(),
+            encroachable=components.encroachable.WaterEncroachable(),
+            shimmer=WaterShimmer())
 
 
 class Grass:
