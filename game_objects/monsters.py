@@ -13,6 +13,7 @@ from components.commitable import BlockingCommitable
 from components.movable import Movable
 from components.scaldable import AliveScaldable, FireBloatScaldable
 from components.spreadable import ZombieSpreadable
+from components.swimmable import BaseSwimmable
 import components.harmable
 
 from components.transformers.damage_transformers import ElementalTransformer
@@ -37,7 +38,8 @@ class Kruthik:
             commitable=BlockingCommitable(),
             harmable=components.harmable.Harmable(hp=1, defense=0),
             movable=Movable(),
-            scaldable=AliveScaldable())
+            scaldable=AliveScaldable(),
+            swimmable=BaseSwimmable())
 
 
 class Orc:
@@ -60,6 +62,7 @@ class Orc:
             commitable=BlockingCommitable(),
             harmable=components.harmable.Harmable(hp=10, defense=0),
             movable=Movable(),
+            swimmable=BaseSwimmable(),
             scaldable=AliveScaldable())
 
 
@@ -84,6 +87,7 @@ class PinkJelly:
             harmable=components.harmable.PinkJellyHarmable(
                 hp=hp, defense=0),
             movable=Movable(),
+            swimmable=BaseSwimmable(),
             scaldable=AliveScaldable())
 
     def make_if_possible(game_map, x, y, hp=20):
@@ -113,6 +117,7 @@ class Troll:
             burnable=AliveBurnable(),
             commitable=BlockingCommitable(),
             movable=Movable(),
+            swimmable=BaseSwimmable(),
             scaldable=AliveScaldable())
 
 
@@ -181,6 +186,7 @@ class Zombie:
             commitable=BlockingCommitable(),
             movable=Movable(),
             scaldable=AliveScaldable(),
+            swimmable=BaseSwimmable(),
             spreadable=ZombieSpreadable())
 
 
@@ -208,5 +214,6 @@ class Necromancer:
                     ElementalTransformer([Elements.FIRE], multiplyer=2),
                     ElementalTransformer([Elements.HEALING], multiplyer=-1)]),
             movable=Movable(),
+            swimmable=BaseSwimmable(),
             scaldable=AliveScaldable())
 

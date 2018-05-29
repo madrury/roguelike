@@ -407,7 +407,9 @@ def main():
             # Interact with encroached entity.
             enemy_turn_results.extend(encroach_on_all(player, game_map))
             # The player re-gains swim stamina if they are on dry land.
-            if not game_map.water[player.x, player.y]:
+            if game_map.water[player.x, player.y]:
+                enemy_turn_results.extend(player.swimmable.swim())
+            else:
                 enemy_turn_results.extend(player.swimmable.rest())
 
         #---------------------------------------------------------------------
@@ -427,10 +429,13 @@ def main():
                 if entity.dissipatable:
                     enemy_turn_results.extend(
                         entity.dissipatable.dissipate(game_map))
-                # Entities in water float
+                # Interact with water.
                 if game_map.water[entity.x, entity.y] and entity.floatable:
                     enemy_turn_results.extend(
                         entity.floatable.float(game_map))
+                if game_map.water[entity.x, entity.y] and entity.swimmable:
+                    enemy_turn_results.extend(
+                        entity.swimmable.swim())
                 # Fire burns entities in the same space.
                 if entity.entity_type == EntityTypes.FIRE:
                     burnable_entities_at_position = (

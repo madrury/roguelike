@@ -2,15 +2,6 @@ from etc.enum import ResultTypes, Elements
 import game_objects.terrain
 
 
-class WaterEncroachable:
-    """When an entity encroaches on a water tile, the entity must swim."""
-    def encroach(self, game_map, encroacher):
-        results = []
-        if encroacher.swimmable:
-            results.extend(encroacher.swimmable.swim())
-        return results
-
-
 class ShrubEncroachable:
     """When an entity encroaches on a shrub, the shrub is trampled into
     grass.

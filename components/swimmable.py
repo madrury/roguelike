@@ -38,3 +38,12 @@ class PlayerSwimmable:
             name='Swim Stamina',
             maximum=self.max_stamina,
             value=self.stamina)
+
+
+class BaseSwimmable:
+
+    def swim(self):
+        results = []
+        results.append({
+            ResultTypes.DAMAGE: (self.owner, None, 5, [Elements.WATER])})
+        return results

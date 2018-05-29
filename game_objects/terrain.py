@@ -36,7 +36,6 @@ class Water:
             render_order=RenderOrder.TERRAIN,
             burnable=components.burnable.WaterBurnable(),
             commitable=TerrainCommitable(),
-            encroachable=components.encroachable.WaterEncroachable(),
             shimmer=WaterShimmer())
 
 
