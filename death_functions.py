@@ -15,7 +15,10 @@ def kill_player(player):
 def kill_monster(monster, game_map):
     game_map.blocked[monster.x, monster.y] = False
     monster.blocks = False
-
+    # The corpse needs to be able to float, and so needs to pass checks for
+    # movability into a water tile.
+    monster.routing_avoid = []
+    # Remove all monster components, or replace with null placeholders.
     monster.attacker = None
     monster.burnable = None
     monster.dissapatable = None
@@ -33,5 +36,5 @@ def make_corpse(monster):
     monster.char = '#'
     monster.fg_color = COLORS['dark_red']
     monster.entity_type = EntityTypes.CORPSE
-    monster.name = 'Remains of the' + monster.name.capitalize()
+    monster.name = 'Remains of the ' + monster.name.capitalize()
     monster.render_order = RenderOrder.CORPSE
