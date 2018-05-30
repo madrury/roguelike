@@ -416,7 +416,7 @@ def main():
         # All enemies and hazardous terrain and entities take thier turns.
         #---------------------------------------------------------------------
         if game_state == GameStates.ENEMY_TURN:
-            for entity in game_map.entities:
+            for entity in (e for e in game_map.entities if e != player):
                 # Enemies move and attack if possible.
                 if entity.ai:
                     enemy_turn_results.extend(entity.ai.take_turn(
