@@ -1,6 +1,6 @@
 import random
 
-from etc.config import PROBABILITIES
+from etc.game_config import FIRE_SPREAD_PROBABILITY, STEAM_SPREAD_PROBABILTY
 from etc.enum import ResultTypes, EntityTypes
 from utils.utils import (
     adjacent_coordinates, random_adjacent, get_entities_at_location,
@@ -12,7 +12,7 @@ class FireSpreadable:
     """Fire spreads to a random adjacent space containing a burnable entity at
     a fixed probability.
     """
-    def __init__(self, p=PROBABILITIES['fire_spread']):
+    def __init__(self, p=FIRE_SPREAD_PROBABILITY):
         self.p_spread = p
 
     def spread(self, game_map):
@@ -33,10 +33,10 @@ class SteamSpreadable:
     New steam that are the result of spreading are more likely to dissipate
     quickly, and less likely to spread.
     """
-    def __init__(self, p=PROBABILITIES["steam_spread"]):
+    def __init__(self, p=STEAM_SPREAD_PROBABILTY):
         self.p_spread = p
 
-    def spread(self, game_map, p=PROBABILITIES["steam_spread"]):
+    def spread(self, game_map):
         results = []
         adjacent = adjacent_coordinates((self.owner.x, self.owner.y))
         for new_x, new_y in adjacent:

@@ -4,7 +4,7 @@ from colors import random_red_or_yellow, random_grey
 from entity import Entity
 from etc.colors import COLORS
 from etc.enum import EntityTypes, RenderOrder
-from etc.config import PROBABILITIES
+from etc.game_config import STEAM_DISSAPATE_PROBABILTY, STEAM_SPREAD_PROBABILTY
 
 from components.commitable import BaseCommitable, FireCommitable, SteamCommitable
 from components.dissipatable import FireDissipatable, SteamDissipatable
@@ -52,8 +52,8 @@ class Steam:
     """
     @staticmethod
     def make(game_map, x, y, 
-             p_spread=PROBABILITIES['steam_spread'], 
-             p_dissipate=PROBABILITIES['steam_dissipate']):
+             p_spread=STEAM_SPREAD_PROBABILTY, 
+             p_dissipate=STEAM_DISSAPATE_PROBABILTY):
         fg_color = random_grey()
         bg_color = random_grey()
         return Entity(

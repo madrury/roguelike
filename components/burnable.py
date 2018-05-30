@@ -1,7 +1,7 @@
 from messages import Message
 from etc.enum import ResultTypes, Elements
 from etc.colors import COLORS
-from etc.config import PROBABILITIES
+from etc.game_config import GRASS_BURN_PROBABILTY
 import game_objects.various
 import game_objects.terrain
 
@@ -50,7 +50,7 @@ class GrassBurnable:
     
     Grass does not alway burn, it only catched fire with a fixed probability.
     """
-    def __init__(self, p_fire=PROBABILITIES['grass_burn']):
+    def __init__(self, p_fire=GRASS_BURN_PROBABILTY):
         self.p_fire = p_fire
 
     def burn(self, game_map):

@@ -1,11 +1,11 @@
 import random
 from etc.enum import ResultTypes
-from etc.config import PROBABILITIES
+from etc.game_config import FIRE_DISSAPATE_PROBABILTY, STEAM_DISSAPATE_PROBABILTY
 
 
 class FireDissipatable:
     """Fire dissipates at a fixed probabilitiy every turn."""
-    def __init__(self, p=PROBABILITIES['fire_dissipate']):
+    def __init__(self, p=FIRE_DISSAPATE_PROBABILTY):
         self.p = p
 
     def dissipate(self, game_map):
@@ -19,7 +19,7 @@ class SteamDissipatable:
     """Steam lingers for a number of frames, and then dissipates at a fixed
     probability during all subsequent turns.
     """
-    def __init__(self, p=PROBABILITIES['steam_dissipate'],
+    def __init__(self, p=STEAM_DISSAPATE_PROBABILTY,
                        n_frames=3):
         self.p_dissipate = p
         self.n_frames = n_frames
