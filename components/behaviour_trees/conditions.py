@@ -1,13 +1,13 @@
 import random
 
-from utils.utils import distance_to
+from utils.utils import l2_distance
 from etc.enum import TreeStates
 
 
 class IsAdjacent:
     """Return sucess is owner is adjacent to target."""
     def tick(self, owner, target, game_map, context):
-        distance = distance_to((owner.x, owner.y), (target.x, target.y)) 
+        distance = l2_distance((owner.x, owner.y), (target.x, target.y)) 
         if distance < 2:
             return TreeStates.SUCCESS, []
         else:
@@ -30,7 +30,7 @@ class WithinL2Radius:
         self.radius = radius
 
     def tick(self, owner, target, game_map, context):
-        distance = distance_to((owner.x, owner.y), (target.x, target.y)) 
+        distance = l2_distance((owner.x, owner.y), (target.x, target.y)) 
         if distance <= self.radius: 
             return TreeStates.SUCCESS, []
         else:

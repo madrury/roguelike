@@ -74,7 +74,7 @@ def random_walkable_position(game_map, entity):
 #-----------------------------------------------------------------------------
 # Entity Finders
 #-----------------------------------------------------------------------------
-def distance_to(source, target):
+def l2_distance(source, target):
     dx = target[0] - source[0]
     dy = target[1] - source[1]
     return math.sqrt(dx*dx + dy*dy)
@@ -84,18 +84,18 @@ def get_closest_entity_of_type(position, game_map, entity_type):
     closest = None
     closest_distance = math.inf
     for entity in game_map.entities:
-        distance_to = distance_to(position, (entity.x, entity.y))
+        distance = l2_distance(position, (entity.x, entity.y))
         if (entity.entity_type == entity_type and
-            distance_to < closest_distance):
+            distance < closest_distance):
             closest = entity
-            closest_distance = distance_to
+            closest_distance = distance
     return closest
 
 def get_n_closest_entities_of_type(position, game_map, entity_type, n):
     entities_of_type = [
         e for e in game_map.entities if e.entity_type == entity_type]
     entities_of_type = sorted(
-        entities_of_type, key=lambda e: distance_to(position, (e.x, e.y)))
+        entities_of_type, key=lambda e: l2_distance(position, (e.x, e.y)))
     if len(entities_of_type) < n:
         return entities_of_type
     else:
@@ -106,7 +106,7 @@ def get_all_entities_of_type_within_radius(
     """Get all the entities of a given type within a given range."""
     within_radius = []
     for entity in game_map.entities:
-        if (distance_to(position, (entity.x, entity.y)) <= radius and
+        if (l2_distance(position, (entity.x, entity.y)) <= radius and
             entity.entity_type == entity_type):
             within_radius.append(entity)
     return within_radius
@@ -120,7 +120,7 @@ def get_all_entities_with_component_within_radius(
     """Get all the entities of a given type within a given range."""
     within_radius = []
     for entity in game_map.entities:
-        if (distance_to(position, (entity.x, entity.y)) <= radius 
+        if (l2_distance(position, (entity.x, entity.y)) <= radius 
             and getattr(entity, component)):
             within_radius.append(entity)
     return within_radius

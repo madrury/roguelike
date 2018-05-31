@@ -1,5 +1,4 @@
 from etc.enum import ResultTypes
-from utils.utils import distance_to
 
 from components.behaviour_trees.composite import (
     Selection, Sequence, Negate)

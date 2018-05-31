@@ -5,7 +5,7 @@ from game_events import fireblast, waterblast
 from etc.enum import (
     ResultTypes, CursorTypes, Animations, EntityTypes, Elements)
 from utils.utils import (
-    distance_to,
+    l2_distance,
     get_all_entities_with_component_in_position,
     get_n_closest_entities_of_type)
 from etc.game_config import (
@@ -108,7 +108,7 @@ class MagicMissileUsable:
             (user.x, user.y), game_map, target_type, self.n_targets)
         if closest_monsters:
             for monster in closest_monsters:
-                distance = distance_to((user.x, user.y), (monster.x, monster.y))
+                distance = l2_distance((user.x, user.y), (monster.x, monster.y))
                 if distance <= self.spell_range:
                     text = 'A shining magic missile pierces the {}'.format(
                         monster.name)
