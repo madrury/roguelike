@@ -1,4 +1,5 @@
 from etc.enum import ResultTypes, Elements
+from etc.game_config import NECROTIC_SOIL_BASE_DAMAGE
 import game_objects.terrain
 
 
@@ -19,8 +20,7 @@ class NecroticSoilEncroachable:
     """When an entity encroaches on necrotic soul, the soil does necrotic
     damage to the entity.
     """
-    # TODO: Move to config.
-    def __init__(self, damage=2):
+    def __init__(self, damage=NECROTIC_SOIL_BASE_DAMAGE):
         self.damage = damage
 
     def encroach(self, game_map, encroacher):

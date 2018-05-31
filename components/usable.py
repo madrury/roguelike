@@ -8,6 +8,11 @@ from utils.utils import (
     distance_to,
     get_all_entities_with_component_in_position,
     get_n_closest_entities_of_type)
+from etc.game_config import (
+    HEALTH_POTION_HEAL_AMOUNT,
+    MAGIC_MISSILE_BASE_DAMAGE, MAGIC_MISSILE_RANGE, MAGIC_MISSILE_N_TARGETS,
+    FIREBLAST_SCROLL_RADIUS, FIREBLAST_SCROLL_BASE_DAMAGE,
+    WATERBLAST_SCROLL_RADIUS, WATERBLAST_SCROLL_BASE_DAMAGE)
 
 
 class NullUsable:
@@ -32,8 +37,7 @@ class HealthPotionUsable:
     healing: int
       The amount of healing in this potion.
     """
-    # TODO: Move to config.py
-    def __init__(self, healing=20):
+    def __init__(self, healing=HEALTH_POTION_HEAL_AMOUNT):
         self.name = "Healing Potion"
         self.healing = healing
 
@@ -77,7 +81,9 @@ class MagicMissileUsable:
     n_targets: int
       The number of entities to target.  Each target is damaged by a missile.
     """
-    def __init__(self, damage=6, spell_range=10, n_targets=3):
+    def __init__(self, damage=MAGIC_MISSILE_BASE_DAMAGE,
+                       spell_range=MAGIC_MISSILE_RANGE,
+                       n_targets=MAGIC_MISSILE_N_TARGETS):
         self.name = "Scroll of Magic Missile"
         self.damage = damage
         self.spell_range = spell_range
@@ -144,7 +150,8 @@ class FireblastUsable:
     radius: int
       The radius of the fireblast.
     """
-    def __init__(self, damage=6, radius=4):
+    def __init__(self, damage=FIREBLAST_SCROLL_BASE_DAMAGE,
+                       radius=FIREBLAST_SCROLL_RADIUS):
         self.name = "Scroll of Fireblast"
         self.damage = damage
         self.radius = radius
@@ -167,7 +174,8 @@ class WaterblastUsable:
         radius.
       - Spawns water terrain within the given radius of the player.
     """
-    def __init__(self, damage=6, radius=4):
+    def __init__(self, damage=WATERBLAST_SCROLL_BASE_DAMAGE,
+                       radius=WATERBLAST_SCROLL_RADIUS):
         self.name = "Scroll of Waterblast"
         self.damage = damage
         self.radius = radius
@@ -187,9 +195,8 @@ class TorchUsable:
     The torch can only target adjacent tile.  It burns any burnable entites
     residing in the targeted tile.
     """
-    def __init__(self, damage=2):
+    def __init__(self):
         self.name = "Torch"
-        self.damage = damage
 
     def use(self, game_map, user):
         callback = TorchCallback(self, game_map, user)

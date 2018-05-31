@@ -1,6 +1,8 @@
 from messages import Message
 from etc.colors import COLORS
 from etc.enum import ResultTypes, CursorTypes, Animations, Elements
+from etc.game_config import (
+    HEALTH_POTION_HEAL_AMOUNT, THROWING_KNIFE_BASE_DAMAGE)
 from utils.utils import get_first_blocking_entity_along_path
 
 
@@ -15,8 +17,7 @@ class NullThrowable:
 
 class HealthPotionThrowable:
 
-    # TODO: Move to config.py
-    def __init__(self, healing=20):
+    def __init__(self, healing=HEALTH_POTION_HEAL_AMOUNT):
         self.name = "Healing Potion"
         self.healing = healing
 
@@ -72,7 +73,7 @@ class HealthPotionCallback:
 
 class ThrowingKnifeThrowable:
 
-    def __init__(self, damage=5):
+    def __init__(self, damage=THROWING_KNIFE_BASE_DAMAGE):
         self.damage = damage
 
     def throw(self, game_map, user):
