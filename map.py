@@ -4,6 +4,7 @@ from random import randint, choice
 
 from tdl.map import Map
 
+from entity_list import EntityList
 from etc.colors import COLORS
 
 
@@ -23,9 +24,6 @@ class GameMap(Map):
 
     console: tdl.Console object
       The console to draw the dungeon floor on.
-
-    entities: List[Entity]
-      List of entities currently on the map.
 
     Attributes on Parent
     --------------------
@@ -76,7 +74,7 @@ class GameMap(Map):
         super().__init__(width, height)
         self.floor = floor
         self.console = console
-        self.entities = []
+        self.entities = EntityList(width, height)
         # These need to be int8's to work with the tcod pathfinder
         self.explored = np.zeros((width, height), dtype=np.int8)
         self.water = np.zeros((width, height), dtype=np.int8)
