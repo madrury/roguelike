@@ -1,3 +1,6 @@
+import itertools
+
+
 class EntityList:
     """A data structure for contining all the entities in a current map.  This
     is designed to support two sets of operations:
@@ -7,16 +10,21 @@ class EntityList:
     """
     def __init__(self, width, height):
         self.lst = []
-        #self.coordinate_map = {
-        #    (i, j): [] for i, j in itertools.product(range(width), range(height)
-        #}
+        self.coordinate_map = {
+            (i, j): [] for i, j in itertools.product(range(width), range(height))
+        }
 
     def append(self, entity):
         self.lst.append(entity)
+        self.coordinate_map[(entity.x, entity.y)].append(entity)
 
-    def remove(self, entitiy):
-        self.lst.remove(entitiy)
+    def remove(self, entity):
+        self.lst.remove(entity)
+        self.coordinate_map[(entity.x, entity.y)].remove(entity)
+
+    def get_entities_at_position(self, coord):
+        return self.coordinate_map[(entity.x, entity.y)]
 
     def __iter__(self):
-        yield from iter(self.lst)
+        yield from self.lst
 
