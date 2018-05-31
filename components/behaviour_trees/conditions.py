@@ -21,8 +21,8 @@ class WithinFov:
             return TreeStates.SUCCESS, []
         return TreeStates.FAILURE, []
 
-# TODO: Rename within L2 radius.
-class WithinRadius:
+
+class WithinL2Radius:
     """Return success if the distance between owner and target is less than or
     equal to some radius.
     """

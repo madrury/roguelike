@@ -7,7 +7,7 @@ from components.behaviour_trees.leaf import (
      Attack, MoveTowards, Skitter, TravelToRandomPosition,
      SeekTowardsLInfinityRadius, SpawnEntity)
 from components.behaviour_trees.conditions import (
-    IsAdjacent, WithinFov, WithinRadius, AtLInfinityRadius, CoinFlip)
+    IsAdjacent, WithinFov, WithinL2Radius, AtLInfinityRadius, CoinFlip)
 
 import game_objects.monsters
 
@@ -42,7 +42,7 @@ class NecromancerMonster:
                 CoinFlip(p=0.3),
                 SpawnEntity(game_objects.monsters.Zombie)),
             Sequence(
-                WithinRadius(radius=move_towards_radius),
+                WithinL2Radius(radius=move_towards_radius),
                 SeekTowardsLInfinityRadius(radius=seeking_radius)),
             TravelToRandomPosition())
 
@@ -63,7 +63,7 @@ class HuntingMonster:
                 IsAdjacent(),
                 Attack()),
             Sequence(
-                WithinRadius(radius=sensing_range),
+                WithinL2Radius(radius=sensing_range),
                 MoveTowards()),
             TravelToRandomPosition())
 
@@ -80,7 +80,7 @@ class ZombieMonster:
                 IsAdjacent(),
                 Attack()),
             Sequence(
-                WithinRadius(radius=move_towards_radius),
+                WithinL2Radius(radius=move_towards_radius),
                 MoveTowards()))
 
     def take_turn(self, target, game_map):
@@ -101,7 +101,7 @@ class SkitteringMonster:
                 IsAdjacent(),
                 Attack()),
             Sequence(
-                WithinRadius(radius=skittering_range),
+                WithinL2Radius(radius=skittering_range),
                 MoveTowards()),
             Skitter())
 
