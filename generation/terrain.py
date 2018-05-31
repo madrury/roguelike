@@ -252,7 +252,6 @@ def random_grass(game_map, proportion):
     while pinned_room.terrain != None:
         pinned_room = random.choice(game_map.floor.rooms)
     grass = PatchOfGrass(game_map, pinned_room)
-    # TODO: Move constant to config.
     grass.grow(stay_in_room=True, proportion=proportion)
     return grass
 

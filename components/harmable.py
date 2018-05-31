@@ -5,6 +5,9 @@ from game_events import fireblast, waterblast
 from utils.utils import random_adjacent
 from etc.enum import ResultTypes, Elements
 from etc.config import PANEL_CONFIG 
+from etc.game_config import (
+    FIREBLOAT_BLAST_RADIUS, FIREBLOAT_BLAST_DAMAGE,
+    WATERBLOAT_BLAST_RADIUS, WATERBLOAT_BLAST_DAMAGE)
 from etc.colors import STATUS_BAR_COLORS
 
 import game_objects.monsters
@@ -128,14 +131,13 @@ class PinkJellyHarmable(Harmable):
 class FireBloatHarmable(Harmable):
     """Explodes into a fireblast when harmed."""
     def harm(self, game_map, source, amount, elements):
-        # TODO: Move to config.py
         results = []
         if Elements.WATER not in elements:
             results.extend(fireblast(
                 game_map,
                 (self.owner.x, self.owner.y),
-                radius=2,
-                damage=6))
+                radius=FIREBLOAT_BLAST_RADIUS,
+                damage=FIREBLOAT_BLAST_DAMAGE))
         results.append({ResultTypes.DEAD_ENTITY: self.owner})
         return results
 
@@ -143,13 +145,12 @@ class FireBloatHarmable(Harmable):
 class WaterBloatHarmable(Harmable):
     """Explodes into a water when harmed."""
     def harm(self, game_map, source, amount, elements):
-        # TODO: Move to config.py
         results = []
         results.extend(waterblast(
             game_map,
             (self.owner.x, self.owner.y),
-            radius=2,
-            damage=6))
+            radius=WATERBLOAT_BLAST_RADIUS,
+            damage=WATERBLOAT_BLAST_DAMAGE))
         results.append({ResultTypes.DEAD_ENTITY: self.owner})
         return results
 

@@ -1,6 +1,8 @@
 import random
 from etc.enum import ResultTypes
-from etc.game_config import FIRE_DISSAPATE_PROBABILTY, STEAM_DISSAPATE_PROBABILTY
+from etc.game_config import (
+    FIRE_DISSAPATE_PROBABILTY, STEAM_DISSAPATE_PROBABILTY,
+    STEAM_DISSAPATE_N_FRAMES, NECROTIC_SOIL_DISSIPATE_N_FRAMES)
 
 
 class FireDissipatable:
@@ -20,7 +22,7 @@ class SteamDissipatable:
     probability during all subsequent turns.
     """
     def __init__(self, p=STEAM_DISSAPATE_PROBABILTY,
-                       n_frames=3):
+                       n_frames=STEAM_DISSAPATE_N_FRAMES):
         self.p_dissipate = p
         self.n_frames = n_frames
         self.frame = 0
@@ -36,9 +38,10 @@ class SteamDissipatable:
 
 
 class NecroticSoilDissipatable:
-
-    # TODO: Move to config.
-    def __init__(self, n_frames=6):
+    """Necrotic soil lingers for a fixed number of game turns before
+    dissipating.
+    """
+    def __init__(self, n_frames=NECROTIC_SOIL_DISSIPATE_N_FRAMES):
         self.n_frames = n_frames
         self.frame = 0
 
