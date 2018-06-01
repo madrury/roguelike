@@ -349,11 +349,19 @@ def main():
                 game_map.entities.append(item_dropped)
             # Damage an entity.
             if result_type == ResultTypes.DAMAGE:
-                print("Result data: ", result_data)
+                #print("Result data: ", result_data)
+                target, source, amount, elements = result_data
+                if target.defender:
+                    player_turn_results.extend(
+                        target.defender.transform(
+                           game_map, source, amount, elements))
+                else:
+                    player_turn_results.append({
+                        ResultTypes.HARM: result_data})
+            if result_type == ResultTypes.HARM: 
                 target, source, amount, elements = result_data
                 damage_result = target.harmable.harm(
                     game_map, source, amount, elements)
-                player_turn_results.extend(damage_result)
                 if target not in harmed_queue:
                     harmed_queue.appendleft(target)
             # Don defensive equipment.

@@ -128,6 +128,7 @@ class Entity:
                  burnable=None,
                  consumable=None,
                  commitable=None,
+                 defender=None,
                  dissipatable=None,
                  encroachable=None,
                  equipable=None,
@@ -168,6 +169,7 @@ class Entity:
         self.add_component(burnable, "burnable")
         self.add_component(consumable, "consumable")
         self.add_component(commitable, "commitable")
+        self.add_component(defender, "defender")
         self.add_component(dissipatable, "dissipatable")
         self.add_component(encroachable, "encroachable")
         self.add_component(equipable, "equipable")

@@ -32,7 +32,7 @@ class OffensiveLinearTransformer(LinearTransformer):
         elements = self.elements.union(elements) 
         damage = self.multiplyer * amount + self.addend
         return [{
-            ResultTypes.DAMAGE: (
+            ResultTypes.HARM: (
                 target, source, damage, self.elements)}]
 
 
@@ -47,11 +47,11 @@ class DefensiveLinearTransformer(LinearTransformer):
         damage = self.multiplyer * amount - self.addend
         if self.elements.intersection(elements):
             return [{
-                ResultTypes.DAMAGE: (
+                ResultTypes.HARM: (
                     target, source, damage, list(elements))}]
         else:
             return [{
-                ResultTypes.DAMAGE: (
+                ResultTypes.HARM: (
                     target, source, amount, list(elements))}]
 
 

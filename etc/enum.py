@@ -74,28 +74,18 @@ CANCEL_STATES = {
 #   Play an animation.
 # CURSOR_MODE: boolean
 #   Enter cursor mode.
-# CURSOR_SELECT: boolean
-#   The user has selected a map tile while in cursor model.
 # DAMAGE: (entity, source, amount, elements)
 #   Deal damage to an entity of some elemental types.
 # DEAD_ENTITY: entity
 #   An entity has died.
 # DEATH_MESSAGE: Message object
 #   A message that the player has died.  TODO: Depreciate this.
-# DROP_INVENTORY: boolean
-#   Open the inventory for dropping items.
 # END_TURN: bool
 #   End the players turn.
 # EQUIP: (equipable_entity, entity):
 #   Equip equipable_entity onto entity.
 # EQUIP_INVENTORY: boolean
 #   Open the inventory for equipping items.
-# EXIT: boolean
-#   Exit a menu, or the game.
-# FULLSCREEN: boolean
-#   Enter fullscreen mode.
-# INVENTORY_INDEX: int
-#   The index of an item chosen from the player's inventory.
 # ITEM_ADDED: item
 #   Add an item to the the player's inventory.  TODO: This should work with any
 #   entity.
@@ -107,16 +97,10 @@ CANCEL_STATES = {
 # MESSAGE: message
 #   Display a game message in the message queue.
 # # TODO: Add an entity argument to this so it can be used to move any entity.
-# MOVE: (dx, dy) 
-#   Move the player or another entity on the game map.
 # MOVE_TOWARDS: entity, target_x, target_y
 #   Attempt to move the entity towards the target. 
 # MOVE_RANDOM_ADJACENT: entity
 #   Attempt to move the entity to a random adjacent square.
-# PICKUP: bool 
-#   Pickup an item at the current position.  
-# SHOW_INVENTORy: bool
-#   Show the inventory menu.
 #.............................................................................
 class ResultTypes(Enum):
 
@@ -133,6 +117,7 @@ class ResultTypes(Enum):
     END_TURN = auto()
     EQUIP_ARMOR = auto()
     EQUIP_WEAPON = auto()
+    HARM = auto()
     ITEM_ADDED = auto()
     ITEM_CONSUMED = auto()
     ITEM_DROPPED = auto()

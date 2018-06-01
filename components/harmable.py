@@ -44,15 +44,6 @@ class Harmable:
                  damage_callbacks=None):
         self.max_hp = hp
         self.hp = hp
-        self.defense = defense
-        self.damage_transformers = []
-        self.damage_callbacks = []
-        if damage_transformers:
-            for transformer in damage_transformers:
-                self.damage_transformers.append(transformer)
-        if damage_callbacks:
-            for callback in damage_callbacks:
-                self.damage_callbacks.append(callback)
         self.status_bar = StatusBar(
             total_width=PANEL_CONFIG['bar_width'],
             bar_colors=STATUS_BAR_COLORS['hp_bar'])
@@ -67,19 +58,13 @@ class Harmable:
         Damage can be responded to by providing callbacks in the
         damage_callbacks list.  These are called whenver this method is called.
         """
-        for transformer in self.damage_transformers:
-            amount = transformer.transform(
-                self.owner, source, amount, elements=elements)
-        self.hp -= amount
         results = []
-        if self.hp >= 0:
-            for callback in self.damage_callbacks:
-                results.extend(
-                    callback.execute(self.owner, source, amount, elements))
+        self.hp = max(0, self.hp - amount)
         if self.hp <= 0:
             results.append({ResultTypes.DEAD_ENTITY: self.owner})
         return results
 
+    # TODO: Remove this method.
     def heal(self, amount):
         """Restore some amount of hp."""
         self.hp += min(amount, self.max_hp - self.hp)
@@ -107,18 +92,14 @@ class Harmable:
             maximum=self.max_hp,
             value=self.hp)
 
-
 class PinkJellyHarmable(Harmable):
     """Spawns another copy of a Pink Jelly in a random adjacent space when
     harmed.
     """
     def harm(self, game_map, source, amount, elements):
-        for transformer in self.damage_transformers:
-            amount = transformer.transform_damage(amount, elements)
-        self.hp -= amount
         results = []
+        self.hp += min(amount, self.max_hp - self.hp)
         if self.hp > 0:
-            # Spawn a new jelly with the same hp.
             x, y = random_adjacent((self.owner.x, self.owner.y))
             jelly = game_objects.monsters.PinkJelly.make_if_possible(
                 game_map, x, y, hp=self.hp)
