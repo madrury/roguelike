@@ -22,8 +22,13 @@ class EntityList:
         self.lst.remove(entity)
         self.coordinate_map[(entity.x, entity.y)].remove(entity)
 
+    def update_position(self, entity, old_position, new_position):
+        self.coordinate_map[old_position].remove(entity)
+        self.coordinate_map[new_position].append(entity)
+
     def get_entities_in_position(self, position):
         return self.coordinate_map[position]
+
 
     def __iter__(self):
         yield from self.lst

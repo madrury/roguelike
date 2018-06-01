@@ -666,6 +666,8 @@ def player_move_or_attack(move, *,
     if game_map.walkable[destination_x, destination_y]:
         blocker = get_blocking_entity_in_position(
             game_map, (destination_x, destination_y))
+        if blocker:
+            print("Blocker: ", blocker.name)
         # If you attempted to walk into a square occupied by an entity,
         # and that entity is not yourself.
         if blocker and blocker != player:
@@ -691,7 +693,6 @@ def encroach_on_all(encroacher, game_map):
     results = []
     entities = get_all_entities_with_component_in_position(
         (encroacher.x, encroacher.y), game_map, "encroachable")
-    print([e.name for e in entities])
     if entities:
         for entity in entities:
             results.extend(
