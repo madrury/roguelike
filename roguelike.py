@@ -360,8 +360,8 @@ def main():
                         ResultTypes.HARM: result_data})
             if result_type == ResultTypes.HARM: 
                 target, source, amount, elements = result_data
-                damage_result = target.harmable.harm(
-                    game_map, source, amount, elements)
+                player_turn_results.extend(target.harmable.harm(
+                    game_map, source, amount, elements))
                 if target not in harmed_queue:
                     harmed_queue.appendleft(target)
             # Don defensive equipment.
