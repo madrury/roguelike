@@ -133,13 +133,14 @@ def get_all_entities_with_component_in_position(position, game_map, component):
 
 def get_blocking_entity_in_position(game_map, position):
     entities = game_map.entities.get_entities_in_position(position)
-    print("Entities: ", entities)
-    if len(entities) >= 2:
+    blockers = [e for e in entities if e.blocks]
+    if len(blockers) >= 2:
         raise RuntimeError(
-            f"More than one blocking entity in position {position}")
-    if entities == []:
+            f"More than one blocking entity {blockers[0].name, blockers[1].name}"
+             "in position {position}")
+    if blockers == []:
         return None
-    entity = entities[0]
+    entity = blockers[0]
     if entity.blocks:
         return entity
 
