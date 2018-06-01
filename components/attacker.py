@@ -30,16 +30,15 @@ class Attacker:
             targets = [target]
         # Base damage is the attacker's power.
         damage = self.power
-        # Do base damage to all targets.
-        for target in targets:
-            message = Message(f"{self.owner.name} attacks {target.name} "
-                               "and does {damage} damage")
-            results.append({
-                ResultTypes.DAMAGE: (target, self.owner, damage, [Elements.NONE]),
-                ResultTypes.MESSAGE: message})
         # Do transformed damage to all targets.
+        if self.damage_transformers == []:
+            results.append({
+                ResultTypes.DAMAGE: (target, self.owner, damage, [Elements.NONE])})
+        # No need for an else, this is an empty for loop if damage_transformers
+        # is an empty list.
         for transformer, target in product(self.damage_transformers, targets):
-            results.extend(transformer.transform_damage(target, self.owner, damage))
+            results.extend(
+                transformer.transform(target, self.owner, damage))
         # Attacking ends the current turn.
         results.append({ResultTypes.END_TURN: True})
         return results

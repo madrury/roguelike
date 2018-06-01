@@ -68,7 +68,8 @@ class Harmable:
         damage_callbacks list.  These are called whenver this method is called.
         """
         for transformer in self.damage_transformers:
-            amount = transformer.transform_damage(amount, elements)
+            amount = transformer.transform(
+                self.owner, source, amount, elements=elements)
         self.hp -= amount
         results = []
         if self.hp >= 0:

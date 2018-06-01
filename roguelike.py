@@ -349,6 +349,7 @@ def main():
                 game_map.entities.append(item_dropped)
             # Damage an entity.
             if result_type == ResultTypes.DAMAGE:
+                print("Result data: ", result_data)
                 target, source, amount, elements = result_data
                 damage_result = target.harmable.harm(
                     game_map, source, amount, elements)

@@ -16,7 +16,7 @@ from components.spreadable import ZombieSpreadable
 from components.swimmable import BaseSwimmable
 import components.harmable
 
-from components.transformers.damage_transformers import ElementalTransformer
+from components.transformers.damage_transformers import DefensiveLinearTransformer
 
 
 class Kruthik:
@@ -179,8 +179,10 @@ class Zombie:
             harmable=components.harmable.Harmable(
                 hp=10, defense=0,
                 damage_transformers=[
-                    ElementalTransformer([Elements.FIRE], multiplyer=2),
-                    ElementalTransformer([Elements.HEALING], multiplyer=-1)]),
+                    DefensiveLinearTransformer(
+                        elements=[Elements.FIRE], multiplyer=2),
+                    DefensiveLinearTransformer(
+                        elements=[Elements.HEALING], multiplyer=-1)]),
             ai=ZombieMonster(),
             burnable=ZombieBurnable(),
             commitable=BlockingCommitable(),
@@ -211,8 +213,10 @@ class Necromancer:
             harmable=components.harmable.Harmable(
                 hp=20, defense=0,
                 damage_transformers=[
-                    ElementalTransformer([Elements.FIRE], multiplyer=2),
-                    ElementalTransformer([Elements.HEALING], multiplyer=-1)]),
+                    DefensiveLinearTransformer(
+                        elements=[Elements.FIRE], multiplyer=2),
+                    DefensiveLinearTransformer(
+                        elements=[Elements.HEALING], multiplyer=-1)]),
             movable=Movable(),
             swimmable=BaseSwimmable(),
             scaldable=AliveScaldable())
