@@ -3,8 +3,7 @@ import random
 from etc.game_config import FIRE_SPREAD_PROBABILITY, STEAM_SPREAD_PROBABILTY
 from etc.enum import ResultTypes, EntityTypes
 from utils.utils import (
-    adjacent_coordinates, random_adjacent, get_entities_at_location,
-    get_all_entities_of_type_in_position)
+    adjacent_coordinates, random_adjacent, get_all_entities_of_type_in_position)
 import game_objects.terrain
 
 
@@ -17,7 +16,8 @@ class FireSpreadable:
 
     def spread(self, game_map):
         new_x, new_y = random_adjacent((self.owner.x, self.owner.y))
-        entities_at_location = get_entities_at_location(game_map, new_x, new_y)
+        entities_at_location = game_map.entities.get_entities_at_position(
+            game_map, new_x, new_y)
         burnable_entities = [entity for entity in entities_at_location
                              if entity.burnable]
         results = []

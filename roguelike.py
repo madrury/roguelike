@@ -16,7 +16,7 @@ from utils.utils import (
     flatten_list_of_dictionaries,
     unpack_single_key_dict,
     get_key_from_single_key_dict,
-    get_blocking_entity_at_location,
+    get_blocking_entity_in_position,
     get_all_entities_with_component_in_position)
 
 from animations.animations import construct_animation
@@ -664,8 +664,8 @@ def player_move_or_attack(move, *,
     dx, dy = move
     destination_x, destination_y = player.x + dx, player.y + dy
     if game_map.walkable[destination_x, destination_y]:
-        blocker = get_blocking_entity_at_location(
-            game_map, destination_x, destination_y)
+        blocker = get_blocking_entity_in_position(
+            game_map, (destination_x, destination_y))
         # If you attempted to walk into a square occupied by an entity,
         # and that entity is not yourself.
         if blocker and blocker != player:

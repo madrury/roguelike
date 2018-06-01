@@ -26,6 +26,14 @@ def choose_from_list_of_tuples(list_of_tuples):
     probs, choices = zip(*list_of_tuples)
     return np.random.choice(choices, size=1, p=probs)[0]
 
+#-----------------------------------------------------------------------------
+# Geometric operations.
+#-----------------------------------------------------------------------------
+def l2_distance(source, target):
+    dx = target[0] - source[0]
+    dy = target[1] - source[1]
+    return math.sqrt(dx*dx + dy*dy)
+
 def coordinates_on_circle(center, radius):
     circle = set()
     circle.update((center[0] + radius - i, center[1] + i) 
@@ -50,7 +58,6 @@ def adjacent_coordinates(center):
             (-1, -1), (0, -1), (1, -1)]
     return [(center[0] + dx, center[1] + dy) for dx, dy in dxdy]
 
-
 #-----------------------------------------------------------------------------
 # Choosing random map positions.
 #-----------------------------------------------------------------------------
@@ -74,11 +81,6 @@ def random_walkable_position(game_map, entity):
 #-----------------------------------------------------------------------------
 # Entity Finders
 #-----------------------------------------------------------------------------
-def l2_distance(source, target):
-    dx = target[0] - source[0]
-    dy = target[1] - source[1]
-    return math.sqrt(dx*dx + dy*dy)
-
 def get_closest_entity_of_type(position, game_map, entity_type):
     """Get the closest entity of a given type from a list of entities."""
     closest = None
@@ -112,8 +114,8 @@ def get_all_entities_of_type_within_radius(
     return within_radius
 
 def get_all_entities_of_type_in_position(position, game_map, entity_type):
-    return get_all_entities_of_type_within_radius(
-        position, game_map, entity_type, radius=0)
+    entities = game_map.entities.get_entities_in_position(position)
+    return [e for e in entities if e.entity_type == entity_type]
 
 def get_all_entities_with_component_within_radius(
     position, game_map, component, radius):
@@ -126,22 +128,12 @@ def get_all_entities_with_component_within_radius(
     return within_radius
 
 def get_all_entities_with_component_in_position(position, game_map, component):
-    return get_all_entities_with_component_within_radius(
-        position, game_map, component, radius=0)
+    entities = game_map.entities.get_entities_in_position(position)
+    return [e for e in entities if hasattr(e, component)]
 
-def get_entities_at_location(game_map, x, y):
-    entities_at_location = []
-    for entity in game_map.entities:
-        if entity.x == x and entity.y == y:
-            entities_at_location.append(entity)
-    return entities_at_location
-
-def get_blocking_entity_at_location(game_map, x, y):
-    """Get a blocking entity at a location, if any, from a list of entities."""
-    for entity in game_map.entities:
-        if entity.blocks and entity.x == x and entity.y == y:
-            return entity
-    return None
+def get_blocking_entity_in_position(game_map, position):
+    entities = game_map.entities.get_entities_in_position(position)
+    return [e for e in entities if e.blocks]
 
 def get_first_blocking_entity_along_path(game_map, source, target):
     path = game_map.compute_path(source[0], source[1], target[0], target[1])

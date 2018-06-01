@@ -22,9 +22,8 @@ class EntityList:
         self.lst.remove(entity)
         self.coordinate_map[(entity.x, entity.y)].remove(entity)
 
-    def get_entities_at_position(self, coord):
-        return self.coordinate_map[(entity.x, entity.y)]
+    def get_entities_in_position(self, position):
+        return self.coordinate_map[position]
 
     def __iter__(self):
         yield from self.lst
-
