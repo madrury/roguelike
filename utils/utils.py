@@ -129,7 +129,7 @@ def get_all_entities_with_component_within_radius(
 
 def get_all_entities_with_component_in_position(position, game_map, component):
     entities = game_map.entities.get_entities_in_position(position)
-    return [e for e in entities if hasattr(e, component)]
+    return [e for e in entities if getattr(e, component)]
 
 def get_blocking_entity_in_position(game_map, position):
     entities = game_map.entities.get_entities_in_position(position)

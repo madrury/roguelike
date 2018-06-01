@@ -691,6 +691,7 @@ def encroach_on_all(encroacher, game_map):
     results = []
     entities = get_all_entities_with_component_in_position(
         (encroacher.x, encroacher.y), game_map, "encroachable")
+    print([e.name for e in entities])
     if entities:
         for entity in entities:
             results.extend(
