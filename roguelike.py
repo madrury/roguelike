@@ -666,8 +666,6 @@ def player_move_or_attack(move, *,
     if game_map.walkable[destination_x, destination_y]:
         blocker = get_blocking_entity_in_position(
             game_map, (destination_x, destination_y))
-        if blocker:
-            print("Blocker: ", blocker.name)
         # If you attempted to walk into a square occupied by an entity,
         # and that entity is not yourself.
         if blocker and blocker != player:

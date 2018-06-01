@@ -29,6 +29,5 @@ class EntityList:
     def get_entities_in_position(self, position):
         return self.coordinate_map[position]
 
-
     def __iter__(self):
         yield from self.lst
