@@ -4,10 +4,12 @@ from etc.chars import CHARS
 from etc.enum import EntityTypes, RenderOrder, Elements
 
 from components.commitable import BaseCommitable
+from components.consumable import FinitelyConsumable
 from components.equipable import WeaponEquipable
 from components.floatable import Floatable
 from components.movable import Movable
 from components.stats import WeaponStats
+from components.throwable import WeaponThrowable
 
 from components.callbacks.target_callbacks import (
     LanceCallback, AxeCallback)
@@ -29,6 +31,7 @@ class Lance:
             entity_type=EntityTypes.ITEM,
             render_order=RenderOrder.ITEM,
             commitable=BaseCommitable(),
+            consumable=FinitelyConsumable(uses=1),
             equipable=WeaponEquipable(
                 damage_transformers=[damage_transformer],
                 target_callback=LanceCallback()),
@@ -37,7 +40,8 @@ class Lance:
             stats=WeaponStats(
                 elements=elements,
                 power=weapon_power,
-                modifier=modifier))
+                modifier=modifier),
+            throwable=WeaponThrowable())
 
 
 class Axe:
@@ -54,6 +58,7 @@ class Axe:
             entity_type=EntityTypes.ITEM,
             render_order=RenderOrder.ITEM,
             commitable=BaseCommitable(),
+            consumable=FinitelyConsumable(uses=1),
             floatable=Floatable(),
             movable=Movable(),
             equipable=WeaponEquipable(
@@ -62,4 +67,5 @@ class Axe:
             stats=WeaponStats(
                 elements=elements,
                 power=weapon_power,
-                modifier=modifier))
+                modifier=modifier),
+            throwable=WeaponThrowable())

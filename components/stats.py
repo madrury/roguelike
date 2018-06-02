@@ -6,7 +6,7 @@ class WeaponStats:
                  elements=None):
         self.power = power
         self.modifier = modifier
-        elements=elements
+        self.elements=elements
 
 
 class ArmorStats:
@@ -16,5 +16,5 @@ class ArmorStats:
                  modifier=None,
                  elements=None):
         self.defense = defense
-        modifier=modifier
+        self.modifier=modifier
         self.elements = elements

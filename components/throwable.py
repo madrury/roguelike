@@ -71,6 +71,48 @@ class HealthPotionCallback:
         return results
 
 
+class WeaponThrowable:
+
+    def throw(self, game_map, user):
+        callback = WeaponCallback(self, game_map, user)
+        return [
+            {ResultTypes.CURSOR_MODE: (
+                user.x, user.y, callback, CursorTypes.PATH)}]
+
+
+class WeaponCallback:
+
+    def __init__(self, owner, game_map, user):
+        self.owner = owner
+        self.game_map = game_map
+        self.user = user
+
+    def execute(self, x, y):
+        results = []
+        monster = get_first_blocking_entity_along_path(
+            self.game_map, (self.user.x, self.user.y), (x, y))
+        if monster and monster.harmable:
+            text = f"The {self.owner.owner.name} pierces the {monster.name}'s flesh."
+            results.append({
+                ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
+                ResultTypes.DAMAGE: (
+                    monster, None, 
+                    10*self.owner.owner.stats.power,
+                    self.owner.owner.stats.elements),
+                ResultTypes.ANIMATION: (
+                    Animations.THROWING_KNIFE,
+                    (self.user.x, self.user.y),
+                    (monster.x, monster.y))
+            })
+        else:
+            # Todo: Have the knife drop on the ground.
+            text = "The {self.owner.name} clatters to the ground"
+            results.append({
+                ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
+            })
+        return results
+        
+
 class ThrowingKnifeThrowable:
 
     def __init__(self, damage=THROWING_KNIFE_BASE_DAMAGE):
@@ -97,7 +139,6 @@ class ThrowingKnifeCallback:
         results = []
         monster = get_first_blocking_entity_along_path(
             self.game_map, (self.user.x, self.user.y), (x, y))
-        print("Blocking monster: ", monster.name)
         if monster and monster.harmable:
             text = f"The throwing knife pierces the {monster.name}'s flesh."
             results.append({
