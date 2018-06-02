@@ -1,8 +1,11 @@
 from messages import Message
+
 from etc.colors import COLORS
 from etc.enum import ResultTypes, CursorTypes, Animations, Elements
 from etc.game_config import (
-    HEALTH_POTION_HEAL_AMOUNT, THROWING_KNIFE_BASE_DAMAGE)
+    HEALTH_POTION_HEAL_AMOUNT, THROWING_KNIFE_BASE_DAMAGE,
+    THROWN_WEAPON_DAMAGE_FACTOR)
+
 from utils.utils import get_first_blocking_entity_along_path
 
 
