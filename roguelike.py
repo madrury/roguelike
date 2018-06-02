@@ -22,15 +22,18 @@ from utils.utils import (
 from animations.animations import construct_animation
 from components.attacker import Attacker
 from components.burnable import AliveBurnable
+from components.defender import Defender
 from components.equipment import Equipment
 from components.harmable import Harmable
 from components.inventory import Inventory
 from components.movable import Movable
 from components.scaldable import AliveScaldable
 from components.swimmable import PlayerSwimmable
+
 from game_objects.items import (
     HealthPotion, MagicMissileScroll, FireblastScroll, ThrowingKnife,
     Torch)
+#
 from generation.floor import make_floor
 from generation.item_groups import ITEM_SCHEDULE, ITEM_GROUPS
 from generation.monster_groups import MONSTER_SCHEDULE, MONSTER_GROUPS
@@ -605,15 +608,16 @@ def create_player(game_map):
                     blocks=True,
                     render_order=RenderOrder.ACTOR,
                     attacker=Attacker(power=PLAYER_CONFIG["power"]),
+                    burnable=AliveBurnable(),
+                    defender=Defender(),
+                    equipment=Equipment(),
                     harmable=Harmable(
                         hp=PLAYER_CONFIG["hp"],
                         defense=PLAYER_CONFIG["defense"]),
-                    equipment=Equipment(),
+                    inventory=Inventory(PLAYER_CONFIG["inventory_size"]),
                     movable=Movable(),
-                    burnable=AliveBurnable(),
                     scaldable=AliveScaldable(),
-                    swimmable=PlayerSwimmable(PLAYER_CONFIG["swim_stamina"]),
-                    inventory=Inventory(PLAYER_CONFIG["inventory_size"]))
+                    swimmable=PlayerSwimmable(PLAYER_CONFIG["swim_stamina"]))
     game_map.place_player(player)
     game_map.entities.append(player)
     # Setup Initial Inventory, for testing.
@@ -722,9 +726,9 @@ def entity_equip_armor(entity, armor, turn_results):
     else:
         entity.equipment.armor = armor
         armor.equipable.equipped = True
-        entity.harmable.add_damage_transformers(
+        entity.defender.add_damage_transformers(
             armor.equipable.damage_transformers)
-        entity.harmable.add_damage_callbacks(
+        entity.defender.add_damage_callbacks(
             armor.equipable.damage_callbacks)
         turn_results.append({
             ResultTypes.MESSAGE: Message(
@@ -763,9 +767,9 @@ def entity_remove_armor(entity, armor, turn_results):
     else:
         entity.equipment.armor = None
         armor.equipable.equipped = False
-        entity.harmable.remove_damage_transformers(
+        entity.defender.remove_damage_transformers(
             armor.equipable.damage_transformers)
-        entity.harmable.remove_damage_callbacks(
+        entity.defender.remove_damage_callbacks(
             armor.equipable.damage_callbacks)
         turn_results.append({
             ResultTypes.MESSAGE: Message(

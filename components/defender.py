@@ -11,7 +11,7 @@ class Defender:
       A list of callbacks to call when a damage event is triggered.  Useful for
       things like counterattacks, status triggers, etc.
     """
-    def __init__(self, hp, defense, *,
+    def __init__(self, *,
                  damage_transformers=None,
                  damage_callbacks=None):
         self.damage_transformers = []
