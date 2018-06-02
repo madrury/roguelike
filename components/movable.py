@@ -56,4 +56,6 @@ class Movable:
             if self.owner.blocks:
                 game_map.blocked[self.owner.x, self.owner.y] = False
                 game_map.blocked[target_location] = True
+            game_map.entities.update_position(
+                self.owner, (self.owner.x, self.owner.y), target_location)
             self.owner.x, self.owner.y = target_location 

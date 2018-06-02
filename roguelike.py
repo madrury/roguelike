@@ -174,7 +174,7 @@ def main():
 
         # DEBUG
         # These switched highlight the various game state arrays.
-        # highlight_array(game_map.blocked, game_map, COLORS['cursor_tail'])
+        highlight_array(game_map.blocked, game_map, COLORS['cursor_tail'])
         #highlight_array(game_map.fire, game_map, COLORS['darker_red'])
         #highlight_array(game_map.steam, game_map, COLORS['desaturated_green'])
         #highlight_array(game_map.terrain, game_map, COLORS['cursor_tail'])

@@ -92,12 +92,12 @@ class Harmable:
             maximum=self.max_hp,
             value=self.hp)
 
+
 class PinkJellyHarmable(Harmable):
     """Spawns another copy of a Pink Jelly in a random adjacent space when
     harmed.
     """
     def harm(self, game_map, source, amount, elements):
-        print(amount, " damage to pink jelly.")
         results = []
         self.hp = max(0, self.hp - amount)
         if self.hp > 0:
