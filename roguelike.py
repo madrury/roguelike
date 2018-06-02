@@ -664,6 +664,11 @@ def process_selected_item(item, *,
             player_turn_results.extend(item.consumable.consume())
     elif game_state == GameStates.THROW_INVENTORY:
         if item.throwable:
+            # Cannot throw weapons that are equipped.
+            if item.equipable and item.equipable.equipped:
+                message = Message(f"Cannot throw equipped weapon {item.name}")
+                player_turn_results.append({ResultTypes.MESSAGE: message})
+                return
             player_turn_results.extend(item.throwable.throw(game_map, player))
             player_turn_results.extend(item.consumable.consume())
     elif game_state == GameStates.EQUIP_INVENTORY:

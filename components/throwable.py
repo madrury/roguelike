@@ -77,10 +77,12 @@ class HealthPotionCallback:
 class WeaponThrowable:
 
     def throw(self, game_map, user):
+        if self.owner.equipable and self.owner.equipable.equipped:
+            message = Message(f"Cannot throw equipped weapon {self.owner.name}")
+            return [{ResultTypes.MESSAGE: message}]
         callback = WeaponCallback(self, game_map, user)
-        return [
-            {ResultTypes.CURSOR_MODE: (
-                user.x, user.y, callback, CursorTypes.PATH)}]
+        return [{ResultTypes.CURSOR_MODE: (
+            user.x, user.y, callback, CursorTypes.PATH)}]
 
 
 class WeaponCallback:
