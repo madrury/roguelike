@@ -9,13 +9,7 @@ class Movable:
     def move(self, game_map, dx, dy):
         x, y = self.owner.x, self.owner.y
         new_x, new_y = x + dx, y + dy
-        if self.owner.blocks:
-            game_map.blocked[x, y] = False
-            game_map.blocked[new_x, new_y] = True
-        game_map.entities.update_position(
-            self.owner, (x, y), (new_x, new_y))
-        self.owner.x += dx
-        self.owner.y += dy
+        self.set_position_if_able(game_map, new_x, new_y)
 
     def move_towards(self, target_x, target_y, game_map):
         path = get_shortest_path(
