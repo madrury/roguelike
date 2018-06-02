@@ -28,7 +28,7 @@ class BasicMonster:
             TravelToRandomPosition())
 
     def take_turn(self, target, game_map):
-        _, results = self.tree.tick(self.owner, target, game_map, {})
+        _, results = self.tree.tick(self.owner, target, game_map)
         return results
 
 
@@ -46,7 +46,7 @@ class NecromancerMonster:
             TravelToRandomPosition())
 
     def take_turn(self, target, game_map):
-        _, results = self.tree.tick(self.owner, target, game_map, {})
+        _, results = self.tree.tick(self.owner, target, game_map)
         return results
 
 
@@ -67,7 +67,7 @@ class HuntingMonster:
             TravelToRandomPosition())
 
     def take_turn(self, target, game_map):
-        _, results = self.tree.tick(self.owner, target, game_map, {})
+        _, results = self.tree.tick(self.owner, target, game_map)
         return results
 
 
@@ -83,7 +83,7 @@ class ZombieMonster:
                 MoveTowards()))
 
     def take_turn(self, target, game_map):
-        _, results = self.tree.tick(self.owner, target, game_map, {})
+        _, results = self.tree.tick(self.owner, target, game_map)
         return results
 
 
@@ -105,5 +105,5 @@ class SkitteringMonster:
             Skitter())
 
     def take_turn(self, target, game_map):
-        _, results = self.tree.tick(self.owner, target, game_map, {})
+        _, results = self.tree.tick(self.owner, target, game_map)
         return results

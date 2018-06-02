@@ -8,9 +8,9 @@ class Sequence:
     def __init__(self, *children):
         self.children = children
 
-    def tick(self, owner, target, game_map, context):
+    def tick(self, owner, target, game_map):
         for child in self.children:
-            state, results = child.tick(owner, target, game_map, context)
+            state, results = child.tick(owner, target, game_map)
             if state == TreeStates.FAILURE:
                 return state, results
         return state, results
@@ -23,9 +23,9 @@ class Selection:
     def __init__(self, *children):
         self.children = children
 
-    def tick(self, owner, target, game_map, context):
+    def tick(self, owner, target, game_map):
         for child in self.children:
-            state, results = child.tick(owner, target, game_map, context)
+            state, results = child.tick(owner, target, game_map)
             if state == TreeStates.SUCCESS:
                 return state, results
         return TreeStates.FAILURE, []
@@ -36,8 +36,8 @@ class Negate:
     def __init__(self, child):
         self.child = child
 
-    def tick(self, owner, target, game_map, context):
-        state, results = self.child.tick(owner, target, game_map, context)
+    def tick(self, owner, target, game_map):
+        state, results = self.child.tick(owner, target, game_map)
         if state == TreeStates.SUCCESS:
             return TreeStates.FAILURE, results
         elif state == TreeStates.FAILURE:
