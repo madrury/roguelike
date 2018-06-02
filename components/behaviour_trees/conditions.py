@@ -2,9 +2,10 @@ import random
 
 from utils.utils import l2_distance
 from etc.enum import TreeStates
+from components.behaviour_trees.root import Node
 
 
-class IsAdjacent:
+class IsAdjacent(Node):
     """Return sucess is owner is adjacent to target."""
     def tick(self, owner, target, game_map):
         distance = l2_distance((owner.x, owner.y), (target.x, target.y)) 
@@ -14,7 +15,7 @@ class IsAdjacent:
             return TreeStates.FAILURE, []
 
 
-class WithinFov:
+class WithinFov(Node):
     """Return success if owner is in the players fov."""
     def tick(self, owner, target, game_map):
         if game_map.fov[owner.x, owner.y]:
@@ -22,7 +23,7 @@ class WithinFov:
         return TreeStates.FAILURE, []
 
 
-class WithinL2Radius:
+class WithinL2Radius(Node):
     """Return success if the distance between owner and target is less than or
     equal to some radius.
     """
@@ -37,7 +38,7 @@ class WithinL2Radius:
             return TreeStates.FAILURE, []
 
 
-class AtLInfinityRadius:
+class AtLInfinityRadius(Node):
     """Return success if the owner is at exactly a given Linfinity norm
     radius.
     """
@@ -52,7 +53,7 @@ class AtLInfinityRadius:
             return TreeStates.FAILURE, []
 
 
-class CoinFlip:
+class CoinFlip(Node):
 
     def __init__(self, p=0.5):
         self.p = p
