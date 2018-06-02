@@ -8,7 +8,6 @@ from pathfinding import make_walkable_array
 def flatten_list_of_dictionaries(list_of_dictionaries):
     ret = []
     for d in list_of_dictionaries:
-        print(d)
         for k, v in d.items():
             ret.append({k: v})
     return ret

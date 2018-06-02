@@ -349,7 +349,6 @@ def main():
                 game_map.entities.append(item_dropped)
             # Damage an entity.
             if result_type == ResultTypes.DAMAGE:
-                #print("Result data: ", result_data)
                 target, source, amount, elements = result_data
                 if target.defender:
                     player_turn_results.extend(
@@ -465,62 +464,70 @@ def main():
         # Process all result actions of enemy turns.
         #---------------------------------------------------------------------
         while enemy_turn_results != []:
-            result = enemy_turn_results.pop()
 
-            change_swim_stamina = result.get(ResultTypes.CHANGE_SWIM_STAMINA)
-            damage = result.get(ResultTypes.DAMAGE)
-            dead_entity = result.get(ResultTypes.DEAD_ENTITY)
-            message = result.get(ResultTypes.MESSAGE)
-            set_position = result.get(ResultTypes.SET_POSITION)
-            move_random_adjacent = result.get(ResultTypes.MOVE_RANDOM_ADJACENT)
-            move_towards = result.get(ResultTypes.MOVE_TOWARDS)
-            new_entity = result.get(ResultTypes.ADD_ENTITY)
-            remove_entity = result.get(ResultTypes.REMOVE_ENTITY)
+            enemy_turn_results = sorted(
+                flatten_list_of_dictionaries(enemy_turn_results),
+                key = lambda d: get_key_from_single_key_dict(d))
+
+            result = enemy_turn_results.pop()
+            result_type, result_data = unpack_single_key_dict(result)
 
             # Handle a move action
-            if set_position:
-               monster, x, y = set_position
+            if result_type == ResultTypes.SET_POSITION:
+               monster, x, y = result_data
                monster.movable.set_position_if_able(game_map, x, y)
             # Handle a move towards action.  Move towards a target.
-            if move_towards:
-               monster, target_x, target_y = move_towards
+            if result_type == ResultTypes.MOVE_TOWARDS:
+               monster, target_x, target_y = result_data
                monster.movable.move_towards(target_x, target_y, game_map)
             # Handle a move random adjacent action.  Move to a random adjacent
             # square.
-            if move_random_adjacent:
-               monster = move_random_adjacent
+            if result_type == ResultTypes.MOVE_RANDOM_ADJACENT:
+               monster = result_data
                monster.movable.move_to_random_adjacent(game_map)
             # Handle a simple message.
-            if message:
+            if result_type == ResultTypes.MESSAGE:
+                message = result_data
                 message_log.add_message(message)
             # Handle damage dealt.
-            if damage:
-                target, source, amount, elements = damage
-                damage_result = target.harmable.harm(
-                    game_map, source, amount, elements)
-                enemy_turn_results.extend(damage_result)
-                if target != player and target not in harmed_queue:
+            if result_type == ResultTypes.DAMAGE:
+                target, source, amount, elements = result_data
+                if target.defender:
+                    enemy_turn_results.extend(
+                        target.defender.transform(
+                           game_map, source, amount, elements))
+                else:
+                    enemy_turn_results.append({
+                        ResultTypes.HARM: result_data})
+            if result_type == ResultTypes.HARM: 
+                target, source, amount, elements = result_data
+                enemy_turn_results.extend(target.harmable.harm(
+                    game_map, source, amount, elements))
+                if target not in harmed_queue:
                     harmed_queue.appendleft(target)
             # Entities swim and thier stamana decreases.
-            if change_swim_stamina:
-                entity, stamina_change = change_swim_stamina
+            if result_type == ResultTypes.CHANGE_SWIM_STAMINA:
+                print(result_data)
+                entity, stamina_change = result_data
                 entity.swimmable.change_stamina(stamina_change) 
             # Add a new entity to the game.
-            if new_entity:
-                entity = new_entity
+            if result_type == ResultTypes.ADD_ENTITY:
+                entity = result_data
                 entity.commitable.commit(game_map)
             # Remove an entity from the game.
-            if remove_entity:
-                entity = remove_entity
+            if result_type == ResultTypes.REMOVE_ENTITY:
+                entity = result_data
                 entity.commitable.delete(game_map)
             # Handle death.
-            if dead_entity == player:
-                enemy_turn_results.extend(kill_player(player))
-                game_state = GameStates.PLAYER_DEAD
-            elif dead_entity:
-                enemy_turn_results.extend(
-                    kill_monster(dead_entity, game_map))
-                dead_entities.append(dead_entity)
+            if result_type == ResultTypes.DEAD_ENTITY:
+                dead_entity = result_data
+                if dead_entity == player:
+                    enemy_turn_results.extend(kill_player(player))
+                    game_state = GameStates.PLAYER_DEAD
+                elif dead_entity:
+                    enemy_turn_results.extend(
+                        kill_monster(dead_entity, game_map))
+                    dead_entities.append(dead_entity)
 
         #---------------------------------------------------------------------
         # Handle meta actions,
