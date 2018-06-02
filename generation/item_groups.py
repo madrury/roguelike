@@ -29,10 +29,10 @@ ITEM_SCHEDULE = [
     (1.0*0.0, ItemGroups.TWO_HEALTH_POTIONS),
     (1.0*0.0, ItemGroups.MAGIC_MISSILE_SCROLL),
     (1.0*0.0, ItemGroups.FIREBLAST_SCROLL),
-    (1.0*1.0, ItemGroups.WATERBLAST_SCROLL),
+    (1.0*0.0, ItemGroups.WATERBLAST_SCROLL),
     (1.0*0.0, ItemGroups.THROWING_KNIFE),
-    (1.0*0.0, ItemGroups.LANCE),
-    (1.0*0.0, ItemGroups.AXE),
+    (1.0*0.5, ItemGroups.LANCE),
+    (1.0*0.5, ItemGroups.AXE),
     (1.0*0.0, ItemGroups.LEATHER_ARMOR),
     (1.0*0.0, ItemGroups.REFLECT_SUIT),
     (1.0*0.0, ItemGroups.LEATHER_ARMOR_OF_FIRE_RESIST)

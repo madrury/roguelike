@@ -102,6 +102,10 @@ class Entity:
     spreadable: Spreadable object.
       Contains logic for an entity to self propagate across the map.
 
+    stats: Stats object.
+      Holds various statistics about the entity. For eample, holds a weapon's
+      attack power and modifier.
+
     swimmable: Swimmable object.
       Containins stats and logic for the entity swimming.
 
@@ -141,6 +145,7 @@ class Entity:
                  scaldable=None,
                  shimmer=None,
                  spreadable=None,
+                 stats=None,
                  swimmable=None,
                  throwable=None,
                  usable=None):
@@ -182,6 +187,7 @@ class Entity:
         self.add_component(scaldable, "scaldable")
         self.add_component(shimmer, "shimmer")
         self.add_component(spreadable, "spreadable")
+        self.add_component(stats, "stats")
         self.add_component(swimmable, "swimmable")
         self.add_component(usable, "usable")
         self.add_component(throwable, "throwable")

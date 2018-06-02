@@ -4,7 +4,15 @@ from messages import Message
 from etc.enum import ResultTypes, Elements
 
 class Attacker:
+    """Component for entites that can physically attack other entities.
 
+    Attacks are based on an attack power status.  The baseline case, if the
+    entity has nothing equipped, is an amount of non-elemental damage equal to
+    the entities attack power status.
+
+    If the entity has weapons equipped the damage_transformers and
+    target_callback attributes come into play.
+    """
     def __init__(self, power, *,
                  damage_transformers=None,
                  target_callback=None):
@@ -22,15 +30,18 @@ class Attacker:
                 f'{self.owner} attacks {target.name}, but it does nothing.')
             results.append({ResultTypes.MESSAGE: message})
             return results
-        # Collect list of targets.
+        # Collect list of targets of this attack.
         if self.target_callback:
             targets = self.target_callback.execute(
                 game_map, target, self.owner)
         else:
             targets = [target]
-        # Base damage is the attacker's power.
+        # Now compute the damage to deal.  There are two cases:
+        # - If there are no damage transformers equipped, baseline
+        # non-elemental damage is dealt equal to the attacker's power.
+        #  - Otherwise, the equipped damage transformers are used to get the
+        # final damage.
         damage = self.power
-        # Do transformed damage to all targets.
         if self.damage_transformers == []:
             results.append({
                 ResultTypes.DAMAGE: (target, self.owner, damage, [Elements.NONE])})
@@ -39,7 +50,6 @@ class Attacker:
         for transformer, target in product(self.damage_transformers, targets):
             results.extend(
                 transformer.transform(target, self.owner, damage))
-        # Attacking ends the current turn.
         results.append({ResultTypes.END_TURN: True})
         return results
 
