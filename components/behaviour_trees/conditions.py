@@ -5,6 +5,17 @@ from etc.enum import TreeStates
 from components.behaviour_trees.root import Node
 
 
+class InNamespace(Node):
+
+    def __init__(self, name):
+        self.name = name
+
+    def tick(self, owner, target, game_map):
+        if self.namespace.get(self.name):
+            return TreeStates.SUCCESS, []
+        else:
+            return TreeStates.FAILURE, []
+
 class IsAdjacent(Node):
     """Return sucess is owner is adjacent to target."""
     def tick(self, owner, target, game_map):

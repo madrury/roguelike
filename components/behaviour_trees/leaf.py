@@ -6,10 +6,30 @@ from utils.utils import random_walkable_position, random_adjacent
 from components.behaviour_trees.root import Node
 
 
-class MoveTowards(Node):
-    """Move the owner towards a target."""
+class MoveTowardsTargetEntity(Node):
+    """Move the owner towards a target and remember the target's point."""
+    def __init__(self, target_point_name):
+        self.name = target_point_name
+    
     def tick(self, owner, target, game_map):
+        self.namespace[self.name] = (target.x, target.y)
         results = [{ResultTypes.MOVE_TOWARDS: (owner, target.x, target.y)}]
+        return TreeStates.SUCCESS, results
+
+
+class MoveTowardsPointInNamespace(Node):
+
+    def __init__(self, name):
+        self.name = name
+
+    def tick(self, owner, target, game_map):
+        if not self.namespace.get(self.name):
+            raise ValueError(f"{self.name} is not in tree namespace!")
+        point = self.namespace.get(self.name)
+        if (owner.x, owner.y) == point:
+            self.namespace[self.name] = None
+            return TreeStates.SUCCESS, []
+        results = [{ResultTypes.MOVE_TOWARDS: (owner, point[0], point[1])}]
         return TreeStates.SUCCESS, results
 
 
