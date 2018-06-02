@@ -1,3 +1,6 @@
+from etc.enum import ResultTypes
+
+
 class Defender:
     """Component for entities that can defend against damage.
 
@@ -34,6 +37,9 @@ class Defender:
         damage_callbacks list.  These are called whenver this method is called.
         """
         results = []
+        if self.damage_transformers == []:
+            results.append({
+                ResultTypes.HARM: (self.owner, source, amount, elements)})
         for transformer in self.damage_transformers:
             results.extend(transformer.transform(
                 self.owner, source, amount, elements=elements))
