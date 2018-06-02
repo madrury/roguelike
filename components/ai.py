@@ -1,12 +1,14 @@
 from etc.enum import ResultTypes
 
+from components.behaviour_trees.root import Root
 from components.behaviour_trees.composite import (
     Selection, Sequence, Negate)
 from components.behaviour_trees.leaf import (
-     Attack, MoveTowards, Skitter, TravelToRandomPosition,
-     SeekTowardsLInfinityRadius, SpawnEntity)
+     Attack, MoveTowardsTargetEntity, Skitter, TravelToRandomPosition,
+     SeekTowardsLInfinityRadius, SpawnEntity, MoveTowardsPointInNamespace)
 from components.behaviour_trees.conditions import (
-    IsAdjacent, WithinFov, WithinL2Radius, AtLInfinityRadius, CoinFlip)
+    IsAdjacent, WithinFov, WithinL2Radius, AtLInfinityRadius, CoinFlip,
+    InNamespace)
 
 import game_objects.monsters
 
@@ -18,17 +20,21 @@ class BasicMonster:
     to the player, attack.
     """
     def __init__(self):
-        self.tree = Selection(
-            Sequence(
-                IsAdjacent(),
-                Attack()),
-            Sequence(
-                WithinFov(),
-                MoveTowards()),
-            TravelToRandomPosition())
+        self.tree = Root(
+            Selection(
+                Sequence(
+                    IsAdjacent(),
+                    Attack()),
+                Sequence(
+                    WithinFov(),
+                    MoveTowardsTargetEntity(target_point_name="target_point")),
+                Sequence(
+                    InNamespace(name="target_point"),
+                    MoveTowardsPointInNamespace(name="target_point")),
+                TravelToRandomPosition()))
 
     def take_turn(self, target, game_map):
-        _, results = self.tree.tick(self.owner, target, game_map, {})
+        _, results = self.tree.tick(self.owner, target, game_map)
         return results
 
 
@@ -46,7 +52,7 @@ class NecromancerMonster:
             TravelToRandomPosition())
 
     def take_turn(self, target, game_map):
-        _, results = self.tree.tick(self.owner, target, game_map, {})
+        _, results = self.tree.tick(self.owner, target, game_map)
         return results
 
 
@@ -63,11 +69,11 @@ class HuntingMonster:
                 Attack()),
             Sequence(
                 WithinL2Radius(radius=sensing_range),
-                MoveTowards()),
+                MoveTowardsTargetEntity()),
             TravelToRandomPosition())
 
     def take_turn(self, target, game_map):
-        _, results = self.tree.tick(self.owner, target, game_map, {})
+        _, results = self.tree.tick(self.owner, target, game_map)
         return results
 
 
@@ -80,10 +86,10 @@ class ZombieMonster:
                 Attack()),
             Sequence(
                 WithinL2Radius(radius=move_towards_radius),
-                MoveTowards()))
+                MoveTowardsTargetEntity()))
 
     def take_turn(self, target, game_map):
-        _, results = self.tree.tick(self.owner, target, game_map, {})
+        _, results = self.tree.tick(self.owner, target, game_map)
         return results
 
 
@@ -101,9 +107,9 @@ class SkitteringMonster:
                 Attack()),
             Sequence(
                 WithinL2Radius(radius=skittering_range),
-                MoveTowards()),
+                MoveTowardsTargetEntity()),
             Skitter())
 
     def take_turn(self, target, game_map):
-        _, results = self.tree.tick(self.owner, target, game_map, {})
+        _, results = self.tree.tick(self.owner, target, game_map)
         return results

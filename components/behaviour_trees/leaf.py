@@ -1,23 +1,44 @@
-from etc.enum import TreeStates
-
 from pathfinding import get_shortest_path, get_path_to_radius_of_target
+
+from etc.enum import TreeStates
 from etc.enum import ResultTypes
 from utils.utils import random_walkable_position, random_adjacent
+from components.behaviour_trees.root import Node
 
 
-class MoveTowards:
-    """Move the owner towards a target."""
-    def tick(self, owner, target, game_map, context):
+class MoveTowardsTargetEntity(Node):
+    """Move the owner towards a target and remember the target's point."""
+    def __init__(self, target_point_name):
+        self.name = target_point_name
+    
+    def tick(self, owner, target, game_map):
+        self.namespace[self.name] = (target.x, target.y)
         results = [{ResultTypes.MOVE_TOWARDS: (owner, target.x, target.y)}]
         return TreeStates.SUCCESS, results
 
 
-class SeekTowardsLInfinityRadius:
+class MoveTowardsPointInNamespace(Node):
+
+    def __init__(self, name):
+        self.name = name
+
+    def tick(self, owner, target, game_map):
+        if not self.namespace.get(self.name):
+            raise ValueError(f"{self.name} is not in tree namespace!")
+        point = self.namespace.get(self.name)
+        if (owner.x, owner.y) == point:
+            self.namespace[self.name] = None
+            return TreeStates.SUCCESS, []
+        results = [{ResultTypes.MOVE_TOWARDS: (owner, point[0], point[1])}]
+        return TreeStates.SUCCESS, results
+
+
+class SeekTowardsLInfinityRadius(Node):
     """Seek to stay a fixed radius from a target."""
     def __init__(self, radius):
         self.radius = radius
 
-    def tick(self, owner, target, game_map, context):
+    def tick(self, owner, target, game_map):
         path = get_path_to_radius_of_target(
             game_map, 
             (owner.x, owner.y),
@@ -31,7 +52,7 @@ class SeekTowardsLInfinityRadius:
         return TreeStates.SUCCESS, results
 
 
-class TravelToRandomPosition:
+class TravelToRandomPosition(Node):
     """Pick a random position on the map and walk towards it until getting
     there.
     """
@@ -39,7 +60,7 @@ class TravelToRandomPosition:
         self.target_position = None
         self.target_path = None
 
-    def tick(self, owner, target, game_map, context):
+    def tick(self, owner, target, game_map):
         if not self.target_position:
             self.target_position = random_walkable_position(game_map, owner)
         self.path = get_shortest_path(
@@ -55,16 +76,16 @@ class TravelToRandomPosition:
         return TreeStates.SUCCESS, results
 
 
-class Skitter:
+class Skitter(Node):
     """Move the owner to a random adjacent tile."""
-    def tick(self, owner, target, game_map, context):
+    def tick(self, owner, target, game_map):
         results = [{ResultTypes.MOVE_RANDOM_ADJACENT: owner}]
         return TreeStates.SUCCESS, results
 
 
-class Attack:
+class Attack(Node):
     """The owner attackes the target."""
-    def tick(self, owner, target, game_map, context):
+    def tick(self, owner, target, game_map):
         if owner.attacker and target.harmable and target.harmable.hp > 0:
             return (TreeStates.SUCCESS,
                     owner.attacker.attack(game_map, target))
@@ -72,12 +93,12 @@ class Attack:
             return TreeStates.FAILURE, []
 
 
-class SpawnEntity:
+class SpawnEntity(Node):
 
     def __init__(self, maker):
         self.maker = maker
 
-    def tick(self, owner, target, game_map, context):
+    def tick(self, owner, target, game_map):
         x, y = random_adjacent((owner.x, owner.y))
         if (game_map.walkable[x, y]
             and not game_map.blocked[x, y]
