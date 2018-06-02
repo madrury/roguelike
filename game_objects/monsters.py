@@ -10,6 +10,7 @@ from components.ai import (
 from components.attacker import Attacker
 from components.burnable import AliveBurnable, ZombieBurnable, WaterBloatBurnable
 from components.commitable import BlockingCommitable
+from components.defender import Defender
 from components.movable import Movable
 from components.scaldable import AliveScaldable, FireBloatScaldable
 from components.spreadable import ZombieSpreadable
@@ -176,13 +177,16 @@ class Zombie:
                            RoutingOptions.AVOID_MONSTERS,
                            RoutingOptions.AVOID_STEAM],
             attacker=Attacker(power=3),
-            harmable=components.harmable.Harmable(
-                hp=10, defense=0,
+            defender=Defender(
                 damage_transformers=[
+                    DefensiveLinearTransformer(
+                        elements=[Elements.NONE]),
                     DefensiveLinearTransformer(
                         elements=[Elements.FIRE], multiplyer=2),
                     DefensiveLinearTransformer(
                         elements=[Elements.HEALING], multiplyer=-1)]),
+            harmable=components.harmable.Harmable(
+                hp=10, defense=0),
             ai=ZombieMonster(),
             burnable=ZombieBurnable(),
             commitable=BlockingCommitable(),
@@ -210,14 +214,16 @@ class Necromancer:
             attacker=Attacker(power=5),
             burnable=AliveBurnable(),
             commitable=BlockingCommitable(),
-            harmable=components.harmable.Harmable(
-                hp=20, defense=0,
+            defender=Defender(
                 damage_transformers=[
+                    DefensiveLinearTransformer(
+                        elements=[Elements.NONE]),
                     DefensiveLinearTransformer(
                         elements=[Elements.FIRE], multiplyer=2),
                     DefensiveLinearTransformer(
                         elements=[Elements.HEALING], multiplyer=-1)]),
+            harmable=components.harmable.Harmable(
+                hp=20, defense=0),
             movable=Movable(),
             swimmable=BaseSwimmable(),
             scaldable=AliveScaldable())
-

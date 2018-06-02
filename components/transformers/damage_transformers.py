@@ -49,8 +49,4 @@ class DefensiveLinearTransformer(LinearTransformer):
                 ResultTypes.HARM: (
                     target, source, damage, list(elements))}]
         else:
-            return [{
-                ResultTypes.HARM: (
-                    target, source, amount, list(elements))}]
-
-
+            return []

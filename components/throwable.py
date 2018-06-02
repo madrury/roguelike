@@ -97,6 +97,7 @@ class ThrowingKnifeCallback:
         results = []
         monster = get_first_blocking_entity_along_path(
             self.game_map, (self.user.x, self.user.y), (x, y))
+        print("Blocking monster: ", monster.name)
         if monster and monster.harmable:
             text = f"The throwing knife pierces the {monster.name}'s flesh."
             results.append({

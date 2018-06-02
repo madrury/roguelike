@@ -97,8 +97,9 @@ class PinkJellyHarmable(Harmable):
     harmed.
     """
     def harm(self, game_map, source, amount, elements):
+        print(amount, " damage to pink jelly.")
         results = []
-        self.hp += min(amount, self.max_hp - self.hp)
+        self.hp = max(0, self.hp - amount)
         if self.hp > 0:
             x, y = random_adjacent((self.owner.x, self.owner.y))
             jelly = game_objects.monsters.PinkJelly.make_if_possible(
