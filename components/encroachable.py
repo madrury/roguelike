@@ -27,5 +27,5 @@ class NecroticSoilEncroachable:
         results = []
         if encroacher.harmable:
             results.append({ResultTypes.DAMAGE: (
-                encroacher, None, self.damage, Elements.NECROTIC)})
+                encroacher, None, self.damage, [Elements.NECROTIC])})
         return results
