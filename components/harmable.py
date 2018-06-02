@@ -60,7 +60,6 @@ class Harmable:
         """
         results = []
         self.hp = max(0, self.hp - amount)
-        print(f"Damage {amount} done to {self.owner.name}")
         if self.hp <= 0:
             results.append({ResultTypes.DEAD_ENTITY: self.owner})
         return results

@@ -503,11 +503,8 @@ def main():
                 target, source, amount, elements = result_data
                 enemy_turn_results.extend(target.harmable.harm(
                     game_map, source, amount, elements))
-                if target not in harmed_queue:
-                    harmed_queue.appendleft(target)
             # Entities swim and thier stamana decreases.
             if result_type == ResultTypes.CHANGE_SWIM_STAMINA:
-                print(result_data)
                 entity, stamina_change = result_data
                 entity.swimmable.change_stamina(stamina_change) 
             # Add a new entity to the game.

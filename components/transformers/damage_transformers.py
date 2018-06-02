@@ -43,7 +43,6 @@ class DefensiveLinearTransformer(LinearTransformer):
     def transform(self, target, source, amount, *, elements=None):
         if elements == None:
             elements = {Elements.NONE}
-        print("Defensive Transformer: ", self.elements, target.name, source.name, amount, elements)
         damage = self.multiplyer * amount - self.addend
         if self.elements.intersection(elements):
             return [{
