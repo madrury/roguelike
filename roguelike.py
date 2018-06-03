@@ -357,6 +357,10 @@ def main():
             if result_type == ResultTypes.HARM: 
                 process_harm(
                     game_map, result_data, player_turn_results, harmed_queue)
+            # Increase the maximum HP of an entity
+            if result_type == ResultTypes.INCREASE_MAX_HP:
+                entity, amount = result_data
+                entity.harmable.max_hp += amount
             # Don defensive equipment.
             if result_type == ResultTypes.EQUIP_ARMOR:
                 entity, armor = result_data

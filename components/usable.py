@@ -9,7 +9,7 @@ from utils.utils import (
     get_all_entities_with_component_in_position,
     get_n_closest_entities_of_type)
 from etc.game_config import (
-    HEALTH_POTION_HEAL_AMOUNT,
+    HEALTH_POTION_HEAL_AMOUNT, HEALTH_POTION_HP_INCREASE_AMOUNT,
     MAGIC_MISSILE_BASE_DAMAGE, MAGIC_MISSILE_RANGE, MAGIC_MISSILE_N_TARGETS,
     FIREBLAST_SCROLL_RADIUS, FIREBLAST_SCROLL_BASE_DAMAGE,
     WATERBLAST_SCROLL_RADIUS, WATERBLAST_SCROLL_BASE_DAMAGE)
@@ -37,27 +37,25 @@ class HealthPotionUsable:
     healing: int
       The amount of healing in this potion.
     """
-    def __init__(self, healing=HEALTH_POTION_HEAL_AMOUNT):
+    def __init__(self, healing=HEALTH_POTION_HEAL_AMOUNT,
+                       max_hp_increase=HEALTH_POTION_HP_INCREASE_AMOUNT):
         self.name = "Healing Potion"
         self.healing = healing
 
     def use(self, game_map, reciever):
         """Use the health potion on a reciever."""
         results = []
-        if reciever.harmable.hp == reciever.harmable.max_hp:
-            message = Message(f'{reciever.name} is already at full health.', 
-                              COLORS.get('white'))
-            results.append({ResultTypes.MESSAGE: message})
-        else:
-            message = Message(f"{reciever.name}'s wounds start to heal.", 
-                              COLORS.get('green'))
-            results.append({
-                ResultTypes.DAMAGE: (
-                    reciever, None, -self.healing, [Elements.HEALING]),
-                ResultTypes.MESSAGE: message,
-                ResultTypes.ANIMATION: (
-                    Animations.HEALTH_POTION, 
-                    (reciever.x, reciever.y))})
+        message = Message(f"{reciever.name}'s wounds start to heal.", 
+                            COLORS.get('green'))
+        results.append({
+            ResultTypes.DAMAGE: (
+                reciever, None, -self.healing, [Elements.HEALING]),
+            ResultTypes.INCREASE_MAX_HP: (
+                reciever, HEALTH_POTION_HP_INCREASE_AMOUNT),
+            ResultTypes.MESSAGE: message,
+            ResultTypes.ANIMATION: (
+                Animations.HEALTH_POTION, 
+                (reciever.x, reciever.y))})
         return results
 
 

@@ -130,6 +130,9 @@ class ResultTypes(Enum):
     REMOVE_ENTITY = auto()
     RESTORE_PLAYER_INPUT = auto()
     SET_POSITION = auto()
+    # This must be processed before any healing (which is passed as a DAMAGE
+    # message).
+    INCREASE_MAX_HP = 90
     # These two must be processed first!
     CURSOR_MODE = 98
     ANIMATION = 99

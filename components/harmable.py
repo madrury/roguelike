@@ -59,7 +59,7 @@ class Harmable:
         damage_callbacks list.  These are called whenver this method is called.
         """
         results = []
-        self.hp = max(0, self.hp - amount)
+        self.hp = min(max(0, self.hp - amount), self.max_hp)
         if self.hp <= 0:
             results.append({ResultTypes.DEAD_ENTITY: self.owner})
         return results

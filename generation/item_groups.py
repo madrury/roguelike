@@ -24,14 +24,14 @@ ITEM_GROUPS = {
 
 ITEM_SCHEDULE = [
     (0.0, ItemGroups.NONE),
-    (1.0*0.0, ItemGroups.ONE_HEALTH_POTION),
+    (1.0*0.6, ItemGroups.ONE_HEALTH_POTION),
     (1.0*0.0, ItemGroups.TWO_HEALTH_POTIONS),
     (1.0*0.0, ItemGroups.MAGIC_MISSILE_SCROLL),
     (1.0*0.0, ItemGroups.FIREBLAST_SCROLL),
     (1.0*0.0, ItemGroups.WATERBLAST_SCROLL),
     (1.0*0.0, ItemGroups.THROWING_KNIFE),
-    (1.0*0.25, ItemGroups.LANCE),
-    (1.0*0.25, ItemGroups.AXE),
-    (1.0*0.25, ItemGroups.LEATHER_ARMOR),
-    (1.0*0.25, ItemGroups.REFLECT_SUIT),
+    (1.0*0.1, ItemGroups.LANCE),
+    (1.0*0.1, ItemGroups.AXE),
+    (1.0*0.1, ItemGroups.LEATHER_ARMOR),
+    (1.0*0.1, ItemGroups.REFLECT_SUIT),
 ]

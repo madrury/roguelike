@@ -58,6 +58,8 @@ class HealthPotionCallback:
                 ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
                 ResultTypes.DAMAGE: (
                     target, None, -self.owner.healing, [Elements.HEALING]),
+                ResultTypes.INCREASE_MAX_HP: (
+                    reciever, HEALTH_POTION_HP_INCREASE_AMOUNT),
                 ResultTypes.ANIMATION: (
                     Animations.CONCATINATED, (throw_animation, heal_animation))
             }),
