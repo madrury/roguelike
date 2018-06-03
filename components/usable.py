@@ -74,7 +74,7 @@ class PowerPotionUsable:
                 reciever, POWER_POTION_INCREASE_AMOUNT),
             ResultTypes.MESSAGE: message,
             ResultTypes.ANIMATION: (
-                Animations.HEALTH_POTION, 
+                Animations.POWER_POTION, 
                 (reciever.x, reciever.y))})
         return results
 

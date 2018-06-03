@@ -25,7 +25,12 @@ def construct_animation(animation_data, game_map, player=None):
         animation_player = ThrownPotionAnimation(game_map, source, target)
     elif animation_type == Animations.HEALTH_POTION:
         _, target = animation_data
-        animation_player = HealthPotionAnimation(game_map, target)
+        animation_player = ColorCycleAnimation(
+            game_map, target, COLOR_PATHS['dark_to_light_green'])
+    elif animation_type == Animations.POWER_POTION:
+        _, target = animation_data
+        animation_player = ColorCycleAnimation(
+            game_map, target, COLOR_PATHS['yellow_to_red'])
     elif animation_type == Animations.FIREBLAST:
         _, center, radius = animation_data
         animation_player = FireblastAnimation(
@@ -91,7 +96,7 @@ class SimultaneousAnimation:
 
 
             
-class HealthPotionAnimation:
+class ColorCycleAnimation:
     """Animation for using a health potion.
 
     Cycles the background colors of a tilethrough shades of green.
@@ -104,13 +109,13 @@ class HealthPotionAnimation:
     target: (int, int):
       The location of the animation.
     """
-    def __init__(self, game_map, target):
+    def __init__(self, game_map, target, color_path=None):
         self.game_map = game_map
         self.target = target
         self.fg_color = game_map.fg_colors[target[0], target[1]]
         self.bg_color = game_map.bg_colors[target[0], target[1]]
         self.char = game_map.chars[target[0], target[1]]
-        self.color_iter = iter(COLOR_PATHS['dark_to_light_green'])
+        self.color_iter = iter(color_path)
 
     def next_frame(self):
         try:

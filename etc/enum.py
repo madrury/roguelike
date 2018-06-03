@@ -178,6 +178,7 @@ class Animations(Enum):
     CONCATINATED = auto()
     FIREBLAST = auto()
     HEALTH_POTION = auto()
+    POWER_POTION = auto()
     MAGIC_MISSILE = auto()
     SIMULTANEOUS = auto()
     THROWING_KNIFE = auto()

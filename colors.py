@@ -2,7 +2,9 @@ import random
 
 COLOR_PATHS = {
     'dark_to_light_green': [
-        (0, g, 0) for g in [180, 190, 200, 210, 220, 230, 240, 250]]
+        (0, g, 0) for g in [180, 190, 200, 210, 220, 230, 240, 250]],
+    'yellow_to_red': [
+        (255, g, 0) for g in [250, 210, 170, 130, 90, 50, 10, 0]]
 }
 
 def random_yellow():
