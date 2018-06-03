@@ -12,8 +12,9 @@ from components.stats import WeaponStats
 from components.throwable import WeaponThrowable
 
 from components.callbacks.target_callbacks import (
-    LanceCallback, AxeCallback)
-from components.transformers.damage_transformers import OffensiveLinearTransformer
+    LanceCallback, AxeCallback, SwordCallback)
+from components.transformers.damage_transformers import (
+    OffensiveLinearTransformer)
 
 
 class Lance:
@@ -43,6 +44,32 @@ class Lance:
                 modifier=modifier),
             throwable=WeaponThrowable())
 
+class Sword:
+
+    @staticmethod
+    def make(x, y, *, modifier=0, elements=None):
+        if not elements:
+            elements = [Elements.NONE]
+        weapon_power = 2 + modifier
+        damage_transformer = OffensiveLinearTransformer(
+            multiplyer=weapon_power,
+            elements=elements)
+        name = 'Sword ' + f'(+{modifier})'
+        return Entity(x, y, CHARS['weapon'] , COLORS['violet'], name,
+            entity_type=EntityTypes.ITEM,
+            render_order=RenderOrder.ITEM,
+            commitable=BaseCommitable(),
+            consumable=FinitelyConsumable(uses=1),
+            equipable=WeaponEquipable(
+                damage_transformers=[damage_transformer],
+                target_callback=SwordCallback()),
+            floatable=Floatable(),
+            movable=Movable(),
+            stats=WeaponStats(
+                elements=elements,
+                power=weapon_power,
+                modifier=modifier),
+            throwable=WeaponThrowable())
 
 class Axe:
 

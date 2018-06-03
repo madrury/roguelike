@@ -229,6 +229,7 @@ class ItemGroups(Enum):
     WATERBLAST_SCROLL = auto()
     THROWING_KNIFE = auto()
     LANCE = auto()
+    SWORD = auto()
     AXE = auto()
     LEATHER_ARMOR = auto()
     LEATHER_ARMOR_OF_FIRE_RESIST = auto()

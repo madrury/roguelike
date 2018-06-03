@@ -4,7 +4,7 @@ from game_objects.items import (
     ThrowingKnife)
 from game_objects.armor import (
     LeatherArmor, ReflectSuit)
-from game_objects.weapons import Lance, Axe
+from game_objects.weapons import Lance, Axe, Sword
 
 
 ITEM_GROUPS = {
@@ -16,6 +16,7 @@ ITEM_GROUPS = {
     ItemGroups.WATERBLAST_SCROLL: [WaterblastScroll],
     ItemGroups.THROWING_KNIFE: [ThrowingKnife],
     ItemGroups.LANCE: [Lance],
+    ItemGroups.SWORD: [Sword],
     ItemGroups.AXE: [Axe],
     ItemGroups.LEATHER_ARMOR: [LeatherArmor],
     ItemGroups.REFLECT_SUIT: [ReflectSuit],
@@ -30,8 +31,9 @@ ITEM_SCHEDULE = [
     (1.0*0.0, ItemGroups.FIREBLAST_SCROLL),
     (1.0*0.0, ItemGroups.WATERBLAST_SCROLL),
     (1.0*0.0, ItemGroups.THROWING_KNIFE),
-    (1.0*0.1, ItemGroups.LANCE),
-    (1.0*0.1, ItemGroups.AXE),
-    (1.0*0.1, ItemGroups.LEATHER_ARMOR),
-    (1.0*0.1, ItemGroups.REFLECT_SUIT),
+    (1.0*0.0, ItemGroups.LANCE),
+    (1.0*0.4, ItemGroups.SWORD),
+    (1.0*0.0, ItemGroups.AXE),
+    (1.0*0.0, ItemGroups.LEATHER_ARMOR),
+    (1.0*0.0, ItemGroups.REFLECT_SUIT),
 ]
