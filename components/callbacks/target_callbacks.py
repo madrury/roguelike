@@ -26,7 +26,6 @@ class SwordCallback:
     """
     def execute(self, game_map, target, source):
         target_coordinates = self.get_target_coordinates(target, source)
-        print((source.x, source.y), target_coordinates)
         targets = []
         for coord in target_coordinates:
             target = get_blocking_entity_in_position(game_map, coord)
@@ -37,7 +36,6 @@ class SwordCallback:
     def get_target_coordinates(self, target, source):
         reverse_x, reverse_y = False, False
         dx, dy = target.x - source.x, target.y - source.y
-        print(dx, dy)
         if dx < 0:
             reverse_x, dx = True, -dx
         if dy < 0:
@@ -48,7 +46,6 @@ class SwordCallback:
             dtargets = [(-1, 1), (0, 1), (1, 1)]
         if (dx, dy) == (1, 0):
             dtargets = [(1, -1), (1, 0), (1, 1)]
-        print(dtargets)
         if reverse_x:
             dtargets = [(-dx, dy) for dx, dy in dtargets]
         if reverse_y:
