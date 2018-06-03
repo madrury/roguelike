@@ -17,7 +17,9 @@ from etc.game_config import (
 
 
 class NullUsable:
-    
+    """Baseline for items that cannot be used, but that may need a usable
+    component.  Does nothing when used.
+    """
     def use(self, game_map, user):
         return []
 
@@ -27,21 +29,11 @@ class NullUsable:
 
 class HealthPotionUsable:
     """A health potion.
-
+    
     When used on an entity, heals some amount of HP.
-
-    Attributes
-    ----------
-    name: str
-      The name of this item.
-
-    healing: int
-      The amount of healing in this potion.
     """
-    def __init__(self, healing=HEALTH_POTION_HEAL_AMOUNT,
-                       max_hp_increase=HEALTH_POTION_HP_INCREASE_AMOUNT):
+    def __init__(self):
         self.name = "Healing Potion"
-        self.healing = healing
 
     def use(self, game_map, reciever):
         """Use the health potion on a reciever."""
@@ -50,7 +42,8 @@ class HealthPotionUsable:
                             COLORS.get('green'))
         results.append({
             ResultTypes.DAMAGE: (
-                reciever, None, -self.healing, [Elements.HEALING]),
+                # Note the minus sign, healing is negative damage.
+                reciever, None, -HEALTH_POTION_HEAL_AMOUNT, [Elements.HEALING]),
             ResultTypes.INCREASE_MAX_HP: (
                 reciever, HEALTH_POTION_HP_INCREASE_AMOUNT),
             ResultTypes.MESSAGE: message,
@@ -61,7 +54,10 @@ class HealthPotionUsable:
 
 
 class PowerPotionUsable:
+    """A power potion.
 
+    When used on an entity it permenantly increases their attack power.
+    """
     def __init__(self):
         self.name = "Potion of Power"
 

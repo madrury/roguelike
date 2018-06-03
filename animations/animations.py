@@ -11,6 +11,10 @@ from colors import (
     COLOR_PATHS, random_yellow, random_red_or_yellow, random_light_blue)
 
 def construct_animation(animation_data, game_map):
+    """Construct an appropriate animation player object given the type of
+    animation and the data needed to construct the animation.  This is
+    basically a large switch statement.
+    """
     animation_type = animation_data[0]
     if animation_type == Animations.MAGIC_MISSILE:
         _, source, target = animation_data
@@ -47,7 +51,11 @@ def construct_animation(animation_data, game_map):
 
 
 class ConcatinatedAnimation:
+    """An animation constructed from concatinating other animations together.
 
+    Concatinated animations are played by playing the component animations in
+    sequence, until the final animation in the sequence is finished.
+    """
     def __init__(self, *animations):
         self.animations = animations
         self.n_animations = len(animations)
@@ -66,6 +74,8 @@ class ConcatinatedAnimation:
 
     @staticmethod
     def construct(game_map, animation_data):
+        """Consume runtime game data and construct a concatinated animation.
+        """
         animations = []
         for datum in animation_data:
             animations.append(construct_animation(datum, game_map))
@@ -73,7 +83,11 @@ class ConcatinatedAnimation:
 
 
 class SimultaneousAnimation:
+    """An animation constructed from playing other animations simultaneously.
 
+    Simultaneous animations are played concurrently, until all of the component
+    animations are finished.
+    """
     def __init__(self, *animations):
         self.animations = animations
         self.n_animations = len(animations)
@@ -87,6 +101,8 @@ class SimultaneousAnimation:
 
     @staticmethod
     def construct(game_map, animation_data):
+        """Consume runtime game data and construct a concatinated animation.
+        """
         animations = []
         for datum in animation_data:
             animations.append(construct_animation(datum, game_map))
@@ -95,9 +111,8 @@ class SimultaneousAnimation:
 
             
 class ColorCycleAnimation:
-    """Animation for using a health potion.
-
-    Cycles the background colors of a tilethrough shades of green.
+    """Animation that cycles through a sequence of background colors for a
+    tile.  Used for various potions (health, power, etc).
 
     Parameters
     ----------
@@ -106,6 +121,9 @@ class ColorCycleAnimation:
 
     target: (int, int):
       The location of the animation.
+
+    color_path: List[Color]
+      A sequence of RGB colors to cycle through.
     """
     def __init__(self, game_map, target, color_path=None):
         self.game_map = game_map
@@ -130,7 +148,7 @@ class ColorCycleAnimation:
 
 
 class ThrownPotionAnimation:
-    """Animation for throwing a health potion.
+    """Animation for throwing a potion.
 
     Draws the potion glyph along a path from a source to a target.
 
