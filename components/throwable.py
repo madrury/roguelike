@@ -3,7 +3,8 @@ from messages import Message
 from etc.colors import COLORS
 from etc.enum import ResultTypes, CursorTypes, Animations, Elements
 from etc.game_config import (
-    HEALTH_POTION_HEAL_AMOUNT, THROWING_KNIFE_BASE_DAMAGE,
+    HEALTH_POTION_HEAL_AMOUNT, HEALTH_POTION_HP_INCREASE_AMOUNT,
+    THROWING_KNIFE_BASE_DAMAGE,
     THROWN_WEAPON_DAMAGE_FACTOR)
 
 from utils.utils import get_first_blocking_entity_along_path
@@ -59,7 +60,7 @@ class HealthPotionCallback:
                 ResultTypes.DAMAGE: (
                     target, None, -self.owner.healing, [Elements.HEALING]),
                 ResultTypes.INCREASE_MAX_HP: (
-                    reciever, HEALTH_POTION_HP_INCREASE_AMOUNT),
+                    target, HEALTH_POTION_HP_INCREASE_AMOUNT),
                 ResultTypes.ANIMATION: (
                     Animations.CONCATINATED, (throw_animation, heal_animation))
             }),
