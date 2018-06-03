@@ -350,15 +350,13 @@ def main():
                 player.inventory.remove(item_dropped)
                 item_dropped.x, item_dropped.y = player.x, player.y
                 game_map.entities.append(item_dropped)
-            # Damage an entity.
+            # Process a damage message, possibly transforming it.
             if result_type == ResultTypes.DAMAGE:
                 process_damage(game_map, result_data, player_turn_results)
+            # Commit damage to an entity.
             if result_type == ResultTypes.HARM: 
-                target, source, amount, elements = result_data
-                player_turn_results.extend(target.harmable.harm(
-                    game_map, source, amount, elements))
-                if target not in harmed_queue:
-                    harmed_queue.appendleft(target)
+                process_harm(
+                    game_map, result_data, player_turn_results, harmed_queue)
             # Don defensive equipment.
             if result_type == ResultTypes.EQUIP_ARMOR:
                 entity, armor = result_data
@@ -485,13 +483,13 @@ def main():
             if result_type == ResultTypes.MESSAGE:
                 message = result_data
                 message_log.add_message(message)
-            # Handle damage dealt.
+            # Handle damage dealt, possibly transforming it.
             if result_type == ResultTypes.DAMAGE:
                 process_damage(game_map, result_data, enemy_turn_results)
+            # Commit damage to an entity.
             if result_type == ResultTypes.HARM: 
-                target, source, amount, elements = result_data
-                enemy_turn_results.extend(target.harmable.harm(
-                    game_map, source, amount, elements))
+                process_harm(
+                    game_map, result_data, enemy_turn_results, harmed_queue)
             # Entities swim and thier stamana decreases.
             if result_type == ResultTypes.CHANGE_SWIM_STAMINA:
                 entity, stamina_change = result_data
@@ -712,6 +710,13 @@ def process_damage(game_map, result_data, turn_results):
             game_map, source, amount, elements))
     else:
         turn_results.append({ResultTypes.HARM: result_data})
+
+def process_harm(game_map, result_data, turn_results, harmed_queue):
+    target, source, amount, elements = result_data
+    turn_results.extend(target.harmable.harm(
+        game_map, source, amount, elements))
+    if target not in harmed_queue:
+        harmed_queue.appendleft(target)
 
 def entity_equip_armor(entity, armor, turn_results):
     if not hasattr(entity, "harmable"):
