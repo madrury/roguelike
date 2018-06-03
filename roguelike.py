@@ -352,14 +352,7 @@ def main():
                 game_map.entities.append(item_dropped)
             # Damage an entity.
             if result_type == ResultTypes.DAMAGE:
-                target, source, amount, elements = result_data
-                if target.defender:
-                    player_turn_results.extend(
-                        target.defender.transform(
-                           game_map, source, amount, elements))
-                else:
-                    player_turn_results.append({
-                        ResultTypes.HARM: result_data})
+                process_damage(game_map, result_data, player_turn_results)
             if result_type == ResultTypes.HARM: 
                 target, source, amount, elements = result_data
                 player_turn_results.extend(target.harmable.harm(
@@ -494,14 +487,7 @@ def main():
                 message_log.add_message(message)
             # Handle damage dealt.
             if result_type == ResultTypes.DAMAGE:
-                target, source, amount, elements = result_data
-                if target.defender:
-                    enemy_turn_results.extend(
-                        target.defender.transform(
-                           game_map, source, amount, elements))
-                else:
-                    enemy_turn_results.append({
-                        ResultTypes.HARM: result_data})
+                process_damage(game_map, result_data, enemy_turn_results)
             if result_type == ResultTypes.HARM: 
                 target, source, amount, elements = result_data
                 enemy_turn_results.extend(target.harmable.harm(
@@ -718,6 +704,14 @@ def encroach_on_all(encroacher, game_map):
             results.extend(
                 entity.encroachable.encroach(game_map, encroacher))
     return results
+
+def process_damage(game_map, result_data, turn_results):
+    target, source, amount, elements = result_data
+    if target.defender:
+        turn_results.extend(target.defender.transform(
+            game_map, source, amount, elements))
+    else:
+        turn_results.append({ResultTypes.HARM: result_data})
 
 def entity_equip_armor(entity, armor, turn_results):
     if not hasattr(entity, "harmable"):
