@@ -30,9 +30,6 @@ from components.movable import Movable
 from components.scaldable import AliveScaldable
 from components.swimmable import PlayerSwimmable
 
-from game_objects.items import (
-    HealthPotion, MagicMissileScroll, FireblastScroll, ThrowingKnife,
-    Torch)
 #
 from generation.floor import make_floor
 from generation.item_groups import ITEM_SCHEDULE, ITEM_GROUPS
@@ -591,6 +588,10 @@ def create_map(map_console):
     return game_map
 
 def create_player(game_map):
+    from game_objects.items import (
+        HealthPotion, MagicMissileScroll, FireblastScroll, ThrowingKnife,
+        Torch)
+    from game_objects.weapons import Raipier
     # This is you.  Kill some Orcs.
     player = Entity(0, 0, PLAYER_CONFIG["char"], 
                     COLORS[PLAYER_CONFIG["color"]], 
@@ -616,6 +617,7 @@ def create_player(game_map):
     player.inventory.extend([MagicMissileScroll.make(0, 0) for _ in range(3)])
     player.inventory.extend([FireblastScroll.make(0, 0) for _ in range(3)])
     player.inventory.extend([Torch.make(0, 0)])
+    player.inventory.extend([Raipier.make(0, 0)])
     return player
 
 def construct_inventory_data(game_state):
@@ -682,6 +684,10 @@ def player_move_or_attack(move, *,
         # and that entity is not yourself.
         if blocker and blocker != player:
             attack_results = player.attacker.attack(game_map, blocker)
+            player_turn_results.extend(attack_results)
+        elif player.attacker.move_callback:
+            attack_results = player.attacker.move_callback.execute(
+                game_map, player, (destination_x, destination_y))
             player_turn_results.extend(attack_results)
         else:
             player_turn_results.append({
@@ -760,6 +766,7 @@ def entity_equip_weapon(entity, weapon, turn_results):
         entity.attacker.add_damage_transformers(
             weapon.equipable.damage_transformers)
         entity.attacker.target_callback = weapon.equipable.target_callback
+        entity.attacker.move_callback = weapon.equipable.move_callback
         turn_results.append({
             ResultTypes.MESSAGE: Message(
                 f"{entity.name} equipped {weapon.name}",
@@ -801,6 +808,7 @@ def entity_remove_weapon(entity, weapon, turn_results):
         entity.attacker.remove_damage_transformers(
             weapon.equipable.damage_transformers)
         entity.attacker.target_callback = None
+        entity.attacker.move_callback = None
         turn_results.append({
             ResultTypes.MESSAGE: Message(
                 f"{entity.name} un-equipped {weapon.name}",

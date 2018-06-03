@@ -13,6 +13,7 @@ from components.throwable import WeaponThrowable
 
 from components.callbacks.target_callbacks import (
     LanceCallback, AxeCallback, SwordCallback)
+from components.callbacks.move_callbacks import RaipierCallback
 from components.transformers.damage_transformers import (
     OffensiveLinearTransformer)
 
@@ -91,6 +92,32 @@ class Axe:
             equipable=WeaponEquipable(
                 damage_transformers=[damage_transformer],
                 target_callback=AxeCallback()),
+            stats=WeaponStats(
+                elements=elements,
+                power=weapon_power,
+                modifier=modifier),
+            throwable=WeaponThrowable())
+
+class Raipier:
+
+    @staticmethod
+    def make(x, y, *, modifier=0, elements=None):
+        if not elements:
+            elements = [Elements.NONE]
+        weapon_power = 1 + modifier
+        damage_transformer = OffensiveLinearTransformer(
+            multiplyer=weapon_power)
+        name = 'Raipier ' + f'(+{modifier})'
+        return Entity(x, y, CHARS['weapon'], COLORS['violet'], name,
+            entity_type=EntityTypes.ITEM,
+            render_order=RenderOrder.ITEM,
+            commitable=BaseCommitable(),
+            consumable=FinitelyConsumable(uses=1),
+            floatable=Floatable(),
+            movable=Movable(),
+            equipable=WeaponEquipable(
+                damage_transformers=[damage_transformer],
+                move_callback=RaipierCallback()),
             stats=WeaponStats(
                 elements=elements,
                 power=weapon_power,

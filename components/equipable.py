@@ -50,11 +50,12 @@ class WeaponEquipable(BaseEquipable):
     corresponding slots on the entities attacker component.
     """
     def __init__(self, *, damage_transformers=None,
-                          damage_callbacks=None,
-                          target_callback=None):
+                          target_callback=None,
+                          move_callback=None):
         self.equipped = False
         self.damage_transformers = []
         self.target_callback = target_callback
+        self.move_callback = move_callback
         if damage_transformers:
             for transformer in damage_transformers:
                 self.damage_transformers.append(transformer)

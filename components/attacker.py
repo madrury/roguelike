@@ -11,14 +11,28 @@ class Attacker:
     the entities attack power status.
 
     If the entity has weapons equipped the damage_transformers and
-    target_callback attributes come into play.
+    target_callback attributes come into play, which add special properties to
+    the attack.
+
+    damage_tranformers:
+      Transform the base attack power damage, increasing or decreasing it, and
+      adding elemental attributed.
+
+    target_callback:
+      Add additional targets to the attack. An axe, for example, targets all
+      spaces adjacent to the player on any succesful attack.
+
+    Finally, move_callback is used to support attacks that do not neccessarily
+    target monsters only adjacent to the player.
     """
     def __init__(self, power, *,
                  damage_transformers=None,
-                 target_callback=None):
+                 target_callback=None,
+                 move_callback=None):
         self.power = power
         self.damage_transformers = []
         self.target_callback = target_callback
+        self.move_callback = move_callback
         if damage_transformers:
             for transformer in damage_transformers:
                 self.damage_transformers.append(transformer)
