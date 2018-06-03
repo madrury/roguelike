@@ -5,7 +5,9 @@ from utils.utils import get_blocking_entity_in_position
 
 
 class RaipierCallback:
-
+    """Look for a blocking entity along a short path in the direction of
+    movement.  If an entity is found, teleport to be adjacent and attack it.
+    """
     def execute(self, game_map, owner, destination):
         dx, dy = destination[0] - owner.x, destination[1] - owner.y 
         path = [(owner.x + i*dx, owner.y + i*dy) for i in range(RAIPIER_RANGE)]
