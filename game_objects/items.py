@@ -9,8 +9,8 @@ from components.commitable import BaseCommitable
 from components.floatable import Floatable
 from components.movable import Movable
 from components.usable import (
-    NullUsable, HealthPotionUsable, MagicMissileUsable, FireblastUsable,
-    TorchUsable, WaterblastUsable)
+    NullUsable, HealthPotionUsable, PowerPotionUsable, MagicMissileUsable,
+    FireblastUsable, TorchUsable, WaterblastUsable)
 from components.throwable import (
     NullThrowable, HealthPotionThrowable, ThrowingKnifeThrowable)
 
@@ -28,6 +28,20 @@ class HealthPotion:
                       movable=Movable(),
                       usable=HealthPotionUsable(),
                       throwable=HealthPotionThrowable())
+
+
+class PowerPotion:
+
+    @staticmethod
+    def make(x, y):
+        return Entity(x, y, '!', COLORS['violet'], 'Potion of Power',
+                      entity_type=EntityTypes.ITEM,
+                      render_order=RenderOrder.ITEM,
+                      commitable=BaseCommitable(),
+                      consumable=FinitelyConsumable(uses=1),
+                      floatable=Floatable(),
+                      movable=Movable(),
+                      usable=PowerPotionUsable())
 
 
 class MagicMissileScroll:

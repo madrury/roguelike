@@ -118,6 +118,7 @@ class ResultTypes(Enum):
     EQUIP_ARMOR = auto()
     EQUIP_WEAPON = auto()
     HARM = auto()
+    INCREASE_ATTACK_POWER = auto()
     ITEM_ADDED = auto()
     ITEM_CONSUMED = auto()
     ITEM_DROPPED = auto()
@@ -223,6 +224,7 @@ class RoutingOptions(Enum):
 class ItemGroups(Enum):
     NONE = auto()
     ONE_HEALTH_POTION = auto()
+    POWER_POTION = auto()
     TWO_HEALTH_POTIONS = auto()
     MAGIC_MISSILE_SCROLL = auto()
     FIREBLAST_SCROLL = auto()

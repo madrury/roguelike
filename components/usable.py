@@ -10,6 +10,7 @@ from utils.utils import (
     get_n_closest_entities_of_type)
 from etc.game_config import (
     HEALTH_POTION_HEAL_AMOUNT, HEALTH_POTION_HP_INCREASE_AMOUNT,
+    POWER_POTION_INCREASE_AMOUNT,
     MAGIC_MISSILE_BASE_DAMAGE, MAGIC_MISSILE_RANGE, MAGIC_MISSILE_N_TARGETS,
     FIREBLAST_SCROLL_RADIUS, FIREBLAST_SCROLL_BASE_DAMAGE,
     WATERBLAST_SCROLL_RADIUS, WATERBLAST_SCROLL_BASE_DAMAGE)
@@ -52,6 +53,25 @@ class HealthPotionUsable:
                 reciever, None, -self.healing, [Elements.HEALING]),
             ResultTypes.INCREASE_MAX_HP: (
                 reciever, HEALTH_POTION_HP_INCREASE_AMOUNT),
+            ResultTypes.MESSAGE: message,
+            ResultTypes.ANIMATION: (
+                Animations.HEALTH_POTION, 
+                (reciever.x, reciever.y))})
+        return results
+
+
+class PowerPotionUsable:
+
+    def __init__(self):
+        self.name = "Potion of Power"
+
+    def use(self, game_map, reciever):
+        results = []
+        message = Message(f"{reciever.name}'s attack power increased.", 
+                            COLORS.get('green'))
+        results.append({
+            ResultTypes.INCREASE_ATTACK_POWER: (
+                reciever, POWER_POTION_INCREASE_AMOUNT),
             ResultTypes.MESSAGE: message,
             ResultTypes.ANIMATION: (
                 Animations.HEALTH_POTION, 
