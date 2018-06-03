@@ -306,8 +306,7 @@ def main():
                 skip_player_input = False
             # Play an animation.
             if result_type == ResultTypes.ANIMATION:
-                animation_player = construct_animation(
-                    result_data, game_map, player=player)
+                animation_player = construct_animation(result_data, game_map)
                 # After the animation finishes, we do not want to get input
                 # from the player before continuing to process the results
                 # stack, so set a flag signaling to skip this step, and then

@@ -10,9 +10,7 @@ from etc.chars import CHARS
 from colors import (
     COLOR_PATHS, random_yellow, random_red_or_yellow, random_light_blue)
 
-# TODO: Remove player as an arguement here.  Fireblast anumation should not
-#       rely on the player object.
-def construct_animation(animation_data, game_map, player=None):
+def construct_animation(animation_data, game_map):
     animation_type = animation_data[0]
     if animation_type == Animations.MAGIC_MISSILE:
         _, source, target = animation_data
