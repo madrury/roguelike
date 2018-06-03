@@ -327,6 +327,11 @@ def main():
             # Move the player.
             if result_type == ResultTypes.MOVE:
                 player.movable.move(game_map, *result_data)
+            # Set the player's position, used when moving more than one step ro
+            # teleporting.
+            if result_type == ResultTypes.SET_POSITION:
+               entity, x, y = result_data
+               entity.movable.set_position_if_able(game_map, x, y)
             # Add to the message log.
             if result_type == ResultTypes.MESSAGE:
                 message_log.add_message(result_data)
