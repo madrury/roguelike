@@ -58,6 +58,51 @@ def adjacent_coordinates(center):
             (-1, -1), (0, -1), (1, -1)]
     return [(center[0] + dx, center[1] + dy) for dx, dy in dxdy]
 
+def bresenham_ray(game_map, source, target):
+    """Bresenham's line drawing algorithm, used to draw a ray joining two
+    points.
+
+    Modified from the example at rosettacode:
+
+    https://rosettacode.org/wiki/Bitmap/Bresenham%27s_line_algorithm#Python
+
+    Returns a list of tuples for the ray, and the index into the ray at witch
+    the target position lies.
+    """
+    ray = []
+    (x0, y0), (x1, y1) = source, target
+    dx = abs(x1 - x0)
+    dy = abs(y1 - y0)
+    x, y = x0, y0
+    sx = -1 if x0 > x1 else 1
+    sy = -1 if y0 > y1 else 1
+    idx, target_idx = 0, 0
+    if dx > dy:
+        err = dx / 2.0
+        while game_map.within_bounds(x, y):
+            ray.append((x, y))
+            if (x, y) == target:
+                target_idx = idx
+            err -= dy
+            if err < 0:
+                y += sy
+                err += dx
+            x += sx
+            idx += 1
+    else:
+        err = dy / 2.0
+        while game_map.within_bounds(x, y):
+            ray.append((x, y))
+            if (x, y) == target:
+                target_idx = idx
+            err -= dx
+            if err < 0:
+                x += sx
+                err += dy
+            y += sy  
+            idx += 1
+    return ray, target_idx
+
 #-----------------------------------------------------------------------------
 # Choosing random map positions.
 #-----------------------------------------------------------------------------

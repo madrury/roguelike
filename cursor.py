@@ -1,5 +1,6 @@
 from etc.colors import COLORS
 from etc.enum import CursorTypes
+from utils.utils import bresenham_ray
 
 
 class Cursor:
@@ -10,7 +11,6 @@ class Cursor:
 
     Attributes
     ----------
-
     x: int
       The x position of the cursor.
 
@@ -87,13 +87,12 @@ class Cursor:
             return True
 
     def _path_iter(self):
-        path = self.game_map.compute_path(
-            self.source[0], self.source[1], self.x, self.y)
+        ray, target_idx = bresenham_ray(
+            self.game_map, self.source, (self.x, self.y))
         if self.cursor_type == CursorTypes.PATH:
-            cursor_iter = iter(path[:-1])
+            cursor_iter = iter(ray[:target_idx])
         elif self.cursor_type == CursorTypes.ADJACENT:
             cursor_iter = iter(path[:1])
-        else:
-           raise NotImplementedError(
-               f"CursorType {self.cursor_type} not implemented.")
+        elif self.cursor_type == CursorTypes.RAY:
+            cursor_iter = iter(path)
         return cursor_iter
