@@ -1,6 +1,6 @@
 from etc.colors import COLORS
 from etc.enum import CursorTypes
-from utils.utils import bresenham_ray
+from utils.utils import bresenham_line, bresenham_ray
 
 
 class Cursor:
@@ -68,6 +68,8 @@ class Cursor:
 
     def draw(self):
         for x, y in self._path_iter():
+            if not self.game_map.fov[x, y]:
+                break
             self.game_map.highlight_position(x, y, self.path_color)
         self.game_map.highlight_position(self.x, self.y, self.cursor_color)
 
@@ -76,7 +78,7 @@ class Cursor:
             self.game_map.draw_position(x, y)
 
     def _position_valid(self, x, y):
-        if self.cursor_type == CursorTypes.PATH:
+        if self.cursor_type in (CursorTypes.PATH, CursorTypes.RAY):
             return self.game_map.walkable[x, y] and self.game_map.fov[x, y]
         elif self.cursor_type == CursorTypes.ADJACENT:
             return (self.game_map.walkable[x, y] 
@@ -87,12 +89,13 @@ class Cursor:
             return True
 
     def _path_iter(self):
-        ray, target_idx = bresenham_ray(
-            self.game_map, self.source, (self.x, self.y))
         if self.cursor_type == CursorTypes.PATH:
-            cursor_iter = iter(ray[:target_idx])
+            line = bresenham_line(self.game_map, self.source, (self.x, self.y))
+            cursor_iter = iter(line)
         elif self.cursor_type == CursorTypes.ADJACENT:
-            cursor_iter = iter(path[:1])
+            line = bresenham_line(self.game_map, self.source, (self.x, self.y))
+            cursor_iter = iter(line[:1])
         elif self.cursor_type == CursorTypes.RAY:
-            cursor_iter = iter(path)
+            ray = bresenham_ray(self.game_map, self.source, (self.x, self.y))
+            cursor_iter = iter(ray)
         return cursor_iter

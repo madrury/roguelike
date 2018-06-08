@@ -127,7 +127,7 @@ class ThrowingKnifeThrowable:
         callback = ThrowingKnifeCallback(self, game_map, user)
         return [
             {ResultTypes.CURSOR_MODE: (
-                user.x, user.y, callback, CursorTypes.PATH)}]
+                user.x, user.y, callback, CursorTypes.RAY)}]
 
 
 class ThrowingKnifeCallback:

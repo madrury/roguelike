@@ -58,7 +58,7 @@ def adjacent_coordinates(center):
             (-1, -1), (0, -1), (1, -1)]
     return [(center[0] + dx, center[1] + dy) for dx, dy in dxdy]
 
-def bresenham_ray(game_map, source, target):
+def _bresenham_ray(game_map, source, target):
     """Bresenham's line drawing algorithm, used to draw a ray joining two
     points.
 
@@ -79,7 +79,7 @@ def bresenham_ray(game_map, source, target):
     idx, target_idx = 0, 0
     if dx > dy:
         err = dx / 2.0
-        while game_map.within_bounds(x, y):
+        while game_map.within_bounds(x, y) and game_map.transparent[x, y]:
             ray.append((x, y))
             if (x, y) == target:
                 target_idx = idx
@@ -91,7 +91,7 @@ def bresenham_ray(game_map, source, target):
             idx += 1
     else:
         err = dy / 2.0
-        while game_map.within_bounds(x, y):
+        while game_map.within_bounds(x, y) and game_map.transparent[x, y]:
             ray.append((x, y))
             if (x, y) == target:
                 target_idx = idx
@@ -101,7 +101,17 @@ def bresenham_ray(game_map, source, target):
                 err += dy
             y += sy  
             idx += 1
-    return ray, target_idx
+    if target_idx == 0:
+        target_idx = idx
+    return ray, idx, target_idx
+
+def bresenham_line(game_map, source, target):
+    ray, _, target_idx = _bresenham_ray(game_map, source, target)
+    return ray[:target_idx]
+
+def bresenham_ray(game_map, source, target):
+    ray, last_idx, target_idx = _bresenham_ray(game_map, source, target)
+    return ray[:last_idx]
 
 #-----------------------------------------------------------------------------
 # Choosing random map positions.
@@ -190,8 +200,9 @@ def get_blocking_entity_in_position(game_map, position):
         return entity
 
 def get_first_blocking_entity_along_path(game_map, source, target):
-    path = game_map.compute_path(source[0], source[1], target[0], target[1])
-    for p in path:
+    path = bresenham_ray(
+        game_map, (source[0], source[1]), (target[0], target[1]))
+    for p in path[1:]:
         entity = get_blocking_entity_in_position(game_map, (p[0], p[1]))
         if entity:
             return entity

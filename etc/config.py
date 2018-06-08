@@ -45,7 +45,7 @@ MESSAGE_CONFIG = {
 }
 
 FOV_CONFIG = {
-    "algorithm": 'DIAMOND',
+    "algorithm": 'RESTRICTIVE',
     "light_walls": True,
     "radius": 10
 }
