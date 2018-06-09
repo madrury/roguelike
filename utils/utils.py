@@ -199,7 +199,7 @@ def get_blocking_entity_in_position(game_map, position):
     if entity.blocks:
         return entity
 
-def get_first_blocking_entity_along_path(game_map, source, target):
+def get_first_blocking_entity_along_ray(game_map, source, target):
     path = bresenham_ray(
         game_map, (source[0], source[1]), (target[0], target[1]))
     for p in path[1:]:

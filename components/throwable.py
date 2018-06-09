@@ -7,7 +7,7 @@ from etc.game_config import (
     THROWING_KNIFE_BASE_DAMAGE,
     THROWN_WEAPON_DAMAGE_FACTOR)
 
-from utils.utils import get_first_blocking_entity_along_path
+from utils.utils import get_first_blocking_entity_along_ray
 
 
 class NullThrowable:
@@ -45,7 +45,7 @@ class HealthPotionCallback:
 
     def execute(self, x, y):
         results = []
-        target = get_first_blocking_entity_along_path(
+        target = get_first_blocking_entity_along_ray(
             self.game_map, (self.user.x, self.user.y), (x, y))
         if target:
             text = "The health potion heals the {}'s wounds".format(
@@ -94,7 +94,7 @@ class WeaponCallback:
 
     def execute(self, x, y):
         results = []
-        monster = get_first_blocking_entity_along_path(
+        monster = get_first_blocking_entity_along_ray(
             self.game_map, (self.user.x, self.user.y), (x, y))
         if monster and monster.harmable:
             text = f"The {self.owner.owner.name} pierces the {monster.name}'s flesh."
@@ -142,7 +142,7 @@ class ThrowingKnifeCallback:
 
     def execute(self, x, y):
         results = []
-        monster = get_first_blocking_entity_along_path(
+        monster = get_first_blocking_entity_along_ray(
             self.game_map, (self.user.x, self.user.y), (x, y))
         if monster and monster.harmable:
             text = f"The throwing knife pierces the {monster.name}'s flesh."
