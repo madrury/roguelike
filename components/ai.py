@@ -41,15 +41,16 @@ class BasicMonster:
 class NecromancerMonster:
 
     def __init__(self, move_towards_radius=6, seeking_radius=3):
-        self.tree = Selection(
-            Sequence(
-                AtLInfinityRadius(radius=seeking_radius),
-                CoinFlip(p=0.3),
-                SpawnEntity(game_objects.monsters.Zombie)),
-            Sequence(
-                WithinL2Radius(radius=move_towards_radius),
-                SeekTowardsLInfinityRadius(radius=seeking_radius)),
-            TravelToRandomPosition())
+        self.tree = Root(
+            Selection(
+                Sequence(
+                    AtLInfinityRadius(radius=seeking_radius),
+                    CoinFlip(p=0.3),
+                    SpawnEntity(game_objects.monsters.Zombie)),
+                Sequence(
+                    WithinL2Radius(radius=move_towards_radius),
+                    SeekTowardsLInfinityRadius(radius=seeking_radius)),
+                TravelToRandomPosition()))
 
     def take_turn(self, target, game_map):
         _, results = self.tree.tick(self.owner, target, game_map)
@@ -63,14 +64,15 @@ class HuntingMonster:
     """
     def __init__(self, sensing_range=12):
         self.sensing_range = sensing_range
-        self.tree = Selection(
-            Sequence(
-                IsAdjacent(),
-                Attack()),
-            Sequence(
-                WithinL2Radius(radius=sensing_range),
-                MoveTowardsTargetEntity()),
-            TravelToRandomPosition())
+        self.tree = Root(
+            Selection(
+                Sequence(
+                    IsAdjacent(),
+                    Attack()),
+                Sequence(
+                    WithinL2Radius(radius=sensing_range),
+                    MoveTowardsTargetEntity(target_point_name="target_point")),
+                TravelToRandomPosition()))
 
     def take_turn(self, target, game_map):
         _, results = self.tree.tick(self.owner, target, game_map)
@@ -80,13 +82,14 @@ class HuntingMonster:
 class ZombieMonster:
     """Similar to a HuntingMonster, but will not wander."""
     def __init__(self, move_towards_radius=6):
-        self.tree = Selection(
-            Sequence(
-                IsAdjacent(),
-                Attack()),
-            Sequence(
-                WithinL2Radius(radius=move_towards_radius),
-                MoveTowardsTargetEntity()))
+        self.tree = Root(
+            Selection(
+                Sequence(
+                    IsAdjacent(),
+                    Attack()),
+                Sequence(
+                    WithinL2Radius(radius=move_towards_radius),
+                    MoveTowardsTargetEntity(target_point_name="target_point"))))
 
     def take_turn(self, target, game_map):
         _, results = self.tree.tick(self.owner, target, game_map)
@@ -101,14 +104,15 @@ class SkitteringMonster:
     """
     def __init__(self, skittering_range=3):
         self.skittering_range = skittering_range
-        self.tree = Selection(
-            Sequence(
-                IsAdjacent(),
-                Attack()),
-            Sequence(
-                WithinL2Radius(radius=skittering_range),
-                MoveTowardsTargetEntity()),
-            Skitter())
+        self.tree = Root(
+            Selection(
+                Sequence(
+                    IsAdjacent(),
+                    Attack()),
+                Sequence(
+                    WithinL2Radius(radius=skittering_range),
+                    MoveTowardsTargetEntity(target_point_name="target_point")),
+                Skitter()))
 
     def take_turn(self, target, game_map):
         _, results = self.tree.tick(self.owner, target, game_map)
