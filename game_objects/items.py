@@ -10,7 +10,7 @@ from components.floatable import Floatable
 from components.movable import Movable
 from components.usable import (
     NullUsable, HealthPotionUsable, PowerPotionUsable, MagicMissileUsable,
-    FireblastUsable, TorchUsable, WaterblastUsable)
+    FireblastUsable, TorchUsable, WaterblastUsable, FireStaffUsable)
 from components.throwable import (
     NullThrowable, HealthPotionThrowable, ThrowingKnifeThrowable)
 
@@ -119,4 +119,19 @@ class Torch:
                       floatable=Floatable(),
                       movable=Movable(),
                       usable=TorchUsable(),
+                      throwable=NullThrowable())
+
+
+class FireStaff:
+
+    @staticmethod
+    def make(x, y):
+        return Entity(x, y, '/', COLORS['violet'], 'Fire Staff',
+                      entity_type=EntityTypes.ITEM,
+                      render_order=RenderOrder.ITEM,
+                      commitable=BaseCommitable(),
+                      consumable=InfinitelyConsumable(),
+                      floatable=Floatable(),
+                      movable=Movable(),
+                      usable=FireStaffUsable(),
                       throwable=NullThrowable())

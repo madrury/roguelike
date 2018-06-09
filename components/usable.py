@@ -214,8 +214,8 @@ class TorchUsable:
 
     def use(self, game_map, user):
         callback = TorchCallback(self, game_map, user)
-        return [
-            {ResultTypes.CURSOR_MODE: (
+        return [{
+            ResultTypes.CURSOR_MODE: (
                 user.x, user.y, callback, CursorTypes.ADJACENT)}]
 
 
@@ -233,3 +233,27 @@ class TorchCallback:
         for entity in burnable_entities:
             results.extend(entity.burnable.burn(self.game_map))
         return results
+
+
+class FireStaffUsable:
+
+    def __init__(self):
+        self.name = "Fire Staff"
+
+    def use(self, game_map, user):
+        callback = FireStaffCallback(self, game_map, user)
+        return [{
+            ResultTypes.CURSOR_MODE: (
+                user.x, user.y, callback, CursorTypes.RAY)}]
+
+
+class FireStaffCallback:
+
+    def __init__(self, owner, game_map, user):
+        self.owner = owner
+        self.game_map = game_map
+        self.user = user
+
+    def execute(self, x, y):
+        print(f"Used the fire staff on ray through {x, y}")
+        return []
