@@ -79,7 +79,7 @@ def _bresenham_ray(game_map, source, target):
     idx, target_idx = 0, 0
     if dx > dy:
         err = dx / 2.0
-        while game_map.within_bounds(x, y) and game_map.transparent[x, y]:
+        while game_map.within_bounds(x, y) and game_map.walkable[x, y]:
             ray.append((x, y))
             if (x, y) == target:
                 target_idx = idx
@@ -91,7 +91,7 @@ def _bresenham_ray(game_map, source, target):
             idx += 1
     else:
         err = dy / 2.0
-        while game_map.within_bounds(x, y) and game_map.transparent[x, y]:
+        while game_map.within_bounds(x, y) and game_map.walkable[x, y]:
             ray.append((x, y))
             if (x, y) == target:
                 target_idx = idx

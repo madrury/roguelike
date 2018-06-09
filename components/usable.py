@@ -255,17 +255,13 @@ class FireStaffCallback:
         self.user = user
 
     def execute(self, x, y):
-        print("Executing!")
         results = []
         source, target = (self.user.x, self.user.y), (x, y)
-        print(source, target)
         ray = bresenham_ray(self.game_map, source, target)
         for position in ray[1:]:
-            print(position)
             burnable_entities = get_all_entities_with_component_in_position(
                 position, self.game_map, "burnable")
             for entity in burnable_entities:
-                print(f"Burning entity: {entity.name}")
                 results.extend(entity.burnable.burn(self.game_map))
             entities_in_position = (
                 self.game_map.entities.get_entities_in_position(position))
