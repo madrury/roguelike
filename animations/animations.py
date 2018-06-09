@@ -1,8 +1,10 @@
-import tdl
 from time import sleep
+from collections import deque
 import random
 
-from utils.utils import coordinates_within_circle
+import tdl
+
+from utils.utils import coordinates_within_circle, bresenham_ray
 from etc.enum import Animations
 from etc.config import SCREEN_WIDTH, SCREEN_HEIGHT, PANEL_CONFIG
 from etc.colors import COLORS
@@ -21,7 +23,10 @@ def construct_animation(animation_data, game_map):
         animation_player = MagicMissileAnimation( game_map, source, target)
     elif animation_type == Animations.THROWING_KNIFE:
         _, source, target = animation_data
-        animation_player = ThrowingKnifeAnimation( game_map, source, target)
+        animation_player = ThrowingKnifeAnimation(game_map, source, target)
+    elif animation_type == Animations.FIREBALL:
+        _, source, target = animation_data
+        animation_player = FireballAnimation(game_map, source, target)
     elif animation_type == Animations.THROW_POTION:
         _, source, target = animation_data
         animation_player = ThrownPotionAnimation(game_map, source, target)
@@ -234,6 +239,7 @@ class FireblastAnimation:
                           fg_color_callback=random_red_or_yellow,
                           bg_color_callback=random_red_or_yellow)         
 
+
 class WaterblastAnimation:
     """Animation for casting a waterblast.
 
@@ -271,6 +277,7 @@ class ThrowingKnifeAnimation:
         self.game_map = game_map
         self.source = source
         self.target = target
+        # TODO: This should use a brenenham ray.
         self.path = game_map.compute_path(
             source[0], source[1], target[0], target[1])
         self.char = self._get_char()
@@ -298,6 +305,34 @@ class ThrowingKnifeAnimation:
 
     def next_frame(self):
         return draw_missile(self)
+
+
+class FireballAnimation:
+    def __init__(self, game_map, source, target):
+        self.game_map = game_map
+        self.source = source
+        self.target = target
+        self.pathiter = iter(bresenham_ray(game_map, source, target))
+        self.current_positions = deque()
+        self.current_frame = 0
+
+    def next_frame(self):
+        position = None
+        try:
+            position = next(self.pathiter)
+        except StopIteration:
+            pass
+        if position:
+            self.current_positions.appendleft(position)
+        if self.current_frame >= 3:
+            self.current_positions.pop()
+        for x, y in self.current_positions:
+            self.game_map.draw_char(
+                x, y, ' ', random_red_or_yellow(), random_red_or_yellow())
+        self.current_frame += 1
+        if len(self.current_positions) == 0:
+            return True
+        return False
 
 
 def draw_blast(animation, *, char, fg_color_callback, bg_color_callback):

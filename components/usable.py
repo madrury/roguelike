@@ -267,4 +267,7 @@ class FireStaffCallback:
                 self.game_map.entities.get_entities_in_position(position))
             if any(entity.blocks for entity in entities_in_position):
                 break
+        results.append({
+            ResultTypes.ANIMATION: (
+                Animations.FIREBALL, source, target)})
         return results
