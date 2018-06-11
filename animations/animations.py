@@ -10,7 +10,8 @@ from etc.config import SCREEN_WIDTH, SCREEN_HEIGHT, PANEL_CONFIG
 from etc.colors import COLORS
 from etc.chars import CHARS
 from colors import (
-    COLOR_PATHS, random_yellow, random_red_or_yellow, random_light_blue)
+    COLOR_PATHS, random_yellow, random_red, random_orange,
+    random_red_or_yellow, random_light_blue)
 
 def construct_animation(animation_data, game_map):
     """Construct an appropriate animation player object given the type of
@@ -308,6 +309,21 @@ class ThrowingKnifeAnimation:
 
 
 class FireballAnimation:
+    """Animation for a fireball, as from a FireStaff.
+
+    Draws a three square travelling sequence from a source to a target.
+
+    Parameters
+    ----------
+    game_map: GameMap object
+      The game_map to draw the animation on.
+
+    source: (int, int):
+      The location of the source.
+
+    target: (int, int):
+      The location of the target.
+    """
     def __init__(self, game_map, source, target):
         self.game_map = game_map
         self.source = source
@@ -324,11 +340,16 @@ class FireballAnimation:
             pass
         if position:
             self.current_positions.appendleft(position)
-        if self.current_frame >= 3:
+        if self.current_frame >= 2:
             self.current_positions.pop()
-        for x, y in self.current_positions:
+        if len(self.current_positions) >= 1:
+            x, y = self.current_positions[0]
             self.game_map.draw_char(
-                x, y, ' ', random_red_or_yellow(), random_red_or_yellow())
+                x, y, ' ', random_red(), random_red())
+        if len(self.current_positions) >= 2:
+            x, y = self.current_positions[1]
+            self.game_map.draw_char(
+                x, y, ' ', random_orange(), random_orange())
         self.current_frame += 1
         if len(self.current_positions) == 0:
             return True

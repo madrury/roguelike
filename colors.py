@@ -12,8 +12,12 @@ def random_yellow():
     return (rg, rg, int(random.uniform(150, 200)))
 
 def random_red():
-    red = int(random.uniform(100, 255))
+    red = int(random.uniform(150, 255))
     return (red, 0, 0)
+
+def random_orange():
+    green = int(random.uniform(0, 130))
+    return (255, green, 0)
 
 def random_red_or_yellow():
     x = random.uniform(0, 1)
