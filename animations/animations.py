@@ -341,15 +341,18 @@ class FireballAnimation:
         if position:
             self.current_positions.appendleft(position)
         if self.current_frame >= 2:
-            self.current_positions.pop()
+            p = self.current_positions.pop()
+            self.game_map.draw_position(p[0], p[1])
         if len(self.current_positions) >= 1:
             x, y = self.current_positions[0]
-            self.game_map.draw_char(
-                x, y, ' ', random_red(), random_red())
+            if self.game_map.fov[x, y]:
+                self.game_map.draw_char(
+                    x, y, ' ', random_red(), random_red())
         if len(self.current_positions) >= 2:
             x, y = self.current_positions[1]
-            self.game_map.draw_char(
-                x, y, ' ', random_orange(), random_orange())
+            if self.game_map.fov[x, y]:
+                self.game_map.draw_char(
+                    x, y, ' ', random_orange(), random_orange())
         self.current_frame += 1
         if len(self.current_positions) == 0:
             return True
