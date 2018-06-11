@@ -4,7 +4,7 @@ import random
 
 import tdl
 
-from utils.utils import coordinates_within_circle, bresenham_ray
+from utils.utils import coordinates_within_circle, bresenham_line
 from etc.enum import Animations
 from etc.config import SCREEN_WIDTH, SCREEN_HEIGHT, PANEL_CONFIG
 from etc.colors import COLORS
@@ -328,7 +328,7 @@ class FireballAnimation:
         self.game_map = game_map
         self.source = source
         self.target = target
-        self.pathiter = iter(bresenham_ray(game_map, source, target))
+        self.pathiter = iter(bresenham_line(game_map, source, target))
         self.current_positions = deque()
         self.current_frame = 0
 

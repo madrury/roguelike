@@ -258,6 +258,7 @@ class FireStaffCallback:
         results = []
         source, target = (self.user.x, self.user.y), (x, y)
         ray = bresenham_ray(self.game_map, source, target)
+        last_position = ray[-1]
         for position in ray[1:]:
             burnable_entities = get_all_entities_with_component_in_position(
                 position, self.game_map, "burnable")
@@ -266,8 +267,9 @@ class FireStaffCallback:
             entities_in_position = (
                 self.game_map.entities.get_entities_in_position(position))
             if any(entity.blocks for entity in entities_in_position):
+                last_position = position
                 break
         results.append({
             ResultTypes.ANIMATION: (
-                Animations.FIREBALL, source, target)})
+                Animations.FIREBALL, source, last_position)})
         return results
