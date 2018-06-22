@@ -130,7 +130,8 @@ class FireStaff:
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
                       commitable=BaseCommitable(),
-                      consumable=InfinitelyConsumable(),
+                      consumable=FinitelyConsumable(
+                          uses=3, discard_on_empty=False, display_on_one=True),
                       floatable=Floatable(),
                       movable=Movable(),
                       usable=FireStaffUsable(),

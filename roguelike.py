@@ -343,6 +343,7 @@ def main():
             # Remove consumed items from inventory
             if result_type == ResultTypes.ITEM_CONSUMED:
                 consumed, item = result_data
+                print(consumed, item)
                 if consumed:
                     player.inventory.remove(item)
             # Remove dropped items from inventory and place on the map
