@@ -25,10 +25,7 @@ class FinitelyConsumable:
         self.display_on_one = display_on_one
 
     def consume(self):
-        if self.uses <= 0:
-            raise RuntimeError("Cannot consume {self.owner.name}, has zero "
-                               "uses.")
-        self.uses -=1
+        self.uses = max(0, self.uses - 1)
         if self.uses == 0:
             return [{
                 ResultTypes.ITEM_CONSUMED: (self.discard_on_empty, self.owner),

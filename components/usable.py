@@ -241,10 +241,15 @@ class FireStaffUsable:
         self.name = "Fire Staff"
 
     def use(self, game_map, user):
-        callback = FireStaffCallback(self, game_map, user)
-        return [{
-            ResultTypes.CURSOR_MODE: (
-                user.x, user.y, callback, CursorTypes.RAY)}]
+        if self.owner.consumable.uses > 0:
+            callback = FireStaffCallback(self, game_map, user)
+            return [{
+                ResultTypes.CURSOR_MODE: (
+                    user.x, user.y, callback, CursorTypes.RAY)}]
+        else:
+            message = Message(f"Cannot use {self.owner.name} with zero charges.")
+            return [{
+                ResultTypes.MESSAGE: message}]
 
 
 class FireStaffCallback:
