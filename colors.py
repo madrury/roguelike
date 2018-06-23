@@ -7,10 +7,6 @@ COLOR_PATHS = {
         (255, g, 0) for g in [250, 210, 170, 130, 90, 50, 10, 0]]
 }
 
-def random_yellow():
-    rg = int(random.uniform(220, 226))
-    return (rg, rg, int(random.uniform(150, 200)))
-
 def random_red():
     red = int(random.uniform(150, 255))
     return (red, 0, 0)
@@ -18,6 +14,10 @@ def random_red():
 def random_orange():
     green = int(random.uniform(0, 130))
     return (255, green, 0)
+
+def random_yellow():
+    blue = int(random.uniform(100, 255))
+    return (255, 255, blue)
 
 def random_red_or_yellow():
     x = random.uniform(0, 1)

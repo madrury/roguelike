@@ -340,19 +340,28 @@ class FireballAnimation:
             pass
         if position:
             self.current_positions.appendleft(position)
-        if self.current_frame >= 2:
+        if self.current_frame >= 3:
             p = self.current_positions.pop()
             self.game_map.draw_position(p[0], p[1])
         if len(self.current_positions) >= 1:
             x, y = self.current_positions[0]
             if self.game_map.fov[x, y]:
                 self.game_map.draw_char(
-                    x, y, ' ', random_red(), random_red())
+                    x, y, '*', random_red(), random_red())
+            # When the head of the fireball leaves the fov, immediately break
+            # out of the animation.
+            else:
+                return True
         if len(self.current_positions) >= 2:
             x, y = self.current_positions[1]
             if self.game_map.fov[x, y]:
                 self.game_map.draw_char(
-                    x, y, ' ', random_orange(), random_orange())
+                    x, y, '*', random_orange(), random_orange())
+        if len(self.current_positions) >= 3:
+            x, y = self.current_positions[2]
+            if self.game_map.fov[x, y]:
+                self.game_map.draw_char(
+                    x, y, '*', random_yellow(), random_yellow())
         self.current_frame += 1
         if len(self.current_positions) == 0:
             return True
