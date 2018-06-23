@@ -2,6 +2,8 @@ from entity import Entity
 
 from etc.colors import COLORS
 from etc.enum import EntityTypes, RenderOrder, ItemGroups
+from etc.game_config import (
+    THROWING_KNIFE_BASE_USES, STAFF_BASE_USES, STAFF_RECHARGE_TIME)
 
 from components.burnable import ItemBurnable
 from components.consumable import FinitelyConsumable, InfinitelyConsumable
@@ -101,7 +103,8 @@ class ThrowingKnife:
                       entity_type=EntityTypes.ITEM,
                       render_order=RenderOrder.ITEM,
                       commitable=BaseCommitable(),
-                      consumable=FinitelyConsumable(uses=5),
+                      consumable=FinitelyConsumable(
+                          uses=THROWING_KNIFE_BASE_USES),
                       floatable=Floatable(),
                       movable=Movable(),
                       usable=NullUsable(),
@@ -132,9 +135,12 @@ class FireStaff:
                       render_order=RenderOrder.ITEM,
                       commitable=BaseCommitable(),
                       consumable=FinitelyConsumable(
-                          uses=3, discard_on_empty=False, display_on_one=True),
+                          uses=STAFF_BASE_USES, 
+                          discard_on_empty=False,
+                          display_on_one=True),
                       floatable=Floatable(),
                       movable=Movable(),
-                      rechargeable=Rechargeable(charges_needed=1),
+                      rechargeable=Rechargeable(
+                          charges_needed=STAFF_RECHARGE_TIME),
                       usable=FireStaffUsable(),
                       throwable=NullThrowable())
