@@ -415,17 +415,20 @@ def main():
         # Post player turn checks.
         #---------------------------------------------------------------------
         if game_state == GameStates.ENEMY_TURN:
-            # Interact with encroached entity.
+            # All rechargable items get ticked.
+            for item in player.inventory:
+                if item.rechargeable:
+                    enemy_turn_results.extend(item.rechargeable.tick())
+            # All encroaching entities interact with their cellmates.
             enemy_turn_results.extend(encroach_on_all(player, game_map))
-            # The player re-gains swim stamina if they are on dry land.
+            # The player re-gains or loses swim stamina.
             if game_map.water[player.x, player.y]:
                 enemy_turn_results.extend(player.swimmable.swim())
             else:
                 enemy_turn_results.extend(player.swimmable.rest())
-        #---------------------------------------------------------------------
-        # All enemies and hazardous terrain and entities take thier turns.
-        #---------------------------------------------------------------------
-        if game_state == GameStates.ENEMY_TURN:
+            #-----------------------------------------------------------------
+            # All enemies and hazards terrain take thier turns.
+            #-----------------------------------------------------------------
             for entity in (e for e in game_map.entities if e != player):
                 # Enemies move and attack if possible.
                 if entity.ai:
@@ -498,6 +501,10 @@ def main():
             if result_type == ResultTypes.HARM: 
                 process_harm(
                     game_map, result_data, enemy_turn_results, harmed_queue)
+            # Add a use to an item
+            if result_type == ResultTypes.RECHARGE_ITEM:
+                item = result_data
+                item.consumable.uses += 1
             # Entities swim and thier stamana decreases.
             if result_type == ResultTypes.CHANGE_SWIM_STAMINA:
                 entity, stamina_change = result_data

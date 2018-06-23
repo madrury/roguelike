@@ -126,6 +126,7 @@ class ResultTypes(Enum):
     MOVE = auto()
     MOVE_TOWARDS = auto()
     MOVE_RANDOM_ADJACENT = auto()
+    RECHARGE_ITEM = auto()
     REMOVE_ARMOR = auto()
     REMOVE_WEAPON = auto()
     REMOVE_ENTITY = auto()

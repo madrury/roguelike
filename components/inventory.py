@@ -7,6 +7,9 @@ class Inventory:
         self.capacity = capacity
         self.items = []
 
+    def __iter__(self):
+        yield from iter(self.items)
+
     def pickup(self, item):
         results = []
         if len(self.items) >= self.capacity:

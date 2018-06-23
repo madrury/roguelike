@@ -8,6 +8,7 @@ from components.consumable import FinitelyConsumable, InfinitelyConsumable
 from components.commitable import BaseCommitable
 from components.floatable import Floatable
 from components.movable import Movable
+from components.rechargeable import Rechargeable
 from components.usable import (
     NullUsable, HealthPotionUsable, PowerPotionUsable, MagicMissileUsable,
     FireblastUsable, TorchUsable, WaterblastUsable, FireStaffUsable)
@@ -134,5 +135,6 @@ class FireStaff:
                           uses=3, discard_on_empty=False, display_on_one=True),
                       floatable=Floatable(),
                       movable=Movable(),
+                      rechargeable=Rechargeable(charges_needed=1),
                       usable=FireStaffUsable(),
                       throwable=NullThrowable())

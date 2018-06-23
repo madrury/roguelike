@@ -92,6 +92,9 @@ class Entity:
     movable: Movable object.
       Inteface for moving the entity.
 
+    rechargeable: Rechargeable object.
+      Manages the recharging of items like staffs.
+
     scaldable: Scaldable object.
       Interface for scalding an object.
 
@@ -142,6 +145,7 @@ class Entity:
                  inventory=None,
                  item=None,
                  movable=None,
+                 rechargeable=None,
                  scaldable=None,
                  shimmer=None,
                  spreadable=None,
@@ -184,6 +188,7 @@ class Entity:
         self.add_component(inventory, "inventory")
         self.add_component(item, "item")
         self.add_component(movable, "movable")
+        self.add_component(rechargeable, "rechargeable")
         self.add_component(scaldable, "scaldable")
         self.add_component(shimmer, "shimmer")
         self.add_component(spreadable, "spreadable")
