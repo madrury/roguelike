@@ -341,8 +341,8 @@ def main():
                 player.inventory.add(item_added)
                 item_added.commitable.delete(game_map)
             # Remove consumed items from inventory
-            if result_type == ResultTypes.ITEM_CONSUMED:
-                consumed, item = result_data
+            if result_type == ResultTypes.DISCARD_ITEM:
+                item, consumed = result_data
                 if consumed:
                     player.inventory.remove(item)
             # Remove dropped items from inventory and place on the map

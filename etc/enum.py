@@ -89,7 +89,7 @@ CANCEL_STATES = {
 # ITEM_ADDED: item
 #   Add an item to the the player's inventory.  TODO: This should work with any
 #   entity.
-# ITEM_CONSUMED: (bool, entity)
+# DISCARD_ITEM: (entity, bool)
 #   The entity has or has not consumed an item.
 # ITEM_DROPPED: item
 #   The player has dropped an item.  TODO: We should be able to drop an item in
@@ -113,6 +113,7 @@ class ResultTypes(Enum):
     DAMAGE = auto()
     DEAD_ENTITY = auto()
     DEATH_MESSAGE = auto()
+    DISCARD_ITEM = auto()
     CHANGE_SWIM_STAMINA = auto()
     END_TURN = auto()
     EQUIP_ARMOR = auto()
@@ -120,7 +121,6 @@ class ResultTypes(Enum):
     HARM = auto()
     INCREASE_ATTACK_POWER = auto()
     ITEM_ADDED = auto()
-    ITEM_CONSUMED = auto()
     ITEM_DROPPED = auto()
     MESSAGE = auto()
     MOVE = auto()

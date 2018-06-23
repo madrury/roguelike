@@ -28,7 +28,7 @@ class FinitelyConsumable:
         self.uses = max(0, self.uses - 1)
         if self.uses == 0:
             return [{
-                ResultTypes.ITEM_CONSUMED: (self.discard_on_empty, self.owner),
+                ResultTypes.DISCARD_ITEM: (self.owner, self.discard_on_empty),
                 ResultTypes.END_TURN: True}]
         else:
             return [{
