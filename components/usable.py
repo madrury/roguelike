@@ -236,6 +236,12 @@ class TorchCallback:
 
 
 class FireStaffUsable:
+    """A Staff that shoots fireballs.
+
+    Fireballs travel in a straight line until they meet a blocking object.
+    Every burnable object encountered along the path of the fireblall is
+    burned, as is the final blocking object encountered.
+    """
 
     def __init__(self):
         self.name = "Fire Staff"
