@@ -233,6 +233,7 @@ class ItemGroups(Enum):
     FIREBLAST_SCROLL = auto()
     WATERBLAST_SCROLL = auto()
     THROWING_KNIFE = auto()
+    FIRE_STAFF = auto() 
     LANCE = auto()
     SWORD = auto()
     AXE = auto()
