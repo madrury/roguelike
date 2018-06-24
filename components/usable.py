@@ -2,11 +2,13 @@ from etc.colors import COLORS
 from messages import Message
 from game_events import fireblast, waterblast
 
+from components.callbacks.usable_callbacks import (
+    TorchCallback, FireStaffCallback)
+
 from etc.enum import (
     ResultTypes, CursorTypes, Animations, EntityTypes, Elements)
 from utils.utils import (
     l2_distance, bresenham_ray,
-    get_all_entities_with_component_in_position,
     get_n_closest_entities_of_type)
 from etc.game_config import (
     HEALTH_POTION_HEAL_AMOUNT, HEALTH_POTION_HP_INCREASE_AMOUNT,
@@ -219,22 +221,6 @@ class TorchUsable:
                 user.x, user.y, callback, CursorTypes.ADJACENT)}]
 
 
-class TorchCallback:
-
-    def __init__(self, owner, game_map, user):
-        self.owner = owner
-        self.game_map = game_map
-        self.user = user
-
-    def execute(self, x, y):
-        results = []
-        burnable_entities = get_all_entities_with_component_in_position(
-            (x, y), self.game_map, "burnable")
-        for entity in burnable_entities:
-            results.extend(entity.burnable.burn(self.game_map))
-        return results
-
-
 class FireStaffUsable:
     """A Staff that shoots fireballs.
 
@@ -258,29 +244,3 @@ class FireStaffUsable:
                 ResultTypes.MESSAGE: message}]
 
 
-class FireStaffCallback:
-
-    def __init__(self, owner, game_map, user):
-        self.owner = owner
-        self.game_map = game_map
-        self.user = user
-
-    def execute(self, x, y):
-        results = []
-        source, target = (self.user.x, self.user.y), (x, y)
-        ray = bresenham_ray(self.game_map, source, target)
-        last_position = ray[-1]
-        for position in ray[1:]:
-            burnable_entities = get_all_entities_with_component_in_position(
-                position, self.game_map, "burnable")
-            for entity in burnable_entities:
-                results.extend(entity.burnable.burn(self.game_map))
-            entities_in_position = (
-                self.game_map.entities.get_entities_in_position(position))
-            if any(entity.blocks for entity in entities_in_position):
-                last_position = position
-                break
-        results.append({
-            ResultTypes.ANIMATION: (
-                Animations.FIREBALL, source, last_position)})
-        return results
