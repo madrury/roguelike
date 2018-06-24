@@ -2,7 +2,7 @@ from messages import Message
 from etc.enum import ResultTypes
 
 class Inventory:
-
+    """An entities inventory."""
     def __init__(self, capacity):
         self.capacity = capacity
         self.items = []
@@ -20,7 +20,7 @@ class Inventory:
         else:
             results.append({
                 ResultTypes.END_TURN: True,
-                ResultTypes.ITEM_ADDED: item,
+                ResultTypes.ADD_ITEM_TO_INVENTORY: (self.owner, item),
                 ResultTypes.MESSAGE: Message(
                     f'{self.owner.name} picks up the {item.name}.')})
         return results

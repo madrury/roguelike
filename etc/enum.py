@@ -70,6 +70,8 @@ CANCEL_STATES = {
 # processed until the stack is empty.
 #.............................................................................
 #
+# ADD_ITEM_TO_INVENTORY: (item, entity)
+#   Add an item to the entities inventory.  
 # ANIMATION: (Animation type, ... other data needed for specific animation)
 #   Play an animation.
 # CURSOR_MODE: boolean
@@ -86,9 +88,6 @@ CANCEL_STATES = {
 #   Equip equipable_entity onto entity.
 # EQUIP_INVENTORY: boolean
 #   Open the inventory for equipping items.
-# ITEM_ADDED: item
-#   Add an item to the the player's inventory.  TODO: This should work with any
-#   entity.
 # DISCARD_ITEM: (entity, bool)
 #   The entity has or has not consumed an item.
 # ITEM_DROPPED: item
@@ -120,7 +119,7 @@ class ResultTypes(Enum):
     EQUIP_WEAPON = auto()
     HARM = auto()
     INCREASE_ATTACK_POWER = auto()
-    ITEM_ADDED = auto()
+    ADD_ITEM_TO_INVENTORY = auto()
     ITEM_DROPPED = auto()
     MESSAGE = auto()
     MOVE = auto()

@@ -327,19 +327,19 @@ def main():
             # Move the player.
             if result_type == ResultTypes.MOVE:
                 player.movable.move(game_map, *result_data)
-            # Set the player's position, used when moving more than one step ro
-            # teleporting.
+            # Set the player's position, used when moving more than one step or 
+            # teleporting (say, due to a raipier attack or teleport staff).
             if result_type == ResultTypes.SET_POSITION:
                entity, x, y = result_data
                entity.movable.set_position_if_able(game_map, x, y)
-            # Add to the message log.
+            # Add a message to the log.
             if result_type == ResultTypes.MESSAGE:
                 message_log.add_message(result_data)
-            # Add an item to the inventory.
-            if result_type == ResultTypes.ITEM_ADDED:
-                item_added = result_data
-                player.inventory.add(item_added)
-                item_added.commitable.delete(game_map)
+            # Add an item to the inventory, and remove it from the game map.
+            if result_type == ResultTypes.ADD_ITEM_TO_INVENTORY:
+                entity, item = result_data
+                entity.inventory.add(item)
+                item.commitable.delete(game_map)
             # Remove consumed items from inventory
             if result_type == ResultTypes.DISCARD_ITEM:
                 item, consumed = result_data
@@ -362,6 +362,7 @@ def main():
             if result_type == ResultTypes.INCREASE_MAX_HP:
                 entity, amount = result_data
                 entity.harmable.max_hp += amount
+            # Increase the maximum attack power of an entity
             if result_type == ResultTypes.INCREASE_ATTACK_POWER:
                 entity, amount = result_data
                 entity.attacker.power += amount
