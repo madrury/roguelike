@@ -120,7 +120,7 @@ class ResultTypes(Enum):
     HARM = auto()
     INCREASE_ATTACK_POWER = auto()
     ADD_ITEM_TO_INVENTORY = auto()
-    ITEM_DROPPED = auto()
+    DROP_ITEM_FROM_INVENTORY = auto()
     MESSAGE = auto()
     MOVE = auto()
     MOVE_TOWARDS = auto()

@@ -346,11 +346,11 @@ def main():
                 if consumed:
                     player.inventory.remove(item)
             # Remove dropped items from inventory and place on the map
-            if result_type == ResultTypes.ITEM_DROPPED:
-                item_dropped = result_data
-                player.inventory.remove(item_dropped)
-                item_dropped.x, item_dropped.y = player.x, player.y
-                game_map.entities.append(item_dropped)
+            if result_type == ResultTypes.DROP_ITEM_FROM_INVENTORY:
+                entity, item = result_data
+                entity.inventory.remove(item)
+                item.x, item.y = entity.x, entity.y
+                game_map.entities.append(item)
             # Process a damage message, possibly transforming it.
             if result_type == ResultTypes.DAMAGE:
                 process_damage(game_map, result_data, player_turn_results)

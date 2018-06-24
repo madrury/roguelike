@@ -37,7 +37,7 @@ class Inventory:
             message = Message(f'{self.owner.name} dropped the {item.name}')
             results.append({
                 ResultTypes.END_TURN: True,
-                ResultTypes.ITEM_DROPPED: item,
+                ResultTypes.DROP_ITEM_FROM_INVENTORY: (self.owner, item),
                 ResultTypes.MESSAGE: message})
         return results
 
