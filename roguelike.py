@@ -605,6 +605,7 @@ def create_player(game_map):
         HealthPotion, MagicMissileScroll, FireblastScroll, ThrowingKnife,
         Torch, FireStaff, ConfusionPotion)
     from game_objects.weapons import Raipier
+    from components.movable import ConfusedMovable
     # This is you.  Kill some Orcs.
     player = Entity(0, 0, PLAYER_CONFIG["char"], 
                     COLORS[PLAYER_CONFIG["color"]], 
@@ -619,7 +620,7 @@ def create_player(game_map):
                         hp=PLAYER_CONFIG["hp"],
                         defense=PLAYER_CONFIG["defense"]),
                     inventory=Inventory(PLAYER_CONFIG["inventory_size"]),
-                    movable=Movable(),
+                    movable=ConfusedMovable(),
                     scaldable=AliveScaldable(),
                     swimmable=PlayerSwimmable(PLAYER_CONFIG["swim_stamina"]))
     game_map.place_player(player)

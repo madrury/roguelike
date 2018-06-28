@@ -61,5 +61,10 @@ class Movable:
             (-1, 1), (0, 1), (1, 1),
             (-1, 0),         (1, 0),
             (-1, -1), (0, -1), (1, -1)])
-        self.move(game_map, dx, dy)
+        self.set_position_if_able(game_map, self.owner.x + dx, self.owner.y + dy)
 
+
+class ConfusedMovable(Movable):
+    """Hijack the move method to move to a random adjacent space."""
+    def move(self, game_map, dx, dy):
+        self.move_to_random_adjacent(game_map)
