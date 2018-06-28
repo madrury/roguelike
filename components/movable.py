@@ -5,32 +5,23 @@ from etc.enum import RoutingOptions
 
 
 class Movable:
-
-    def move(self, game_map, dx, dy):
-        x, y = self.owner.x, self.owner.y
-        new_x, new_y = x + dx, y + dy
-        self.set_position_if_able(game_map, new_x, new_y)
-
-    def move_towards(self, target_x, target_y, game_map):
-        path = get_shortest_path(
-            game_map, (self.owner.x, self.owner.y), (target_x, target_y),
-            routing_avoid=self.owner.routing_avoid)
-        if path == []:
-            path = get_shortest_path(
-                game_map, (self.owner.x, self.owner.y), (target_x, target_y),
-                routing_avoid=[])
-        if len(path) > 1:
-            dx, dy = path[0][0] - self.owner.x, path[0][1] - self.owner.y
-            self.move(game_map, dx, dy)
-
-    def move_to_random_adjacent(self, game_map):
-        dx, dy = random.choice([
-            (-1, 1), (0, 1), (1, 1),
-            (-1, 0),         (1, 0),
-            (-1, -1), (0, -1), (1, -1)])
-        self.move(game_map, dx, dy)
+    """Handle movement of entities."""
 
     def set_position_if_able(self, game_map, x, y):
+        """Set the position of the owner to a given postition.
+        
+        This is the lowest level method for manipulating an entities positon on
+        the mad, and as such, it checks if the resulting positon is actually
+        valid to hold the owner.
+
+          - Is the proposed new positon walkable?
+          - Is the proposed new position blocked?
+          - If the owner cannot reside in water, is the proposed new positon water?
+
+        If all the checks pass, the position of the entity is set to the
+        proposed positon, the blocked array of the game map is updated, and the
+        position of the entity within the entity array is updated.
+        """
         target_location = (x, y)
         is_walkable = game_map.walkable[target_location]
         is_blocked = game_map.blocked[target_location]
@@ -44,3 +35,31 @@ class Movable:
             game_map.entities.update_position(
                 self.owner, (self.owner.x, self.owner.y), target_location)
             self.owner.x, self.owner.y = target_location 
+
+    def move(self, game_map, dx, dy):
+        """Move the owner in a given direction (dx, dy)."""
+        x, y = self.owner.x, self.owner.y
+        new_x, new_y = x + dx, y + dy
+        self.set_position_if_able(game_map, new_x, new_y)
+
+    def move_towards(self, target_x, target_y, game_map):
+        """Move the owner one step towards a target."""
+        path = get_shortest_path(
+            game_map, (self.owner.x, self.owner.y), (target_x, target_y),
+            routing_avoid=self.owner.routing_avoid)
+        if path == []:
+            path = get_shortest_path(
+                game_map, (self.owner.x, self.owner.y), (target_x, target_y),
+                routing_avoid=[])
+        if len(path) > 1:
+            dx, dy = path[0][0] - self.owner.x, path[0][1] - self.owner.y
+            self.move(game_map, dx, dy)
+
+    def move_to_random_adjacent(self, game_map):
+        """Move the owner to a random adjacent tile."""
+        dx, dy = random.choice([
+            (-1, 1), (0, 1), (1, 1),
+            (-1, 0),         (1, 0),
+            (-1, -1), (0, -1), (1, -1)])
+        self.move(game_map, dx, dy)
+
