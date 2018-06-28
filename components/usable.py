@@ -77,6 +77,26 @@ class PowerPotionUsable:
         return results
 
 
+class ConfusionPotionUsable:
+    """A potion of confusion.
+
+    The effect of this potion depends on if it is used on the player, or an enemy:
+
+      - If used on the player, it hijacks all move actions to move the player
+        in a random direction.
+      - If used on an enemy, the enemy gets an AI that always moves in a random
+        direction.
+
+    Both effects wear off after some amount of time.
+    """
+    def __init__(self):
+        self.name = "Potion of Confusion"
+
+    def use(self, game_map, reciever):
+        print("Used potion of confusion")
+        return []
+
+
 class MagicMissileUsable:
     """A Magic Missile spell.
 

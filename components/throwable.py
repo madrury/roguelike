@@ -4,7 +4,8 @@ from etc.game_config import (
     HEALTH_POTION_HEAL_AMOUNT, THROWING_KNIFE_BASE_DAMAGE)
 
 from components.callbacks.throwable_callbacks import (
-    HealthPotionCallback, WeaponCallback, ThrowingKnifeCallback)
+    HealthPotionCallback, ConfusionPotionCallback, 
+    WeaponCallback, ThrowingKnifeCallback)
 
 
 class NullThrowable:
@@ -24,9 +25,22 @@ class HealthPotionThrowable:
 
     def throw(self, game_map, thrower):
         callback = HealthPotionCallback(self, game_map, thrower)
-        return [
-            {ResultTypes.CURSOR_MODE: (
+        return [{
+            ResultTypes.CURSOR_MODE: (
                 thrower.x, thrower.y, callback, CursorTypes.PATH)}]
+
+
+class ConfusionPotionThrowable:
+    """Throw a potion of confusion at a target."""
+    def __init__(self):
+        self.name = "Potion of Confusion"
+
+    def throw(self, game_map, thrower):
+        callback = ConfusionPotionCallback(self, game_map, thrower)
+        return [{
+            ResultTypes.CURSOR_MODE: (
+                thrower.x, thrower.y, callback, CursorTypes.PATH)}]
+
 
 class WeaponThrowable:
     """Throw a weapon at a target.  Does damage equal to a multiple of weapon

@@ -603,7 +603,7 @@ def create_map(map_console):
 def create_player(game_map):
     from game_objects.items import (
         HealthPotion, MagicMissileScroll, FireblastScroll, ThrowingKnife,
-        Torch, FireStaff)
+        Torch, FireStaff, ConfusionPotion)
     from game_objects.weapons import Raipier
     # This is you.  Kill some Orcs.
     player = Entity(0, 0, PLAYER_CONFIG["char"], 
@@ -626,9 +626,10 @@ def create_player(game_map):
     game_map.entities.append(player)
     # Setup Initial Inventory, for testing.
     player.inventory.extend([HealthPotion.make(0, 0) for _ in range(3)])
+    player.inventory.extend([ConfusionPotion.make(0, 0)])
     player.inventory.extend([ThrowingKnife.make(0, 0)])
-    player.inventory.extend([MagicMissileScroll.make(0, 0) for _ in range(3)])
-    player.inventory.extend([FireblastScroll.make(0, 0) for _ in range(3)])
+    player.inventory.extend([MagicMissileScroll.make(0, 0)])
+    player.inventory.extend([FireblastScroll.make(0, 0)])
     player.inventory.extend([Torch.make(0, 0)])
     player.inventory.extend([Raipier.make(0, 0)])
     player.inventory.extend([FireStaff.make(0, 0)])

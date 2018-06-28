@@ -50,6 +50,18 @@ class HealthPotionCallback:
             })
         return results
 
+
+class ConfusionPotionCallback:
+    """Throw a confusion potion towards the selected position."""
+    def __init__(self, owner, game_map, user):
+        self.owner = owner
+        self.game_map = game_map
+        self.user = user
+
+    def execute(self, x, y):
+        print(f"Threw a {self.owner.name} at {x}, {y}")
+        return []
+
         
 class WeaponCallback:
     """Throw a weapong towards the target square."""
