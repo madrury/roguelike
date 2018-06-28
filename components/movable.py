@@ -21,24 +21,14 @@ class Movable:
                 routing_avoid=[])
         if len(path) > 1:
             dx, dy = path[0][0] - self.owner.x, path[0][1] - self.owner.y
-            self.move_if_able(dx, dy, game_map)
+            self.move(game_map, dx, dy)
 
     def move_to_random_adjacent(self, game_map):
         dx, dy = random.choice([
             (-1, 1), (0, 1), (1, 1),
             (-1, 0),         (1, 0),
             (-1, -1), (0, -1), (1, -1)])
-        self.move_if_able(dx, dy, game_map)
-
-    def move_if_able(self, dx, dy, game_map):
-        target_location = (self.owner.x + dx, self.owner.y + dy)
-        is_walkable = game_map.walkable[target_location]
-        is_blocked = game_map.blocked[target_location]
-        # TODO: Replace with generic check for safety.
-        water_if_able = (RoutingOptions.AVOID_WATER not in self.owner.routing_avoid
-                         or not game_map.water[target_location])
-        if is_walkable and not is_blocked and water_if_able:
-            self.move(game_map, dx, dy)
+        self.move(game_map, dx, dy)
 
     def set_position_if_able(self, game_map, x, y):
         target_location = (x, y)
