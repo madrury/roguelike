@@ -66,7 +66,7 @@ class PowerPotionUsable:
     def use(self, game_map, reciever):
         results = []
         message = Message(f"{reciever.name}'s attack power increased.", 
-                            COLORS.get('green'))
+                          COLORS.get('green'))
         results.append({
             ResultTypes.INCREASE_ATTACK_POWER: (
                 reciever, POWER_POTION_INCREASE_AMOUNT),
@@ -93,8 +93,13 @@ class ConfusionPotionUsable:
         self.name = "Potion of Confusion"
 
     def use(self, game_map, reciever):
-        print("Used potion of confusion")
-        return []
+        results = []
+        message = Message(f"{reciever.name}'s became confused!",
+                          COLORS.get('purple'))
+        results.append({
+            ResultTypes.CONFUSE: reciever,
+            ResultTypes.MESSAGE: message})
+        return results
 
 
 class MagicMissileUsable:
@@ -262,5 +267,3 @@ class FireStaffUsable:
             message = Message(f"Cannot use {self.owner.name} with zero charges.")
             return [{
                 ResultTypes.MESSAGE: message}]
-
-

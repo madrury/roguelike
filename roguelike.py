@@ -22,6 +22,7 @@ from utils.utils import (
 from animations.animations import construct_animation
 from components.attacker import Attacker
 from components.burnable import AliveBurnable
+from components.confused_manager import PlayerConfusedManager
 from components.defender import Defender
 from components.equipment import Equipment
 from components.harmable import Harmable
@@ -382,6 +383,12 @@ def main():
             if result_type == ResultTypes.REMOVE_WEAPON:
                 entity, weapon = result_data
                 entity_remove_weapon(entity, weapon, player_turn_results)
+            # Put an entity in a confused state
+            if result_type == ResultTypes.CONFUSE:
+                entity = result_data
+                if entity == player:
+                    confused_manager = PlayerConfusedManager()
+                    confused_manager.attach(player)
             # Add a new entity to the game.
             if result_type == ResultTypes.ADD_ENTITY:
                 entity = result_data
@@ -620,7 +627,7 @@ def create_player(game_map):
                         hp=PLAYER_CONFIG["hp"],
                         defense=PLAYER_CONFIG["defense"]),
                     inventory=Inventory(PLAYER_CONFIG["inventory_size"]),
-                    movable=ConfusedMovable(),
+                    movable=Movable(),
                     scaldable=AliveScaldable(),
                     swimmable=PlayerSwimmable(PLAYER_CONFIG["swim_stamina"]))
     game_map.place_player(player)

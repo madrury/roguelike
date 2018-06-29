@@ -70,10 +70,14 @@ CANCEL_STATES = {
 # processed until the stack is empty.
 #.............................................................................
 #
+# ADD_ENTITY:
+#   Add en entity to the game map.
 # ADD_ITEM_TO_INVENTORY: (item, entity)
 #   Add an item to the entities inventory.  
 # ANIMATION: (Animation type, ... other data needed for specific animation)
 #   Play an animation.
+# CONFUSE: entity
+#   Put the entity in the confused state.
 # CURSOR_MODE: boolean
 #   Enter cursor mode.
 # DAMAGE: (entity, source, amount, elements)
@@ -95,7 +99,6 @@ CANCEL_STATES = {
 #   a position.
 # MESSAGE: message
 #   Display a game message in the message queue.
-# # TODO: Add an entity argument to this so it can be used to move any entity.
 # MOVE_TOWARDS: entity, target_x, target_y
 #   Attempt to move the entity towards the target. 
 # MOVE_RANDOM_ADJACENT: entity
@@ -109,26 +112,27 @@ class ResultTypes(Enum):
         return self.value < other.value
 
     ADD_ENTITY = auto()
+    ADD_ITEM_TO_INVENTORY = auto()
+    CHANGE_SWIM_STAMINA = auto()
+    CONFUSE = auto()
     DAMAGE = auto()
     DEAD_ENTITY = auto()
     DEATH_MESSAGE = auto()
     DISCARD_ITEM = auto()
-    CHANGE_SWIM_STAMINA = auto()
+    DROP_ITEM_FROM_INVENTORY = auto()
     END_TURN = auto()
     EQUIP_ARMOR = auto()
     EQUIP_WEAPON = auto()
     HARM = auto()
     INCREASE_ATTACK_POWER = auto()
-    ADD_ITEM_TO_INVENTORY = auto()
-    DROP_ITEM_FROM_INVENTORY = auto()
     MESSAGE = auto()
     MOVE = auto()
-    MOVE_TOWARDS = auto()
     MOVE_RANDOM_ADJACENT = auto()
+    MOVE_TOWARDS = auto()
     RECHARGE_ITEM = auto()
     REMOVE_ARMOR = auto()
-    REMOVE_WEAPON = auto()
     REMOVE_ENTITY = auto()
+    REMOVE_WEAPON = auto()
     RESTORE_PLAYER_INPUT = auto()
     SET_POSITION = auto()
     # This must be processed before any healing (which is passed as a DAMAGE
