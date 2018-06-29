@@ -47,6 +47,10 @@ STATUS_BAR_COLORS = {
         'bar_color': COLORS['light_blue'],
         'back_color': COLORS['dark_blue'],
         'string_color': COLORS['white']
+    },
+    'confused_bar': {
+        'bar_color': (200, 200, 200),
+        'back_color': (100, 100, 100),
+        'string_color': (0, 0, 0)
     }
-    
 }

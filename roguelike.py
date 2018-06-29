@@ -136,6 +136,8 @@ def main():
         panel_console.clear(fg=COLORS['white'], bg=COLORS['black'])
         player.harmable.render_status_bar(panel_console, 1, 1)
         player.swimmable.render_status_bar(panel_console, 1, 3)
+        if player.confused_manager:
+            player.confused_manager.render_status_bar(panel_console, 1, 5)
         message_log.render(panel_console)
         for idx, entity in enumerate(harmed_queue):
             entity.harmable.render_status_bar(
@@ -427,6 +429,10 @@ def main():
             for item in player.inventory:
                 if item.rechargeable:
                     enemy_turn_results.extend(item.rechargeable.tick())
+            # All confused entities get ticked
+            for entity in game_map.entities:
+                if entity.confused_manager:
+                    entity.confused_manager.tick()
             # All encroaching entities interact with their cellmates.
             enemy_turn_results.extend(encroach_on_all(player, game_map))
             # The player re-gains or loses swim stamina.
