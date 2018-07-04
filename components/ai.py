@@ -38,8 +38,27 @@ class BasicMonster:
         return results
 
 
-class NecromancerMonster:
+class ConfusedMonster:
+    """AI for a confused monster.
 
+    Always move to a random adjacent space.
+    """
+    def __init__(self):
+        self.tree = Root(Skitter())
+            
+    def take_turn(self, target, game_map):
+        _, results = self.tree.tick(self.owner, target, game_map)
+        return results
+
+
+class NecromancerMonster:
+    """AI for a necromancer.
+
+    Necromancers attempt to always stay at exactly a given radius of the
+    player.  If they fall within the radius, they will move away, if they fall
+    outside the radius, they will move towards.  When they are at exactly the
+    desired radius, they will spawn a zombie with a certain probability.
+    """
     def __init__(self, move_towards_radius=6, seeking_radius=3):
         self.tree = Root(
             Selection(

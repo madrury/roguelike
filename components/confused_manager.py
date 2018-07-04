@@ -1,7 +1,9 @@
-from components.movable import ConfusedMovable
 from etc.config import PANEL_CONFIG
 from etc.colors import STATUS_BAR_COLORS
 from status_bar import StatusBar
+
+import components.movable
+import components.ai
 
 
 class PlayerConfusedManager:
@@ -14,7 +16,8 @@ class PlayerConfusedManager:
     threshold, the object swaps back in the usual component and then destroys
     itself.
     """
-    def __init__(self, n_confused_turns=20):
+    # TODO: n_confused_turns should be configured.
+    def __init__(self, n_confused_turns=10):
         self.n_turns = 0
         self.old_movable = None
         self.n_confused_turns = n_confused_turns
@@ -24,7 +27,7 @@ class PlayerConfusedManager:
 
     def attach(self, player):
         self.old_movable = player.movable
-        player.add_component(ConfusedMovable(), "movable")
+        player.add_component(components.movable.ConfusedMovable(), "movable")
         player.add_component(self, "confused_manager")
 
     def tick(self):
@@ -39,3 +42,22 @@ class PlayerConfusedManager:
             name='Confused',
             maximum=self.n_confused_turns,
             value=(self.n_confused_turns - self.n_turns))
+
+
+class EnemyConfusedManager:
+
+    def __init__(self, n_confused_turns=10):
+        self.n_turns = 0
+        self.old_ai = None
+        self.n_confused_turns = n_confused_turns
+
+    def attach(self, entity):
+        self.old_ai = entity.ai
+        entity.add_component(components.ai.ConfusedMonster(), "ai")
+        entity.add_component(self, "confused_manager")
+
+    def tick(self):
+        self.n_turns += 1
+        if self.n_turns >= self.n_confused_turns:
+            self.owner.add_component(self.old_ai, "ai")
+            self.owner.confused_manager = None

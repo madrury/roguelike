@@ -59,8 +59,33 @@ class ConfusionPotionCallback:
         self.user = user
 
     def execute(self, x, y):
-        print(f"Threw a {self.owner.name} at {x}, {y}")
-        return []
+        results = []
+        target = get_first_blocking_entity_along_ray(
+            self.game_map, (self.user.x, self.user.y), (x, y))
+        if target:
+            text = f"{target.name} becomes confused!"
+            throw_animation = (
+                Animations.THROW_POTION,
+                (self.user.x, self.user.y), (target.x, target.y))
+            potion_animation = (
+                Animations.CONFUSION_POTION, (target.x, target.y))
+            results.append({
+                ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
+                ResultTypes.CONFUSE: target,
+                ResultTypes.ANIMATION: (
+                    Animations.CONCATINATED, (throw_animation, potion_animation))
+            }),
+        else:
+            text = "The confusion potion splashes on the ground."
+            throw_animation = (
+                Animations.THROW_POTION, (self.user.x, self.user.y), (x, y))
+            spill_animation = (Animations.CONFUSION_POTION, (x, y))
+            results.append({
+                ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
+                ResultTypes.ANIMATION: (
+                    Animations.CONCATINATED, (throw_animation, spill_animation))
+            })
+        return results
 
         
 class WeaponCallback:

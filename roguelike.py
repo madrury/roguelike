@@ -22,7 +22,7 @@ from utils.utils import (
 from animations.animations import construct_animation
 from components.attacker import Attacker
 from components.burnable import AliveBurnable
-from components.confused_manager import PlayerConfusedManager
+from components.confused_manager import PlayerConfusedManager, EnemyConfusedManager
 from components.defender import Defender
 from components.equipment import Equipment
 from components.harmable import Harmable
@@ -31,7 +31,6 @@ from components.movable import Movable
 from components.scaldable import AliveScaldable
 from components.swimmable import PlayerSwimmable
 
-#
 from generation.floor import make_floor
 from generation.item_groups import ITEM_SCHEDULE, ITEM_GROUPS
 from generation.monster_groups import MONSTER_SCHEDULE, MONSTER_GROUPS
@@ -391,6 +390,9 @@ def main():
                 if entity == player:
                     confused_manager = PlayerConfusedManager()
                     confused_manager.attach(player)
+                else:
+                    confused_manager = EnemyConfusedManager()
+                    confused_manager.attach(entity)
             # Add a new entity to the game.
             if result_type == ResultTypes.ADD_ENTITY:
                 entity = result_data

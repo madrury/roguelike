@@ -4,9 +4,6 @@ from etc.colors import COLORS
 from etc.enum import (
     RenderOrder, EntityTypes, MonsterGroups, RoutingOptions, Elements)
 
-from components.ai import (
-    BasicMonster, HuntingMonster, SkitteringMonster, ZombieMonster, 
-    NecromancerMonster)
 from components.attacker import Attacker
 from components.burnable import AliveBurnable, ZombieBurnable, WaterBloatBurnable
 from components.commitable import BlockingCommitable
@@ -16,6 +13,7 @@ from components.scaldable import AliveScaldable, FireBloatScaldable
 from components.spreadable import ZombieSpreadable
 from components.swimmable import BaseSwimmable
 import components.harmable
+import components.ai
 
 from components.transformers.damage_transformers import DefensiveLinearTransformer
 
@@ -33,7 +31,7 @@ class Kruthik:
                            RoutingOptions.AVOID_FIRE,
                            RoutingOptions.AVOID_MONSTERS,
                            RoutingOptions.AVOID_STEAM],
-            ai=SkitteringMonster(),
+            ai=components.ai.SkitteringMonster(),
             attacker=Attacker(power=2),
             burnable=AliveBurnable(),
             commitable=BlockingCommitable(),
@@ -57,7 +55,7 @@ class Orc:
                            RoutingOptions.AVOID_SHRUBS,
                            RoutingOptions.AVOID_MONSTERS,
                            RoutingOptions.AVOID_STEAM],
-            ai=BasicMonster(),
+            ai=components.ai.BasicMonster(),
             attacker=Attacker(power=3),
             burnable=AliveBurnable(),
             commitable=BlockingCommitable(),
@@ -81,7 +79,7 @@ class PinkJelly:
                            RoutingOptions.AVOID_SHRUBS,
                            RoutingOptions.AVOID_MONSTERS,
                            RoutingOptions.AVOID_STEAM],
-            ai=BasicMonster(),
+            ai=components.ai.BasicMonster(),
             attacker=Attacker(power=3),
             burnable=AliveBurnable(),
             commitable=BlockingCommitable(),
@@ -114,7 +112,7 @@ class Troll:
                            RoutingOptions.AVOID_STEAM],
             attacker=Attacker(power=6),
             harmable=components.harmable.Harmable(hp=20, defense=1),
-            ai=HuntingMonster(),
+            ai=components.ai.HuntingMonster(),
             burnable=AliveBurnable(),
             commitable=BlockingCommitable(),
             movable=Movable(),
@@ -134,7 +132,7 @@ class FireBloat:
             routing_avoid=[RoutingOptions.AVOID_SHRUBS,
                            RoutingOptions.AVOID_MONSTERS,
                            RoutingOptions.AVOID_STEAM],
-            ai=BasicMonster(),
+            ai=components.ai.BasicMonster(),
             attacker=Attacker(power=1),
             commitable=BlockingCommitable(),
             harmable=components.harmable.FireBloatHarmable(hp=1, defense=0),
@@ -154,7 +152,7 @@ class WaterBloat:
             routing_avoid=[RoutingOptions.AVOID_SHRUBS,
                            RoutingOptions.AVOID_MONSTERS,
                            RoutingOptions.AVOID_FIRE],
-            ai=BasicMonster(),
+            ai=components.ai.BasicMonster(),
             attacker=Attacker(power=1),
             burnable=WaterBloatBurnable(),
             commitable=BlockingCommitable(),
@@ -187,7 +185,7 @@ class Zombie:
                         elements=[Elements.HEALING], multiplyer=-1)]),
             harmable=components.harmable.Harmable(
                 hp=10, defense=0),
-            ai=ZombieMonster(),
+            ai=components.ai.ZombieMonster(),
             burnable=ZombieBurnable(),
             commitable=BlockingCommitable(),
             movable=Movable(),
@@ -210,7 +208,7 @@ class Necromancer:
                            RoutingOptions.AVOID_SHRUBS,
                            RoutingOptions.AVOID_MONSTERS,
                            RoutingOptions.AVOID_STEAM],
-            ai=NecromancerMonster(),
+            ai=components.ai.NecromancerMonster(),
             attacker=Attacker(power=5),
             burnable=AliveBurnable(),
             commitable=BlockingCommitable(),
