@@ -19,8 +19,10 @@ def kill_monster(monster, game_map):
     # movability into a water tile.
     monster.routing_avoid = []
     # Remove all monster components, or replace with null placeholders.
+    monster.ai = None
     monster.attacker = None
     monster.burnable = None
+    monster.confused_manager = None
     monster.dissapatable = None
     monster.spreadable = None
     monster.swimable = None
@@ -28,7 +30,6 @@ def kill_monster(monster, game_map):
     monster.floatable.owner = monster
     monster.harmable = NullHarmable()
     monster.harmable.owner = monster
-    monster.ai = None
     message = 'The {} is dead!'.format(monster.name.capitalize())
     return [{ResultTypes.MESSAGE: Message(message, COLORS['orange'])}]
 
