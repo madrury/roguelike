@@ -98,7 +98,10 @@ class ConfusionPotionUsable:
                           COLORS.get('purple'))
         results.append({
             ResultTypes.CONFUSE: reciever,
-            ResultTypes.MESSAGE: message})
+            ResultTypes.MESSAGE: message,
+            ResultTypes.ANIMATION: (
+                Animations.CONFUSION_POTION, 
+                (reciever.x, reciever.y))})
         return results
 
 
