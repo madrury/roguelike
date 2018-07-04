@@ -1,4 +1,5 @@
 from etc.config import PANEL_CONFIG
+from etc.game_config import PLAYER_CONFUSED_DURATION, ENEMY_CONFUSED_DURATION
 from etc.colors import STATUS_BAR_COLORS
 from status_bar import StatusBar
 
@@ -16,8 +17,7 @@ class PlayerConfusedManager:
     threshold, the object swaps back in the usual component and then destroys
     itself.
     """
-    # TODO: n_confused_turns should be configured.
-    def __init__(self, n_confused_turns=10):
+    def __init__(self, n_confused_turns=PLAYER_CONFUSED_DURATION):
         self.n_turns = 0
         self.old_movable = None
         self.n_confused_turns = n_confused_turns
@@ -45,8 +45,10 @@ class PlayerConfusedManager:
 
 
 class EnemyConfusedManager:
-
-    def __init__(self, n_confused_turns=10):
+    """Manage swapping out the ai component on an enemy when it becomes
+    confused or recovers from being confused.
+    """
+    def __init__(self, n_confused_turns=ENEMY_CONFUSED_DURATION):
         self.n_turns = 0
         self.old_ai = None
         self.n_confused_turns = n_confused_turns
