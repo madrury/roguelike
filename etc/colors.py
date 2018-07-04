@@ -29,6 +29,8 @@ COLORS = {
     'green': (0, 255, 0),
     'light_blue': (150, 150, 230),
     'light_red': (255, 144, 144),
+    'light_purple': (100, 0, 100),
+    'dark_purple': (200, 0, 200),
     'medium_grey': (125, 125, 125),
     'orange': (255, 127, 0),
     'red': (255, 0, 0),
@@ -49,8 +51,8 @@ STATUS_BAR_COLORS = {
         'string_color': COLORS['white']
     },
     'confused_bar': {
-        'bar_color': (200, 200, 200),
-        'back_color': (100, 100, 100),
-        'string_color': (0, 0, 0)
+        'bar_color': COLORS['dark_purple'],
+        'back_color': COLORS['light_purple'],
+        'string_color': COLORS['white']
     }
 }
