@@ -28,16 +28,16 @@ def add_random_terrain(game_map, terrain_config):
         river = random_river(game_map)
         terrain.extend(river.get_entities(game_map))
 
-#    terrain.extend(
-#        random_growable(game_map, random_grass,
-#                        min_terrains=terrain_config['min_grass'],
-#                        max_terrains=terrain_config['max_grass'],
-#                        terrain_proportion=terrain_config['grass_room_proportion']))
-#    terrain.extend(
-#        random_growable(game_map, random_shrubs,
-#                        min_terrains=terrain_config['min_shrubs'],
-#                        max_terrains=terrain_config['max_shrubs'],
-#                        terrain_proportion=terrain_config['shrubs_room_proportion']))
+    terrain.extend(
+        random_growable(game_map, random_grass,
+                        min_terrains=terrain_config['min_grass'],
+                        max_terrains=terrain_config['max_grass'],
+                        terrain_proportion=terrain_config['grass_room_proportion']))
+    terrain.extend(
+        random_growable(game_map, random_shrubs,
+                        min_terrains=terrain_config['min_shrubs'],
+                        max_terrains=terrain_config['max_shrubs'],
+                        terrain_proportion=terrain_config['shrubs_room_proportion']))
 
     terrain.extend(
         random_growable(game_map, random_ice,
