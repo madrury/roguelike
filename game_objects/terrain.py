@@ -16,7 +16,7 @@ from components.commitable import (
     TerrainCommitable, WaterCommitable, IceCommitable, 
     ShrubCommitable, BaseCommitable)
 from components.dissipatable import NecroticSoilDissipatable
-from components.shimmer import WaterShimmer
+from components.shimmer import WaterShimmer, IceShimmer
 
 
 class Water:
@@ -62,7 +62,9 @@ class Ice:
             visible_out_of_fov=True,
             entity_type=EntityTypes.TERRAIN,
             render_order=RenderOrder.TERRAIN,
-            commitable=IceCommitable())
+            commitable=IceCommitable(),
+            shimmer=IceShimmer())
+
 
 class Grass:
 
