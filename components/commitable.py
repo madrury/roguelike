@@ -75,6 +75,36 @@ class TerrainCommitable:
             game_map.entities.remove(self.owner)
 
 
+class WaterCommitable:
+
+    def commit(self, game_map):
+        if not game_map.terrain[self.owner.x, self.owner.y]:
+            game_map.terrain[self.owner.x, self.owner.y] = True
+            game_map.water[self.owner.x, self.owner.y] = True
+            game_map.entities.append(self.owner)
+
+    def delete(self, game_map):
+        if self.owner in game_map.entities:
+            game_map.terrain[self.owner.x, self.owner.y] = False
+            game_map.water[self.owner.x, self.owner.y] = False
+            game_map.entities.remove(self.owner)
+
+
+class IceCommitable:
+
+    def commit(self, game_map):
+        if not game_map.terrain[self.owner.x, self.owner.y]:
+            game_map.terrain[self.owner.x, self.owner.y] = True
+            game_map.ice[self.owner.x, self.owner.y] = True
+            game_map.entities.append(self.owner)
+
+    def delete(self, game_map):
+        if self.owner in game_map.entities:
+            game_map.terrain[self.owner.x, self.owner.y] = False
+            game_map.ice[self.owner.x, self.owner.y] = False
+            game_map.entities.remove(self.owner)
+
+
 class ShrubCommitable(TerrainCommitable):
 
     def commit(self, game_map):

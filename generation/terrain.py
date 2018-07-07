@@ -43,7 +43,8 @@ def add_random_terrain(game_map, terrain_config):
     # the map, but the array will block terrain from being places anywhere that
     # it contains a true.  We just want to force commit all the terrain we
     # generated, so we zero out the array first.
-    game_map.terrain[:, :] = 0
+    game_map.terrain[:, :] = False
+    game_map.water[:, :] = False
     for t in terrain:
         t.commitable.commit(game_map)
 
@@ -139,6 +140,7 @@ class Pool(Growable):
 
     @staticmethod
     def make(game_map, x, y):
+        game_map.water[x, y] = True
         return Water.make(game_map, x, y)
 
 
@@ -204,6 +206,7 @@ class River:
 
     @staticmethod
     def make(game_map, x, y):
+        game_map.water[x, y] = True
         return Water.make(game_map, x, y)
 
     def get_entities(self, game_map):

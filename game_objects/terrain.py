@@ -2,30 +2,34 @@ import random
 
 from entity import Entity
 from colors import (
-    random_light_green, random_light_water, random_dark_water, random_dark_grey)
+    random_light_green, random_dark_grey, 
+    random_light_water, random_dark_water, 
+    random_light_ice, random_dark_ice)
 from etc.enum import Terrain, EntityTypes, RenderOrder
 from etc.colors import COLORS
 from etc.chars import CHARS
 
 import components.burnable
-from components.commitable import TerrainCommitable, ShrubCommitable, BaseCommitable
+import components.encroachable
+
+from components.commitable import (
+    TerrainCommitable, WaterCommitable, IceCommitable, 
+    ShrubCommitable, BaseCommitable)
 from components.dissipatable import NecroticSoilDissipatable
 from components.shimmer import WaterShimmer
-import components.encroachable
 
 
 class Water:
 
     @staticmethod
     def make(game_map, x, y):
-        game_map.water[x, y] = True
         game_map.make_transparent_and_walkable(x, y)
         fg_color = random_light_water()
         bg_color = random_light_water()
         dark_fg_color = random_dark_water()
         dark_bg_color = random_dark_water()
         return Entity(
-            x, y, '~',
+            x, y, CHARS['water'],
             name="Water",
             fg_color=fg_color,
             dark_fg_color=dark_fg_color,
