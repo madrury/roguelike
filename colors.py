@@ -60,4 +60,4 @@ def random_dark_ice():
     dr = int(random.uniform(-10, 10))
     dg = int(random.uniform(-10, 10))
     db = int(random.uniform(-10, 10))
-    return (30 + dr, 150 + dg, 200 + db)
+    return (15 + dr, 100 + dg, 150 + db)
