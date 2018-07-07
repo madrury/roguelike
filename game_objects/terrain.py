@@ -39,9 +39,30 @@ class Water:
             entity_type=EntityTypes.TERRAIN,
             render_order=RenderOrder.TERRAIN,
             burnable=components.burnable.WaterBurnable(),
-            commitable=TerrainCommitable(),
+            commitable=WaterCommitable(),
             shimmer=WaterShimmer())
 
+
+class Ice:
+
+    @staticmethod
+    def make(game_map, x, y):
+        game_map.make_transparent_and_walkable(x, y)
+        fg_color = random_light_ice()
+        bg_color = random_light_ice()
+        dark_fg_color = random_dark_ice()
+        dark_bg_color = random_dark_ice()
+        return Entity(
+            x, y, CHARS['ice'],
+            name="Ice",
+            fg_color=fg_color,
+            dark_fg_color=dark_fg_color,
+            bg_color=bg_color,
+            dark_bg_color=dark_bg_color,
+            visible_out_of_fov=True,
+            entity_type=EntityTypes.TERRAIN,
+            render_order=RenderOrder.TERRAIN,
+            commitable=IceCommitable())
 
 class Grass:
 

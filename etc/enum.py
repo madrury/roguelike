@@ -194,6 +194,7 @@ class Animations(Enum):
 
 class Terrain(Enum):
     POOL = auto()
+    ICE_PATCH = auto()
     GRASS = auto()
     SHRUBS = auto()
 

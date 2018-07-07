@@ -6,7 +6,7 @@ from entity import Entity
 from etc.enum import Terrain, EntityTypes, RenderOrder
 from etc.colors import COLORS
 from utils.utils import adjacent_coordinates, random_adjacent
-from game_objects.terrain import Water, Grass, Shrub
+from game_objects.terrain import Water, Ice, Grass, Shrub
 from components.shimmer import WaterShimmer
 from components.burnable import GrassBurnable, WaterBurnable
 
@@ -28,16 +28,23 @@ def add_random_terrain(game_map, terrain_config):
         river = random_river(game_map)
         terrain.extend(river.get_entities(game_map))
 
+#    terrain.extend(
+#        random_growable(game_map, random_grass,
+#                        min_terrains=terrain_config['min_grass'],
+#                        max_terrains=terrain_config['max_grass'],
+#                        terrain_proportion=terrain_config['grass_room_proportion']))
+#    terrain.extend(
+#        random_growable(game_map, random_shrubs,
+#                        min_terrains=terrain_config['min_shrubs'],
+#                        max_terrains=terrain_config['max_shrubs'],
+#                        terrain_proportion=terrain_config['shrubs_room_proportion']))
+
     terrain.extend(
-        random_growable(game_map, random_grass,
-                        min_terrains=terrain_config['min_grass'],
-                        max_terrains=terrain_config['max_grass'],
-                        terrain_proportion=terrain_config['grass_room_proportion']))
-    terrain.extend(
-        random_growable(game_map, random_shrubs,
-                        min_terrains=terrain_config['min_shrubs'],
-                        max_terrains=terrain_config['max_shrubs'],
-                        terrain_proportion=terrain_config['shrubs_room_proportion']))
+        random_growable(game_map, random_ice,
+                        min_terrains=terrain_config['min_ice'],
+                        max_terrains=terrain_config['max_ice'],
+                        terrain_proportion=terrain_config['ice_room_proportion']))
+
     # We've been using this array to track when terrain was generated in a tile
     # through the terrain generation process.  Now we want to commit them to
     # the map, but the array will block terrain from being places anywhere that
@@ -50,7 +57,7 @@ def add_random_terrain(game_map, terrain_config):
 
 
 def random_growable(game_map, terrain_creator, *,
-                        min_terrains, max_terrains, terrain_proportion):
+                    min_terrains, max_terrains, terrain_proportion):
     n_terrains = random.randint(min_terrains, max_terrains)
     terrain = []
     for _ in range(n_terrains):
@@ -85,9 +92,6 @@ class Growable:
         self.room = room
         self.coords = [] 
 
-    def __iter__(self):
-        yield from iter(self.coords)
-
     def seed(self):
         x, y = self.room.random_point()
         while self.game_map.terrain[x, y]:
@@ -95,7 +99,7 @@ class Growable:
         self.coords.append((x, y))
 
     def grow(self, stay_in_room=False, proportion=None, n_attempts=None):
-        """Grow the room using the algorithm described in the class
+        """Grow the terrain using the algorithm described in the class
         docstring.
         
         Parameters
@@ -126,7 +130,7 @@ class Growable:
                 self.coords.append((x, y))
 
     def get_entities(self, game_map):
-        return [self.make(game_map, x, y) for x, y in self]
+        return [self.make(game_map, x, y) for x, y in self.coords]
 
 
 #-----------------------------------------------------------------------------
@@ -155,6 +159,29 @@ def random_pool(game_map, proportion):
               proportion=proportion)
     return pool
 
+
+#-----------------------------------------------------------------------------
+# A Patch of Ice
+#-----------------------------------------------------------------------------
+class PatchOfIce(Growable):
+
+    def __init__(self, game_map, room):
+        super().__init__(game_map, room)
+        room.terrain = Terrain.ICE_PATCH
+
+    @staticmethod
+    def make(game_map, x, y):
+        return Ice.make(game_map, x, y)
+
+
+def random_ice(game_map, proportion):
+    """Grow grass in a random room on the game map."""
+    pinned_room = random.choice(game_map.floor.rooms)
+    while pinned_room.terrain != None:
+        pinned_room = random.choice(game_map.floor.rooms)
+    ice = PatchOfIce(game_map, pinned_room)
+    ice.grow(stay_in_room=True, proportion=proportion)
+    return ice
 
 #-----------------------------------------------------------------------------
 # River
@@ -249,6 +276,7 @@ class PatchOfGrass(Growable):
     def make(game_map, x, y):
         return Grass.make(game_map, x, y)
         
+
 def random_grass(game_map, proportion):
     """Grow grass in a random room on the game map."""
     pinned_room = random.choice(game_map.floor.rooms)

@@ -78,6 +78,7 @@ class GameMap(Map):
         # These need to be int8's to work with the tcod pathfinder
         self.explored = np.zeros((width, height), dtype=np.int8)
         self.water = np.zeros((width, height), dtype=np.int8)
+        self.ice = np.zeros((width, height), dtype=np.int8)
         self.fire = np.zeros((width, height), dtype=np.int8)
         self.shrub = np.zeros((width, height), dtype=np.int8)
         self.steam = np.zeros((width, height), dtype=np.int8)

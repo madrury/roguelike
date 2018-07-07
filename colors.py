@@ -49,3 +49,15 @@ def random_light_water():
 
 def random_dark_water():
     return (40, 40, int(random.uniform(80, 140)))
+
+def random_light_ice():
+    dr = int(random.uniform(-10, 10))
+    dg = int(random.uniform(-10, 10))
+    db = int(random.uniform(-10, 10))
+    return (30 + dr, 200 + dg, 245 + db)
+
+def random_dark_ice():
+    dr = int(random.uniform(-10, 10))
+    dg = int(random.uniform(-10, 10))
+    db = int(random.uniform(-10, 10))
+    return (30 + dr, 150 + dg, 200 + db)
