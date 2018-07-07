@@ -62,6 +62,7 @@ class Ice:
             visible_out_of_fov=True,
             entity_type=EntityTypes.TERRAIN,
             render_order=RenderOrder.TERRAIN,
+            burnable=components.burnable.IceBurnable(),
             commitable=IceCommitable(),
             shimmer=IceShimmer())
 

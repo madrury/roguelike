@@ -64,7 +64,6 @@ class GrassBurnable:
         # The order of events here is important.  We need to remove the terrain
         # entity (grass) from the tile before adding the new terrain (burned
         # grass), since each tile can only hold one terrain.
-        # TODO: Maybe there should be an atomic SWAP_TERRAIN result type?
         if burned_grass:
             results.append({ResultTypes.ADD_ENTITY: burned_grass})
         if fire:
@@ -80,5 +79,18 @@ class WaterBurnable:
             game_map, self.owner.x, self.owner.y)
         if steam:
             return [{ResultTypes.ADD_ENTITY: steam}]
+        else:
+            return []
+
+
+class IceBurnable:
+    """When ice is burned, it melts, leaving behind water."""
+    def burn(self, game_map):
+        water = game_objects.terrain.Water.make(
+            game_map, self.owner.x, self.owner.y)
+        if water:
+            return [{
+                ResultTypes.ADD_ENTITY: water,
+                ResultTypes.REMOVE_ENTITY: self.owner}]
         else:
             return []
