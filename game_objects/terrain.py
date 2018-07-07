@@ -20,7 +20,25 @@ from components.shimmer import WaterShimmer, IceShimmer
 
 
 class Water:
+    """A water terrain tile.
 
+    Water requires entities to swim to cross.
+
+      - The player has a swim stamina.  While swim stamina remains, the player
+        can freely move through water.  When the swim stamina is depleated,
+        movng through water will drain the player's HP.  Swim stamina is
+        recovered every turn the player spends on dry ground.
+      - Some entities can move freely through water, i.e. bloats, which float above the water.
+      - Land based entities will die immediately upon entering water.
+
+    Additionally:
+
+      - Items that become submerged in water will float.  When floating they
+        will move to a random adjacent tile each turn, until they end up on dry
+        land.
+      - Water can be burned, which will cause a steam entity to spawn in the
+        same tile (the water remains).
+    """
     @staticmethod
     def make(game_map, x, y):
         game_map.make_transparent_and_walkable(x, y)
@@ -44,7 +62,17 @@ class Water:
 
 
 class Ice:
+    """An ice terrain tile.
 
+    Ice affects entities move actions.  If an entity attempts a move action
+    that would end in them standing on an ice tile, the move action is instead
+    doubled (i.e. instead of moving from (x, y) to (x + dx, y + dy), they
+    instead move to (x + 2*dx, y + 2*dy).
+
+    Additionally:
+      - Ice can be burned, which removes it from the game map and spawns a
+        water entitiy in its place.
+    """
     @staticmethod
     def make(game_map, x, y):
         game_map.make_transparent_and_walkable(x, y)
@@ -68,7 +96,14 @@ class Ice:
 
 
 class Grass:
+    """A grass terrain tile.
 
+    Grass has no effect on movement, but it can be burned.  When grass is
+    burned it is removed from teh game map, and spawns a burned grass and a
+    fire entity with some probability.  The fire entities can then spread
+    throughout the grass, as fire entities have a probability of spreading (by
+    burning entities in random adjacent spaces).
+    """
     @staticmethod
     def make(game_map, x, y):
         fg_color = random_light_green()
@@ -87,7 +122,10 @@ class Grass:
 
 
 class BurnedGrass:
+    """A burned grass terrain tile.
 
+    Burned grass has no in game function, it is only cosmetic.
+    """
     @staticmethod
     def make(game_map, x, y):
         fg_color = random_dark_grey()
@@ -111,7 +149,14 @@ class BurnedGrass:
 
 
 class Shrub:
+    """A shrub terrain tile.
 
+    Shrubs block visibility. The player may move into the space occupied by a
+    shrub, in which case it is trampled and replaced with grass.
+
+    Additionally, shrubs can be burned, and they behave the same way as grass
+    with respect to burning.
+    """
     @staticmethod
     def make(game_map, x, y):
         fg_color = random_light_green()
@@ -131,7 +176,12 @@ class Shrub:
 
 
 class NecroticSoil:
+    """A necrotic soild terrain tile.
 
+    Necrotic soil is left behind in tiles that zomies move through.  Necrotic
+    soil dissapates after a few turns, but will harm any entity entering the
+    space (with necrotic type damage) while it exists.
+    """
     @staticmethod
     def make(game_map, x, y):
         fg_color = COLORS['necrotic_soil']
