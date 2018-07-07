@@ -11,7 +11,7 @@ class Movable:
         """Set the position of the owner to a given postition.
         
         This is the lowest level method for manipulating an entities positon on
-        the mad, and as such, it checks if the resulting positon is actually
+        the mpd, and as such, it checks if the resulting positon is actually
         valid to hold the owner.
 
           - Is the proposed new positon walkable?
@@ -21,6 +21,8 @@ class Movable:
         If all the checks pass, the position of the entity is set to the
         proposed positon, the blocked array of the game map is updated, and the
         position of the entity within the entity array is updated.
+
+        Returns True or False, depending on if the new position was set.
         """
         target_location = (x, y)
         is_walkable = game_map.walkable[target_location]
@@ -35,12 +37,26 @@ class Movable:
             game_map.entities.update_position(
                 self.owner, (self.owner.x, self.owner.y), target_location)
             self.owner.x, self.owner.y = target_location 
+            return True
+        return False
 
     def move(self, game_map, dx, dy):
-        """Move the owner in a given direction (dx, dy)."""
+        """Attempt to move the owner in a given direction (dx, dy).
+        
+        The basic behaviour here is to set the position to (x + dx, y + dy).
+        This behaviour is overrode if the player is attempting to move onto
+        ice, in which case the owner slides an additional space in that
+        direction.
+        """
         x, y = self.owner.x, self.owner.y
-        new_x, new_y = x + dx, y + dy
-        self.set_position_if_able(game_map, new_x, new_y)
+        is_ice = game_map.ice[x + dx, y + dy]
+        success = False
+        if is_ice:
+            new_x, new_y = x + 2*dx, y + 2*dy
+            success = self.set_position_if_able(game_map, new_x, new_y)
+        if not success:
+            new_x, new_y = x + dx, y + dy
+            self.set_position_if_able(game_map, new_x, new_y)
 
     def move_towards(self, target_x, target_y, game_map):
         """Move the owner one step towards a target."""
