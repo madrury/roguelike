@@ -3,7 +3,7 @@ from messages import Message
 from game_objects.terrain import Water
 
 from etc.colors import COLORS
-from etc.enum import ResultTypes, Animations, Elements, EntityTypes
+from etc.enum import ResultTypes, Animations, Elements, EntityTypes, CursorTypes
 from utils.utils import (
     coordinates_within_circle,
     get_all_entities_of_type_within_radius,
@@ -66,3 +66,32 @@ def waterblast(game_map, center, *, radius=4, damage=6, user=None):
         ResultTypes.ANIMATION: (
             Animations.WATERBLAST, center, radius)})
     return results
+
+
+def use_staff(staff_usable, callback_cls, game_map, user):
+    """Generic function for using a staff.
+
+    Parameters
+    ----------
+    staff_usable: Usable component.
+        The usable component of the item entity.
+
+    callback_cls:
+        Class to use for the callback after the position to use the staff has
+        been selected.
+
+    game_map: GameMap
+        The current game map.
+
+    user: Entity
+        The entity that used the staff.
+    """
+    if staff_usable.owner.consumable.uses > 0:
+        callback = callback_cls(staff_usable, game_map, user)
+        return [{
+            ResultTypes.CURSOR_MODE: (
+                user.x, user.y, callback, CursorTypes.RAY)}]
+    else:
+        message = Message(f"Cannot use {staff_usable.owner.name} with zero charges.")
+        return [{
+            ResultTypes.MESSAGE: message}]

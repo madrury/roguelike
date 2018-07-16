@@ -1,6 +1,6 @@
 from etc.colors import COLORS
 from messages import Message
-from game_events import fireblast, waterblast
+from game_events import fireblast, waterblast, use_staff
 
 from components.callbacks.usable_callbacks import (
     TorchCallback, FireStaffCallback)
@@ -256,17 +256,17 @@ class FireStaffUsable:
     Every burnable object encountered along the path of the fireblall is
     burned, as is the final blocking object encountered.
     """
-
     def __init__(self):
         self.name = "Fire Staff"
 
     def use(self, game_map, user):
-        if self.owner.consumable.uses > 0:
-            callback = FireStaffCallback(self, game_map, user)
-            return [{
-                ResultTypes.CURSOR_MODE: (
-                    user.x, user.y, callback, CursorTypes.RAY)}]
-        else:
-            message = Message(f"Cannot use {self.owner.name} with zero charges.")
-            return [{
-                ResultTypes.MESSAGE: message}]
+        return use_staff(self, FireStaffCallback, game_map, user)
+
+
+#class IceStaffUsable:
+#
+#    def __init__(self):
+#        self.name = "Ice Staff"
+#
+#    def use(self, game_map, user):
+#        return use_staff(self, IceStaffCallback, game_map, user)
