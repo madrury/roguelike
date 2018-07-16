@@ -65,9 +65,8 @@ class Entity:
     burnable: Burnable object.
       Contains logic for results of attempting to burn the entity.
 
-    confused_manager: ConfusedManager object.
-      Manages the confusion status of the entity.  For a player, swaps out
-      movable components, for a monster, swaps out AIs.
+    status_manager: StatusManager object.
+      Manages the status of the entity, i.e. if the entity is condused or frozen.
 
     commitable: Commitable object.
       Contains logic for commiting and deleting an entity to/from the game.
@@ -137,7 +136,7 @@ class Entity:
                  ai=None,
                  attacker=None,
                  burnable=None,
-                 confused_manager=None,
+                 status_manager=None,
                  consumable=None,
                  commitable=None,
                  defender=None,
@@ -181,7 +180,7 @@ class Entity:
         self.add_component(ai, "ai")
         self.add_component(attacker, "attacker")
         self.add_component(burnable, "burnable")
-        self.add_component(confused_manager, "confused_manager")
+        self.add_component(status_manager, "status_manager")
         self.add_component(consumable, "consumable")
         self.add_component(commitable, "commitable")
         self.add_component(defender, "defender")

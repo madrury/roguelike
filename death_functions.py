@@ -22,7 +22,7 @@ def kill_monster(monster, game_map):
     monster.ai = None
     monster.attacker = None
     monster.burnable = None
-    monster.confused_manager = None
+    monster.status_manager = None
     monster.dissapatable = None
     monster.spreadable = None
     monster.swimable = None

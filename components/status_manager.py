@@ -28,13 +28,16 @@ class PlayerConfusedManager:
     def attach(self, player):
         self.old_movable = player.movable
         player.add_component(components.movable.ConfusedMovable(), "movable")
-        player.add_component(self, "confused_manager")
+        player.add_component(self, "status_manager")
+
+    def remove(self):
+        self.owner.add_component(self.old_movable, "movable")
+        self.owner.status_manager = None
 
     def tick(self):
         self.n_turns += 1
         if self.n_turns >= self.n_confused_turns:
-            self.owner.add_component(self.old_movable, "movable")
-            self.owner.confused_manager = None
+            self.remove()
 
     def render_status_bar(self, panel, x, y):
         self.status_bar.render(
@@ -56,10 +59,13 @@ class EnemyConfusedManager:
     def attach(self, entity):
         self.old_ai = entity.ai
         entity.add_component(components.ai.ConfusedMonster(), "ai")
-        entity.add_component(self, "confused_manager")
+        entity.add_component(self, "status_manager")
+
+    def remove(self):
+        self.owner.add_component(self.old_ai, "ai")
+        self.owner.status_manager = None
 
     def tick(self):
         self.n_turns += 1
         if self.n_turns >= self.n_confused_turns:
-            self.owner.add_component(self.old_ai, "ai")
-            self.owner.confused_manager = None
+            self.remove()

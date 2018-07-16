@@ -22,7 +22,7 @@ from utils.utils import (
 from animations.animations import construct_animation
 from components.attacker import Attacker
 from components.burnable import AliveBurnable
-from components.confused_manager import PlayerConfusedManager, EnemyConfusedManager
+from components.status_manager import PlayerConfusedManager, EnemyConfusedManager
 from components.defender import Defender
 from components.equipment import Equipment
 from components.harmable import Harmable
@@ -135,8 +135,8 @@ def main():
         panel_console.clear(fg=COLORS['white'], bg=COLORS['black'])
         player.harmable.render_status_bar(panel_console, 1, 1)
         player.swimmable.render_status_bar(panel_console, 1, 3)
-        if player.confused_manager:
-            player.confused_manager.render_status_bar(panel_console, 1, 5)
+        if player.status_manager:
+            player.status_manager.render_status_bar(panel_console, 1, 5)
         message_log.render(panel_console)
         for idx, entity in enumerate(harmed_queue):
             entity.harmable.render_status_bar(
@@ -387,6 +387,8 @@ def main():
             # Put an entity in a confused state
             if result_type == ResultTypes.CONFUSE:
                 entity = result_data
+                if entity.status_manager:
+                    entity.status_manager.remove()
                 if entity == player:
                     confused_manager = PlayerConfusedManager()
                     confused_manager.attach(player)
@@ -433,8 +435,8 @@ def main():
                     enemy_turn_results.extend(item.rechargeable.tick())
             # All confused entities get ticked
             for entity in game_map.entities:
-                if entity.confused_manager:
-                    entity.confused_manager.tick()
+                if entity.status_manager:
+                    entity.status_manager.tick()
             # All encroaching entities interact with their cellmates.
             enemy_turn_results.extend(encroach_on_all(player, game_map))
             # The player re-gains or loses swim stamina.
