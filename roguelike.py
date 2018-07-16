@@ -620,7 +620,7 @@ def create_map(map_console):
 def create_player(game_map):
     from game_objects.items import (
         HealthPotion, MagicMissileScroll, FireblastScroll, ThrowingKnife,
-        Torch, FireStaff, ConfusionPotion)
+        Torch, FireStaff, IceStaff, ConfusionPotion)
     from game_objects.weapons import Raipier
     from components.movable import ConfusedMovable
     # This is you.  Kill some Orcs.
@@ -651,6 +651,7 @@ def create_player(game_map):
     player.inventory.extend([Torch.make(0, 0)])
     player.inventory.extend([Raipier.make(0, 0)])
     player.inventory.extend([FireStaff.make(0, 0)])
+    player.inventory.extend([IceStaff.make(0, 0)])
     return player
 
 def construct_inventory_data(game_state):

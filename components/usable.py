@@ -3,7 +3,7 @@ from messages import Message
 from game_events import fireblast, waterblast, use_staff
 
 from components.callbacks.usable_callbacks import (
-    TorchCallback, FireStaffCallback)
+    TorchCallback, FireStaffCallback, IceStaffCallback)
 
 from etc.enum import (
     ResultTypes, CursorTypes, Animations, EntityTypes, Elements)
@@ -263,10 +263,10 @@ class FireStaffUsable:
         return use_staff(self, FireStaffCallback, game_map, user)
 
 
-#class IceStaffUsable:
-#
-#    def __init__(self):
-#        self.name = "Ice Staff"
-#
-#    def use(self, game_map, user):
-#        return use_staff(self, IceStaffCallback, game_map, user)
+class IceStaffUsable:
+
+    def __init__(self):
+        self.name = "Ice Staff"
+
+    def use(self, game_map, user):
+        return use_staff(self, IceStaffCallback, game_map, user)

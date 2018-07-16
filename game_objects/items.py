@@ -14,7 +14,7 @@ from components.rechargeable import Rechargeable
 from components.usable import (
     NullUsable, HealthPotionUsable, PowerPotionUsable, ConfusionPotionUsable,
     MagicMissileUsable, FireblastUsable, TorchUsable, WaterblastUsable,
-    FireStaffUsable)
+    FireStaffUsable, IceStaffUsable)
 from components.throwable import (
     NullThrowable, HealthPotionThrowable, ConfusionPotionThrowable, 
     ThrowingKnifeThrowable)
@@ -160,4 +160,23 @@ class FireStaff:
                       rechargeable=Rechargeable(
                           charges_needed=STAFF_RECHARGE_TIME),
                       usable=FireStaffUsable(),
+                      throwable=NullThrowable())
+
+class IceStaff:
+
+    @staticmethod
+    def make(x, y):
+        return Entity(x, y, '/', COLORS['violet'], 'Ice Staff',
+                      entity_type=EntityTypes.ITEM,
+                      render_order=RenderOrder.ITEM,
+                      commitable=BaseCommitable(),
+                      consumable=FinitelyConsumable(
+                          uses=STAFF_BASE_USES, 
+                          discard_on_empty=False,
+                          display_on_one=True),
+                      floatable=Floatable(),
+                      movable=Movable(),
+                      rechargeable=Rechargeable(
+                          charges_needed=STAFF_RECHARGE_TIME),
+                      usable=IceStaffUsable(),
                       throwable=NullThrowable())
