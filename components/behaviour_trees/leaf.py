@@ -83,6 +83,12 @@ class Skitter(Node):
         return TreeStates.SUCCESS, results
 
 
+class DoNothing(Node):
+    """Take no action and pass the turn."""
+    def tick(self, owner, target, game_map):
+        return TreeStates.SUCCESS, []
+
+
 class Attack(Node):
     """The owner attackes the target."""
     def tick(self, owner, target, game_map):

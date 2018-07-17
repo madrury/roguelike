@@ -5,7 +5,8 @@ from components.behaviour_trees.composite import (
     Selection, Sequence, Negate)
 from components.behaviour_trees.leaf import (
      Attack, MoveTowardsTargetEntity, Skitter, TravelToRandomPosition,
-     SeekTowardsLInfinityRadius, SpawnEntity, MoveTowardsPointInNamespace)
+     SeekTowardsLInfinityRadius, SpawnEntity, DoNothing,
+     MoveTowardsPointInNamespace)
 from components.behaviour_trees.conditions import (
     IsAdjacent, WithinFov, WithinL2Radius, AtLInfinityRadius, CoinFlip,
     InNamespace)
@@ -57,7 +58,7 @@ class FrozenMonster:
     Always passes the turn without acting.
     """
     def __init__(self):
-        self.tree = Root()
+        self.tree = Root(DoNothing())
 
     def take_turn(self, target, game_map):
         _, results = self.tree.tick(self.owner, target, game_map)

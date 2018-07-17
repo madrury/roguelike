@@ -22,7 +22,9 @@ from utils.utils import (
 from animations.animations import construct_animation
 from components.attacker import Attacker
 from components.burnable import AliveBurnable
-from components.status_manager import PlayerConfusedManager, EnemyConfusedManager
+from components.status_manager import (
+    PlayerConfusedManager, EnemyConfusedManager,
+    EnemyFrozenManager)
 from components.defender import Defender
 from components.equipment import Equipment
 from components.harmable import Harmable
@@ -387,14 +389,12 @@ def main():
             # Put an entity in a confused state
             if result_type == ResultTypes.CONFUSE:
                 entity = result_data
-                if entity.status_manager:
-                    entity.status_manager.remove()
-                if entity == player:
-                    confused_manager = PlayerConfusedManager()
-                    confused_manager.attach(player)
-                else:
-                    confused_manager = EnemyConfusedManager()
-                    confused_manager.attach(entity)
+                apply_status(
+                    entity, player, PlayerConfusedManager, EnemyConfusedManager)
+            if result_type == ResultTypes.FREEZE:
+                entity = result_data
+                apply_status(
+                    entity, player, None, EnemyFrozenManager)
             # Add a new entity to the game.
             if result_type == ResultTypes.ADD_ENTITY:
                 entity = result_data
@@ -763,6 +763,16 @@ def process_harm(game_map, result_data, turn_results, harmed_queue):
         game_map, source, amount, elements))
     if target not in harmed_queue:
         harmed_queue.appendleft(target)
+
+def apply_status(entity, player, player_status_manger, enemy_status_manager):
+    if entity.status_manager:
+        entity.status_manager.remove()
+    if entity == player:
+        confused_manager = player_status_manger()
+        confused_manager.attach(player)
+    else:
+        confused_manager = enemy_status_manager()
+        confused_manager.attach(entity)
 
 def entity_equip_armor(entity, armor, turn_results):
     if not hasattr(entity, "harmable"):

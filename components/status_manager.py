@@ -77,7 +77,7 @@ class EnemyFrozenManager:
     """Manage swapping out the ai component on an enemy when it becomes
     frozen or recovers from being frozen.
     """
-    def __init__(self, n_confused_turns=ENEMY_FROZEN_DURATION):
+    def __init__(self, n_frozen_turns=ENEMY_FROZEN_DURATION):
         self.n_turns = 0
         self.old_ai = None
         self.n_frozen_turns = n_frozen_turns
