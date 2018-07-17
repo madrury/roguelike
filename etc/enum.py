@@ -77,7 +77,7 @@ CANCEL_STATES = {
 # ANIMATION: (Animation type, ... other data needed for specific animation)
 #   Play an animation.
 # CONFUSE: entity
-#   Put the entity in the confused state.
+#   Put the entity in a confused state.
 # CURSOR_MODE: boolean
 #   Enter cursor mode.
 # DAMAGE: (entity, source, amount, elements)
@@ -92,6 +92,8 @@ CANCEL_STATES = {
 #   Equip equipable_entity onto entity.
 # EQUIP_INVENTORY: boolean
 #   Open the inventory for equipping items.
+# FREEZE: entity
+#   Freeze an entity.
 # DISCARD_ITEM: (entity, bool)
 #   The entity has or has not consumed an item.
 # ITEM_DROPPED: item
@@ -123,6 +125,7 @@ class ResultTypes(Enum):
     END_TURN = auto()
     EQUIP_ARMOR = auto()
     EQUIP_WEAPON = auto()
+    FREEZE = auto()
     HARM = auto()
     INCREASE_ATTACK_POWER = auto()
     MESSAGE = auto()
@@ -217,6 +220,7 @@ class Elements(Enum):
     NONE = auto()
     HEALING = auto()
     FIRE = auto()
+    ICE = auto()
     WATER = auto()
     NECROTIC = auto()
 

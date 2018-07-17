@@ -8,6 +8,7 @@ from components.attacker import Attacker
 from components.burnable import AliveBurnable, ZombieBurnable, WaterBloatBurnable
 from components.commitable import BlockingCommitable
 from components.defender import Defender
+from components.freezable import EnemyFreezable
 from components.movable import Movable
 from components.scaldable import AliveScaldable, FireBloatScaldable
 from components.spreadable import ZombieSpreadable
@@ -36,6 +37,7 @@ class Kruthik:
             burnable=AliveBurnable(),
             commitable=BlockingCommitable(),
             harmable=components.harmable.Harmable(hp=1, defense=0),
+            freezable=EnemyFreezable(),
             movable=Movable(),
             scaldable=AliveScaldable(),
             swimmable=BaseSwimmable())
@@ -60,6 +62,7 @@ class Orc:
             burnable=AliveBurnable(),
             commitable=BlockingCommitable(),
             harmable=components.harmable.Harmable(hp=10, defense=0),
+            freezable=EnemyFreezable(),
             movable=Movable(),
             swimmable=BaseSwimmable(),
             scaldable=AliveScaldable())
@@ -85,6 +88,7 @@ class PinkJelly:
             commitable=BlockingCommitable(),
             harmable=components.harmable.PinkJellyHarmable(
                 hp=hp, defense=0),
+            freezable=EnemyFreezable(),
             movable=Movable(),
             swimmable=BaseSwimmable(),
             scaldable=AliveScaldable())
@@ -115,6 +119,7 @@ class Troll:
             ai=components.ai.HuntingMonster(),
             burnable=AliveBurnable(),
             commitable=BlockingCommitable(),
+            freezable=EnemyFreezable(),
             movable=Movable(),
             swimmable=BaseSwimmable(),
             scaldable=AliveScaldable())
@@ -136,6 +141,7 @@ class FireBloat:
             attacker=Attacker(power=1),
             commitable=BlockingCommitable(),
             harmable=components.harmable.FireBloatHarmable(hp=1, defense=0),
+            freezable=EnemyFreezable(),
             movable=Movable(),
             scaldable=FireBloatScaldable())
 
@@ -157,6 +163,7 @@ class WaterBloat:
             burnable=WaterBloatBurnable(),
             commitable=BlockingCommitable(),
             harmable=components.harmable.WaterBloatHarmable(hp=1, defense=0),
+            freezable=EnemyFreezable(),
             movable=Movable())
 
 
@@ -188,6 +195,7 @@ class Zombie:
             ai=components.ai.ZombieMonster(),
             burnable=ZombieBurnable(),
             commitable=BlockingCommitable(),
+            freezable=EnemyFreezable(),
             movable=Movable(),
             scaldable=AliveScaldable(),
             swimmable=BaseSwimmable(),
@@ -222,6 +230,7 @@ class Necromancer:
                         elements=[Elements.HEALING], multiplyer=-1)]),
             harmable=components.harmable.Harmable(
                 hp=20, defense=0),
+            freezable=EnemyFreezable(),
             movable=Movable(),
             swimmable=BaseSwimmable(),
             scaldable=AliveScaldable())

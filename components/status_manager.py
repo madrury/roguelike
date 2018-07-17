@@ -1,5 +1,7 @@
 from etc.config import PANEL_CONFIG
-from etc.game_config import PLAYER_CONFUSED_DURATION, ENEMY_CONFUSED_DURATION
+from etc.game_config import (
+    PLAYER_CONFUSED_DURATION, ENEMY_CONFUSED_DURATION,
+    ENEMY_FROZEN_DURATION)
 from etc.colors import STATUS_BAR_COLORS
 from status_bar import StatusBar
 
@@ -68,4 +70,28 @@ class EnemyConfusedManager:
     def tick(self):
         self.n_turns += 1
         if self.n_turns >= self.n_confused_turns:
+            self.remove()
+
+
+class EnemyFrozenManager:
+    """Manage swapping out the ai component on an enemy when it becomes
+    frozen or recovers from being frozen.
+    """
+    def __init__(self, n_confused_turns=ENEMY_FROZEN_DURATION):
+        self.n_turns = 0
+        self.old_ai = None
+        self.n_frozen_turns = n_frozen_turns
+
+    def attach(self, entity):
+        self.old_ai = entity.ai
+        entity.add_component(components.ai.FrozenMonster(), "ai")
+        entity.add_component(self, "status_manager")
+
+    def remove(self):
+        self.owner.add_component(self.old_ai, "ai")
+        self.owner.status_manager = None
+
+    def tick(self):
+        self.n_turns += 1
+        if self.n_turns >= self.n_frozen_turns:
             self.remove()

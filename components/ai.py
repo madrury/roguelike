@@ -51,6 +51,19 @@ class ConfusedMonster:
         return results
 
 
+class FrozenMonster:
+    """AI for a frozen monster.
+
+    Always passes the turn without acting.
+    """
+    def __init__(self):
+        self.tree = Root()
+
+    def take_turn(self, target, game_map):
+        _, results = self.tree.tick(self.owner, target, game_map)
+        return results
+
+
 class NecromancerMonster:
     """AI for a necromancer.
 
