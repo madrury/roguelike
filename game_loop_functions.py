@@ -24,6 +24,10 @@ from utils.utils import get_blocking_entity_in_position, get_all_entities_with_c
 
 
 def create_map(map_console):
+    """Construct and return the game map.
+
+    The game map is the main object representing the state of the game.
+    """
     floor = make_floor(FLOOR_CONFIG, ROOM_CONFIG)
     game_map = GameMap(floor, map_console)
     terrain = add_random_terrain(game_map, TERRAIN_CONFIG)
@@ -33,6 +37,7 @@ def create_map(map_console):
 
 
 def create_player(game_map):
+    """Create the player entity and place on the game map."""
     from game_objects.items import (
         HealthPotion, MagicMissileScroll, FireblastScroll, ThrowingKnife,
         Torch, FireStaff, IceStaff, ConfusionPotion)

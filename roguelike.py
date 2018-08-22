@@ -13,10 +13,14 @@ from etc.colors import COLORS
 from etc.config import (
     SCREEN_WIDTH, SCREEN_HEIGHT, PANEL_CONFIG, MESSAGE_CONFIG, FOV_CONFIG, ANIMATION_INTERVAL, SHIMMER_INTERVAL)
 from etc.enum import (
-    ResultTypes, InputTypes, EntityTypes, GameStates, INVENTORY_STATES, INPUT_STATES, CANCEL_STATES)
-from game_loop_functions import create_map, create_player, construct_inventory_data, get_user_input, \
-    process_selected_item, player_move_or_attack, pickup_entity, encroach_on_all, process_damage, process_harm, \
-    apply_status, entity_equip_armor, entity_equip_weapon, entity_remove_armor, entity_remove_weapon
+    ResultTypes, InputTypes, EntityTypes, GameStates, INVENTORY_STATES,
+    INPUT_STATES, CANCEL_STATES)
+from game_loop_functions import (
+    create_map, create_player, construct_inventory_data, get_user_input,
+    process_selected_item, player_move_or_attack, pickup_entity,
+    encroach_on_all, process_damage, process_harm, apply_status,
+    entity_equip_armor, entity_equip_weapon, entity_remove_armor,
+    entity_remove_weapon)
 from input_handlers import handle_keys
 from menus import invetory_menu
 from messages import MessageLog
