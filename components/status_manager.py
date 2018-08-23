@@ -5,7 +5,7 @@ from etc.game_config import (
 from etc.colors import STATUS_BAR_COLORS
 from status_bar import StatusBar
 
-import components.movable
+import components.input_handler
 import components.ai
 
 
@@ -21,19 +21,20 @@ class PlayerConfusedManager:
     """
     def __init__(self, n_confused_turns=PLAYER_CONFUSED_DURATION):
         self.n_turns = 0
-        self.old_movable = None
+        self.old_input_handler = None
         self.n_confused_turns = n_confused_turns
         self.status_bar = StatusBar(
             total_width=PANEL_CONFIG['bar_width'],
             bar_colors=STATUS_BAR_COLORS['confused_bar'])
 
     def attach(self, player):
-        self.old_movable = player.movable
-        player.add_component(components.movable.ConfusedMovable(), "movable")
+        self.old_input_handler = player.input_handler
+        player.add_component(
+            components.input_handler.PlayerConfusedInputHandler(), "input_handler")
         player.add_component(self, "status_manager")
 
     def remove(self):
-        self.owner.add_component(self.old_movable, "movable")
+        self.owner.add_component(self.old_input_handler, "input_handler")
         self.owner.status_manager = None
 
     def tick(self):

@@ -1,8 +1,11 @@
+import random
 from etc.enum import GameStates, InputTypes, INVENTORY_STATES
 
 
 class PlayerInputHandler:
-
+    """Handler for basic player input.  Used when the player status is
+    normal.
+    """
     def handle_keys(self, user_input, game_state):
         """Consider user input and return a consequent action.
 
@@ -38,7 +41,11 @@ class PlayerInputHandler:
             return {}
 
     def handle_player_turn_keys(self, user_input):
-        """Handle user input on the player's turn."""   
+        """Handle user input on the player's turn.
+        
+        This handles basic movement, picking up items, and opening and closing
+        menus.
+        """   
         key_char = user_input.char
         # Movement events
         if user_input.key == 'UP' or key_char == 'k':
@@ -74,12 +81,32 @@ class PlayerInputHandler:
         return handle_generic_keys(user_input)
 
     def handle_inventory_keys(self, user_input):
+        """Handle input when in a menu."""
         if not user_input.char:
             return {}
         # Index in the alphabet starting with 'a' at index 0
         index = ord(user_input.char) - ord('a')
         if index >= 0:
             return {InputTypes.INVENTORY_INDEX: index}
+        return handle_generic_keys(user_input)
+
+
+class PlayerConfusedInputHandler(PlayerInputHandler):
+
+    def handle_player_turn_keys(self, user_input):
+        key_char = user_input.char
+        # Movement events
+        if (user_input.key == 'UP' or key_char == 'k' or user_input.key == 'DOWN'
+            or key_char == 'j' or user_input.key == 'LEFT' or key_char == 'h'
+            or user_input.key == 'RIGHT' or key_char == 'l' or key_char == 'y'
+            or key_char == 'u' or key_char == 'b' or key_char == 'n'
+            or key_char == 'z' or key_char == 'g' or key_char == 'i'
+            or key_char == 'd' or key_char == 't' or key_char == 'e'):
+            dx, dy = random.choice([
+                (-1, 1), (0, 1), (1, 1),
+                (-1, 0), (0, 0), (1, 0),
+                (-1, -1), (0, -1), (1, -1)])
+            return {InputTypes.MOVE: (dx, dy)}
         return handle_generic_keys(user_input)
 
 
