@@ -24,7 +24,6 @@ from game_loop_functions import (
     encroach_on_all, process_damage, process_harm, apply_status,
     entity_equip_armor, entity_equip_weapon, entity_remove_armor,
     entity_remove_weapon)
-from input_handlers import handle_keys
 from menus import invetory_menu
 from messages import MessageLog
 from utils.utils import (
