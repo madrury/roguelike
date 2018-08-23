@@ -183,12 +183,13 @@ class CursorTypes(Enum):
 
 class Animations(Enum):
     CONCATINATED = auto()
-    FIREBLAST = auto()
-    FIREBALL = auto()
-    HEALTH_POTION = auto()
-    POWER_POTION = auto()
     CONFUSION_POTION = auto()
+    FIREBALL = auto()
+    FIREBLAST = auto()
+    HEALTH_POTION = auto()
+    ICEBALL = auto()
     MAGIC_MISSILE = auto()
+    POWER_POTION = auto()
     SIMULTANEOUS = auto()
     THROWING_KNIFE = auto()
     THROW_POTION = auto()

@@ -11,7 +11,7 @@ from etc.colors import COLORS
 from etc.chars import CHARS
 from colors import (
     COLOR_PATHS, random_yellow, random_red, random_orange,
-    random_red_or_yellow, random_light_blue)
+    random_red_or_yellow, random_grey, random_light_blue, random_dark_blue)
 
 def construct_animation(animation_data, game_map):
     """Construct an appropriate animation player object given the type of
@@ -28,6 +28,9 @@ def construct_animation(animation_data, game_map):
     elif animation_type == Animations.FIREBALL:
         _, source, target = animation_data
         animation_player = FireballAnimation(game_map, source, target)
+    elif animation_type == Animations.ICEBALL:
+        _, source, target = animation_data
+        animation_player = IceballAnimation(game_map, source, target)
     elif animation_type == Animations.THROW_POTION:
         _, source, target = animation_data
         animation_player = ThrownPotionAnimation(game_map, source, target)
@@ -315,7 +318,7 @@ class ThrowingKnifeAnimation:
 class FireballAnimation:
     """Animation for a fireball, as from a FireStaff.
 
-    Draws a three square travelling sequence from a source to a target.
+    Draws a three tile travelling sequence from a source to a target.
 
     Parameters
     ----------
@@ -337,42 +340,126 @@ class FireballAnimation:
         self.current_frame = 0
 
     def next_frame(self):
-        position = None
-        try:
-            position = next(self.pathiter)
-        except StopIteration:
-            pass
-        if position:
-            self.current_positions.appendleft(position)
-        if self.current_frame >= 3:
-            p = self.current_positions.pop()
-            self.game_map.draw_position(p[0], p[1])
-        if len(self.current_positions) >= 1:
-            x, y = self.current_positions[0]
-            if self.game_map.fov[x, y]:
-                self.game_map.draw_char(
-                    x, y, '*', random_red(), random_red())
-            # When the head of the fireball leaves the fov, immediately break
-            # out of the animation.
-            else:
-                return True
-        if len(self.current_positions) >= 2:
-            x, y = self.current_positions[1]
-            if self.game_map.fov[x, y]:
-                self.game_map.draw_char(
-                    x, y, '*', random_orange(), random_orange())
-        if len(self.current_positions) >= 3:
-            x, y = self.current_positions[2]
-            if self.game_map.fov[x, y]:
-                self.game_map.draw_char(
-                    x, y, '*', random_yellow(), random_yellow())
-        self.current_frame += 1
-        if len(self.current_positions) == 0:
+        return draw_ball(self, head_fg_callback=random_orange, 
+                               head_bg_callback=random_red,
+                               middle_fg_callback=random_yellow,
+                               middle_bg_callback=random_orange,
+                               tail_fg_callback=random_yellow,
+                               tail_bg_callback=random_yellow)
+
+
+class IceballAnimation:
+    """Animation for a Ice, as from an IceStaff.
+
+    Draws a three tile travelling sequence from a source to a target.
+
+    Parameters
+    ----------
+    game_map: GameMap object
+      The game_map to draw the animation on.
+
+    source: (int, int):
+      The location of the source.
+
+    target: (int, int):
+      The location of the target.
+    """
+    def __init__(self, game_map, source, target):
+        self.game_map = game_map
+        self.source = source
+        self.target = target
+        self.pathiter = iter(bresenham_line(game_map, source, target))
+        self.current_positions = deque()
+        self.current_frame = 0
+
+    def next_frame(self):
+        return draw_ball(self, head_fg_callback=lambda: (255, 255, 255), 
+                               head_bg_callback=random_grey,
+                               middle_fg_callback=random_grey,
+                               middle_bg_callback=random_light_blue,
+                               tail_fg_callback=random_light_blue,
+                               tail_bg_callback=random_dark_blue)
+
+
+
+def draw_ball(animation, *, head_fg_callback, head_bg_callback,
+                            middle_fg_callback, middle_bg_callback,
+                            tail_fg_callback, tail_bg_callback):
+    """Animate a ball projectile travelling from a source to a target.
+
+    A ball projectile is made of three tiles, a head, middle, and tail.  It
+    travels in a straight line path from a source to a target.
+
+    Parameters
+    ----------
+    animation: Animation object
+      Must have .current_frame, and game_map attributes.
+
+    head_fg_callback: function: [] -> (int, int, int)
+      A callback that returns an RGB tuple, used to color the foreground
+      charecter.
+
+    head_bg_callback: function: [] -> (int, int, int)
+      A callback that returns an RGB tuple, used to color the background of
+      each tile.
+
+    middle_fg_callback, middle_bg_callback, tail_fg_callback, tail_bg_callback:
+       Similar.
+    """
+    position = None
+    try:
+        position = next(animation.pathiter)
+    except StopIteration:
+        pass
+    if position:
+        animation.current_positions.appendleft(position)
+    if animation.current_frame >= 3:
+        p = animation.current_positions.pop()
+        animation.game_map.draw_position(p[0], p[1])
+    if len(animation.current_positions) >= 1:
+        x, y = animation.current_positions[0]
+        if animation.game_map.fov[x, y]:
+            animation.game_map.draw_char(
+                x, y, '*', head_fg_callback(), head_bg_callback())
+        # When the head of the fireball leaves the fov, immediately break
+        # out of the animation.
+        else:
             return True
-        return False
+    if len(animation.current_positions) >= 2:
+        x, y = animation.current_positions[1]
+        if animation.game_map.fov[x, y]:
+            animation.game_map.draw_char(
+                x, y, '*', middle_fg_callback(), middle_bg_callback())
+    if len(animation.current_positions) >= 3:
+        x, y = animation.current_positions[2]
+        if animation.game_map.fov[x, y]:
+            animation.game_map.draw_char(
+                x, y, '*', tail_fg_callback(), tail_bg_callback())
+    animation.current_frame += 1
+    if len(animation.current_positions) == 0:
+        return True
+    return False
 
 
 def draw_blast(animation, *, char, fg_color_callback, bg_color_callback):
+    """Animate a blast emenating from a source.
+
+    Parameters
+    ----------
+    animation: Animation object
+      Must have .current_frame, and game_map attributes.
+
+    char:
+      The character to draw for each tile of the blast.
+
+    fg_color_callback: function: [] -> (int, int, int)
+      A callback that returns an RGB tuple, used to color the foreground
+      charecter.
+
+    fg_color_callback: function: [] -> (int, int, int)
+      A callback that returns an RGB tuple, used to color the backgrounf of
+      each tile.
+    """
     try:
         blast_radius = next(animation.radius_iter)
     # Clear the drawing of the blast, the animation has finished.

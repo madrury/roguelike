@@ -64,7 +64,6 @@ class IceStaffCallback:
         source, target = (self.user.x, self.user.y), (x, y)
         ray = bresenham_ray(self.game_map, source, target)
         last_position = ray[-1]
-        print(f"Used IceStaff at position {source} targeting {target}")
         for position in ray[1:]:
             freezable_entities = get_all_entities_with_component_in_position(
                 position, self.game_map, "freezable")
@@ -77,6 +76,5 @@ class IceStaffCallback:
                 break
         results.append({
             ResultTypes.ANIMATION: (
-                # TODO: Change to ice ball.
-                Animations.FIREBALL, source, last_position)})
+                Animations.ICEBALL, source, last_position)})
         return results

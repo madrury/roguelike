@@ -44,6 +44,10 @@ def random_light_blue():
     rg = int(random.uniform(0, 160))
     return (rg, rg, 255)
 
+def random_dark_blue():
+    rg = int(random.uniform(0, 160))
+    return (rg, rg, 200)
+
 def random_light_water():
     return (40, 40, int(random.uniform(200, 255)))
 
