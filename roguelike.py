@@ -13,7 +13,8 @@ from cursor import Cursor
 from death_functions import kill_monster, kill_player, make_corpse
 from etc.colors import COLORS
 from etc.config import (
-    SCREEN_WIDTH, SCREEN_HEIGHT, PANEL_CONFIG, MESSAGE_CONFIG, FOV_CONFIG, ANIMATION_INTERVAL, SHIMMER_INTERVAL)
+    SCREEN_WIDTH, SCREEN_HEIGHT, PANEL_CONFIG, MESSAGE_CONFIG, FOV_CONFIG,
+    ANIMATION_INTERVAL, SHIMMER_INTERVAL)
 from etc.enum import (
     ResultTypes, InputTypes, EntityTypes, GameStates, INVENTORY_STATES,
     INPUT_STATES, CANCEL_STATES)
@@ -192,7 +193,7 @@ def main():
             user_input = get_user_input()
             if game_state in INPUT_STATES and not user_input:
                 continue
-        action = handle_keys(user_input, game_state)
+        action = player.input_handler.handle_keys(user_input, game_state)
 
         #----------------------------------------------------------------------
         # Handle player actions.

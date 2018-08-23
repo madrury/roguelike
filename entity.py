@@ -147,6 +147,7 @@ class Entity:
                  floatable=None,
                  freezable=None,
                  harmable=None,
+                 input_handler=None,
                  inventory=None,
                  item=None,
                  movable=None,
@@ -192,6 +193,7 @@ class Entity:
         self.add_component(floatable, "floatable")
         self.add_component(freezable, "freezable")
         self.add_component(harmable, "harmable")
+        self.add_component(input_handler, "input_handler")
         self.add_component(inventory, "inventory")
         self.add_component(item, "item")
         self.add_component(movable, "movable")

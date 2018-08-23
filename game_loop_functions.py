@@ -6,6 +6,7 @@ from components.defender import Defender
 from components.equipment import Equipment
 from components.harmable import Harmable
 from components.inventory import Inventory
+from components.input_handler import PlayerInputHandler
 from components.movable import Movable
 from components.scaldable import AliveScaldable
 from components.swimmable import PlayerSwimmable
@@ -55,6 +56,7 @@ def create_player(game_map):
                     harmable=Harmable(
                         hp=PLAYER_CONFIG["hp"],
                         defense=PLAYER_CONFIG["defense"]),
+                    input_handler=PlayerInputHandler(),
                     inventory=Inventory(PLAYER_CONFIG["inventory_size"]),
                     movable=Movable(),
                     scaldable=AliveScaldable(),
