@@ -3,6 +3,8 @@ from time import sleep
 
 import tdl
 
+from utils.debug import highlight_array
+
 from animations.animations import construct_animation
 from components.status_manager import (
     PlayerConfusedManager, EnemyConfusedManager,
