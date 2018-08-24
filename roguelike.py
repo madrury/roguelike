@@ -32,11 +32,15 @@ from utils.utils import (
     get_key_from_single_key_dict,
     get_all_entities_with_component_in_position)
 
-
 def main():
+    """Entry point for starting the game.  Responsible for:
 
+      - Setting up the main game resources.  Windows and consoles.
+      - Sets up the main game variables, the player, and an array for tracking
+        the floors in the dungeon.
+      - Starts the main loop, which calls into the function to play a floor.
+    """
     tdl.set_font('fonts/consolas10x10.png', greyscale=True, altLayout=True)
-
     # Setup playscreen with two consoles:
     #  - A place to draw the playscreen with the map and entities.
     #  - A console with the player's health bar, and a message log.
@@ -45,15 +49,45 @@ def main():
        title='Roguelike Tutorial Game')
     map_console = tdl.Console(SCREEN_WIDTH, SCREEN_HEIGHT)
     panel_console = tdl.Console(SCREEN_WIDTH, PANEL_CONFIG['height'])
+    consoles = [root_console, map_console, panel_console]
+    # TODO: 3 is number of floors, break this into a config element.
+    game_maps = [None] * 3
+    game_maps[0] = create_map(map_console)
+    player = create_player(game_maps[0])
 
-    game_map = create_map(map_console)
-    player = create_player(game_map)
+    game_loop = -1
+    current_floor = 0
+    while True:
+        # If we do not clear the consoles before begining to play the floor, a
+        # ghost image of the prior floor will remain.
+        for console in consoles:
+            console.clear()
+        # If we have not yet generated a map for this floor of the dungeon, do
+        # so now.
+        current_map = game_maps[current_floor]
+        if current_map == None:
+            current_map = create_map(map_console)
+            game_maps[current_floor] = current_map
+        current_map.place_player(player)
+        current_map.entities.append(player)
 
+        play_floor(current_map, player, game_loop, consoles)
+
+        current_floor = (current_floor + 1) % 3 
+
+
+def play_floor(game_map, player, game_loop, consoles):
+    """Play a floor of the dungeon.
+
+    This function contains the main game loop, which is responsible for:
+
+      - Recieving player input and responding to it.
+      - Playing animations.
+    """
     #-------------------------------------------------------------------------
     # Game State Varaibles
     #-------------------------------------------------------------------------
-    # Counter for the game loop iteration we are on.
-    game_loop = -1
+    root_console, map_console, panel_console = consoles
     # Initial values for game states
     game_state = GameStates.PLAYER_TURN
     previous_game_state = game_state
