@@ -16,7 +16,7 @@ from etc.config import FLOOR_CONFIG, ROOM_CONFIG, TERRAIN_CONFIG, PLAYER_CONFIG
 from etc.enum import RenderOrder, GameStates, ResultTypes
 from generation.floor import make_floor
 from generation.item_groups import ITEM_SCHEDULE, ITEM_GROUPS
-from generation.monster_groups import MONSTER_SCHEDULE, MONSTER_GROUPS
+from generation.monster_groups import MONSTER_GROUPS
 from generation.spawn_entities import spawn_entities
 from generation.terrain import add_random_terrain
 from map import GameMap
@@ -24,7 +24,7 @@ from messages import Message
 from utils.utils import get_blocking_entity_in_position, get_all_entities_with_component_in_position
 
 
-def create_map(map_console):
+def create_map(map_console, monster_schedule):
     """Construct and return the game map.
 
     The game map is the main object representing the state of the game.
@@ -32,7 +32,7 @@ def create_map(map_console):
     floor = make_floor(FLOOR_CONFIG, ROOM_CONFIG)
     game_map = GameMap(floor, map_console)
     terrain = add_random_terrain(game_map, TERRAIN_CONFIG)
-    spawn_entities(MONSTER_SCHEDULE, MONSTER_GROUPS, game_map)
+    spawn_entities(monster_schedule, MONSTER_GROUPS, game_map)
     spawn_entities(ITEM_SCHEDULE, ITEM_GROUPS, game_map)
     return game_map
 
