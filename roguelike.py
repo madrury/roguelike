@@ -25,6 +25,7 @@ from game_loop_functions import (
     entity_equip_armor, entity_equip_weapon, entity_remove_armor,
     entity_remove_weapon)
 from generation.monster_groups import MONSTER_SCHEDULES
+from generation.item_groups import ITEM_SCHEDULES
 from menus import invetory_menu
 from messages import MessageLog
 from utils.utils import (
@@ -54,7 +55,7 @@ def main():
     consoles = [root_console, map_console, panel_console]
     # TODO: 3 is number of floors, break this into a config element.
     game_maps = [None] * 3
-    game_maps[0] = create_map(map_console, MONSTER_SCHEDULES[0])
+    game_maps[0] = create_map(map_console, MONSTER_SCHEDULES[0], ITEM_SCHEDULES[0])
     player = create_player(game_maps[0])
 
     game_loop = -1
@@ -69,7 +70,8 @@ def main():
         current_map = game_maps[current_floor]
         if current_map == None:
             monster_schedule = MONSTER_SCHEDULES[current_floor]
-            current_map = create_map(map_console, monster_schedule)
+            item_schedule = ITEM_SCHEDULES[current_floor]
+            current_map = create_map(map_console, monster_schedule, item_schedule)
             game_maps[current_floor] = current_map
         current_map.place_player(player)
         current_map.entities.append(player)
