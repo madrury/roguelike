@@ -36,12 +36,6 @@ def random_dungeon_floor(width=80,
     max_rooms: int
       The maximum number of rooms in the floor.
 
-    min_pools: int
-      The minumum number of water pools in the floor.
-
-    max_pools: int
-      The maximum number of water pools in the floor.
-
     n_rooms_to_try: int
       The maximum number of rooms to generate and attempt to place.
 
@@ -105,9 +99,6 @@ class DungeonFloor:
     self.tunnels: list of Tunnel objects
       The tunnels in the dungeon.
 
-    self.Pool: list of Pool objects.
-      Pools of water in the dungeon.
-
     self.floor: np.array of bool
       Array of transparant tiles.  Only used for printing. 
     """
@@ -128,9 +119,6 @@ class DungeonFloor:
         for x, y in tunnel:
             self.floor[x, y] = True
         self.tunnels.append(tunnel)
-
-    def add_pool(self, pool):
-        self.pools.append(pool)
 
     def print_floor(self):
         arr = np.array(['.', '#'])[self.floor.astype(int)].T
