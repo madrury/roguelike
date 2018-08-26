@@ -12,39 +12,60 @@ from components.burnable import GrassBurnable, WaterBurnable
 
 
 def add_random_terrain(game_map, terrain_config):
-    floor = game_map.floor
+    """Generate random terrain in a game map, according to a terrain
+    configuration dictionary.
 
+    Parameters
+    ----------
+    game_map: Map object.
+      The current game map.  Assumed to be empty of terrain.
+
+    terrain_config: dict
+      Dictionary containing configuration parameters governing how to grow
+      terrain for this floor of the dungeon.
+
+    Returns:
+      None
+
+    This method does not return a meaningful value, it instead modified
+    game_map by populating it with terrain.
+    """
     terrain = []
+    # Grow pools of water.
     terrain.extend(
-        random_growable(game_map, random_pool,
-                        min_terrains=terrain_config['min_pools'],
-                        max_terrains=terrain_config['max_pools'],
-                        terrain_proportion=terrain_config['pool_room_proportion']))
-
+        grow_random_single_terrain(
+            game_map, Pool.grow_in_random_room,
+            min_terrains=terrain_config['min_pools'],
+            max_terrains=terrain_config['max_pools'],
+            terrain_proportion=terrain_config['pool_room_proportion']))
+    # Grow rivers.
     min_rivers, max_rivers = (
         terrain_config['min_rivers'], terrain_config['max_rivers'])
     n_rivers = random.randint(min_rivers, max_rivers)
     for _ in range(n_rivers):
         river = random_river(game_map)
         terrain.extend(river.get_entities(game_map))
-
+    # Grow patches of grass.
     terrain.extend(
-        random_growable(game_map, random_grass,
-                        min_terrains=terrain_config['min_grass'],
-                        max_terrains=terrain_config['max_grass'],
-                        terrain_proportion=terrain_config['grass_room_proportion']))
+        grow_random_single_terrain(
+            game_map, PatchOfGrass.grow_in_random_room,
+            min_terrains=terrain_config['min_grass'],
+            max_terrains=terrain_config['max_grass'],
+            terrain_proportion=terrain_config['grass_room_proportion']))
+    # Grow patches of shrubs.
     terrain.extend(
-        random_growable(game_map, random_shrubs,
-                        min_terrains=terrain_config['min_shrubs'],
-                        max_terrains=terrain_config['max_shrubs'],
-                        terrain_proportion=terrain_config['shrubs_room_proportion']))
-
+        grow_random_single_terrain(
+            game_map, PatchOfShrubs.grow_in_random_room,
+            min_terrains=terrain_config['min_shrubs'],
+            max_terrains=terrain_config['max_shrubs'],
+            terrain_proportion=terrain_config['shrubs_room_proportion']))
+    # Grow patches of ice.
     terrain.extend(
-        random_growable(game_map, random_ice,
-                        min_terrains=terrain_config['min_ice'],
-                        max_terrains=terrain_config['max_ice'],
-                        terrain_proportion=terrain_config['ice_room_proportion']))
-
+        grow_random_single_terrain(
+            game_map, PatchOfIce.grow_in_random_room,
+            min_terrains=terrain_config['min_ice'],
+            max_terrains=terrain_config['max_ice'],
+            terrain_proportion=terrain_config['ice_room_proportion']))
     # We've been using this array to track when terrain was generated in a tile
     # through the terrain generation process.  Now we want to commit them to
     # the map, but the array will block terrain from being places anywhere that
@@ -55,15 +76,27 @@ def add_random_terrain(game_map, terrain_config):
     for t in terrain:
         t.commitable.commit(game_map)
 
-
-def random_growable(game_map, terrain_creator, *,
-                    min_terrains, max_terrains, terrain_proportion):
+def grow_random_single_terrain(game_map, terrain_creator, *,
+                               min_terrains, max_terrains, terrain_proportion):
+    """Grow a single type of terrain in a game map according to some
+    configuration parameters.
+    """
     n_terrains = random.randint(min_terrains, max_terrains)
     terrain = []
     for _ in range(n_terrains):
         t = terrain_creator(game_map, proportion=terrain_proportion)
         terrain.extend(t.get_entities(game_map))
     return terrain
+
+def grow_in_random_room(terrain, game_map, *, stay_in_room, proportion): 
+    """Pick a random room of the game map and grow some terrain there."""
+    pinned_room = random.choice(game_map.floor.rooms)
+    while pinned_room.terrain != None:
+        pinned_room = random.choice(game_map.floor.rooms)
+    t = terrain(game_map, pinned_room)
+    t.seed()
+    t.grow(stay_in_room=stay_in_room, proportion=proportion)
+    return t
 
 
 class Growable:
@@ -130,41 +163,39 @@ class Growable:
                 self.coords.append((x, y))
 
     def get_entities(self, game_map):
+        """Create a list of entities representing the grown terrain."""
         return [self.make(game_map, x, y) for x, y in self.coords]
 
 
-#-----------------------------------------------------------------------------
-# Pool
-#-----------------------------------------------------------------------------
 class Pool(Growable):
-    """A pool of water in a room."""
+    """A pool of water in a room.
+    
+    Pools are made of water entities.  Most monsters will avoid pools of water,
+    and passing through water drains the player's swim stamina.
+    """
     def __init__(self, game_map, room):
         super().__init__(game_map, room)
         room.terrain = Terrain.POOL
 
     @staticmethod
+    # Rename to make_one_tile
     def make(game_map, x, y):
         game_map.water[x, y] = True
         return Water.make(game_map, x, y)
 
-
-def random_pool(game_map, proportion):
-    """Grow a pool of water in a random room on a map."""
-    pinned_room = random.choice(game_map.floor.rooms)
-    while pinned_room.terrain != None:
-        pinned_room = random.choice(game_map.floor.rooms)
-    pool = Pool(game_map, pinned_room)
-    pool.seed()
-    pool.grow(stay_in_room=False,
-              proportion=proportion)
-    return pool
+    @staticmethod
+    def grow_in_random_room(game_map, proportion):
+        return grow_in_random_room(Pool, game_map, 
+                                   stay_in_room=False,
+                                   proportion=proportion)
 
 
-#-----------------------------------------------------------------------------
-# A Patch of Ice
-#-----------------------------------------------------------------------------
 class PatchOfIce(Growable):
+    """A patch of ice in a room.
 
+    Ice is travesable, but entities will slip on the ice, which essentailly
+    doubles their movement speed in any direction.
+    """
     def __init__(self, game_map, room):
         super().__init__(game_map, room)
         room.terrain = Terrain.ICE_PATCH
@@ -173,15 +204,53 @@ class PatchOfIce(Growable):
     def make(game_map, x, y):
         return Ice.make(game_map, x, y)
 
+    @staticmethod
+    def grow_in_random_room(game_map, proportion):
+        return grow_in_random_room(PatchOfIce, game_map,
+                                   stay_in_room=True,
+                                   proportion=proportion)
 
-def random_ice(game_map, proportion):
-    """Grow grass in a random room on the game map."""
-    pinned_room = random.choice(game_map.floor.rooms)
-    while pinned_room.terrain != None:
-        pinned_room = random.choice(game_map.floor.rooms)
-    ice = PatchOfIce(game_map, pinned_room)
-    ice.grow(stay_in_room=True, proportion=proportion)
-    return ice
+
+class PatchOfGrass(Growable):
+    """A grassy room.
+
+    Grass is burnable, so fire spells used in the grassy room will spread.
+    """
+    def __init__(self, game_map, room):
+        super().__init__(game_map, room)
+        room.terrain = Terrain.GRASS
+
+    @staticmethod
+    def make(game_map, x, y):
+        return Grass.make(game_map, x, y)
+
+    @staticmethod
+    def grow_in_random_room(game_map, proportion):
+        return grow_in_random_room(PatchOfGrass, game_map,
+                                   stay_in_room=False,
+                                   proportion=proportion)
+
+
+class PatchOfShrubs(Growable):
+    """A dense patch of shrubs.
+
+    Shrubs block visibility, but not movement.  They turn into grass when
+    trampled, and can be burned.
+    """
+    def __init__(self, game_map, room):
+        super().__init__(game_map, room)
+        room.terrain = Terrain.SHRUBS
+
+    @staticmethod
+    def make(game_map, x, y):
+        return Shrub.make(game_map, x, y)
+
+    @staticmethod
+    def grow_in_random_room(game_map, proportion):
+        return grow_in_random_room(PatchOfShrubs, game_map,
+                                   stay_in_room=True,
+                                   proportion=proportion)
+
 
 #-----------------------------------------------------------------------------
 # River
@@ -258,53 +327,3 @@ def random_river(game_map):
         r2 = random.choice(game_map.floor.rooms)
     river = River(game_map, r1, r2)
     return river
-
-
-#-----------------------------------------------------------------------------
-# Grass
-#-----------------------------------------------------------------------------
-class PatchOfGrass(Growable):
-    """A grassy room.
-
-    Grass is burnable, so fire spells used in the grassy room will spread.
-    """
-    def __init__(self, game_map, room):
-        super().__init__(game_map, room)
-        room.terrain = Terrain.GRASS
-
-    @staticmethod
-    def make(game_map, x, y):
-        return Grass.make(game_map, x, y)
-        
-
-def random_grass(game_map, proportion):
-    """Grow grass in a random room on the game map."""
-    pinned_room = random.choice(game_map.floor.rooms)
-    while pinned_room.terrain != None:
-        pinned_room = random.choice(game_map.floor.rooms)
-    grass = PatchOfGrass(game_map, pinned_room)
-    grass.grow(stay_in_room=True, proportion=proportion)
-    return grass
-
-
-#-----------------------------------------------------------------------------
-# Field of Shrubs
-#-----------------------------------------------------------------------------
-class PatchOfShrubs(Growable):
-
-    def __init__(self, game_map, room):
-        super().__init__(game_map, room)
-        room.terrain = Terrain.SHRUBS
-
-    @staticmethod
-    def make(game_map, x, y):
-        return Shrub.make(game_map, x, y)
-
-def random_shrubs(game_map, proportion):
-    """Grow grass in a random room on the game map."""
-    pinned_room = random.choice(game_map.floor.rooms)
-    while pinned_room.terrain != None:
-        pinned_room = random.choice(game_map.floor.rooms)
-    shrubs = PatchOfShrubs(game_map, pinned_room)
-    shrubs.grow(stay_in_room=True, proportion=proportion)
-    return shrubs
