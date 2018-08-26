@@ -75,6 +75,9 @@ class GameMap(Map):
         self.floor = floor
         self.console = console
         self.entities = EntityList(width, height)
+        # TODO: Add to docstring
+        self.upward_stair_position = None
+        self.downward_stair_position = None
         # These need to be int8's to work with the tcod pathfinder
         self.explored = np.zeros((width, height), dtype=np.int8)
         self.water = np.zeros((width, height), dtype=np.int8)

@@ -6,7 +6,8 @@ from entity import Entity
 from etc.enum import Terrain, EntityTypes, RenderOrder
 from etc.colors import COLORS
 from utils.utils import adjacent_coordinates, random_adjacent
-from game_objects.terrain import Water, Ice, Grass, Shrub
+from game_objects.terrain import (
+    UpwardStairs, DownwardStairs, Water, Ice, Grass, Shrub)
 from components.shimmer import WaterShimmer
 from components.burnable import GrassBurnable, WaterBurnable
 
@@ -66,6 +67,11 @@ def add_random_terrain(game_map, terrain_config):
             min_terrains=terrain_config['min_ice'],
             max_terrains=terrain_config['max_ice'],
             terrain_proportion=terrain_config['ice_room_proportion']))
+    # Place the upward and downward stairs
+    if terrain_config.get('upward_stairs', True):
+        terrain.extend(place_stairs(game_map, UpwardStairs))
+    if terrain_config.get('downward_stairs', True):
+        terrain.extend(place_stairs(game_map, DownwardStairs))
     # We've been using this array to track when terrain was generated in a tile
     # through the terrain generation process.  Now we want to commit them to
     # the map, but the array will block terrain from being places anywhere that
@@ -98,7 +104,21 @@ def grow_in_random_room(terrain, game_map, *, stay_in_room, proportion):
     t.grow(stay_in_room=stay_in_room, proportion=proportion)
     return t
 
+#-----------------------------------------------------------------------------
+# Stairs
+#-----------------------------------------------------------------------------
+def place_stairs(game_map, stairs):
+    while True:
+        x = random.randint(0, game_map.width - 1)
+        y = random.randint(0, game_map.height - 1)
+        if game_map.walkable[x, y] and not game_map.terrain[x, y]:
+            game_map.terrain[x, y] = True
+            return [stairs.make(game_map, x, y)]
+           
 
+#-----------------------------------------------------------------------------
+# Gwoable Terrain
+#-----------------------------------------------------------------------------
 class Growable:
     """Base class for terrain that can be grown.
 
@@ -250,7 +270,6 @@ class PatchOfShrubs(Growable):
         return grow_in_random_room(PatchOfShrubs, game_map,
                                    stay_in_room=True,
                                    proportion=proportion)
-
 
 #-----------------------------------------------------------------------------
 # River

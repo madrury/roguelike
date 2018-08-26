@@ -10,6 +10,8 @@ CHARS = {
     'ice': '~',
     'shrub': chr(31),
     'soil': chr(9*20 - 4),
+    'upward_stairs': '>',
+    'downward_stairs': '<',
     'water': '~',
     'weapon': chr(24),
 }

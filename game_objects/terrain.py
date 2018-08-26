@@ -19,6 +19,40 @@ from components.dissipatable import NecroticSoilDissipatable
 from components.shimmer import WaterShimmer, IceShimmer
 
 
+class UpwardStairs:
+    """Stairs up to the previous dungeon level."""
+    @staticmethod
+    def make(game_map, x, y):
+        return Entity(
+            x, y, CHARS['upward_stairs'],
+            name='upward_stairs',
+            fg_color=(0, 0, 0),
+            bg_color=(200, 200, 0),
+            dark_fg_color=(0, 0, 0),
+            dark_bg_color=(155, 155, 0),
+            visible_out_of_fov=True,
+            entity_type=EntityTypes.TERRAIN,
+            render_order=RenderOrder.TERRAIN,
+            commitable=TerrainCommitable())
+
+
+class DownwardStairs:
+    """Stairs down to the next dungeon level."""
+    @staticmethod
+    def make(game_map, x, y):
+        return Entity(
+            x, y, CHARS['downward_stairs'],
+            name='downward_stairs',
+            fg_color=(0, 0, 0),
+            bg_color=(200, 200, 0),
+            dark_fg_color=(0, 0, 0),
+            dark_bg_color=(155, 155, 0),
+            visible_out_of_fov=True,
+            entity_type=EntityTypes.TERRAIN,
+            render_order=RenderOrder.TERRAIN,
+            commitable=TerrainCommitable())
+
+
 class Water:
     """A water terrain tile.
 
@@ -75,6 +109,8 @@ class Ice:
     """
     @staticmethod
     def make(game_map, x, y):
+        # TODO: This should happen in commitable?  Do we need to pass game_map
+        # into the make method?
         game_map.make_transparent_and_walkable(x, y)
         fg_color = random_light_ice()
         bg_color = random_light_ice()
