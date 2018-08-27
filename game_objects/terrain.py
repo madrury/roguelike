@@ -13,8 +13,8 @@ import components.burnable
 import components.encroachable
 
 from components.commitable import (
-    TerrainCommitable, WaterCommitable, IceCommitable, 
-    ShrubCommitable, BaseCommitable)
+    TerrainCommitable, UpwardStairsCommitable, DownwardStairsCommitable,
+    WaterCommitable, IceCommitable, ShrubCommitable, BaseCommitable)
 from components.dissipatable import NecroticSoilDissipatable
 from components.shimmer import WaterShimmer, IceShimmer
 
@@ -33,7 +33,7 @@ class UpwardStairs:
             visible_out_of_fov=True,
             entity_type=EntityTypes.TERRAIN,
             render_order=RenderOrder.TERRAIN,
-            commitable=TerrainCommitable())
+            commitable=UpwardStairsCommitable())
 
 
 class DownwardStairs:
@@ -50,7 +50,7 @@ class DownwardStairs:
             visible_out_of_fov=True,
             entity_type=EntityTypes.TERRAIN,
             render_order=RenderOrder.TERRAIN,
-            commitable=TerrainCommitable())
+            commitable=DownwardStairsCommitable())
 
 
 class Water:
