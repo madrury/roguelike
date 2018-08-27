@@ -13,8 +13,9 @@ from cursor import Cursor
 from death_functions import kill_monster, kill_player, make_corpse
 from etc.colors import COLORS
 from etc.config import (
-    SCREEN_WIDTH, SCREEN_HEIGHT, PANEL_CONFIG, MESSAGE_CONFIG, FOV_CONFIG,
-    ANIMATION_INTERVAL, SHIMMER_INTERVAL)
+    SCREEN_WIDTH, SCREEN_HEIGHT, TOP_PANEL_CONFIG, BOTTOM_PANEL_CONFIG,
+    MAP_PANEL_CONFIG, MESSAGE_CONFIG, FOV_CONFIG, ANIMATION_INTERVAL,
+    SHIMMER_INTERVAL)
 from etc.enum import (
     ResultTypes, FloorResultTypes, InputTypes, EntityTypes, GameStates,
     INVENTORY_STATES, INPUT_STATES, CANCEL_STATES)
@@ -37,7 +38,7 @@ from utils.utils import (
 
 def main():
     """Entry point for starting the game, and managing the high level game
-    state.  
+    state.
 
     This function is responsible for:
 
@@ -52,12 +53,15 @@ def main():
     # Setup playscreen with two consoles:
     #  - A place to draw the playscreen with the map and entities.
     #  - A console with the player's health bar, and a message log.
-    root_console = tdl.init(
-       SCREEN_WIDTH, SCREEN_HEIGHT,
-       title='Roguelike Tutorial Game')
+    root_console = tdl.init(SCREEN_WIDTH, SCREEN_HEIGHT,
+                            title='Roguelike Tutorial Game')
     map_console = tdl.Console(SCREEN_WIDTH, SCREEN_HEIGHT)
-    panel_console = tdl.Console(SCREEN_WIDTH, PANEL_CONFIG['height'])
-    consoles = [root_console, map_console, panel_console]
+    top_panel_console = tdl.Console(
+        SCREEN_WIDTH, TOP_PANEL_CONFIG['height'])
+    bottom_panel_console = tdl.Console(
+        SCREEN_WIDTH, BOTTOM_PANEL_CONFIG['height'])
+    consoles = [
+        root_console, map_console, bottom_panel_console, top_panel_console]
     # TODO: 3 is number of floors, break this into a config element.
     game_maps = [None] * 3
     # Create the map for the first floor of the dungeon and place the player.
@@ -95,7 +99,9 @@ def main():
         current_map.entities.append(player)
         # Ok, let's play!
         floor_result, game_turn = play_floor(
-            current_map, player, game_turn, consoles)
+            current_map, player, consoles,
+            game_turn=game_turn,
+            current_floor=current_floor)
         # This position is reached after the player is done with a floor of the
         # dungeon, there are three options:
         #  - The player is descending to the next floor.
@@ -106,14 +112,14 @@ def main():
         current_floor = (current_floor + floor_result.value) % 3
 
 
-def play_floor(game_map, player, game_turn, consoles):
+def play_floor(game_map, player, consoles, *, game_turn, current_floor):
     """Play a floor of the dungeon.
 
     This function contains the main game loop.  This loop controls the flow for
-    a single turn of the game.  
+    a single turn of the game.
 
     A generic turn progresses through the following general phases:
-      
+
       - Get player input.
       - Compute and then execute consequences of that input.
       - Complete status and environment checks post player turn.
@@ -130,7 +136,7 @@ def play_floor(game_map, player, game_turn, consoles):
     #-------------------------------------------------------------------------
     # Game State Varaibles
     #-------------------------------------------------------------------------
-    root_console, map_console, panel_console = consoles
+    root_console, map_console, bottom_panel_console, top_panel_console = consoles
     # Initial values for game states
     game_state = GameStates.PLAYER_TURN
     previous_game_state = game_state
@@ -197,15 +203,21 @@ def play_floor(game_map, player, game_turn, consoles):
         #---------------------------------------------------------------------
         # Render the UI
         #---------------------------------------------------------------------
-        panel_console.clear(fg=COLORS['white'], bg=COLORS['black'])
-        player.harmable.render_status_bar(panel_console, 1, 1)
-        player.swimmable.render_status_bar(panel_console, 1, 3)
+        bottom_panel_console.clear(fg=COLORS['white'], bg=COLORS['black'])
+        player.harmable.render_status_bar(bottom_panel_console, 1, 1)
+        player.swimmable.render_status_bar(bottom_panel_console, 1, 3)
         if player.status_manager:
-            player.status_manager.render_status_bar(panel_console, 1, 5)
-        message_log.render(panel_console)
+            player.status_manager.render_status_bar(bottom_panel_console, 1, 5)
+        message_log.render(bottom_panel_console)
         for idx, entity in enumerate(harmed_queue):
             entity.harmable.render_status_bar(
-                panel_console, PANEL_CONFIG['bar_width'] + 2, 2*idx + 1)
+                bottom_panel_console,
+                BOTTOM_PANEL_CONFIG['bar_width'] + 2,
+                2*idx + 1)
+
+        top_panel_console.draw_str(0, 0,
+            f"  Current Floor: {current_floor}  Turn Number {game_turn}",
+            fg=(255, 255, 255))
 
         #---------------------------------------------------------------------
         # Draw the selection cursor if in cursor input state.
@@ -249,8 +261,11 @@ def play_floor(game_map, player, game_turn, consoles):
         #---------------------------------------------------------------------
         # Blit the subconsoles to the main console and flush all rendering.
         #---------------------------------------------------------------------
-        root_console.blit(game_map.console, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
-        root_console.blit(panel_console, 0, PANEL_CONFIG['y'],
+        root_console.blit(game_map.console, 0, MAP_PANEL_CONFIG['y'],
+                          SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
+        root_console.blit(top_panel_console, 0, 0,
+                          SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
+        root_console.blit(bottom_panel_console, 0, BOTTOM_PANEL_CONFIG['y'],
                           SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0)
         if game_state in INVENTORY_STATES:
             root_console.blit(menu_console, menu_x, menu_y,

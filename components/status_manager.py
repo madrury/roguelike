@@ -1,4 +1,4 @@
-from etc.config import PANEL_CONFIG
+from etc.config import BOTTOM_PANEL_CONFIG
 from etc.game_config import (
     PLAYER_CONFUSED_DURATION, ENEMY_CONFUSED_DURATION,
     ENEMY_FROZEN_DURATION)
@@ -24,7 +24,7 @@ class PlayerConfusedManager:
         self.old_input_handler = None
         self.n_confused_turns = n_confused_turns
         self.status_bar = StatusBar(
-            total_width=PANEL_CONFIG['bar_width'],
+            total_width=BOTTOM_PANEL_CONFIG['bar_width'],
             bar_colors=STATUS_BAR_COLORS['confused_bar'])
 
     def attach(self, player):

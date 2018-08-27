@@ -1,12 +1,36 @@
 ANIMATION_INTERVAL = 0.075
 INVENTORY_WIDTH = 50
-SCREEN_WIDTH = 80
 SCREEN_HEIGHT = 50
+SCREEN_WIDTH = 80
 SHIMMER_INTERVAL = 50
+
+
+TOP_PANEL_CONFIG = {
+    'height': 2
+}
+
+BOTTOM_PANEL_CONFIG = {
+    'bar_width': 20,
+    'height': 7,
+}
+BOTTOM_PANEL_CONFIG['y'] = SCREEN_HEIGHT - BOTTOM_PANEL_CONFIG['height']
+
+MAP_PANEL_CONFIG = {
+    'y': TOP_PANEL_CONFIG['height']
+}
+
+MESSAGE_CONFIG = {
+    'x': 2*BOTTOM_PANEL_CONFIG['bar_width'] + 3,
+    'width': SCREEN_WIDTH - 2*BOTTOM_PANEL_CONFIG['bar_width'] - 3,
+    'height': BOTTOM_PANEL_CONFIG['height'] - 1
+}
+
 
 FLOOR_CONFIG = {
     'width': 80,
-    'height': 43,
+    'height': (SCREEN_HEIGHT
+               - TOP_PANEL_CONFIG['height']
+               - BOTTOM_PANEL_CONFIG['height']),
     'max_rooms': 20,
 }
 
@@ -33,18 +57,6 @@ TERRAIN_CONFIG = {
     'min_shrubs': 1,
     'max_shrubs': 3,
     'shrubs_room_proportion': 2.0
-}
-
-PANEL_CONFIG = {
-    'bar_width': 20,
-    'height': 7,
-}
-PANEL_CONFIG['y'] = SCREEN_HEIGHT - PANEL_CONFIG['height']
-
-MESSAGE_CONFIG = {
-    'x': 2*PANEL_CONFIG['bar_width'] + 3,
-    'width': SCREEN_WIDTH - 2*PANEL_CONFIG['bar_width'] - 3,
-    'height': PANEL_CONFIG['height'] - 1
 }
 
 FOV_CONFIG = {

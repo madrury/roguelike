@@ -36,13 +36,13 @@ def l2_distance(source, target):
 
 def coordinates_on_circle(center, radius):
     circle = set()
-    circle.update((center[0] + radius - i, center[1] + i) 
+    circle.update((center[0] + radius - i, center[1] + i)
         for i in range(0, radius + 1))
-    circle.update((center[0] - radius + i, center[1] - i) 
+    circle.update((center[0] - radius + i, center[1] - i)
         for i in range(0, radius + 1))
-    circle.update((center[0] - radius + i, center[1] + i) 
+    circle.update((center[0] - radius + i, center[1] + i)
         for i in range(0, radius + 1))
-    circle.update((center[0] + radius - i, center[1] - i) 
+    circle.update((center[0] + radius - i, center[1] - i)
         for i in range(0, radius + 1))
     return circle
 
@@ -99,7 +99,7 @@ def _bresenham_ray(game_map, source, target):
             if err < 0:
                 x += sx
                 err += dy
-            y += sy  
+            y += sy
             idx += 1
     if target_idx == 0:
         target_idx = idx
@@ -125,11 +125,11 @@ def random_adjacent(center):
     return random.choice(candidates)
 
 def random_walkable_position(game_map, entity):
-    walkable_array =  make_walkable_array(game_map, entity.routing_avoid) 
-    x, y = (random.choice(range(0, game_map.width)), 
+    walkable_array =  make_walkable_array(game_map, entity.routing_avoid)
+    x, y = (random.choice(range(0, game_map.width)),
             random.choice(range(0, game_map.height)))
     while not walkable_array[x, y]:
-        x, y = (random.choice(range(0, game_map.width)), 
+        x, y = (random.choice(range(0, game_map.width)),
                 random.choice(range(0, game_map.height)))
     return (x, y)
 
@@ -177,7 +177,7 @@ def get_all_entities_with_component_within_radius(
     """Get all the entities of a given type within a given range."""
     within_radius = []
     for entity in game_map.entities:
-        if (l2_distance(position, (entity.x, entity.y)) <= radius 
+        if (l2_distance(position, (entity.x, entity.y)) <= radius
             and getattr(entity, component)):
             within_radius.append(entity)
     return within_radius

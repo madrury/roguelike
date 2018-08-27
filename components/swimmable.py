@@ -1,5 +1,5 @@
 from etc.enum import ResultTypes, Elements
-from etc.config import PANEL_CONFIG
+from etc.config import BOTTOM_PANEL_CONFIG
 from etc.colors import STATUS_BAR_COLORS
 from status_bar import StatusBar
 
@@ -10,7 +10,7 @@ class PlayerSwimmable:
         self.max_stamina = stamina
         self.stamina = stamina
         self.status_bar = StatusBar(
-            total_width=PANEL_CONFIG['bar_width'],
+            total_width=BOTTOM_PANEL_CONFIG['bar_width'],
             bar_colors=STATUS_BAR_COLORS['swim_bar'])
 
     def swim(self):

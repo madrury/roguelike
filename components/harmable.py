@@ -4,7 +4,7 @@ from game_events import fireblast, waterblast
 
 from utils.utils import random_adjacent
 from etc.enum import ResultTypes, Elements
-from etc.config import PANEL_CONFIG 
+from etc.config import BOTTOM_PANEL_CONFIG
 from etc.game_config import (
     FIREBLOAT_BLAST_RADIUS, FIREBLOAT_BLAST_DAMAGE,
     WATERBLOAT_BLAST_RADIUS, WATERBLOAT_BLAST_DAMAGE)
@@ -45,7 +45,7 @@ class Harmable:
         self.max_hp = hp
         self.hp = hp
         self.status_bar = StatusBar(
-            total_width=PANEL_CONFIG['bar_width'],
+            total_width=BOTTOM_PANEL_CONFIG['bar_width'],
             bar_colors=STATUS_BAR_COLORS['hp_bar'])
 
     def harm(self, game_map, source, amount, elements):
@@ -87,7 +87,7 @@ class Harmable:
 
     def render_status_bar(self, panel, x, y):
         self.status_bar.render(
-            panel, x, y, 
+            panel, x, y,
             name=self.owner.name + ' HP',
             maximum=self.max_hp,
             value=self.hp)

@@ -6,7 +6,6 @@ import tdl
 
 from utils.utils import coordinates_within_circle, bresenham_line
 from etc.enum import Animations
-from etc.config import SCREEN_WIDTH, SCREEN_HEIGHT, PANEL_CONFIG
 from etc.colors import COLORS
 from etc.chars import CHARS
 from colors import (

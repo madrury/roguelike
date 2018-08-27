@@ -10,13 +10,13 @@ def make_floor(floor_config, room_config):
     floor_config_keys = ['width', 'height', 'max_rooms']
     floor_width, floor_height, max_rooms = [
         floor_config[key] for key in floor_config_keys]
-    floor = random_dungeon_floor(floor_width, floor_height, 
+    floor = random_dungeon_floor(floor_width, floor_height,
                                  max_rooms=max_rooms,
                                  room_config=room_config)
     return floor
 
-def random_dungeon_floor(width=80, 
-                         height=43, 
+def random_dungeon_floor(width=80,
+                         height=41,
                          max_rooms=25,
                          n_rooms_to_try=50,
                          n_room_placement_trys=25,
@@ -100,9 +100,9 @@ class DungeonFloor:
       The tunnels in the dungeon.
 
     self.floor: np.array of bool
-      Array of transparant tiles.  Only used for printing. 
+      Array of transparant tiles.  Only used for printing.
     """
-    def __init__(self, width=80, height=43):
+    def __init__(self, width=80, height=41):
         self.width = width
         self.height = height
         self.rooms = []
