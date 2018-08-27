@@ -71,7 +71,7 @@ def main():
     game_maps[0].place_player(player)
     # Track the current turn of the game.  Used for events that happen on a
     # fixed schedule.
-    game_turn = -1
+    game_turn = 0 
     # The current floor of the dungeon.  Starts at floor zero, hopefully the
     # player descendes far into the dungeon!
     current_floor = 0
@@ -90,7 +90,7 @@ def main():
             game_maps[current_floor] = current_map
         # If we are not on the first turn of the game, place the player at the
         # appropriate staircase.
-        if game_turn != -1:
+        if game_turn != 0:
             if floor_result == FloorResultTypes.DECREMENT_FLOOR:
                 player.x, player.y = current_map.upward_stairs_position
             if floor_result == FloorResultTypes.INCREMENT_FLOOR:
@@ -165,13 +165,17 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
     enemy_turn_results = []
     # Log of game messages.
     message_log = MessageLog(MESSAGE_CONFIG)
+    # A counter for how many times we have incremented the game loop on this
+    # floor.  Used to trigger updates that happen regularly with regards to
+    # game loop.  For example, graphical shimmering of water and ice.
+    game_loop = -1
 
     #-------------------------------------------------------------------------
     # Main Game Loop.
     #-------------------------------------------------------------------------
     while not tdl.event.is_window_closed():
 
-        game_turn += 1
+        game_loop += 1
 
         #---------------------------------------------------------------------
         # Game loop variables
@@ -190,7 +194,7 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
         #---------------------------------------------------------------------
         # Shimmer the colors of entities that shimmer.
         #---------------------------------------------------------------------
-        if game_turn % SHIMMER_INTERVAL == 0:
+        if game_loop % SHIMMER_INTERVAL == 0:
             for entity in game_map.entities:
                 if entity.shimmer:
                     entity.shimmer.shimmer()
@@ -203,6 +207,7 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
         #---------------------------------------------------------------------
         # Render the UI
         #---------------------------------------------------------------------
+        top_panel_console.clear(fg=COLORS['white'], bg=COLORS['black'])
         bottom_panel_console.clear(fg=COLORS['white'], bg=COLORS['black'])
         player.harmable.render_status_bar(bottom_panel_console, 1, 1)
         player.swimmable.render_status_bar(bottom_panel_console, 1, 3)
@@ -499,6 +504,7 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
                 break
             # End the player's turn
             if result_type == ResultTypes.END_TURN:
+                game_turn += 1
                 game_state, previous_game_state = (
                     GameStates.POST_PLAYER_TURN, game_state)
 
