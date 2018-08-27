@@ -33,10 +33,10 @@ class GameStates(Enum):
     ANIMATION_PLAYING = auto()
     CURSOR_INPUT = auto()
     DROP_INVENTORY = auto()
-    ENEMY_TURN = auto() 
+    ENEMY_TURN = auto()
     EQUIP_INVENTORY = auto()
     PLAYER_DEAD = auto()
-    PLAYER_TURN = auto() 
+    PLAYER_TURN = auto()
     #TODO: Change this name to USE_INVENTORY
     SHOW_INVENTORY = auto()
     THROW_INVENTORY = auto()
@@ -59,55 +59,62 @@ CANCEL_STATES = {
     GameStates.THROW_INVENTORY, GameStates.EQUIP_INVENTORY,
     GameStates.CURSOR_INPUT}
 
-#-----------------------------------------------------------------------------
-# The various results of actions and thier consequences in the game.
-#
-# The results of game actions, and their consequent effects on game state are
-# governed by these catagories of consequences.  These are used as dictionary
-# keys, with the associated values the data needed to update the game state as
-# a result of these results.  These dictionaries are added to a stack (either
-# player_turn_results or enemy_turn_results) for processing.  Results are
-# processed until the stack is empty.
-#.............................................................................
-#
-# ADD_ENTITY:
-#   Add en entity to the game map.
-# ADD_ITEM_TO_INVENTORY: (item, entity)
-#   Add an item to the entities inventory.  
-# ANIMATION: (Animation type, ... other data needed for specific animation)
-#   Play an animation.
-# CONFUSE: entity
-#   Put the entity in a confused state.
-# CURSOR_MODE: boolean
-#   Enter cursor mode.
-# DAMAGE: (entity, source, amount, elements)
-#   Deal damage to an entity of some elemental types.
-# DEAD_ENTITY: entity
-#   An entity has died.
-# DEATH_MESSAGE: Message object
-#   A message that the player has died.  TODO: Depreciate this.
-# END_TURN: bool
-#   End the players turn.
-# EQUIP: (equipable_entity, entity):
-#   Equip equipable_entity onto entity.
-# EQUIP_INVENTORY: boolean
-#   Open the inventory for equipping items.
-# FREEZE: entity
-#   Freeze an entity.
-# DISCARD_ITEM: (entity, bool)
-#   The entity has or has not consumed an item.
-# ITEM_DROPPED: item
-#   The player has dropped an item.  TODO: We should be able to drop an item in
-#   a position.
-# MESSAGE: message
-#   Display a game message in the message queue.
-# MOVE_TOWARDS: entity, target_x, target_y
-#   Attempt to move the entity towards the target. 
-# MOVE_RANDOM_ADJACENT: entity
-#   Attempt to move the entity to a random adjacent square.
-#.............................................................................
 class ResultTypes(Enum):
+    """The various results of turn actions.
 
+    The results of game actions, and their consequent effects on game state are
+    enumerated by these catagories.
+
+    The elements of this enum are used as dictionary keys in dictionaries
+    returned from components responsible for processing in game actions and
+    consequences. The values in these dictionries store the data needed to
+    update the game state as a result.  In the main game loop, these
+    dictionaries are added to a stack (either player_turn_results or
+    enemy_turn_results) for processing.  Results are processed until the stack
+    is empty.
+
+    Enum Elements:
+    --------------
+    ADD_ENTITY: entity
+        Add an entity to the game map.
+    ADD_ITEM_TO_INVENTORY: (item, entity)
+        Add an item to the entity's inventory.
+    ANIMATION: (Animation type, ... other data needed for specific animation)
+        Play an animation.
+    CONFUSE: entity
+        Put the entity in a confused state.
+    CURSOR_MODE: boolean
+        Enter cursor mode.
+    DAMAGE: (entity, source, amount, elements)
+        Deal damage to an entity of some elemental types.  Note that this
+        damage is not immediately commited, instead it may be further processed
+        due to defensive characteristics of teh target entity.  For commited
+        damage, see the HARM result type.
+    DEAD_ENTITY: entity
+        An entity has died.
+    DEATH_MESSAGE: Message object
+        A message that the player has died.  TODO: Depreciate this.
+    # TODO: Rename to CONSUME_ITEM
+    DISCARD_ITEM: (entity, bool)
+        The entity has or has not consumed an item.
+    END_TURN: bool
+        End the player's turn.
+    EQUIP: (equipable_entity, entity):
+        Equip equipable_entity onto entity.
+    EQUIP_INVENTORY: boolean
+        Open the inventory for equipping items.
+    FREEZE: entity
+        Freeze an entity.
+    ITEM_DROPPED: item
+        The player has dropped an item.  TODO: We should be able to drop an
+        item in a position.
+    MESSAGE: message
+        Display a game message in the message queue.
+    MOVE_TOWARDS: entity, target_x, target_y
+        Attempt to move the entity towards the target.
+    MOVE_RANDOM_ADJACENT: entity
+        Attempt to move the entity to a random adjacent square.
+    """
     # We need this enum to have an order, since there are certain turn results
     # that must be processed first.
     def __lt__(self, other):
@@ -142,8 +149,16 @@ class ResultTypes(Enum):
     # message).
     INCREASE_MAX_HP = 90
     # These two must be processed first!
-    CURSOR_MODE = 98
-    ANIMATION = 99
+    INCREMENT_FLOOR = 99
+    DECREMENT_FLOOR = 98
+    ANIMATION = 97
+    CURSOR_MODE = 96
+
+
+class FloorResultTypes(Enum):
+    """Enumerates the outcomes from a dungeon floor."""
+    INCREMENT_FLOOR =  1
+    DECREMENT_FLOOR = -1
 
 
 class InputTypes(Enum):
@@ -244,7 +259,7 @@ class ItemGroups(Enum):
     FIREBLAST_SCROLL = auto()
     WATERBLAST_SCROLL = auto()
     THROWING_KNIFE = auto()
-    FIRE_STAFF = auto() 
+    FIRE_STAFF = auto()
     LANCE = auto()
     SWORD = auto()
     AXE = auto()
@@ -255,9 +270,9 @@ class ItemGroups(Enum):
 
 class MonsterGroups(Enum):
     NONE = auto()
-    SINGLE_ORC = auto() 
-    THREE_ORCS = auto() 
-    SINGLE_TROLL = auto() 
+    SINGLE_ORC = auto()
+    THREE_ORCS = auto()
+    SINGLE_TROLL = auto()
     TWO_ORCS_AND_TROLL = auto()
     KRUTHIK_SQARM = auto()
     PINK_JELLY = auto()

@@ -6,7 +6,7 @@ from utils.debug import draw_dijkstra_map
 
 
 def get_shortest_path(game_map, source, target, routing_avoid=None):
-    """Get the shortest path trhough the game map from a source to a target
+    """Get the shortest path through the game map from a source to a target
     point, while avoiding certain dungeon features.
 
     Parameters
@@ -39,6 +39,9 @@ def get_shortest_path(game_map, source, target, routing_avoid=None):
 
 def get_path_to_radius_of_target(game_map, source, target, radius, 
                                  routing_avoid=None):
+    """Return the shortest path through a game map from a source to any square
+    a fixed radius from a target.
+    """
     walkable = make_walkable_array(game_map, routing_avoid=routing_avoid) 
     walkable[source[0], source[1]] = True
     walkable[target[0], target[1]] = True
@@ -48,6 +51,21 @@ def get_path_to_radius_of_target(game_map, source, target, radius,
     return dm.get_descent_path(source)
 
 def make_walkable_array(game_map, routing_avoid=None):
+    """Return a boolean array indicating which squares are accable to be routed
+    through for some entity.
+
+    Parameters
+    ----------
+    game_map: GameMap object
+
+    routing_avoid: List of RoutingOptions
+      A list containing square types which need to be avoided during routing.
+
+    Returns
+    -------
+    valid_to_route: np.array or bool
+      A boolean array indicating which squares are valid to route through.
+    """
     if not routing_avoid:
         routing_avoid = []
     walkable = game_map.walkable[:, :]
@@ -63,4 +81,3 @@ def make_walkable_array(game_map, routing_avoid=None):
         walkable[game_map.upward_stairs_position] = False
         walkable[game_map.downward_stairs_position] = False
     return walkable
-

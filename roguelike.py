@@ -16,8 +16,8 @@ from etc.config import (
     SCREEN_WIDTH, SCREEN_HEIGHT, PANEL_CONFIG, MESSAGE_CONFIG, FOV_CONFIG,
     ANIMATION_INTERVAL, SHIMMER_INTERVAL)
 from etc.enum import (
-    ResultTypes, InputTypes, EntityTypes, GameStates, INVENTORY_STATES,
-    INPUT_STATES, CANCEL_STATES)
+    ResultTypes, FloorResultTypes, InputTypes, EntityTypes, GameStates,
+    INVENTORY_STATES, INPUT_STATES, CANCEL_STATES)
 from game_loop_functions import (
     create_map, create_player, construct_inventory_data, get_user_input,
     process_selected_item, player_move_or_attack, pickup_entity,
@@ -76,9 +76,9 @@ def main():
         current_map.place_player(player)
         current_map.entities.append(player)
 
-        play_floor(current_map, player, game_loop, consoles)
+        floor_increment = play_floor(current_map, player, game_loop, consoles)
 
-        current_floor = (current_floor + 1) % 3 
+        current_floor = (current_floor + floor_increment.value) % 3
 
 
 def play_floor(game_map, player, game_loop, consoles):
@@ -141,7 +141,7 @@ def play_floor(game_map, player, game_loop, consoles):
             fov=FOV_CONFIG["algorithm"],
             radius=FOV_CONFIG["radius"],
             light_walls=FOV_CONFIG["light_walls"])
-        
+
         #---------------------------------------------------------------------
         # Shimmer the colors of entities that shimmer.
         #---------------------------------------------------------------------
@@ -355,7 +355,7 @@ def play_floor(game_map, player, game_loop, consoles):
             # Move the player.
             if result_type == ResultTypes.MOVE:
                 player.movable.move(game_map, *result_data)
-            # Set the player's position, used when moving more than one step or 
+            # Set the player's position, used when moving more than one step or
             # teleporting (say, due to a raipier attack or teleport staff).
             if result_type == ResultTypes.SET_POSITION:
                entity, x, y = result_data
@@ -383,7 +383,7 @@ def play_floor(game_map, player, game_loop, consoles):
             if result_type == ResultTypes.DAMAGE:
                 process_damage(game_map, result_data, player_turn_results)
             # Commit damage to an entity.
-            if result_type == ResultTypes.HARM: 
+            if result_type == ResultTypes.HARM:
                 process_harm(
                     game_map, result_data, player_turn_results, harmed_queue)
             # Increase the maximum HP of an entity
@@ -448,10 +448,18 @@ def play_floor(game_map, player, game_loop, consoles):
                 game_state, previous_game_state = (
                     GameStates.ENEMY_TURN, game_state)
 
+
         #---------------------------------------------------------------------
         # Post player turn checks.
         #---------------------------------------------------------------------
+        # TODO: Add a game state, POST_PLAYER_TURN
         if game_state == GameStates.ENEMY_TURN:
+            # Check if the player has entered into a square containing stairs.
+            # If so, end the current floor immediately.
+            if (player.x, player.y) == game_map.upward_stairs_position:
+                return FloorResultTypes.INCREMENT_FLOOR
+            if (player.x, player.y) == game_map.downward_stairs_position:
+                return FloorResultTypes.DECREMENT_FLOOR
             # All rechargable items get ticked.
             for item in player.inventory:
                 if item.rechargeable:
@@ -467,9 +475,11 @@ def play_floor(game_map, player, game_loop, consoles):
                 enemy_turn_results.extend(player.swimmable.swim())
             else:
                 enemy_turn_results.extend(player.swimmable.rest())
-            #-----------------------------------------------------------------
-            # All enemies and hazards terrain take thier turns.
-            #-----------------------------------------------------------------
+
+        #-----------------------------------------------------------------
+        # All enemies and hazards terrain take thier turns.
+        #-----------------------------------------------------------------
+        if game_state == GameStates.ENEMY_TURN:
             for entity in (e for e in game_map.entities if e != player):
                 # Enemies move and attack if possible.
                 if entity.ai:
@@ -539,7 +549,7 @@ def play_floor(game_map, player, game_loop, consoles):
             if result_type == ResultTypes.DAMAGE:
                 process_damage(game_map, result_data, enemy_turn_results)
             # Commit damage to an entity.
-            if result_type == ResultTypes.HARM: 
+            if result_type == ResultTypes.HARM:
                 process_harm(
                     game_map, result_data, enemy_turn_results, harmed_queue)
             # Add a use to an item
@@ -549,7 +559,7 @@ def play_floor(game_map, player, game_loop, consoles):
             # Entities swim and thier stamana decreases.
             if result_type == ResultTypes.CHANGE_SWIM_STAMINA:
                 entity, stamina_change = result_data
-                entity.swimmable.change_stamina(stamina_change) 
+                entity.swimmable.change_stamina(stamina_change)
             # Add a new entity to the game.
             if result_type == ResultTypes.ADD_ENTITY:
                 entity = result_data
@@ -608,7 +618,7 @@ def play_floor(game_map, player, game_loop, consoles):
             tdl.set_fullscreen(not tdl.get_fullscreen())
 
         #---------------------------------------------------------------------
-        # If the last turn resulted in a dead monster: 
+        # If the last turn resulted in a dead monster:
         #   - Draw it as a corpse.
         #   - Replace all is components with null components.
         #   - Remove it from the harmed_queue so that its health bars will not
