@@ -17,6 +17,9 @@ class GameMap(Map):
     Most introspection of the current game state is facilitated by a GameMap
     object.
 
+    # TODO: Discuss which each of the types of methods (update, draw, etc)
+    # means.
+
     Parameters
     ----------
     floor: DungeonFloor object
@@ -102,6 +105,7 @@ class GameMap(Map):
         for pool in self.floor.pools:
             pool.write_to_game_map(self)
 
+    # TODO: This probably should not be a method of this class.
     def place_player(self, player):
         placed = False
         while not placed:

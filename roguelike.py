@@ -96,21 +96,36 @@ def main():
         # Ok, let's play!
         floor_result, game_turn = play_floor(
             current_map, player, game_turn, consoles)
-        # Process the results of playing the fllor.  Usually we will be
-        # ascending or descenting in the dungeon.
+        # This position is reached after the player is done with a floor of the
+        # dungeon, there are three options:
+        #  - The player is descending to the next floor.
+        #  - The player is ascending to the previous floor.
+        #  - The player ended the game.
         if floor_result == FloorResultTypes.END_GAME:
             return True
-        #current_map.entities.remove(player)
         current_floor = (current_floor + floor_result.value) % 3
 
 
 def play_floor(game_map, player, game_turn, consoles):
     """Play a floor of the dungeon.
 
-    This function contains the main game loop, which is responsible for:
+    This function contains the main game loop.  This loop controls the flow for
+    a single turn of the game.  
 
-      - Recieving player input and responding to it.
-      - Playing animations.
+    A generic turn progresses through the following general phases:
+      
+      - Get player input.
+      - Compute and then execute consequences of that input.
+      - Complete status and environment checks post player turn.
+      - All enemies and environmental hazards take turns.
+
+    In addition, during special game states, the main game loop is also
+    responsible for:
+
+      - Playing animations (each tick of the game loop progresses the animation
+        one frame).
+      - Moving a cursor during cursor input events (i.e. targeting a staff or
+        thrown potion).
     """
     #-------------------------------------------------------------------------
     # Game State Varaibles
@@ -119,10 +134,11 @@ def play_floor(game_map, player, game_turn, consoles):
     # Initial values for game states
     game_state = GameStates.PLAYER_TURN
     previous_game_state = game_state
-    # Control flow after and animation:
-    #   After an animation finishes, we need to continue processing the stack
-    #   of player turn results.  This flag will skip the gathering of user
-    #   input which ususally occurs before processing the player turn stack.
+    # After an animation finishes, we need to continue processing the stack of
+    # player turn results (animations are popped off first, so there will still
+    # be results from the previous turn on the stack).  This flag will skip the
+    # gathering of user input which ususally occurs before processing the
+    # player turn stack.
     skip_player_input = False
     # This will be populated when we are playing an animation.  Call
     # .next_frame on this object to draw the next frame of the animation. This
@@ -469,14 +485,13 @@ def play_floor(game_map, player, game_turn, consoles):
             # End the player's turn
             if result_type == ResultTypes.END_TURN:
                 game_state, previous_game_state = (
-                    GameStates.ENEMY_TURN, game_state)
+                    GameStates.POST_PLAYER_TURN, game_state)
 
 
         #---------------------------------------------------------------------
         # Post player turn checks.
         #---------------------------------------------------------------------
-        # TODO: Add a game state, POST_PLAYER_TURN
-        if game_state == GameStates.ENEMY_TURN:
+        if game_state == GameStates.POST_PLAYER_TURN:
             # Check if the player has entered into a square containing stairs.
             # If so, end the current floor immediately.
             if (player.x, player.y) == game_map.upward_stairs_position:
@@ -490,9 +505,8 @@ def play_floor(game_map, player, game_turn, consoles):
                 if item.rechargeable:
                     enemy_turn_results.extend(item.rechargeable.tick())
             # All confused entities get ticked
-            for entity in game_map.entities:
-                if entity.status_manager:
-                    entity.status_manager.tick()
+            if player.status_manager:
+                player.status_manager.tick()
             # All encroaching entities interact with their cellmates.
             enemy_turn_results.extend(encroach_on_all(player, game_map))
             # The player re-gains or loses swim stamina.
@@ -500,6 +514,9 @@ def play_floor(game_map, player, game_turn, consoles):
                 enemy_turn_results.extend(player.swimmable.swim())
             else:
                 enemy_turn_results.extend(player.swimmable.rest())
+            # Pass the turn to the enemies.
+            game_state = GameStates.ENEMY_TURN
+
 
         #-----------------------------------------------------------------
         # All enemies and hazards terrain take thier turns.
@@ -510,6 +527,9 @@ def play_floor(game_map, player, game_turn, consoles):
                 if entity.ai:
                     enemy_turn_results.extend(entity.ai.take_turn(
                         player, game_map))
+                # If the enemy has a current status, tick it.
+                if entity.status_manager:
+                    entity.status_manager.tick()
                 # Fire and gas dissipates.
                 if entity.dissipatable:
                     enemy_turn_results.extend(

@@ -37,6 +37,7 @@ class GameStates(Enum):
     EQUIP_INVENTORY = auto()
     PLAYER_DEAD = auto()
     PLAYER_TURN = auto()
+    POST_PLAYER_TURN = auto()
     #TODO: Change this name to USE_INVENTORY
     SHOW_INVENTORY = auto()
     THROW_INVENTORY = auto()
@@ -149,10 +150,8 @@ class ResultTypes(Enum):
     # message).
     INCREASE_MAX_HP = 90
     # These two must be processed first!
-    INCREMENT_FLOOR = 99
-    DECREMENT_FLOOR = 98
-    ANIMATION = 97
-    CURSOR_MODE = 96
+    ANIMATION = 99
+    CURSOR_MODE = 98
 
 
 class FloorResultTypes(Enum):
