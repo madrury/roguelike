@@ -227,7 +227,7 @@ class PatchOfGrass(Growable):
     @staticmethod
     def grow_in_random_room(game_map, proportion):
         return grow_in_random_room(PatchOfGrass, game_map,
-                                   stay_in_room=False,
+                                   stay_in_room=True,
                                    proportion=proportion)
 
 
