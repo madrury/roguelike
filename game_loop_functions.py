@@ -61,8 +61,6 @@ def create_player(game_map):
                     movable=Movable(),
                     scaldable=AliveScaldable(),
                     swimmable=PlayerSwimmable(PLAYER_CONFIG["swim_stamina"]))
-    game_map.place_player(player)
-    game_map.entities.append(player)
     # Setup Initial Inventory, for testing.
     player.inventory.extend([HealthPotion.make(0, 0) for _ in range(3)])
     player.inventory.extend([ConfusionPotion.make(0, 0)])

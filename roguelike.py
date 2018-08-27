@@ -55,10 +55,17 @@ def main():
     consoles = [root_console, map_console, panel_console]
     # TODO: 3 is number of floors, break this into a config element.
     game_maps = [None] * 3
-    game_maps[0] = create_map(map_console, MONSTER_SCHEDULES[0], ITEM_SCHEDULES[0])
+    # Create the map for the first floor of the dungeon and place the player.
+    game_maps[0] = create_map(
+        map_console, MONSTER_SCHEDULES[0], ITEM_SCHEDULES[0])
     player = create_player(game_maps[0])
-
-    game_loop = -1
+    game_maps[0].place_player(player)
+    game_maps[0].entities.append(player)
+    # Track the current turn of the game.  Used for events that happen on a
+    # fixed schedule.
+    game_turn = -1
+    # The current floor of the dungeon.  Starts at floor zero, hopefully the
+    # player descendes far into the dungeon!
     current_floor = 0
     while True:
         # If we do not clear the consoles before begining to play the floor, a
@@ -73,17 +80,27 @@ def main():
             item_schedule = ITEM_SCHEDULES[current_floor]
             current_map = create_map(map_console, monster_schedule, item_schedule)
             game_maps[current_floor] = current_map
-        current_map.place_player(player)
+        # If we are not on the first turn of the game, place the player at the
+        # appropriate staircase.
+        if game_turn != -1:
+            if floor_result == FloorResultTypes.DECREMENT_FLOOR:
+                player.x, player.y = current_map.upward_stairs_position
+            if floor_result == FloorResultTypes.INCREMENT_FLOOR:
+                player.x, player.y = current_map.downward_stairs_position
+        # Add the player to the entities on the current floor.
         current_map.entities.append(player)
-
-        floor_result = play_floor(current_map, player, game_loop, consoles)
-
+        # Ok, let's play!
+        floor_result, game_turn = play_floor(
+            current_map, player, game_turn, consoles)
+        # Process the results of playing the fllor.  Usually we will be
+        # ascending or descenting in the dungeon.
         if floor_result == FloorResultTypes.END_GAME:
             return True
+        #current_map.entities.remove(player)
         current_floor = (current_floor + floor_result.value) % 3
 
 
-def play_floor(game_map, player, game_loop, consoles):
+def play_floor(game_map, player, game_turn, consoles):
     """Play a floor of the dungeon.
 
     This function contains the main game loop, which is responsible for:
@@ -128,7 +145,7 @@ def play_floor(game_map, player, game_loop, consoles):
     #-------------------------------------------------------------------------
     while not tdl.event.is_window_closed():
 
-        game_loop += 1
+        game_turn += 1
 
         #---------------------------------------------------------------------
         # Game loop variables
@@ -147,7 +164,7 @@ def play_floor(game_map, player, game_loop, consoles):
         #---------------------------------------------------------------------
         # Shimmer the colors of entities that shimmer.
         #---------------------------------------------------------------------
-        if game_loop % SHIMMER_INTERVAL == 0:
+        if game_turn % SHIMMER_INTERVAL == 0:
             for entity in game_map.entities:
                 if entity.shimmer:
                     entity.shimmer.shimmer()
@@ -459,9 +476,11 @@ def play_floor(game_map, player, game_loop, consoles):
             # Check if the player has entered into a square containing stairs.
             # If so, end the current floor immediately.
             if (player.x, player.y) == game_map.upward_stairs_position:
-                return FloorResultTypes.INCREMENT_FLOOR
+                game_map.entities.remove(player)
+                return FloorResultTypes.INCREMENT_FLOOR, game_turn
             if (player.x, player.y) == game_map.downward_stairs_position:
-                return FloorResultTypes.DECREMENT_FLOOR
+                game_map.entities.remove(player)
+                return FloorResultTypes.DECREMENT_FLOOR, game_turn
             # All rechargable items get ticked.
             for item in player.inventory:
                 if item.rechargeable:
@@ -612,7 +631,7 @@ def play_floor(game_map, player, game_loop, consoles):
                 game_state, previous_game_state = (
                     previous_game_state, game_state)
             else:
-                return FloorResultTypes.END_GAME
+                return FloorResultTypes.END_GAME, game_turn
 
         fullscreen = action.get(InputTypes.FULLSCREEN)
         if fullscreen:
