@@ -207,22 +207,24 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
         #---------------------------------------------------------------------
         # Render the UI
         #---------------------------------------------------------------------
+        # Top panel.
         top_panel_console.clear(fg=COLORS['white'], bg=COLORS['black'])
-        bottom_panel_console.clear(fg=COLORS['white'], bg=COLORS['black'])
-        player.harmable.render_status_bar(bottom_panel_console, 1, 1)
-        player.swimmable.render_status_bar(bottom_panel_console, 1, 3)
-        if player.status_manager:
-            player.status_manager.render_status_bar(bottom_panel_console, 1, 5)
-        message_log.render(bottom_panel_console)
-        for idx, entity in enumerate(harmed_queue):
-            entity.harmable.render_status_bar(
-                bottom_panel_console,
-                BOTTOM_PANEL_CONFIG['bar_width'] + 2,
-                2*idx + 1)
-
         top_panel_console.draw_str(0, 0,
-            f"  Current Floor: {current_floor}  Turn Number {game_turn}",
+            f" Current Floor: {current_floor}  Turn Number: {game_turn}",
             fg=(255, 255, 255))
+        player.harmable.render_status_bar(top_panel_console, 1, 2)
+        player.swimmable.render_status_bar(
+            top_panel_console, TOP_PANEL_CONFIG['bar_width'] + 2, 2)
+        if player.status_manager:
+            player.status_manager.render_status_bar(
+                top_panel_console, 2*TOP_PANEL_CONFIG['bar_width'] + 4, 2)
+        # Bottom panel.
+        bottom_panel_console.clear(fg=COLORS['white'], bg=COLORS['black'])
+        for idx, entity in enumerate(e for e in harmed_queue if e != player):
+            entity.harmable.render_status_bar(
+                bottom_panel_console, 1, 2*idx + 1)
+        message_log.render(bottom_panel_console)
+
 
         #---------------------------------------------------------------------
         # Draw the selection cursor if in cursor input state.

@@ -6,7 +6,8 @@ SHIMMER_INTERVAL = 50
 
 
 TOP_PANEL_CONFIG = {
-    'height': 2
+    'bar_width': 20,
+    'height': 3
 }
 
 BOTTOM_PANEL_CONFIG = {
@@ -20,7 +21,7 @@ MAP_PANEL_CONFIG = {
 }
 
 MESSAGE_CONFIG = {
-    'x': 2*BOTTOM_PANEL_CONFIG['bar_width'] + 3,
+    'x': BOTTOM_PANEL_CONFIG['bar_width'] + 2,
     'width': SCREEN_WIDTH - 2*BOTTOM_PANEL_CONFIG['bar_width'] - 3,
     'height': BOTTOM_PANEL_CONFIG['height'] - 1
 }
