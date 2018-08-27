@@ -49,7 +49,7 @@ class WaterBloatBurnable:
 class GrassBurnable:
     """When grass burns, the grass entity is removed from the game and
     (sometimes) replaced with a fire entity.
-    
+
     Grass does not alway burn, it only catched fire with a fixed probability.
     """
     def __init__(self, p_fire=GRASS_BURN_PROBABILTY):
@@ -68,7 +68,7 @@ class GrassBurnable:
             results.append({ResultTypes.ADD_ENTITY: burned_grass})
         if fire:
             results.append({ResultTypes.ADD_ENTITY: fire})
-        results.append({ResultTypes.REMOVE_ENTITY: self.owner})        
+        results.append({ResultTypes.REMOVE_ENTITY: self.owner})
         return results
 
 

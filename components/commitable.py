@@ -78,11 +78,16 @@ class TerrainCommitable:
             game_map.entities.append(self.owner)
 
     def delete(self, game_map):
-        if not game_map.terrain[self.owner.x, self.owner.y]:
-            raise RuntimeError(
-                f"Attempt to remove terrain entity {self.owner} from "
-                 "non-terrain space.")
         if self.owner in game_map.entities:
+            # TODO: This is inside the above check because in certain
+            # circumstances, a terrain entity will be removed from the map
+            # twice.  For example, if two different fires attempt to burn the
+            # same patch of grass, two signals will be sent to remove it from
+            # the map.  There may be a more transparant way to handle this.
+            if not game_map.terrain[self.owner.x, self.owner.y]:
+                raise RuntimeError(
+                    f"Attempt to remove terrain entity {self.owner.name} from "
+                    "non-terrain space.")
             game_map.terrain[self.owner.x, self.owner.y] = False
             game_map.entities.remove(self.owner)
 
