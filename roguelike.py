@@ -76,9 +76,11 @@ def main():
         current_map.place_player(player)
         current_map.entities.append(player)
 
-        floor_increment = play_floor(current_map, player, game_loop, consoles)
+        floor_result = play_floor(current_map, player, game_loop, consoles)
 
-        current_floor = (current_floor + floor_increment.value) % 3
+        if floor_result == FloorResultTypes.END_GAME:
+            return True
+        current_floor = (current_floor + floor_result.value) % 3
 
 
 def play_floor(game_map, player, game_loop, consoles):
@@ -610,8 +612,7 @@ def play_floor(game_map, player, game_loop, consoles):
                 game_state, previous_game_state = (
                     previous_game_state, game_state)
             else:
-                # Hard exit the game.
-                return True
+                return FloorResultTypes.END_GAME
 
         fullscreen = action.get(InputTypes.FULLSCREEN)
         if fullscreen:
