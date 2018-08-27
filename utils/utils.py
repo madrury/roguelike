@@ -191,8 +191,8 @@ def get_blocking_entity_in_position(game_map, position):
     blockers = [e for e in entities if e.blocks]
     if len(blockers) >= 2:
         raise RuntimeError(
-            f"More than one blocking entity {blockers[0].name, blockers[1].name}"
-             "in position {position}")
+            f"More than one blocking entity {blockers[0].name, blockers[1].name} "
+            f"in position {position}")
     if blockers == []:
         return None
     entity = blockers[0]

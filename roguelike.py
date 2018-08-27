@@ -36,12 +36,17 @@ from utils.utils import (
 
 
 def main():
-    """Entry point for starting the game.  Responsible for:
+    """Entry point for starting the game, and managing the high level game
+    state.  
+
+    This function is responsible for:
 
       - Setting up the main game resources.  Windows and consoles.
       - Sets up the main game variables, the player, and an array for tracking
         the floors in the dungeon.
       - Starts the main loop, which calls into the function to play a floor.
+      - Manages the high level game state: what is the turn number, what floor
+        is the player currently on?
     """
     tdl.set_font('fonts/consolas10x10.png', greyscale=True, altLayout=True)
     # Setup playscreen with two consoles:
@@ -60,7 +65,6 @@ def main():
         map_console, MONSTER_SCHEDULES[0], ITEM_SCHEDULES[0])
     player = create_player(game_maps[0])
     game_maps[0].place_player(player)
-    game_maps[0].entities.append(player)
     # Track the current turn of the game.  Used for events that happen on a
     # fixed schedule.
     game_turn = -1
