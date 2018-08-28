@@ -1,16 +1,21 @@
 import random
 import numpy as np
 
+from generation.floor_schedule import FloorType
 from generation.room import PinnedDungeonRoom, random_dungeon_room
 from generation.tunnel import random_tunnel_between_pinned_rooms
 
-
+# TODO: Sort out the naming here, its inconsistent.
 def make_floor(floor_config, room_config):
     """Generate a random dungeon floor with given parameters."""
     floor_width = floor_config['width']
     floor_height = floor_config['height']
-    floor = random_dungeon_floor(floor_width, floor_height,
-                                 room_config=room_config)
+    floor_type = room_config['type']
+    if floor_type == FloorType.STANDARD:
+        floor = random_dungeon_floor(floor_width, floor_height,
+                                    room_config=room_config)
+    else:
+        raise ValueError(f"Floor type {floor_type.value} not supported!")
     return floor
 
 def random_dungeon_floor(width=80,
