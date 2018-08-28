@@ -3,14 +3,12 @@ from time import sleep
 
 import tdl
 
-from utils.debug import highlight_array
-
 from animations.animations import construct_animation
+
 from components.status_manager import (
     PlayerConfusedManager, EnemyConfusedManager,
     EnemyFrozenManager)
-from cursor import Cursor
-from death_functions import kill_monster, kill_player, make_corpse
+
 from etc.colors import COLORS
 from etc.config import (
     SCREEN_WIDTH, SCREEN_HEIGHT, TOP_PANEL_CONFIG, BOTTOM_PANEL_CONFIG,
@@ -19,22 +17,29 @@ from etc.config import (
 from etc.enum import (
     ResultTypes, FloorResultTypes, InputTypes, EntityTypes, GameStates,
     INVENTORY_STATES, INPUT_STATES, CANCEL_STATES)
+
+from generation.floor_schedule import FLOOR_SCHEDULES
+from generation.monster_groups import MONSTER_SCHEDULES
+from generation.item_groups import ITEM_SCHEDULES
+from generation.terrain_schedule import TERRAIN_SCHEDULES
+
+from utils.debug import highlight_array
+from utils.utils import (
+    flatten_list_of_dictionaries,
+    unpack_single_key_dict,
+    get_key_from_single_key_dict,
+    get_all_entities_with_component_in_position)
+
+from cursor import Cursor
+from death_functions import kill_monster, kill_player, make_corpse
 from game_loop_functions import (
     create_map, create_player, construct_inventory_data, get_user_input,
     process_selected_item, player_move_or_attack, pickup_entity,
     encroach_on_all, process_damage, process_harm, apply_status,
     entity_equip_armor, entity_equip_weapon, entity_remove_armor,
     entity_remove_weapon)
-from generation.monster_groups import MONSTER_SCHEDULES
-from generation.item_groups import ITEM_SCHEDULES
-from generation.terrain_schedule import TERRAIN_SCHEDULES
 from menus import invetory_menu
 from messages import MessageLog
-from utils.utils import (
-    flatten_list_of_dictionaries,
-    unpack_single_key_dict,
-    get_key_from_single_key_dict,
-    get_all_entities_with_component_in_position)
 
 
 def main():
@@ -67,7 +72,11 @@ def main():
     game_maps = [None] * 3
     # Create the map for the first floor of the dungeon and place the player.
     game_maps[0] = create_map(
-        map_console, MONSTER_SCHEDULES[0], ITEM_SCHEDULES[0], TERRAIN_SCHEDULES[0])
+        map_console, 
+        floor_schedule=FLOOR_SCHEDULES[0],
+        monster_schedule=MONSTER_SCHEDULES[0],
+        item_schedule=ITEM_SCHEDULES[0],
+        terrain_schedule=TERRAIN_SCHEDULES[0])
     player = create_player(game_maps[0])
     game_maps[0].place_player(player)
     # Track the current turn of the game.  Used for events that happen on a
@@ -89,7 +98,11 @@ def main():
             item_schedule = ITEM_SCHEDULES[current_floor]
             terrain_schedule = TERRAIN_SCHEDULES[current_floor]
             current_map = create_map(
-                map_console, monster_schedule, item_schedule, terrain_schedule)
+                map_console, 
+                floor_schedule=FLOOR_SCHEDULES[current_floor],
+                monster_schedule=MONSTER_SCHEDULES[current_floor],
+                item_schedule=ITEM_SCHEDULES[current_floor],
+                terrain_schedule=TERRAIN_SCHEDULES[current_floor])
             game_maps[current_floor] = current_map
         # If we are not on the first turn of the game, place the player at the
         # appropriate staircase.

@@ -27,21 +27,11 @@ MESSAGE_CONFIG = {
     'height': BOTTOM_PANEL_CONFIG['height'] - 1
 }
 
-
 FLOOR_CONFIG = {
     'width': 80,
     'height': (SCREEN_HEIGHT
                - TOP_PANEL_CONFIG['height']
                - BOTTOM_PANEL_CONFIG['height']),
-}
-
-ROOM_CONFIG = {
-    'width': 15,
-    'height': 15,
-    'max_rectangles': 3,
-    'max_rectangle_width': 8,
-    'max_rectangle_height': 8,
-    'max_rooms': 20,
 }
 
 FOV_CONFIG = {

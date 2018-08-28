@@ -10,26 +10,36 @@ from components.input_handler import PlayerInputHandler
 from components.movable import Movable
 from components.scaldable import AliveScaldable
 from components.swimmable import PlayerSwimmable
-from entity import Entity
+
 from etc.colors import COLORS
-from etc.config import FLOOR_CONFIG, ROOM_CONFIG, PLAYER_CONFIG
+from etc.config import FLOOR_CONFIG, PLAYER_CONFIG
 from etc.enum import RenderOrder, GameStates, ResultTypes
+
 from generation.floor import make_floor
 from generation.item_groups import ITEM_GROUPS
 from generation.monster_groups import MONSTER_GROUPS
 from generation.spawn_entities import spawn_entities
 from generation.terrain import add_random_terrain
+
+from utils.utils import (
+    get_blocking_entity_in_position,
+    get_all_entities_with_component_in_position)
+
+from entity import Entity
 from map import GameMap
 from messages import Message
-from utils.utils import get_blocking_entity_in_position, get_all_entities_with_component_in_position
 
 
-def create_map(map_console, monster_schedule, item_schedule, terrain_schedule):
+def create_map(map_console, *,
+               floor_schedule,
+               terrain_schedule,
+               monster_schedule,
+               item_schedule):
     """Construct and return the game map.
 
     The game map is the main object representing the state of the game.
     """
-    floor = make_floor(FLOOR_CONFIG, ROOM_CONFIG)
+    floor = make_floor(FLOOR_CONFIG, floor_schedule)
     game_map = GameMap(floor, map_console)
     terrain = add_random_terrain(game_map, terrain_schedule)
     # TODO: game_map should be the first argument here.
