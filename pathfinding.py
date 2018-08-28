@@ -68,7 +68,7 @@ def make_walkable_array(game_map, routing_avoid=None):
     """
     if not routing_avoid:
         routing_avoid = []
-    walkable = game_map.walkable[:, :]
+    walkable = game_map.walkable.copy()
     if RoutingOptions.AVOID_MONSTERS in routing_avoid:
         walkable = walkable * (1 - game_map.blocked)
     if RoutingOptions.AVOID_WATER in routing_avoid:
@@ -78,6 +78,8 @@ def make_walkable_array(game_map, routing_avoid=None):
     if RoutingOptions.AVOID_STEAM in routing_avoid:
         walkable = walkable * (1 - game_map.steam)
     if RoutingOptions.AVOID_STAIRS in routing_avoid:
-        walkable[game_map.upward_stairs_position] = False
-        walkable[game_map.downward_stairs_position] = False
+        if game_map.upward_stairs_position:
+            walkable[game_map.upward_stairs_position] = False
+        if game_map.downward_stairs_position:
+            walkable[game_map.downward_stairs_position] = False
     return walkable
