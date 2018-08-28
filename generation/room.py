@@ -27,6 +27,31 @@ def random_dungeon_room(width=18,
             break
     return room
 
+def make_pillars_room(width=16,
+                      height=25,
+                      pillars=None):
+    """Construct a rectangular room with specified pillars.
+
+    Parameters
+    ----------
+    width: int
+      The width of the room.
+
+    height: int
+      The height of the room.
+
+    pillars: List of (int, int)
+      Coordinates to add pillars.
+
+    Returns
+    -------
+    room: DungeonRoom
+    """
+    room = DungeonRoom(width, height)
+    room.add_rectangle(Rectangle(0, 0, width, height))
+    for coords in pillars:
+        room.room[coords] = False
+    return room
 
 class PinnedDungeonRoom:
     """A DungeonRoom pinned onto a position in a larger map.

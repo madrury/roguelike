@@ -28,7 +28,7 @@ MESSAGE_CONFIG = {
 }
 
 FLOOR_CONFIG = {
-    'width': 80,
+    'width': SCREEN_WIDTH,
     'height': (SCREEN_HEIGHT
                - TOP_PANEL_CONFIG['height']
                - BOTTOM_PANEL_CONFIG['height']),
