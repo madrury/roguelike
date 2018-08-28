@@ -1,7 +1,8 @@
+SCREEN_HEIGHT = 60 
+SCREEN_WIDTH = 100
+
 ANIMATION_INTERVAL = 0.075
 INVENTORY_WIDTH = 50
-SCREEN_HEIGHT = 50
-SCREEN_WIDTH = 80
 SHIMMER_INTERVAL = 50
 
 
@@ -41,23 +42,6 @@ ROOM_CONFIG = {
     'max_rectangles': 3,
     'max_rectangle_width': 8,
     'max_rectangle_height': 8,
-}
-
-TERRAIN_CONFIG = {
-    'min_pools': 2,
-    'max_pools': 5,
-    'pool_room_proportion': 0.7,
-    'min_ice': 2,
-    'max_ice': 5,
-    'ice_room_proportion': 0.7,
-    'min_rivers': 1,
-    'max_rivers': 3,
-    'min_grass': 1,
-    'max_grass': 3,
-    'grass_room_proportion': 2.0,
-    'min_shrubs': 1,
-    'max_shrubs': 3,
-    'shrubs_room_proportion': 2.0
 }
 
 FOV_CONFIG = {

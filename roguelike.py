@@ -292,7 +292,6 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
         #---------------------------------------------------------------------
         # Get key input from the player.
         #---------------------------------------------------------------------
-        print("getting player input.", game_state)
         if not skip_player_input:
             user_input = get_user_input()
             if game_state in INPUT_STATES and not user_input:
