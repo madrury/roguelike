@@ -33,7 +33,6 @@ FLOOR_CONFIG = {
     'height': (SCREEN_HEIGHT
                - TOP_PANEL_CONFIG['height']
                - BOTTOM_PANEL_CONFIG['height']),
-    'max_rooms': 20,
 }
 
 ROOM_CONFIG = {
@@ -42,6 +41,7 @@ ROOM_CONFIG = {
     'max_rectangles': 3,
     'max_rectangle_width': 8,
     'max_rectangle_height': 8,
+    'max_rooms': 20,
 }
 
 FOV_CONFIG = {

@@ -7,17 +7,14 @@ from generation.tunnel import random_tunnel_between_pinned_rooms
 
 def make_floor(floor_config, room_config):
     """Generate a random dungeon floor with given parameters."""
-    floor_config_keys = ['width', 'height', 'max_rooms']
-    floor_width, floor_height, max_rooms = [
-        floor_config[key] for key in floor_config_keys]
+    floor_width = floor_config['width']
+    floor_height = floor_config['height']
     floor = random_dungeon_floor(floor_width, floor_height,
-                                 max_rooms=max_rooms,
                                  room_config=room_config)
     return floor
 
 def random_dungeon_floor(width=80,
                          height=41,
-                         max_rooms=25,
                          n_rooms_to_try=50,
                          n_room_placement_trys=25,
                          room_config=None):
@@ -32,9 +29,6 @@ def random_dungeon_floor(width=80,
 
     height: int
       The height of the dungeon floor.
-
-    max_rooms: int
-      The maximum number of rooms in the floor.
 
     n_rooms_to_try: int
       The maximum number of rooms to generate and attempt to place.
@@ -65,7 +59,7 @@ def random_dungeon_floor(width=80,
             elif not any(pinned_room.intersect(pr) for pr in floor.rooms):
                 floor.add_pinned_room(pinned_room)
                 break
-        if len(floor.rooms) >= max_rooms:
+        if len(floor.rooms) >= room_config['max_rooms']:
             break
     # Add tunnels between the consecutive rooms.
     for r1, r2 in zip(floor.rooms[:-1], floor.rooms[1:]):

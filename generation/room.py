@@ -7,7 +7,8 @@ def random_dungeon_room(width=18,
                         max_rectangles=20,
                         max_rectangle_width=5,
                         max_rectangle_height=5,
-                        n_rectangle_trys=500):
+                        n_rectangle_trys=500,
+                        **kwargs):
     """Generate a random dungeon room by placing random rectangles and
     building up a connected reigon.
     """
