@@ -27,6 +27,7 @@ from game_loop_functions import (
     entity_remove_weapon)
 from generation.monster_groups import MONSTER_SCHEDULES
 from generation.item_groups import ITEM_SCHEDULES
+from generation.terrain_schedule import TERRAIN_SCHEDULES
 from menus import invetory_menu
 from messages import MessageLog
 from utils.utils import (
@@ -66,7 +67,7 @@ def main():
     game_maps = [None] * 3
     # Create the map for the first floor of the dungeon and place the player.
     game_maps[0] = create_map(
-        map_console, MONSTER_SCHEDULES[0], ITEM_SCHEDULES[0])
+        map_console, MONSTER_SCHEDULES[0], ITEM_SCHEDULES[0], TERRAIN_SCHEDULES[0])
     player = create_player(game_maps[0])
     game_maps[0].place_player(player)
     # Track the current turn of the game.  Used for events that happen on a
@@ -86,7 +87,9 @@ def main():
         if current_map == None:
             monster_schedule = MONSTER_SCHEDULES[current_floor]
             item_schedule = ITEM_SCHEDULES[current_floor]
-            current_map = create_map(map_console, monster_schedule, item_schedule)
+            terrain_schedule = TERRAIN_SCHEDULES[current_floor]
+            current_map = create_map(
+                map_console, monster_schedule, item_schedule, terrain_schedule)
             game_maps[current_floor] = current_map
         # If we are not on the first turn of the game, place the player at the
         # appropriate staircase.
@@ -257,6 +260,7 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
 
         # DEBUG
         # These switched highlight the various game state arrays.
+        # highlight_array(game_map.walkable, game_map, COLORS['cursor_tail'])
         # highlight_array(game_map.blocked, game_map, COLORS['cursor_tail'])
         # highlight_array(game_map.fire, game_map, COLORS['darker_red'])
         # highlight_array(game_map.steam, game_map, COLORS['desaturated_green'])
@@ -288,6 +292,7 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
         #---------------------------------------------------------------------
         # Get key input from the player.
         #---------------------------------------------------------------------
+        print("getting player input.", game_state)
         if not skip_player_input:
             user_input = get_user_input()
             if game_state in INPUT_STATES and not user_input:
