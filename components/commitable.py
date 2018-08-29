@@ -26,10 +26,11 @@ class BlockingCommitable:
             game_map.entities.append(self.owner)
 
     def delete(self, game_map):
-        if not game_map.blocked[self.owner.x, self.owner.y]:
+        x, y = self.owner.x, self.owner.y
+        if not game_map.blocked[x, y]:
             raise RuntimeError(
                 f"Attempt to remove blocking entity {self.owner} from "
-                 "unblocked space.")
+                f"unblocked space {x}, {y}.")
         game_map.blocked[self.owner.x, self.owner.y] = False
         game_map.entities.remove(self.owner)
 
@@ -78,6 +79,7 @@ class TerrainCommitable:
             game_map.entities.append(self.owner)
 
     def delete(self, game_map):
+        x, y = self.owner.x, self.owner.y
         if self.owner in game_map.entities:
             # TODO: This is inside the above check because in certain
             # circumstances, a terrain entity will be removed from the map
@@ -87,7 +89,36 @@ class TerrainCommitable:
             if not game_map.terrain[self.owner.x, self.owner.y]:
                 raise RuntimeError(
                     f"Attempt to remove terrain entity {self.owner.name} from "
-                    "non-terrain space.")
+                    f"non-terrain space {x}, {y}.")
+            game_map.terrain[self.owner.x, self.owner.y] = False
+            game_map.entities.remove(self.owner)
+
+
+class BlockingTerrainCommitable:
+
+    def commit(self, game_map):
+        if not (game_map.terrain[self.owner.x, self.owner.y] 
+            and not game_map.blocked[self.owner.x, self.owner.y]):
+            game_map.blocked[self.owner.x, self.owner.y] = True
+            game_map.terrain[self.owner.x, self.owner.y] = True
+            game_map.entities.append(self.owner)
+
+    def delete(self, game_map):
+        x, y = self.owner.x, self.owner.y
+        if self.owner in game_map.entities:
+            # TODO: This is inside the above check because in certain
+            # circumstances, a terrain entity will be removed from the map
+            # twice.  For example, if two different fires attempt to burn the
+            # same patch of grass, two signals will be sent to remove it from
+            # the map.  There may be a more transparant way to handle this.
+            if not game_map.terrain[x, y]:
+                raise RuntimeError(
+                    f"Attempt to remove terrain entity {self.owner.name} from "
+                    f"non-terrain space {x}, {y}.")
+            if not game_map.blocked[self.owner.x, self.owner.y]:
+                raise RuntimeError(
+                    f"Attempt to remove blocking entity {self.owner.name} from "
+                    "unblocked space {x}, {y}.")
             game_map.terrain[self.owner.x, self.owner.y] = False
             game_map.entities.remove(self.owner)
 

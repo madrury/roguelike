@@ -14,8 +14,9 @@ import components.burnable
 import components.encroachable
 
 from components.commitable import (
-    TerrainCommitable, UpwardStairsCommitable, DownwardStairsCommitable,
-    WaterCommitable, IceCommitable, ShrubCommitable, BaseCommitable)
+    TerrainCommitable, BlockingTerrainCommitable, UpwardStairsCommitable,
+    DownwardStairsCommitable, WaterCommitable, IceCommitable, ShrubCommitable,
+    BaseCommitable)
 from components.dissipatable import NecroticSoilDissipatable
 from components.illuminatable import Illuminatable
 from components.shimmer import WaterShimmer, IceShimmer, FireShimmer
@@ -72,7 +73,7 @@ class StationaryTorch:
             entity_type=EntityTypes.TERRAIN,
             render_order=RenderOrder.TERRAIN,
             blocks=True,
-            commitable=TerrainCommitable(),
+            commitable=BlockingTerrainCommitable(),
             illuminatable=Illuminatable(radius=3),
             shimmer=FireShimmer())
 

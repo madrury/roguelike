@@ -69,5 +69,3 @@ class Steam:
             dissipatable=SteamDissipatable(p=p_dissipate),
             shimmer=SteamShimmer(),
             spreadable=SteamSpreadable(p=p_spread))
-
-
