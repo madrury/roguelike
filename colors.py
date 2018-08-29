@@ -18,8 +18,15 @@ def random_orange():
     return (255, green, 0)
 
 def random_yellow():
-    blue = int(random.uniform(100, 255))
+    blue = int(random.uniform(100, 240))
     return (255, 255, blue)
+
+def random_orange_or_red():
+    x = random.uniform(0, 1)
+    if x <= 0.5:
+        return random_red()
+    else:
+        return random_orange()
 
 def random_red_or_yellow():
     x = random.uniform(0, 1)

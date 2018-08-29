@@ -74,7 +74,6 @@ class GameMap(Map):
     """
     def __init__(self, floor, console):
         width, height = floor.width, floor.height
-        print(width, height)
         super().__init__(width, height)
         self.floor = floor
         self.console = console
