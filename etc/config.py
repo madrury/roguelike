@@ -28,14 +28,16 @@ MESSAGE_CONFIG = {
     'height': BOTTOM_PANEL_CONFIG['height'] - 1
 }
 
-FLOOR_CONFIG = {
+GLOBAL_FLOOR_CONFIG = {
     'width': SCREEN_WIDTH,
     'height': (SCREEN_HEIGHT
                - TOP_PANEL_CONFIG['height']
                - BOTTOM_PANEL_CONFIG['height']),
 }
 
-INITIAL_PLAYER_POSITION = (FLOOR_CONFIG['width'] // 2, FLOOR_CONFIG['height'] - 4)
+INITIAL_PLAYER_POSITION = (
+    GLOBAL_FLOOR_CONFIG['width'] // 2,
+    GLOBAL_FLOOR_CONFIG['height'] - 4)
 
 FOV_CONFIG = {
     "algorithm": 'RESTRICTIVE',

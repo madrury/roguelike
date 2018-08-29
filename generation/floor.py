@@ -9,28 +9,28 @@ from generation.tunnel import random_tunnel_between_pinned_rooms
 
 
 # TODO: Sort out the naming here, its inconsistent.
-def make_floor(floor_config, room_config):
+def make_floor(floor_config, floor_schedule):
     """Create a floor of the dungon given a configuration."""
     floor_width = floor_config['width']
     floor_height = floor_config['height']
-    floor_type = room_config['type']
+    floor_type = floor_schedule['type']
     if floor_type == FloorType.STANDARD:
         floor = random_dungeon_floor(floor_width, floor_height,
-                                     room_config=room_config)
+                                     floor_schedule=floor_schedule)
     elif floor_type == FloorType.FIRST:
-        first_room_width = room_config['first_room_width'] 
-        first_room_height = room_config['first_room_height']
+        first_room_width = floor_schedule['first_room_width'] 
+        first_room_height = floor_schedule['first_room_height']
         pillars_room = make_pillars_room(
             width=first_room_width, 
             height=first_room_height, 
-            pillars=room_config['pillars'])
+            pillars=floor_schedule['pillars'])
         pin_location = (floor_width // 2 - first_room_width // 2, 
                         floor_height - first_room_height - 2)
         pillars_room_pinned = PinnedDungeonRoom(pillars_room, pin_location)
         floor = DungeonFloor(floor_width, floor_height)
         floor.add_pinned_room(pillars_room_pinned)
         floor = random_dungeon_floor(floor_width, floor_height,
-                                     room_config=room_config,
+                                     floor_schedule=floor_schedule,
                                      floor=floor,
                                      room_counter_init=1)
     else:
@@ -41,7 +41,7 @@ def random_dungeon_floor(width=80,
                          height=41,
                          n_rooms_to_try=50,
                          n_room_placement_trys=25,
-                         room_config=None,
+                         floor_schedule=None,
                          floor=None,
                          room_counter_init=0):
     """Generate a random dungeon floor with given parameters.
@@ -62,7 +62,7 @@ def random_dungeon_floor(width=80,
     n_room_placement_trys: int
       The maximum number of times to attempt to place a single room.
 
-    room_config: dict
+    floor_schedule: dict
       Configuration for random generation of a single room.
 
     floor: DungeonFloor
@@ -78,12 +78,12 @@ def random_dungeon_floor(width=80,
     floor: DungeonFloor object
       The generated dungeon floor.
     """
-    if room_config == None:
-        room_config = {}
+    if floor_schedule == None:
+        floor_schedule = {}
     if floor == None:
         floor = DungeonFloor(width, height)
     for n in range(room_counter_init, n_rooms_to_try):
-        room = random_dungeon_room(**room_config)
+        room = random_dungeon_room(**floor_schedule)
         for _ in range(n_room_placement_trys):
             x_pin = random.randint(1, width - room.width - 1)
             y_pin = random.randint(1, height - room.height - 1)
@@ -94,7 +94,7 @@ def random_dungeon_floor(width=80,
             elif not any(pinned_room.intersect(pr) for pr in floor.rooms):
                 floor.add_pinned_room(pinned_room)
                 break
-        if len(floor.rooms) >= room_config['max_rooms']:
+        if len(floor.rooms) >= floor_schedule['max_rooms']:
             break
     # Add tunnels between the consecutive rooms.
     for r1, r2 in zip(floor.rooms[:-1], floor.rooms[1:]):

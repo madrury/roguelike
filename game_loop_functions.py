@@ -12,7 +12,7 @@ from components.scaldable import AliveScaldable
 from components.swimmable import PlayerSwimmable
 
 from etc.colors import COLORS
-from etc.config import FLOOR_CONFIG, PLAYER_CONFIG
+from etc.config import GLOBAL_FLOOR_CONFIG, PLAYER_CONFIG
 from etc.enum import RenderOrder, GameStates, ResultTypes
 
 from generation.floor import make_floor
@@ -39,7 +39,7 @@ def create_map(map_console, *,
 
     The game map is the main object representing the state of the game.
     """
-    floor = make_floor(FLOOR_CONFIG, floor_schedule)
+    floor = make_floor(GLOBAL_FLOOR_CONFIG, floor_schedule)
     game_map = GameMap(floor, map_console)
     terrain = add_random_terrain(game_map, terrain_schedule)
     # TODO: game_map should be the first argument here.

@@ -18,10 +18,10 @@ FIRST_FLOOR = {
     'first_room_height': 25,
     # Four rows of pillars surround the player in the first room.
     'pillars': [
-        (3, y) for y in range(22, 2, -2)] + [
-        (5, y) for y in range(22, 2, -2)] + [
-        (11, y) for y in range(22, 2, -2)] + [
-        (13, y) for y in range(22, 2, -2)]
+        (3, y) for y in range(22, 2, -3)] + [
+        (5, y) for y in range(22, 2, -3)] + [
+        (11, y) for y in range(22, 2, -3)] + [
+        (13, y) for y in range(22, 2, -3)]
 }
 
 BASIC_FLOOR = {
