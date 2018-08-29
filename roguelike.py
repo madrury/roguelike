@@ -524,7 +524,7 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
                 elif dead_entity:
                     player_turn_results.extend(
                         kill_monster(dead_entity, game_map))
-                    dead_entities.append(dead_entity)
+                    make_corpse(dead_entity)
             # Handle a player death message.  Death messages are special in
             # that they immediately break out of the game loop.
             if result_type == ResultTypes.DEATH_MESSAGE:
@@ -673,7 +673,8 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
                 elif dead_entity:
                     enemy_turn_results.extend(
                         kill_monster(dead_entity, game_map))
-                    dead_entities.append(dead_entity)
+                    make_corpse(dead_entity)
+                    
 
         #---------------------------------------------------------------------
         # Handle meta actions,
@@ -711,24 +712,6 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
         fullscreen = action.get(InputTypes.FULLSCREEN)
         if fullscreen:
             tdl.set_fullscreen(not tdl.get_fullscreen())
-
-        #---------------------------------------------------------------------
-        # If the last turn resulted in a dead monster:
-        #   - Draw it as a corpse.
-        #   - Replace all is components with null components.
-        #   - Remove it from the harmed_queue so that its health bars will not
-        #     render.
-        #
-        # Note we do not do this until *after* an animation is finished, since
-        # the game state will possibly already know the monster is dead before
-        # playing the animation.
-        #---------------------------------------------------------------------
-        if game_state != GameStates.ANIMATION_PLAYING:
-            while dead_entities:
-                dead_entity = dead_entities.pop()
-                while dead_entity in harmed_queue:
-                    harmed_queue.remove(dead_entity)
-                make_corpse(dead_entity)
 
         #---------------------------------------------------------------------
         # If the player is dead, the game is over.
