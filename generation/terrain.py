@@ -69,9 +69,9 @@ def add_random_terrain(game_map, terrain_config):
             terrain_proportion=terrain_config['ice_room_proportion']))
     # Place the upward and downward stairs
     if terrain_config.get('upward_stairs', True):
-        terrain.extend(place_stairs(game_map, UpwardStairs))
+        terrain.append(place_stairs(game_map, UpwardStairs))
     if terrain_config.get('downward_stairs', True):
-        terrain.extend(place_stairs(game_map, DownwardStairs))
+        terrain.append(place_stairs(game_map, DownwardStairs))
     # We've been using this array to track when terrain was generated in a tile
     # through the terrain generation process.  Now we want to commit them to
     # the map, but the array will block terrain from being places anywhere that
@@ -113,7 +113,7 @@ def place_stairs(game_map, stairs):
         y = random.randint(0, game_map.height - 1)
         if game_map.walkable[x, y] and not game_map.terrain[x, y]:
             game_map.terrain[x, y] = True
-            return [stairs.make(game_map, x, y)]
+            return stairs.make(game_map, x, y)
            
 
 #-----------------------------------------------------------------------------
