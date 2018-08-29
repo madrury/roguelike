@@ -23,7 +23,7 @@ def make_floor(floor_config, floor_schedule):
         pillars_room = make_pillars_room(
             width=first_room_width, 
             height=first_room_height, 
-            pillars=floor_schedule['pillars'])
+            pillars=[])#floor_schedule['pillars'])
         pin_location = (floor_width // 2 - first_room_width // 2, 
                         floor_height - first_room_height - 2)
         pillars_room_pinned = PinnedDungeonRoom(pillars_room, pin_location)
@@ -34,8 +34,11 @@ def make_floor(floor_config, floor_schedule):
                                      floor=floor,
                                      room_counter_init=1)
     else:
-        raise ValueError(f"Floor type {floor_type.value} not supported!")
+        raise ValueError(f"Floor type {floor_type.name} not supported!")
+    if 'objects' in floor_schedule:
+        floor.objects = floor_schedule['objects']
     return floor
+
 
 def random_dungeon_floor(width=80,
                          height=41,
@@ -128,6 +131,9 @@ class DungeonFloor:
     self.tunnels: list of Tunnel objects
       The tunnels in the dungeon.
 
+    self.objects: List[Entity]
+      Static objects to populate the floor with.
+
     self.floor: np.array of bool
       Array of transparant tiles.  Only used for printing.
     """
@@ -136,6 +142,7 @@ class DungeonFloor:
         self.height = height
         self.rooms = []
         self.tunnels = []
+        self.objects = []
         self.floor = np.zeros((width, height)).astype(bool)
 
     def add_pinned_room(self, pinned_room):

@@ -18,7 +18,7 @@ from components.commitable import (
     WaterCommitable, IceCommitable, ShrubCommitable, BaseCommitable)
 from components.dissipatable import NecroticSoilDissipatable
 from components.illuminatable import Illuminatable
-from components.shimmer import WaterShimmer, IceShimmer
+from components.shimmer import WaterShimmer, IceShimmer, FireShimmer
 
 
 class UpwardStairs:
@@ -71,6 +71,7 @@ class StationaryTorch:
             bg_color=bg_color,
             entity_type=EntityTypes.TERRAIN,
             render_order=RenderOrder.TERRAIN,
+            blocks=True,
             commitable=TerrainCommitable(),
             illuminatable=Illuminatable(radius=3),
             shimmer=FireShimmer())

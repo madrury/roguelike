@@ -104,9 +104,8 @@ class GameMap(Map):
         for tunnel in self.floor.tunnels:
             for x, y in tunnel:
                 self.make_transparent_and_walkable(x, y)
-
-    def visible(self, x, y):
-        return self.fov[x, y] or self.illuminated[x, y]
+        for entity in self.floor.objects:
+            entity.commitable.commit(self)
 
     def update_entity(self, entity):
         if self.visible(entity.x, entity.y):
@@ -201,14 +200,17 @@ class GameMap(Map):
                     self.update_and_draw_char(
                         x, y, ' ', fg=None, bg=COLORS.get('dark_ground'))
 
+    def make_transparent_and_walkable(self, x, y):
+        self.walkable[x, y] = True
+        self.transparent[x, y] = True
+
     def within_bounds(self, x, y, buffer=0):
         return (
             (0 + buffer <= x < self.width - buffer) and
             (0 + buffer <= y < self.height - buffer))
 
-    def make_transparent_and_walkable(self, x, y):
-        self.walkable[x, y] = True
-        self.transparent[x, y] = True
+    def visible(self, x, y):
+        return self.fov[x, y] or self.illuminated[x, y]
 
 
 class ColorArray:
