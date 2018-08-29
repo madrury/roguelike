@@ -43,9 +43,9 @@ TERRAIN_SCHEDULES = [
         'grass_room_proportion': 2.0,
         'min_shrubs': 0,
         'max_shrubs': 1,
-        'shrubs_room_proportion': 0.0,
+        'shrubs_room_proportion': 0.7,
         'min_ice': 0,
-        'max_ice': 0,
-        'ice_room_proportion': 0.0,
+        'max_ice': 1,
+        'ice_room_proportion': 0.7,
     },
 ]
