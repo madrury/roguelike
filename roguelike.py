@@ -215,6 +215,15 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
                 if entity.shimmer:
                     entity.shimmer.shimmer()
 
+        #---------------------------------------------------------------
+        # Clear the illumination array, which is recomputed from scratch
+        # each time terrain takes their turns.
+        #---------------------------------------------------------------
+        if game_state == GameStates.PLAYER_TURN:
+            game_map.illuminated[:, :] = 0
+            for entity in (e for e in game_map.entities if e.illuminatable):
+                entity.illuminatable.illuminate(game_map)
+
         #---------------------------------------------------------------------
         # Render and display the dungeon and its inhabitates.
         #---------------------------------------------------------------------
@@ -564,12 +573,6 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
         #-------------------------------------------------------------------
         if game_state == GameStates.ENEMY_TURN:
 
-            #---------------------------------------------------------------
-            # Clear the illumination array, which is recomputed from scratch
-            # each time terrain takes their turns.
-            #---------------------------------------------------------------
-            game_map.illuminated[:, :] = 0
-
             for entity in (e for e in game_map.entities if e != player):
                 # Enemies move and attack if possible.
                 if entity.ai:
@@ -607,9 +610,6 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
                             (entity.x, entity.y), game_map, "scaldable"))
                     for e in scaldable_entities_at_position:
                         enemy_turn_results.extend(e.scaldable.scald(game_map))
-                # Illuminating entities cast thier light.
-                if entity.illuminatable:
-                    entity.illuminatable.illuminate(game_map)
             game_state = GameStates.PLAYER_TURN
 
         #---------------------------------------------------------------------
