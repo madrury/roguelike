@@ -14,20 +14,25 @@ def make_floor(floor_config, room_config):
     floor_width = floor_config['width']
     floor_height = floor_config['height']
     floor_type = room_config['type']
-    print(floor_width, floor_height)
     if floor_type == FloorType.STANDARD:
         floor = random_dungeon_floor(floor_width, floor_height,
                                      room_config=room_config)
     elif floor_type == FloorType.FIRST:
-        pillars_room = make_pillars_room(width=16, height=25, pillars=[])
-        pin_location = (floor_width // 2 - 16 // 2, floor_height - 25 - 2)
-        print(pin_location)
+        first_room_width = room_config['first_room_width'] 
+        first_room_height = room_config['first_room_height']
+        pillars_room = make_pillars_room(
+            width=first_room_width, 
+            height=first_room_height, 
+            pillars=room_config['pillars'])
+        pin_location = (floor_width // 2 - first_room_width // 2, 
+                        floor_height - first_room_height - 2)
         pillars_room_pinned = PinnedDungeonRoom(pillars_room, pin_location)
         floor = DungeonFloor(floor_width, floor_height)
         floor.add_pinned_room(pillars_room_pinned)
         floor = random_dungeon_floor(floor_width, floor_height,
                                      room_config=room_config,
-                                     floor=floor)
+                                     floor=floor,
+                                     room_counter_init=1)
     else:
         raise ValueError(f"Floor type {floor_type.value} not supported!")
     return floor
@@ -37,7 +42,8 @@ def random_dungeon_floor(width=80,
                          n_rooms_to_try=50,
                          n_room_placement_trys=25,
                          room_config=None,
-                         floor=None):
+                         floor=None,
+                         room_counter_init=0):
     """Generate a random dungeon floor with given parameters.
 
     make_floor is the intended interface for this function.
@@ -63,6 +69,10 @@ def random_dungeon_floor(width=80,
       An optional DungeonFloor object.  If passed, the random rooms will be
       added to this floor.
 
+    room_counter_init: int
+      Number to initialzie the room counter to.  Used in case the process is
+      seeded with some rooms already created.
+
     Returns
     -------
     floor: DungeonFloor object
@@ -72,7 +82,7 @@ def random_dungeon_floor(width=80,
         room_config = {}
     if floor == None:
         floor = DungeonFloor(width, height)
-    for n in range(n_rooms_to_try):
+    for n in range(room_counter_init, n_rooms_to_try):
         room = random_dungeon_room(**room_config)
         for _ in range(n_room_placement_trys):
             x_pin = random.randint(1, width - room.width - 1)

@@ -47,6 +47,7 @@ def make_pillars_room(width=16,
     -------
     room: DungeonRoom
     """
+    print(width, height)
     room = DungeonRoom(width, height)
     room.add_rectangle(Rectangle(0, 0, width, height))
     for coords in pillars:
@@ -179,7 +180,7 @@ class DungeonRoom:
         seen = set() 
         for r in self.rectangles:
             for x, y in r:
-                if (x, y) not in seen:
+                if (x, y) not in seen and self.room[x, y]:
                     seen.add((x, y))
                     yield x, y
 
