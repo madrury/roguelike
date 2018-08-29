@@ -136,7 +136,6 @@ class DungeonFloor:
         self.height = height
         self.rooms = []
         self.tunnels = []
-        self.pools = []
         self.floor = np.zeros((width, height)).astype(bool)
 
     def add_pinned_room(self, pinned_room):

@@ -102,8 +102,6 @@ class GameMap(Map):
         for tunnel in self.floor.tunnels:
             for x, y in tunnel:
                 self.make_transparent_and_walkable(x, y)
-        for pool in self.floor.pools:
-            pool.write_to_game_map(self)
 
     def update_entity(self, entity):
         if self.fov[entity.x, entity.y]:
