@@ -226,7 +226,8 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
         # Top panel.
         top_panel_console.clear(fg=COLORS['white'], bg=COLORS['black'])
         top_panel_console.draw_str(0, 0,
-            f" Current Floor: {current_floor}  Turn Number: {game_turn}",
+            f" Current Floor: {current_floor}  Turn Number: {game_turn} "
+            f" Position: {player.x}, {player.y}",
             fg=(255, 255, 255))
         player.harmable.render_status_bar(top_panel_console, 1, 2)
         player.swimmable.render_status_bar(
@@ -558,10 +559,17 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
             game_state = GameStates.ENEMY_TURN
 
 
-        #-----------------------------------------------------------------
-        # All enemies and hazards terrain take thier turns.
-        #-----------------------------------------------------------------
+        #-------------------------------------------------------------------
+        # All enemies and terrain take thier turns.
+        #-------------------------------------------------------------------
         if game_state == GameStates.ENEMY_TURN:
+
+            #---------------------------------------------------------------
+            # Clear the illumination array, which is recomputed from scratch
+            # each time terrain takes their turns.
+            #---------------------------------------------------------------
+            game_map.illuminated[:, :] = 0
+
             for entity in (e for e in game_map.entities if e != player):
                 # Enemies move and attack if possible.
                 if entity.ai:
@@ -599,6 +607,9 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
                             (entity.x, entity.y), game_map, "scaldable"))
                     for e in scaldable_entities_at_position:
                         enemy_turn_results.extend(e.scaldable.scald(game_map))
+                # Illuminating entities cast thier light.
+                if entity.illuminatable:
+                    entity.illuminatable.illuminate(game_map)
             game_state = GameStates.PLAYER_TURN
 
         #---------------------------------------------------------------------

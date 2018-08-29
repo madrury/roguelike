@@ -74,6 +74,7 @@ class GameMap(Map):
     """
     def __init__(self, floor, console):
         width, height = floor.width, floor.height
+        print(width, height)
         super().__init__(width, height)
         self.floor = floor
         self.console = console
@@ -83,6 +84,7 @@ class GameMap(Map):
         self.downward_stairs_position = None
         # These need to be int8's to work with the tcod pathfinder
         self.explored = np.zeros((width, height), dtype=np.int8)
+        self.illuminated = np.zeros((width, height), dtype=np.int8)
         self.water = np.zeros((width, height), dtype=np.int8)
         self.ice = np.zeros((width, height), dtype=np.int8)
         self.fire = np.zeros((width, height), dtype=np.int8)
@@ -103,8 +105,11 @@ class GameMap(Map):
             for x, y in tunnel:
                 self.make_transparent_and_walkable(x, y)
 
+    def visible(self, x, y):
+        return self.fov[x, y] or self.illuminated[x, y]
+
     def update_entity(self, entity):
-        if self.fov[entity.x, entity.y]:
+        if self.visible(entity.x, entity.y):
             entity.seen = True
             bg = (entity.bg_color if entity.bg_color
                   else self.bg_colors[entity.x, entity.y])
@@ -117,7 +122,7 @@ class GameMap(Map):
                                  fg=entity.dark_fg_color, bg=bg)
 
     def draw_entity(self, entity):
-        if self.fov[entity.x, entity.y]:
+        if self.visible(entity.x, entity.y):
             self.draw_char(entity.x, entity.y, entity.char,
                            fg=entity.fg_color, bg=entity.bg_color)
         elif (entity.visible_out_of_fov and entity.seen):
@@ -180,7 +185,7 @@ class GameMap(Map):
     def update_and_draw_layout(self):
         for x, y in self:
             wall = not self.shrub[x, y] and not self.transparent[x, y]
-            if self.fov[x, y]:
+            if self.visible(x, y):
                 if wall:
                     self.update_and_draw_char(
                         x, y, ' ', fg=None, bg=COLORS.get('light_wall'))

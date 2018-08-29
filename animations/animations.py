@@ -120,8 +120,8 @@ class SimultaneousAnimation:
             animations.append(construct_animation(datum, game_map))
         return SimultaneousAnimation(*animations)
 
-
             
+
 class ColorCycleAnimation:
     """Animation that cycles through a sequence of background colors for a
     tile.  Used for various potions (health, power, etc).

@@ -8,6 +8,7 @@ from etc.game_config import STEAM_DISSAPATE_PROBABILTY, STEAM_SPREAD_PROBABILTY
 
 from components.commitable import BaseCommitable, FireCommitable, SteamCommitable
 from components.dissipatable import FireDissipatable, SteamDissipatable
+from components.illuminatable import Illuminatable
 from components.shimmer import FireShimmer, SteamShimmer
 from components.spreadable import FireSpreadable, SteamSpreadable
 
@@ -32,6 +33,7 @@ class Fire:
             render_order=RenderOrder.TERRAIN,
             commitable=FireCommitable(),
             dissipatable=FireDissipatable(),
+            illuminatable=Illuminatable(radius=3),
             shimmer=FireShimmer(),
             spreadable=FireSpreadable())
 

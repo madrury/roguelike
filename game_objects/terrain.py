@@ -4,7 +4,8 @@ from entity import Entity
 from colors import (
     random_light_green, random_dark_grey, 
     random_light_water, random_dark_water, 
-    random_light_ice, random_dark_ice)
+    random_light_ice, random_dark_ice,
+    random_red_or_yellow)
 from etc.enum import Terrain, EntityTypes, RenderOrder
 from etc.colors import COLORS
 from etc.chars import CHARS
@@ -16,6 +17,7 @@ from components.commitable import (
     TerrainCommitable, UpwardStairsCommitable, DownwardStairsCommitable,
     WaterCommitable, IceCommitable, ShrubCommitable, BaseCommitable)
 from components.dissipatable import NecroticSoilDissipatable
+from components.illuminatable import Illuminatable
 from components.shimmer import WaterShimmer, IceShimmer
 
 
@@ -51,6 +53,27 @@ class DownwardStairs:
             entity_type=EntityTypes.TERRAIN,
             render_order=RenderOrder.TERRAIN,
             commitable=DownwardStairsCommitable())
+
+
+class StationaryTorch:
+    """A stationary torch in the dungeon.
+
+    Illuminates squares within a radius of itself.
+    """
+    @staticmethod
+    def make(game_map, x, y):
+        fg_color = random_red_or_yellow()
+        bg_color = random_red_or_yellow()
+        return Entity(
+            x, y, '^',
+            name="Stationary Torch",
+            fg_color=fg_color,
+            bg_color=bg_color,
+            entity_type=EntityTypes.TERRAIN,
+            render_order=RenderOrder.TERRAIN,
+            commitable=TerrainCommitable(),
+            illuminatable=Illuminatable(radius=3),
+            shimmer=FireShimmer())
 
 
 class Water:
