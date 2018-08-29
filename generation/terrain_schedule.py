@@ -1,6 +1,8 @@
 TERRAIN_SCHEDULES = [
     {
         'upward_stairs': False,
+        'min_torches': 0,
+        'max_torches': 0,
         'min_pools': 0,
         'max_pools': 1,
         'pool_room_proportion': 0.7,
@@ -17,6 +19,8 @@ TERRAIN_SCHEDULES = [
         'ice_room_proportion': 0.0,
     },
     {
+        'min_torches': 3,
+        'max_torches': 10,
         'min_pools': 2,
         'max_pools': 4,
         'pool_room_proportion': 0.7,
@@ -33,8 +37,10 @@ TERRAIN_SCHEDULES = [
         'ice_room_proportion': 0.0,
     },
     {
-        'min_pools': 2,
-        'max_pools': 4,
+        'min_torches': 3,
+        'max_torches': 10,
+        'min_pools': 3,
+        'max_pools': 10,
         'pool_room_proportion': 0.7,
         'min_rivers': 0,
         'max_rivers': 3,

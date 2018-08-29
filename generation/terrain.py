@@ -1,4 +1,5 @@
 import random
+import numpy as np
 
 from colors import random_light_green, random_light_water, random_dark_water
 from entity import Entity
@@ -7,7 +8,7 @@ from etc.enum import Terrain, EntityTypes, RenderOrder
 from etc.colors import COLORS
 from utils.utils import adjacent_coordinates, random_adjacent
 from game_objects.terrain import (
-    UpwardStairs, DownwardStairs, Water, Ice, Grass, Shrub)
+    UpwardStairs, DownwardStairs, StationaryTorch, Water, Ice, Grass, Shrub)
 from components.shimmer import WaterShimmer
 from components.burnable import GrassBurnable, WaterBurnable
 
@@ -31,6 +32,7 @@ def add_random_terrain(game_map, terrain_config):
     This method does not return a meaningful value, it instead modified
     game_map by populating it with terrain.
     """
+    print(terrain_config)
     terrain = []
     # Grow pools of water.
     terrain.extend(
@@ -72,6 +74,12 @@ def add_random_terrain(game_map, terrain_config):
         terrain.append(place_stairs(game_map, UpwardStairs))
     if terrain_config.get('downward_stairs', True):
         terrain.append(place_stairs(game_map, DownwardStairs))
+    # Place any torches
+    terrain.extend(
+        place_random_torches(
+            game_map,
+            min_torches=terrain_config['min_torches'],
+            max_torches=terrain_config['max_torches']))
     # We've been using this array to track when terrain was generated in a tile
     # through the terrain generation process.  Now we want to commit them to
     # the map, but the array will block terrain from being places anywhere that
@@ -115,6 +123,36 @@ def place_stairs(game_map, stairs):
             game_map.terrain[x, y] = True
             return stairs.make(game_map, x, y)
            
+#-----------------------------------------------------------------------------
+# Stationary Torches
+#-----------------------------------------------------------------------------
+def place_random_torches(game_map, min_torches, max_torches):
+    torches = []
+    n_torches = random.randint(min_torches, max_torches)
+    while len(torches) != n_torches:
+        torch = place_one_random_torch(game_map)
+        if torch:
+            torches.append(torch)
+    return torches
+
+def place_one_random_torch(game_map):
+    x = random.randint(0, game_map.width - 1)
+    y = random.randint(0, game_map.height - 1)
+    if not game_map.within_bounds(x, y, buffer=1):
+        return None
+    if check_if_torch_is_placable((x, y), game_map):
+        game_map.terrain[x, y] = True
+        return StationaryTorch.make(game_map, x, y)
+
+def check_if_torch_is_placable(position, game_map):
+    x, y = position
+    local_map = game_map.walkable[(x-1):(x+2), (y-1):(y+2)]
+    masks = [
+        np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]])
+    ]
+    return (not game_map.terrain[x, y] 
+            and any((local_map * mask == mask).all() for mask in masks))
+
 
 #-----------------------------------------------------------------------------
 # Gwoable Terrain
