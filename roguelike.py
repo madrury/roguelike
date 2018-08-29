@@ -13,7 +13,7 @@ from etc.colors import COLORS
 from etc.config import (
     SCREEN_WIDTH, SCREEN_HEIGHT, TOP_PANEL_CONFIG, BOTTOM_PANEL_CONFIG,
     MAP_PANEL_CONFIG, MESSAGE_CONFIG, FOV_CONFIG, ANIMATION_INTERVAL,
-    SHIMMER_INTERVAL)
+    SHIMMER_INTERVAL, INITIAL_PLAYER_POSITION)
 from etc.enum import (
     ResultTypes, FloorResultTypes, InputTypes, EntityTypes, GameStates,
     INVENTORY_STATES, INPUT_STATES, CANCEL_STATES)
@@ -78,7 +78,7 @@ def main():
         item_schedule=ITEM_SCHEDULES[0],
         terrain_schedule=TERRAIN_SCHEDULES[0])
     player = create_player(game_maps[0])
-    game_maps[0].place_player(player)
+    player.x, player.y = INITIAL_PLAYER_POSITION
     # Track the current turn of the game.  Used for events that happen on a
     # fixed schedule.
     game_turn = 0 

@@ -105,16 +105,6 @@ class GameMap(Map):
         for pool in self.floor.pools:
             pool.write_to_game_map(self)
 
-    # TODO: This probably should not be a method of this class.
-    def place_player(self, player):
-        placed = False
-        while not placed:
-            start_room = choice(self.floor.rooms)
-            x, y = start_room.random_point()
-            if not self.water[x, y]:
-                player.x, player.y = x, y
-                placed = True
-
     def update_entity(self, entity):
         if self.fov[entity.x, entity.y]:
             entity.seen = True
