@@ -32,7 +32,6 @@ def add_random_terrain(game_map, terrain_config):
     This method does not return a meaningful value, it instead modified
     game_map by populating it with terrain.
     """
-    print(terrain_config)
     terrain = []
     # Grow pools of water.
     terrain.extend(
@@ -142,16 +141,25 @@ def place_one_random_torch(game_map):
         return None
     if check_if_torch_is_placable((x, y), game_map):
         game_map.terrain[x, y] = True
+        game_map.walkable[x, y] = False
         return StationaryTorch.make(game_map, x, y)
 
 def check_if_torch_is_placable(position, game_map):
     x, y = position
     local_map = game_map.walkable[(x-1):(x+2), (y-1):(y+2)]
     masks = [
-        np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]])
+        #np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]]),
+        np.array([[0, 0, 0], [0, 0, 0], [1, 1, 1]]),
+        np.array([[0, 0, 1], [0, 0, 1], [0, 0, 1]]),
+        np.array([[1, 1, 1], [0, 0, 0], [0, 0, 0]]),
+        np.array([[1, 0, 0], [1, 0, 0], [1, 0, 0]]),
+        np.array([[1, 1, 0], [1, 1, 0], [0, 0, 0]]),
+        np.array([[0, 0, 0], [1, 1, 0], [1, 1, 0]]),
+        np.array([[0, 1, 1], [0, 1, 1], [0, 0, 0]]),
+        np.array([[0, 0, 0], [0, 1, 1], [0, 1, 1]])
     ]
     return (not game_map.terrain[x, y] 
-            and any((local_map * mask == mask).all() for mask in masks))
+            and any((local_map == mask).all() for mask in masks))
 
 
 #-----------------------------------------------------------------------------
