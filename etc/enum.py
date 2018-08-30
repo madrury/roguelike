@@ -156,8 +156,9 @@ class ResultTypes(Enum):
 
 class FloorResultTypes(Enum):
     """Enumerates the outcomes from a dungeon floor."""
-    INCREMENT_FLOOR =  1
-    DECREMENT_FLOOR = -1
+    # Note these are reversed because DEEPER floors are numbered higher.
+    INCREMENT_FLOOR = -1
+    DECREMENT_FLOOR = +1
     END_GAME = auto()
 
 
