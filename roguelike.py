@@ -11,9 +11,9 @@ from components.status_manager import (
 
 from etc.colors import COLORS
 from etc.config import (
-    SCREEN_WIDTH, SCREEN_HEIGHT, TOP_PANEL_CONFIG, BOTTOM_PANEL_CONFIG,
-    MAP_PANEL_CONFIG, MESSAGE_CONFIG, FOV_CONFIG, ANIMATION_INTERVAL,
-    SHIMMER_INTERVAL, INITIAL_PLAYER_POSITION)
+    N_FLOORS, SCREEN_WIDTH, SCREEN_HEIGHT, TOP_PANEL_CONFIG,
+    BOTTOM_PANEL_CONFIG, MAP_PANEL_CONFIG, MESSAGE_CONFIG, FOV_CONFIG,
+    ANIMATION_INTERVAL, SHIMMER_INTERVAL, INITIAL_PLAYER_POSITION)
 from etc.enum import (
     ResultTypes, FloorResultTypes, InputTypes, EntityTypes, GameStates,
     INVENTORY_STATES, INPUT_STATES, CANCEL_STATES)
@@ -55,6 +55,11 @@ def main():
       - Manages the high level game state: what is the turn number, what floor
         is the player currently on?
     """
+    assert len(FLOOR_SCHEDULES) == N_FLOORS
+    assert len(MONSTER_SCHEDULES) == N_FLOORS
+    assert len(ITEM_SCHEDULES) == N_FLOORS
+    assert len(TERRAIN_SCHEDULES) == N_FLOORS
+
     tdl.set_font('fonts/consolas10x10.png', greyscale=True, altLayout=True)
     # Setup playscreen with two consoles:
     #  - A place to draw the playscreen with the map and entities.
@@ -69,7 +74,7 @@ def main():
     consoles = [
         root_console, map_console, bottom_panel_console, top_panel_console]
     # TODO: 3 is number of floors, break this into a config element.
-    game_maps = [None] * 3
+    game_maps = [None] * N_FLOORS
     # Create the map for the first floor of the dungeon and place the player.
     game_maps[0] = create_map(
         map_console, 
