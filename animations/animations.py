@@ -480,6 +480,7 @@ def draw_blast(animation, *, char, fg_color_callback, bg_color_callback):
                 x, y, char, fg_color_callback(), bg_color_callback())
     return False
 
+
 def draw_missile(animation, fg=None, bg=None):
     """Animate a missile moving from a source to a target.
 
@@ -488,6 +489,8 @@ def draw_missile(animation, fg=None, bg=None):
     animation: Animation object
       Must have .current_frame, and game_map attributes.
     """
+    if len(animation.path) == 0:
+        return True
     missile_location = animation.path[animation.current_frame]
     if not fg:
         fg = animation.color
