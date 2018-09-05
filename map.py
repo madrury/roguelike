@@ -34,7 +34,7 @@ class GameMap(Map):
       Is the tile able to be walked on? This is used to define walls in the
       dungeon.
 
-    transparant: np.array of bool
+    transparent: np.array of bool
       Does the tile block fov?
 
     fov: np.array of bool
@@ -50,6 +50,9 @@ class GameMap(Map):
 
     fire: np.array of bool
       Is the tile currently on fire?
+
+    door: np.array of bool:
+        Does the tile currently contiain a door?
 
     shrub: np.array of bool
       Does the tile currently contain a shrub?
@@ -87,6 +90,7 @@ class GameMap(Map):
         self.water = np.zeros((width, height), dtype=np.int8)
         self.ice = np.zeros((width, height), dtype=np.int8)
         self.fire = np.zeros((width, height), dtype=np.int8)
+        self.door = np.zeros((width, height), dtype=np.int8)
         self.shrub = np.zeros((width, height), dtype=np.int8)
         self.steam = np.zeros((width, height), dtype=np.int8)
         self.terrain = np.zeros((width, height), dtype=np.int8)
@@ -182,7 +186,7 @@ class GameMap(Map):
 
     def update_and_draw_layout(self):
         for x, y in self:
-            wall = not self.shrub[x, y] and not self.transparent[x, y]
+            wall = self.is_wall(x, y)
             if self.visible(x, y):
                 if wall:
                     self.update_and_draw_char(
@@ -211,6 +215,10 @@ class GameMap(Map):
     def visible(self, x, y):
         return self.fov[x, y] or self.illuminated[x, y]
 
+    def is_wall(self, x, y):
+            return (not self.shrub[x, y]
+                    and not self.door[x, y]
+                    and not self.transparent[x, y])
 
 class ColorArray:
     """A two by two array of RGB tuples."""

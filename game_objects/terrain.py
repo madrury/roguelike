@@ -16,7 +16,7 @@ import components.encroachable
 from components.commitable import (
     TerrainCommitable, BlockingTerrainCommitable, UpwardStairsCommitable,
     DownwardStairsCommitable, WaterCommitable, IceCommitable, ShrubCommitable,
-    BaseCommitable)
+    DoorCommitable, BaseCommitable)
 from components.dissipatable import NecroticSoilDissipatable
 from components.illuminatable import Illuminatable
 from components.shimmer import WaterShimmer, IceShimmer, FireShimmer
@@ -91,7 +91,7 @@ class Door:
             entity_type=EntityTypes.TERRAIN,
             render_order=RenderOrder.TERRAIN,
             blocks=False,
-            commitable=BaseCommitable())
+            commitable=DoorCommitable())
 
 
 class Water:

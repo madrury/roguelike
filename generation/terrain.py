@@ -182,7 +182,6 @@ class TorchPlaceable(Placeable):
 
     def make(self, game_map, x, y):
         game_map.terrain[x, y] = True
-        game_map.walkable[x, y] = False
         return StationaryTorch.make(game_map, x, y)
 
 
@@ -206,14 +205,12 @@ class StairsPlacable(Placeable):
 class UpwardsStairsPlaceable(StairsPlacable):
 
     def make(self, game_map, x, y):
-        game_map.walkable[x, y] = True
         game_map.terrain[x, y] = True
         return UpwardStairs.make(game_map, x, y)
 
 class DownwardsStairsPlaceable(StairsPlacable):
 
     def make(self, game_map, x, y):
-        game_map.walkable[x, y] = True
         game_map.terrain[x, y] = True
         return DownwardStairs.make(game_map, x, y)
 

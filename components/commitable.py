@@ -35,6 +35,19 @@ class BlockingCommitable:
         game_map.entities.remove(self.owner)
 
 
+class DoorCommitable:
+
+    def commit(self, game_map):
+        game_map.transparent[self.owner.x, self.owner.y] = False
+        game_map.door[self.owner.x, self.owner.y] = True
+        game_map.entities.append(self.owner)
+
+    def delete(self, game_map):
+        game_map.transparent[self.owner.x, self.owner.y] = True
+        game_map.door[self.owner.x, self.owner.y] = False
+        game_map.entities.remove(self.owner)
+
+
 class FireCommitable:
 
     def commit(self, game_map):
@@ -128,6 +141,7 @@ class UpwardStairsCommitable:
     def commit(self, game_map):
         if not game_map.terrain[self.owner.x, self.owner.y]:
             game_map.terrain[self.owner.x, self.owner.y] = True
+            game_map.walkable[self.owner.x, self.owner.y] = True
             game_map.upward_stairs_position = (self.owner.x, self.owner.y)
             game_map.entities.append(self.owner)
 
@@ -141,6 +155,7 @@ class DownwardStairsCommitable:
     def commit(self, game_map):
         if not game_map.terrain[self.owner.x, self.owner.y]:
             game_map.terrain[self.owner.x, self.owner.y] = True
+            game_map.walkable[self.owner.x, self.owner.y] = True
             game_map.downward_stairs_position = (self.owner.x, self.owner.y)
             game_map.entities.append(self.owner)
 

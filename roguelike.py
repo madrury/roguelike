@@ -289,6 +289,7 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
         # DEBUG
         # These switched highlight the various game state arrays.
         # highlight_array(game_map.walkable, game_map, COLORS['cursor_tail'])
+        #highlight_array(game_map.door, game_map, COLORS['cursor_tail'])
         # highlight_array(game_map.blocked, game_map, COLORS['cursor_tail'])
         # highlight_array(game_map.fire, game_map, COLORS['darker_red'])
         # highlight_array(game_map.steam, game_map, COLORS['desaturated_green'])

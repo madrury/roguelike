@@ -243,6 +243,7 @@ class Elements(Enum):
 
 
 class RoutingOptions(Enum):
+    AVOID_DOORS = auto()
     AVOID_FIRE = auto()
     AVOID_MONSTERS = auto()
     AVOID_SHRUBS = auto()
