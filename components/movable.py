@@ -63,10 +63,10 @@ class Movable:
         path = get_shortest_path(
             game_map, (self.owner.x, self.owner.y), (target_x, target_y),
             routing_avoid=self.owner.routing_avoid)
-        if path == []:
-            path = get_shortest_path(
-                game_map, (self.owner.x, self.owner.y), (target_x, target_y),
-                routing_avoid=[])
+#        if path == []:
+#            path = get_shortest_path(
+#                game_map, (self.owner.x, self.owner.y), (target_x, target_y),
+#                routing_avoid=[])
         if len(path) > 1:
             dx, dy = path[0][0] - self.owner.x, path[0][1] - self.owner.y
             self.move(game_map, dx, dy)

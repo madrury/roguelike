@@ -70,7 +70,7 @@ def make_walkable_array(game_map, routing_avoid=None):
         routing_avoid = []
     walkable = game_map.walkable.copy()
     if RoutingOptions.AVOID_DOORS in routing_avoid:
-        walkable = walkable * (1 - game_map.doors)
+        walkable = walkable * (1 - game_map.door)
     if RoutingOptions.AVOID_MONSTERS in routing_avoid:
         walkable = walkable * (1 - game_map.blocked)
     if RoutingOptions.AVOID_WATER in routing_avoid:

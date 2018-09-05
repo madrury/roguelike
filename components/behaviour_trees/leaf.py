@@ -23,13 +23,17 @@ class MoveTowardsPointInNamespace(Node):
         self.name = name
 
     def tick(self, owner, target, game_map):
+        print(f"Moving towards point {self.namespace.get(self.name)}")
         if not self.namespace.get(self.name):
             raise ValueError(f"{self.name} is not in tree namespace!")
         point = self.namespace.get(self.name)
-        if (owner.x, owner.y) == point:
+        if ((owner.x, owner.y) == self.namespace.get(self.name + '_previous')
+            or (owner.x, owner.y) == point):
+            self.namespace[self.name + '_previous'] = None
             self.namespace[self.name] = None
             return TreeStates.SUCCESS, []
         results = [{ResultTypes.MOVE_TOWARDS: (owner, point[0], point[1])}]
+        self.namespace[self.name + '_previous'] = (owner.x, owner.y)
         return TreeStates.SUCCESS, results
 
 

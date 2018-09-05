@@ -88,9 +88,10 @@ class Door:
             name="Door",
             fg_color=fg_color,
             bg_color=bg_color,
+            visible_out_of_fov=True,
+            blocks=False,
             entity_type=EntityTypes.TERRAIN,
             render_order=RenderOrder.TERRAIN,
-            blocks=False,
             commitable=DoorCommitable())
 
 
