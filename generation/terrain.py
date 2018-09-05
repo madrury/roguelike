@@ -8,7 +8,8 @@ from etc.enum import Terrain, EntityTypes, RenderOrder
 from etc.colors import COLORS
 from utils.utils import adjacent_coordinates, random_adjacent
 from game_objects.terrain import (
-    UpwardStairs, DownwardStairs, StationaryTorch, Water, Ice, Grass, Shrub)
+    UpwardStairs, DownwardStairs, Door, StationaryTorch, Water, Ice, Grass,
+    Shrub)
 from components.shimmer import WaterShimmer
 from components.burnable import GrassBurnable, WaterBurnable
 
@@ -83,6 +84,10 @@ def add_random_terrain(game_map, terrain_config):
             game_map,
             min_objects=terrain_config['min_torches'],
             max_objects=terrain_config['max_torches']))
+    # Place any doors
+    door_placer = DoorPlaceable()
+    terrain.extend(
+        door_placer.place_many(game_map, min_objects=4, max_objects=6))
     # We've been using this array to track when terrain was generated in a tile
     # through the terrain generation process.  Now we want to commit them to
     # the map, but the array will block terrain from being places anywhere that
@@ -214,7 +219,20 @@ class DownwardsStairsPlaceable(StairsPlacable):
 
 
 #-----------------------------------------------------------------------------
-# Gwoable Terrain
+# Doors
+#-----------------------------------------------------------------------------
+class DoorPlaceable(Placeable):
+
+    masks = [
+        np.array([[0, 1, 0], [0, 1, 0], [0, 1, 0]]),
+        np.array([[0, 0, 0], [1, 1, 1], [0, 0, 0]]),
+    ]
+
+    def make(self, game_map, x, y):
+        return Door.make(game_map, x, y)
+
+#-----------------------------------------------------------------------------
+# Growable Terrain
 #-----------------------------------------------------------------------------
 class Growable:
     """Base class for terrain that can be grown.

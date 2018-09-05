@@ -78,6 +78,22 @@ class StationaryTorch:
             shimmer=FireShimmer())
 
 
+class Door:
+    """A door in the dungeon."""
+    def make(game_map, x, y):
+        fg_color = COLORS["yellow"]
+        bg_color = COLORS["brown"]
+        return Entity(
+            x, y, '+',
+            name="Door",
+            fg_color=fg_color,
+            bg_color=bg_color,
+            entity_type=EntityTypes.TERRAIN,
+            render_order=RenderOrder.TERRAIN,
+            blocks=False,
+            commitable=BaseCommitable())
+
+
 class Water:
     """A water terrain tile.
 

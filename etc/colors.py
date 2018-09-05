@@ -37,6 +37,7 @@ COLORS = {
     'violet': (127, 0, 255),    
     'white': (255, 255, 255),
     'yellow': (255, 255, 0),
+    'brown': (139, 69, 19)
 }
 
 STATUS_BAR_COLORS = {
