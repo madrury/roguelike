@@ -5,7 +5,6 @@ from etc.game_config import FREEZE_BASE_DAMAGE
 class EnemyFreezable:
 
     def freeze(self, game_map):
-        print(f"{self.owner.name} is frozen.")
         return [{
             ResultTypes.FREEZE: self.owner,
             ResultTypes.DAMAGE: (

@@ -47,7 +47,6 @@ def make_pillars_room(width=16,
     -------
     room: DungeonRoom
     """
-    print(width, height)
     room = DungeonRoom(width, height)
     room.add_rectangle(Rectangle(0, 0, width, height))
     for coords in pillars:

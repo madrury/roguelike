@@ -70,7 +70,6 @@ def add_random_terrain(game_map, terrain_config):
             max_terrains=terrain_config['max_ice'],
             terrain_proportion=terrain_config['ice_room_proportion']))
     # Place the upward and downward stairs
-    
     if terrain_config.get('upward_stairs', True):
         stair_placer = UpwardsStairsPlaceable()
         terrain.append(stair_placer.place_one(game_map))
@@ -219,7 +218,10 @@ class DownwardsStairsPlaceable(StairsPlacable):
 # Doors
 #-----------------------------------------------------------------------------
 class DoorPlaceable(Placeable):
-
+    """Doors are placed in narrow hallways.  They can be freely moved through,
+    but block visibility, and will block the movement of some stupider
+    monsters.
+    """
     masks = [
         np.array([[0, 1, 0], [0, 1, 0], [0, 1, 0]]),
         np.array([[0, 0, 0], [1, 1, 1], [0, 0, 0]]),

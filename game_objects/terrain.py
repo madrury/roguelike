@@ -82,12 +82,16 @@ class Door:
     """A door in the dungeon."""
     def make(game_map, x, y):
         fg_color = COLORS["yellow"]
+        dark_fg_color = COLORS["dark_yellow"]
         bg_color = COLORS["brown"]
+        dark_bg_color = COLORS["dark_brown"]
         return Entity(
             x, y, '+',
             name="Door",
             fg_color=fg_color,
             bg_color=bg_color,
+            dark_fg_color=dark_fg_color,
+            dark_bg_color=dark_bg_color,
             visible_out_of_fov=True,
             blocks=False,
             entity_type=EntityTypes.TERRAIN,
