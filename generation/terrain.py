@@ -69,10 +69,13 @@ def add_random_terrain(game_map, terrain_config):
             max_terrains=terrain_config['max_ice'],
             terrain_proportion=terrain_config['ice_room_proportion']))
     # Place the upward and downward stairs
+    
     if terrain_config.get('upward_stairs', True):
-        terrain.append(place_stairs(game_map, UpwardStairs))
+        stair_placer = UpwardsStairsPlaceable()
+        terrain.append(stair_placer.place_one(game_map))
     if terrain_config.get('downward_stairs', True):
-        terrain.append(place_stairs(game_map, DownwardStairs))
+        stair_placer = DownwardsStairsPlaceable()
+        terrain.append(stair_placer.place_one(game_map))
     # Place any torches
     torch_placer = TorchPlaceable()
     terrain.extend(
@@ -112,27 +115,24 @@ def grow_in_random_room(terrain, game_map, *, stay_in_room, proportion):
     t.grow(stay_in_room=stay_in_room, proportion=proportion)
     return t
 
-#-----------------------------------------------------------------------------
-# Stairs
-#-----------------------------------------------------------------------------
-def place_stairs(game_map, stairs):
-    while True:
-        x = random.randint(0, game_map.width - 1)
-        y = random.randint(0, game_map.height - 1)
-        if game_map.walkable[x, y] and not game_map.terrain[x, y]:
-            game_map.terrain[x, y] = True
-            return stairs.make(game_map, x, y)
            
 #-----------------------------------------------------------------------------
-# Stationary Torches
+# Placeable Terrain
 #-----------------------------------------------------------------------------
 class Placeable:
+    """Base class for terrain that is place.
 
+    Terrain is placed by finding squares of teh map whose local neighbourhood
+    matches a set of supplied masks.  For example, we may want to place stairs
+    in a straight segment of wall, or a treasure chest in a corner.
+    """
     def place_one(self, game_map):
-        x = random.randint(0, game_map.width - 1)
-        y = random.randint(0, game_map.height - 1)
-        if self.is_placable(game_map, x, y):
-            return self.make(game_map, x, y)
+        obj = None
+        while not obj:
+            x = random.randint(0, game_map.width - 1)
+            y = random.randint(0, game_map.height - 1)
+            if self.is_placable(game_map, x, y):
+                return self.make(game_map, x, y)
 
     def place_many(self, game_map, min_objects, max_objects):
         objects = []
@@ -153,10 +153,18 @@ class Placeable:
         raise NotImplementedError("Subclasses of Placeable need to implement make.")
 
 
+#-----------------------------------------------------------------------------
+# Stationary Torches
+#-----------------------------------------------------------------------------
 class TorchPlaceable(Placeable):
-
+    """Torches are placed:
+    
+        - In straight segments of walls.
+        - nestled into corners.
+        - In three by three open squares in the middle of rooms.
+    """
     masks = [
-        #np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]]),
+        np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]]),
         np.array([[0, 0, 0], [0, 0, 0], [1, 1, 1]]),
         np.array([[0, 0, 1], [0, 0, 1], [0, 0, 1]]),
         np.array([[1, 1, 1], [0, 0, 0], [0, 0, 0]]),
@@ -171,6 +179,38 @@ class TorchPlaceable(Placeable):
         game_map.terrain[x, y] = True
         game_map.walkable[x, y] = False
         return StationaryTorch.make(game_map, x, y)
+
+
+#-----------------------------------------------------------------------------
+# Stairs
+#-----------------------------------------------------------------------------
+class StairsPlacable(Placeable):
+    """Stairs are placed nestled into straight segments of walls, or into
+    corners.
+    """
+    masks = [
+        np.array([[0, 0, 1], [0, 0, 1], [0, 0, 1]]),
+        np.array([[1, 1, 1], [0, 0, 0], [0, 0, 0]]),
+        np.array([[1, 0, 0], [1, 0, 0], [1, 0, 0]]),
+        np.array([[1, 1, 0], [1, 1, 0], [0, 0, 0]]),
+        np.array([[0, 0, 0], [1, 1, 0], [1, 1, 0]]),
+        np.array([[0, 1, 1], [0, 1, 1], [0, 0, 0]]),
+        np.array([[0, 0, 0], [0, 1, 1], [0, 1, 1]])
+    ]
+
+class UpwardsStairsPlaceable(StairsPlacable):
+
+    def make(self, game_map, x, y):
+        game_map.walkable[x, y] = True
+        game_map.terrain[x, y] = True
+        return UpwardStairs.make(game_map, x, y)
+
+class DownwardsStairsPlaceable(StairsPlacable):
+
+    def make(self, game_map, x, y):
+        game_map.walkable[x, y] = True
+        game_map.terrain[x, y] = True
+        return DownwardStairs.make(game_map, x, y)
 
 
 #-----------------------------------------------------------------------------
