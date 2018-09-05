@@ -74,11 +74,12 @@ def add_random_terrain(game_map, terrain_config):
     if terrain_config.get('downward_stairs', True):
         terrain.append(place_stairs(game_map, DownwardStairs))
     # Place any torches
+    torch_placer = TorchPlaceable()
     terrain.extend(
-        place_random_torches(
+        torch_placer.place_many(
             game_map,
-            min_torches=terrain_config['min_torches'],
-            max_torches=terrain_config['max_torches']))
+            min_objects=terrain_config['min_torches'],
+            max_objects=terrain_config['max_torches']))
     # We've been using this array to track when terrain was generated in a tile
     # through the terrain generation process.  Now we want to commit them to
     # the map, but the array will block terrain from being places anywhere that
@@ -125,28 +126,35 @@ def place_stairs(game_map, stairs):
 #-----------------------------------------------------------------------------
 # Stationary Torches
 #-----------------------------------------------------------------------------
-def place_random_torches(game_map, min_torches, max_torches):
-    torches = []
-    n_torches = random.randint(min_torches, max_torches)
-    while len(torches) != n_torches:
-        torch = place_one_random_torch(game_map)
-        if torch:
-            torches.append(torch)
-    return torches
+class Placeable:
 
-def place_one_random_torch(game_map):
-    x = random.randint(0, game_map.width - 1)
-    y = random.randint(0, game_map.height - 1)
-    if not game_map.within_bounds(x, y, buffer=1):
-        return None
-    if check_if_torch_is_placable((x, y), game_map):
-        game_map.terrain[x, y] = True
-        game_map.walkable[x, y] = False
-        return StationaryTorch.make(game_map, x, y)
+    def place_one(self, game_map):
+        x = random.randint(0, game_map.width - 1)
+        y = random.randint(0, game_map.height - 1)
+        if self.is_placable(game_map, x, y):
+            return self.make(game_map, x, y)
 
-def check_if_torch_is_placable(position, game_map):
-    x, y = position
-    local_map = game_map.walkable[(x-1):(x+2), (y-1):(y+2)]
+    def place_many(self, game_map, min_objects, max_objects):
+        objects = []
+        n_objects = random.randint(min_objects, max_objects)
+        while len(objects) != n_objects:
+            obj = self.place_one(game_map)
+            if obj:
+                objects.append(obj)
+        return objects
+
+    def is_placable(self, game_map, x, y):
+        local_map = game_map.walkable[(x-1):(x+2), (y-1):(y+2)]
+        return (game_map.within_bounds(x, y, buffer=1)
+                and not game_map.terrain[x, y] 
+                and any((local_map == mask).all() for mask in self.masks))
+
+    def make(self, game_map, x, y):
+        raise NotImplementedError("Subclasses of Placeable need to implement make.")
+
+
+class TorchPlaceable(Placeable):
+
     masks = [
         #np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]]),
         np.array([[0, 0, 0], [0, 0, 0], [1, 1, 1]]),
@@ -158,8 +166,11 @@ def check_if_torch_is_placable(position, game_map):
         np.array([[0, 1, 1], [0, 1, 1], [0, 0, 0]]),
         np.array([[0, 0, 0], [0, 1, 1], [0, 1, 1]])
     ]
-    return (not game_map.terrain[x, y] 
-            and any((local_map == mask).all() for mask in masks))
+
+    def make(self, game_map, x, y):
+        game_map.terrain[x, y] = True
+        game_map.walkable[x, y] = False
+        return StationaryTorch.make(game_map, x, y)
 
 
 #-----------------------------------------------------------------------------
