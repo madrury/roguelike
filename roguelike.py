@@ -637,7 +637,7 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
             # Handle a move towards action.  Move towards a target.
             if result_type == ResultTypes.MOVE_TOWARDS:
                monster, target_x, target_y = result_data
-               monster.movable.move_towards(target_x, target_y, game_map)
+               monster.movable.move_towards(game_map, target_x, target_y)
             # Handle a move random adjacent action.  Move to a random adjacent
             # square.
             if result_type == ResultTypes.MOVE_RANDOM_ADJACENT:

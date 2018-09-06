@@ -7,12 +7,15 @@ from etc.enum import RoutingOptions
 class Movable:
     """Handle movement of entities."""
 
+    def __init__(self, speed=1):
+        self.speed = speed
+
     def set_position_if_able(self, game_map, x, y):
         """Set the position of the owner to a given postition.
         
         This is the lowest level method for manipulating an entities positon on
-        the mpd, and as such, it checks if the resulting positon is actually
-        valid to hold the owner.
+        the map, and as such, it checks if the resulting positon is actually
+        available to hold the owner (an entity) of the movable component.
 
           - Is the proposed new positon walkable?
           - Is the proposed new position blocked?
@@ -43,30 +46,37 @@ class Movable:
     def move(self, game_map, dx, dy):
         """Attempt to move the owner in a given direction (dx, dy).
         
-        The basic behaviour here is to set the position to (x + dx, y + dy).
+        The best case behaviour here is to set the position to 
+        
+            (x + speed * dx, y + speed * dy)
+
         This behaviour is overrode if the player is attempting to move onto
-        ice, in which case the owner slides an additional space in that
-        direction.
+        ice, in which case we attempt to set the owner's position to
+        
+        
+            (x + 2 * speed * dx, y + 2 * speed * dy)
+       
+        In detail, we set the position to the furthest available position
+        before the first unavailable one.
         """
         x, y = self.owner.x, self.owner.y
-        is_ice = game_map.ice[x + dx, y + dy]
-        success = False
-        if is_ice:
-            new_x, new_y = x + 2*dx, y + 2*dy
+        is_ice = game_map.ice[x + self.speed * dx, y + self.speed * dy]
+        n_positions = self.speed * (1 + is_ice)
+        new_x, new_y = x + dx, y + dy
+        success = self.set_position_if_able(game_map, new_x, new_y)
+        for n in range(2, n_positions + 1):
+            new_x, new_y = x + n*dx, y + n*dy
             success = self.set_position_if_able(game_map, new_x, new_y)
-        if not success:
-            new_x, new_y = x + dx, y + dy
-            self.set_position_if_able(game_map, new_x, new_y)
+            if success:
+                continue
+            else:
+                break
 
-    def move_towards(self, target_x, target_y, game_map):
+    def move_towards(self, game_map, target_x, target_y):
         """Move the owner one step towards a target."""
         path = get_shortest_path(
             game_map, (self.owner.x, self.owner.y), (target_x, target_y),
             routing_avoid=self.owner.routing_avoid)
-#        if path == []:
-#            path = get_shortest_path(
-#                game_map, (self.owner.x, self.owner.y), (target_x, target_y),
-#                routing_avoid=[])
         if len(path) > 1:
             dx, dy = path[0][0] - self.owner.x, path[0][1] - self.owner.y
             self.move(game_map, dx, dy)
@@ -77,4 +87,4 @@ class Movable:
             (-1, 1), (0, 1), (1, 1),
             (-1, 0),         (1, 0),
             (-1, -1), (0, -1), (1, -1)])
-        self.set_position_if_able(game_map, self.owner.x + dx, self.owner.y + dy)
+        self.move(game_map, dx, dy)
