@@ -77,6 +77,27 @@ class PowerPotionUsable:
         return results
 
 
+class SpeedPotionUsable:
+    """A speed potion.
+
+    Temporarily doubles an entities speed.
+    """
+    def __init__(self):
+        self.name = "Potion of Speed"
+
+    def use(self, game_map, reciever):
+        results = []
+        message = Message(f"{reciever.name}'s speed doubled.", 
+                          COLORS.get('green'))
+        results.append({
+            ResultTypes.DOUBLE_SPEED: reciever,
+            ResultTypes.MESSAGE: message,
+            ResultTypes.ANIMATION: (
+                Animations.POWER_POTION, 
+                (reciever.x, reciever.y))})
+        return results
+
+
 class ConfusionPotionUsable:
     """A potion of confusion.
 

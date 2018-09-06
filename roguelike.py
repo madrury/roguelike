@@ -7,7 +7,7 @@ from animations.animations import construct_animation
 
 from components.status_manager import (
     PlayerConfusedManager, EnemyConfusedManager,
-    EnemyFrozenManager)
+    EnemyFrozenManager, SpeedManager)
 
 from etc.colors import COLORS
 from etc.config import (
@@ -509,6 +509,10 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
                 entity = result_data
                 apply_status(
                     entity, player, PlayerConfusedManager, EnemyConfusedManager)
+            if result_type == ResultTypes.DOUBLE_SPEED:
+                entity = result_data
+                apply_status(entity, player, SpeedManager, SpeedManager)
+            # Freeze the player
             if result_type == ResultTypes.FREEZE:
                 entity = result_data
                 apply_status(entity, player, None, EnemyFrozenManager)

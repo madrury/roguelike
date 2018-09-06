@@ -13,8 +13,8 @@ from components.movable import Movable
 from components.rechargeable import Rechargeable
 from components.usable import (
     NullUsable, HealthPotionUsable, PowerPotionUsable, ConfusionPotionUsable,
-    MagicMissileUsable, FireblastUsable, TorchUsable, WaterblastUsable,
-    FireStaffUsable, IceStaffUsable)
+    SpeedPotionUsable, MagicMissileUsable, FireblastUsable, TorchUsable,
+    WaterblastUsable, FireStaffUsable, IceStaffUsable)
 from components.throwable import (
     NullThrowable, HealthPotionThrowable, ConfusionPotionThrowable, 
     ThrowingKnifeThrowable)
@@ -61,6 +61,22 @@ class ConfusionPotion:
                       floatable=Floatable(),
                       movable=Movable(),
                       usable=ConfusionPotionUsable(),
+                      throwable=ConfusionPotionThrowable())
+
+
+class SpeedPotion:
+
+    @staticmethod
+    def make(x, y):
+        return Entity(x, y, '!', COLORS['violet'], 'Potion of Speed',
+                      entity_type=EntityTypes.ITEM,
+                      render_order=RenderOrder.ITEM,
+                      commitable=BaseCommitable(),
+                      consumable=FinitelyConsumable(uses=1),
+                      floatable=Floatable(),
+                      movable=Movable(),
+                      usable=SpeedPotionUsable(),
+                      # TODO: Change that!
                       throwable=ConfusionPotionThrowable())
 
 

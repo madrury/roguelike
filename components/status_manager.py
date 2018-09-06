@@ -7,6 +7,7 @@ from status_bar import StatusBar
 
 import components.input_handler
 import components.ai
+import components.movable
 
 
 class PlayerConfusedManager:
@@ -96,3 +97,35 @@ class EnemyFrozenManager:
         self.n_turns += 1
         if self.n_turns >= self.n_frozen_turns:
             self.remove()
+
+
+class SpeedManager:
+    """Manage a speedy status.  A speedy entity has their speed doubled."""
+    def __init__(self, n_speedy_turns=10):
+        self.n_turns = 0
+        self.n_speedy_turns = n_speedy_turns
+        self.old_movable = None
+        self.status_bar = StatusBar(
+            total_width=BOTTOM_PANEL_CONFIG['bar_width'],
+            bar_colors=STATUS_BAR_COLORS['confused_bar'])
+
+    def attach(self, entity):
+        self.old_movable = entity.movable
+        entity.add_component(components.movable.Movable(speed=2), "movable")
+        entity.add_component(self, "status_manager")
+
+    def remove(self):
+        self.owner.add_component(self.old_movable, "movable")
+        self.owner.status_manager = None
+
+    def tick(self):
+        self.n_turns += 1
+        if self.n_turns >= self.n_speedy_turns:
+            self.remove()
+
+    def render_status_bar(self, panel, x, y):
+        self.status_bar.render(
+            panel, x, y, 
+            name='Speedy',
+            maximum=self.n_speedy_turns,
+            value=(self.n_speedy_turns - self.n_turns))

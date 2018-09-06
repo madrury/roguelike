@@ -98,6 +98,8 @@ class ResultTypes(Enum):
     # TODO: Rename to CONSUME_ITEM
     DISCARD_ITEM: (entity, bool)
         The entity has or has not consumed an item.
+    DOUBLE_SPEED: entity
+        Double the entities speed for a duration of turns.
     END_TURN: bool
         End the player's turn.
     EQUIP: (equipable_entity, entity):
@@ -129,6 +131,7 @@ class ResultTypes(Enum):
     DEAD_ENTITY = auto()
     DEATH_MESSAGE = auto()
     DISCARD_ITEM = auto()
+    DOUBLE_SPEED = auto()
     DROP_ITEM_FROM_INVENTORY = auto()
     END_TURN = auto()
     EQUIP_ARMOR = auto()
