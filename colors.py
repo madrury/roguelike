@@ -1,14 +1,5 @@
 import random
 
-COLOR_PATHS = {
-    'dark_to_light_green': [
-        (0, g, 0) for g in [180, 190, 200, 210, 220, 230, 240, 250]],
-    'yellow_to_red': [
-        (255, g, 0) for g in [250, 210, 170, 130, 90, 50, 10, 0]],
-    'dark_to_light_purple': [
-        (x, 0, x) for x in [250, 230, 210, 190, 170, 150, 130, 110]]
-}
-
 def random_red():
     red = int(random.uniform(150, 255))
     return (red, 0, 0)
@@ -72,3 +63,15 @@ def random_dark_ice():
     dg = int(random.uniform(-10, 10))
     db = int(random.uniform(-10, 10))
     return (15 + dr, 100 + dg, 150 + db)
+
+
+# Paths through the color space, used for potion animations.
+COLOR_PATHS = {
+    'dark_to_light_green': [
+        (0, g, 0) for g in [180, 190, 200, 210, 220, 230, 240, 250]],
+    'yellow_to_red': [
+        (255, g, 0) for g in [250, 210, 170, 130, 90, 50, 10, 0]],
+    'dark_to_light_purple': [
+        (x, 0, x) for x in [250, 230, 210, 190, 170, 150, 130, 110]],
+    'flickering_yellow': [random_yellow() for x in range(8)]
+}

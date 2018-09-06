@@ -107,7 +107,7 @@ class SpeedManager:
         self.old_movable = None
         self.status_bar = StatusBar(
             total_width=BOTTOM_PANEL_CONFIG['bar_width'],
-            bar_colors=STATUS_BAR_COLORS['confused_bar'])
+            bar_colors=STATUS_BAR_COLORS['speedy_bar'])
 
     def attach(self, entity):
         self.old_movable = entity.movable

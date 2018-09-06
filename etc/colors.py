@@ -38,6 +38,7 @@ COLORS = {
     'white': (255, 255, 255),
     'yellow': (255, 255, 0),
     'dark_yellow': (200, 200, 0),
+    'very_dark_yellow': (150, 150, 0),
     'brown': (139, 69, 19),
     'dark_brown': (109, 49, 10)
 }
@@ -56,6 +57,11 @@ STATUS_BAR_COLORS = {
     'confused_bar': {
         'bar_color': COLORS['dark_purple'],
         'back_color': COLORS['light_purple'],
+        'string_color': COLORS['white']
+    },
+    'speedy_bar': {
+        'bar_color': COLORS['dark_yellow'],
+        'back_color': COLORS['very_dark_yellow'],
         'string_color': COLORS['white']
     }
 }

@@ -45,6 +45,10 @@ def construct_animation(animation_data, game_map):
         _, target = animation_data
         animation_player = ColorCycleAnimation(
             game_map, target, COLOR_PATHS['dark_to_light_purple'])
+    elif animation_type == Animations.SPEED_POTION:
+        _, target = animation_data
+        animation_player = ColorCycleAnimation(
+            game_map, target, COLOR_PATHS['flickering_yellow'])
     elif animation_type == Animations.FIREBLAST:
         _, center, radius = animation_data
         animation_player = FireblastAnimation(

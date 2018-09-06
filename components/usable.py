@@ -93,7 +93,7 @@ class SpeedPotionUsable:
             ResultTypes.DOUBLE_SPEED: reciever,
             ResultTypes.MESSAGE: message,
             ResultTypes.ANIMATION: (
-                Animations.POWER_POTION, 
+                Animations.SPEED_POTION, 
                 (reciever.x, reciever.y))})
         return results
 
