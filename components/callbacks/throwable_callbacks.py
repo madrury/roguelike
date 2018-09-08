@@ -88,6 +88,33 @@ class ConfusionPotionCallback(ThrowablePotionCallback):
                 Animations.CONCATINATED, (throw_animation, spill_animation))
         }]
 
+
+class SpeedPotionCallback(ThrowablePotionCallback):
+
+    def successful_target_result(self, x, y, target):
+        text = f"{target.name}'s speed doubled!"
+        throw_animation = (
+            Animations.THROW_POTION,
+            (self.user.x, self.user.y), (target.x, target.y))
+        potion_animation = (Animations.SPEED_POTION, (target.x, target.y))
+        return [{
+            ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
+            ResultTypes.DOUBLE_SPEED: target,
+            ResultTypes.ANIMATION: (
+                Animations.CONCATINATED, (throw_animation, potion_animation))
+        }]
+
+    def unsuccessful_target_result(self, x, y):
+        text = "The speed potion splashes on the ground."
+        throw_animation = (
+            Animations.THROW_POTION, (self.user.x, self.user.y), (x, y))
+        spill_animation = (Animations.SPEED_POTION, (x, y))
+        return [{
+            ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
+            ResultTypes.ANIMATION: (
+                Animations.CONCATINATED, (throw_animation, spill_animation))
+        }]
+
         
 class WeaponCallback:
     """Throw a weapong towards the target square."""
