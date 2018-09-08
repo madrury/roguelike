@@ -10,82 +10,83 @@ from etc.game_config import (
 from utils.utils import get_first_blocking_entity_along_ray
 
 
-class HealthPotionCallback:
+class ThrowablePotionCallback:
+
+    def __init__(self, owner, game_map, user):
+        self.owner = owner
+        self.game_map = game_map
+        self.user = user
+
+    def execute(self, x, y):
+        results = []
+        target = get_first_blocking_entity_along_ray(
+            self.game_map, (self.user.x, self.user.y), (x, y))
+        if target:
+            return self.successful_target_result(x, y, target)
+        else:
+            return self.unsuccessful_target_result(x, y)
+
+
+class HealthPotionCallback(ThrowablePotionCallback):
     """Throw a health potion towards the selected position."""
-    def __init__(self, owner, game_map, user):
-        self.owner = owner
-        self.game_map = game_map
-        self.user = user
 
-    def execute(self, x, y):
-        results = []
-        target = get_first_blocking_entity_along_ray(
-            self.game_map, (self.user.x, self.user.y), (x, y))
-        if target:
-            text = "The health potion heals the {}'s wounds".format(
-                target.name)
-            throw_animation = (
-                Animations.THROW_POTION,
-                (self.user.x, self.user.y), (target.x, target.y))
-            heal_animation = (
-                Animations.HEALTH_POTION, (target.x, target.y))
-            results.append({
-                ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
-                ResultTypes.DAMAGE: (
-                    target, None, -self.owner.healing, [Elements.HEALING]),
-                ResultTypes.INCREASE_MAX_HP: (
-                    target, HEALTH_POTION_HP_INCREASE_AMOUNT),
-                ResultTypes.ANIMATION: (
-                    Animations.CONCATINATED, (throw_animation, heal_animation))
-            }),
-        else:
-            text = "The health potion splashes on the ground."
-            throw_animation = (
-                Animations.THROW_POTION, (self.user.x, self.user.y), (x, y))
-            spill_animation = (Animations.HEALTH_POTION, (x, y))
-            results.append({
-                ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
-                ResultTypes.ANIMATION: (
-                    Animations.CONCATINATED, (throw_animation, spill_animation))
-            })
-        return results
+    def successful_target_result(self, x, y, target):
+        text = "The health potion heals the {}'s wounds".format(
+            target.name)
+        throw_animation = (
+            Animations.THROW_POTION,
+            (self.user.x, self.user.y), (target.x, target.y))
+        heal_animation = (
+            Animations.HEALTH_POTION, (target.x, target.y))
+        return [{
+            ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
+            ResultTypes.DAMAGE: (
+                target, None, -self.owner.healing, [Elements.HEALING]),
+            ResultTypes.INCREASE_MAX_HP: (
+                target, HEALTH_POTION_HP_INCREASE_AMOUNT),
+            ResultTypes.ANIMATION: (
+                Animations.CONCATINATED, (throw_animation, heal_animation))
+        }]
+
+    def unsuccessful_target_result(self, x, y):
+        text = "The health potion splashes on the ground."
+        throw_animation = (
+            Animations.THROW_POTION, (self.user.x, self.user.y), (x, y))
+        spill_animation = (Animations.HEALTH_POTION, (x, y))
+        return [{
+            ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
+            ResultTypes.ANIMATION: (
+                Animations.CONCATINATED, (throw_animation, spill_animation))
+        }]
 
 
-class ConfusionPotionCallback:
+class ConfusionPotionCallback(ThrowablePotionCallback):
     """Throw a confusion potion towards the selected position."""
-    def __init__(self, owner, game_map, user):
-        self.owner = owner
-        self.game_map = game_map
-        self.user = user
 
-    def execute(self, x, y):
-        results = []
-        target = get_first_blocking_entity_along_ray(
-            self.game_map, (self.user.x, self.user.y), (x, y))
-        if target:
-            text = f"{target.name} becomes confused!"
-            throw_animation = (
-                Animations.THROW_POTION,
-                (self.user.x, self.user.y), (target.x, target.y))
-            potion_animation = (
-                Animations.CONFUSION_POTION, (target.x, target.y))
-            results.append({
-                ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
-                ResultTypes.CONFUSE: target,
-                ResultTypes.ANIMATION: (
-                    Animations.CONCATINATED, (throw_animation, potion_animation))
-            }),
-        else:
-            text = "The confusion potion splashes on the ground."
-            throw_animation = (
-                Animations.THROW_POTION, (self.user.x, self.user.y), (x, y))
-            spill_animation = (Animations.CONFUSION_POTION, (x, y))
-            results.append({
-                ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
-                ResultTypes.ANIMATION: (
-                    Animations.CONCATINATED, (throw_animation, spill_animation))
-            })
-        return results
+    def successful_target_result(self, x, y, target):
+        text = f"{target.name} becomes confused!"
+        throw_animation = (
+            Animations.THROW_POTION,
+            (self.user.x, self.user.y), (target.x, target.y))
+        potion_animation = (
+            Animations.CONFUSION_POTION, (target.x, target.y))
+        return [{
+            ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
+            ResultTypes.CONFUSE: target,
+            ResultTypes.ANIMATION: (
+                Animations.CONCATINATED, (throw_animation, potion_animation))
+        }]
+
+    def unsuccessful_target_result(self, x, y):
+        text = "The confusion potion splashes on the ground."
+        throw_animation = (
+            Animations.THROW_POTION, (self.user.x, self.user.y), (x, y))
+        spill_animation = (Animations.CONFUSION_POTION, (x, y))
+        return [{
+            ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
+            ResultTypes.ANIMATION: (
+                Animations.CONCATINATED, (throw_animation, spill_animation))
+        }]
 
         
 class WeaponCallback:
