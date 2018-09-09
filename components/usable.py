@@ -98,6 +98,27 @@ class SpeedPotionUsable:
         return results
 
 
+class TeleportationPotionUsable:
+    """A potion of teleportation.
+
+    Immediately moves the entity to a random open space in the map.
+    """
+    def __init__(self):
+        self.name = "Potion of Teleportation"
+
+    def use(self, game_map, reciever):
+        results = []
+        message = Message(f"The {reciever.name} vanished.", 
+                          COLORS.get('green'))
+        results.append({
+            ResultTypes.MOVE_TO_RANDOM_POSITION: reciever,
+            ResultTypes.MESSAGE: message,
+            ResultTypes.ANIMATION: (
+                Animations.SPEED_POTION, 
+                (reciever.x, reciever.y))})
+        return results
+
+
 class ConfusionPotionUsable:
     """A potion of confusion.
 

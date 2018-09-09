@@ -113,10 +113,14 @@ class ResultTypes(Enum):
         item in a position.
     MESSAGE: message
         Display a game message in the message queue.
+    MOVE:
+        ...
     MOVE_TOWARDS: entity, target_x, target_y
         Attempt to move the entity towards the target.
     MOVE_RANDOM_ADJACENT: entity
         Attempt to move the entity to a random adjacent square.
+    MOVE_TO_RANDOM_POSITION: entity
+        Find a random avalable position on the map, and move the entity there.
     """
     # We need this enum to have an order, since there are certain turn results
     # that must be processed first.
@@ -143,6 +147,7 @@ class ResultTypes(Enum):
     MOVE = auto()
     MOVE_RANDOM_ADJACENT = auto()
     MOVE_TOWARDS = auto()
+    MOVE_TO_RANDOM_POSITION = auto()
     RECHARGE_ITEM = auto()
     REMOVE_ARMOR = auto()
     REMOVE_ENTITY = auto()

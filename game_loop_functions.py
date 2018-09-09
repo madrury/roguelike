@@ -52,7 +52,8 @@ def create_player(game_map):
     """Create the player entity and place on the game map."""
     from game_objects.items import (
         HealthPotion, MagicMissileScroll, FireblastScroll, SpeedPotion,
-        ThrowingKnife, Torch, FireStaff, IceStaff, ConfusionPotion)
+        TeleportationPotion, ThrowingKnife, Torch, FireStaff, IceStaff,
+        ConfusionPotion)
     from game_objects.weapons import Raipier
     # This is you.  Kill some Orcs.
     player = Entity(0, 0, PLAYER_CONFIG["char"],
@@ -76,6 +77,7 @@ def create_player(game_map):
     player.inventory.extend([HealthPotion.make(0, 0) for _ in range(3)])
     player.inventory.extend([ConfusionPotion.make(0, 0)])
     player.inventory.extend([SpeedPotion.make(0, 0)])
+    player.inventory.extend([TeleportationPotion.make(0, 0)])
     player.inventory.extend([ThrowingKnife.make(0, 0)])
     player.inventory.extend([MagicMissileScroll.make(0, 0)])
     player.inventory.extend([FireblastScroll.make(0, 0)])

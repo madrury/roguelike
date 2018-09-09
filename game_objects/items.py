@@ -13,8 +13,9 @@ from components.movable import Movable
 from components.rechargeable import Rechargeable
 from components.usable import (
     NullUsable, HealthPotionUsable, PowerPotionUsable, ConfusionPotionUsable,
-    SpeedPotionUsable, MagicMissileUsable, FireblastUsable, TorchUsable,
-    WaterblastUsable, FireStaffUsable, IceStaffUsable)
+    SpeedPotionUsable, TeleportationPotionUsable, MagicMissileUsable,
+    FireblastUsable, TorchUsable, WaterblastUsable, FireStaffUsable,
+    IceStaffUsable)
 from components.throwable import (
     NullThrowable, HealthPotionThrowable, ConfusionPotionThrowable, 
     SpeedPotionThrowable, ThrowingKnifeThrowable)
@@ -77,6 +78,21 @@ class SpeedPotion:
                       movable=Movable(),
                       usable=SpeedPotionUsable(),
                       throwable=SpeedPotionThrowable())
+
+
+class TeleportationPotion:
+
+    @staticmethod
+    def make(x, y):
+        return Entity(x, y, '!', COLORS['violet'], 'Potion of Teleportation',
+                      entity_type=EntityTypes.ITEM,
+                      render_order=RenderOrder.ITEM,
+                      commitable=BaseCommitable(),
+                      consumable=FinitelyConsumable(uses=1),
+                      floatable=Floatable(),
+                      movable=Movable(),
+                      usable=TeleportationPotionUsable())
+                      #throwable=SpeedPotionThrowable())
 
 
 class MagicMissileScroll:

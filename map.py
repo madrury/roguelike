@@ -220,6 +220,14 @@ class GameMap(Map):
                     and not self.door[x, y]
                     and not self.transparent[x, y])
 
+    def find_random_open_position(self):
+        while True:
+            x = randint(0, self.width - 1)
+            y = randint(0, self.height - 1)
+            if self.walkable[x, y] and not self.blocked[x, y]:
+                return x, y
+
+
 class ColorArray:
     """A two by two array of RGB tuples."""
     def __init__(self, shape):
