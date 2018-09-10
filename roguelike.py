@@ -452,8 +452,9 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
             # Find a random open position on the map, and move the player there
             # immediately.
             if result_type == ResultTypes.MOVE_TO_RANDOM_POSITION:
+                entity = result_data
                 position = game_map.find_random_open_position()
-                player.movable.set_position_if_able(game_map, *position)
+                entity.movable.set_position_if_able(game_map, *position)
             # Set the player's position, used when moving more than one step or
             # teleporting (say, due to a raipier attack or teleport staff).
             if result_type == ResultTypes.SET_POSITION:

@@ -18,7 +18,7 @@ from components.usable import (
     IceStaffUsable)
 from components.throwable import (
     NullThrowable, HealthPotionThrowable, ConfusionPotionThrowable, 
-    SpeedPotionThrowable, ThrowingKnifeThrowable)
+    TeleportationPotionThrowable, SpeedPotionThrowable, ThrowingKnifeThrowable)
 
 
 class HealthPotion:
@@ -91,8 +91,8 @@ class TeleportationPotion:
                       consumable=FinitelyConsumable(uses=1),
                       floatable=Floatable(),
                       movable=Movable(),
-                      usable=TeleportationPotionUsable())
-                      #throwable=SpeedPotionThrowable())
+                      usable=TeleportationPotionUsable(),
+                      throwable=TeleportationPotionThrowable())
 
 
 class MagicMissileScroll:

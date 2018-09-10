@@ -5,7 +5,7 @@ from etc.game_config import (
 
 from components.callbacks.throwable_callbacks import (
     HealthPotionCallback, ConfusionPotionCallback, SpeedPotionCallback,
-    WeaponCallback, ThrowingKnifeCallback)
+    TeleportationPotionCallback, WeaponCallback, ThrowingKnifeCallback)
 
 
 class NullThrowable:
@@ -49,6 +49,18 @@ class SpeedPotionThrowable:
 
     def throw(self, game_map, thrower):
         callback = SpeedPotionCallback(self, game_map, thrower)
+        return [{
+            ResultTypes.CURSOR_MODE: (
+                thrower.x, thrower.y, callback, CursorTypes.PATH)}]
+
+
+class TeleportationPotionThrowable:
+    """Throw a potion of teleportation at a target."""
+    def __init__(self):
+        self.name = "Potion of Teleportation"
+
+    def throw(self, game_map, thrower):
+        callback = TeleportationPotionCallback(self, game_map, thrower)
         return [{
             ResultTypes.CURSOR_MODE: (
                 thrower.x, thrower.y, callback, CursorTypes.PATH)}]

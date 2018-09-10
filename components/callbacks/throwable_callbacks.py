@@ -90,6 +90,7 @@ class ConfusionPotionCallback(ThrowablePotionCallback):
 
 
 class SpeedPotionCallback(ThrowablePotionCallback):
+    """Throw a speed postion towards the selected position."""
 
     def successful_target_result(self, x, y, target):
         text = f"{target.name}'s speed doubled!"
@@ -106,6 +107,34 @@ class SpeedPotionCallback(ThrowablePotionCallback):
 
     def unsuccessful_target_result(self, x, y):
         text = "The speed potion splashes on the ground."
+        throw_animation = (
+            Animations.THROW_POTION, (self.user.x, self.user.y), (x, y))
+        spill_animation = (Animations.SPEED_POTION, (x, y))
+        return [{
+            ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
+            ResultTypes.ANIMATION: (
+                Animations.CONCATINATED, (throw_animation, spill_animation))
+        }]
+
+
+class TeleportationPotionCallback(ThrowablePotionCallback):
+    """Throw a teleportation potion towards the slected position."""
+
+    def successful_target_result(self, x, y, target):
+        text = f"{target.name} vanished."
+        throw_animation = (
+            Animations.THROW_POTION,
+            (self.user.x, self.user.y), (target.x, target.y))
+        potion_animation = (Animations.SPEED_POTION, (target.x, target.y))
+        return [{
+            ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
+            ResultTypes.MOVE_TO_RANDOM_POSITION: target,
+            ResultTypes.ANIMATION: (
+                Animations.CONCATINATED, (throw_animation, potion_animation))
+        }]
+
+    def unsuccessful_target_result(self, x, y):
+        text = "The teleportation postion splashes on the ground."
         throw_animation = (
             Animations.THROW_POTION, (self.user.x, self.user.y), (x, y))
         spill_animation = (Animations.SPEED_POTION, (x, y))
