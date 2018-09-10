@@ -125,7 +125,7 @@ class TeleportationPotionCallback(ThrowablePotionCallback):
         throw_animation = (
             Animations.THROW_POTION,
             (self.user.x, self.user.y), (target.x, target.y))
-        potion_animation = (Animations.SPEED_POTION, (target.x, target.y))
+        potion_animation = (Animations.TELEPORTATION_POTION, (target.x, target.y))
         return [{
             ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
             ResultTypes.MOVE_TO_RANDOM_POSITION: target,
@@ -137,7 +137,7 @@ class TeleportationPotionCallback(ThrowablePotionCallback):
         text = "The teleportation postion splashes on the ground."
         throw_animation = (
             Animations.THROW_POTION, (self.user.x, self.user.y), (x, y))
-        spill_animation = (Animations.SPEED_POTION, (x, y))
+        spill_animation = (Animations.TELEPORTATION_POTION, (x, y))
         return [{
             ResultTypes.MESSAGE: Message(text, COLORS.get('white')),
             ResultTypes.ANIMATION: (

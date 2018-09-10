@@ -49,6 +49,10 @@ def construct_animation(animation_data, game_map):
         _, target = animation_data
         animation_player = ColorCycleAnimation(
             game_map, target, COLOR_PATHS['flickering_yellow'])
+    elif animation_type == Animations.TELEPORTATION_POTION:
+        _, target = animation_data
+        animation_player = ColorCycleAnimation(
+            game_map, target, COLOR_PATHS['flickering_blue'])
     elif animation_type == Animations.FIREBLAST:
         _, center, radius = animation_data
         animation_player = FireblastAnimation(

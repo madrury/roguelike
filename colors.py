@@ -9,7 +9,7 @@ def random_orange():
     return (255, green, 0)
 
 def random_yellow():
-    blue = int(random.uniform(100, 240))
+    blue = int(random.uniform(100, 180))
     return (255, 255, blue)
 
 def random_orange_or_red():
@@ -73,5 +73,6 @@ COLOR_PATHS = {
         (255, g, 0) for g in [250, 210, 170, 130, 90, 50, 10, 0]],
     'dark_to_light_purple': [
         (x, 0, x) for x in [250, 230, 210, 190, 170, 150, 130, 110]],
-    'flickering_yellow': [random_yellow() for x in range(8)]
+    'flickering_yellow': [random_yellow() for x in range(8)],
+    'flickering_blue': [random_light_blue() for x in range(8)]
 }

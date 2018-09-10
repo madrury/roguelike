@@ -114,7 +114,7 @@ class TeleportationPotionUsable:
             ResultTypes.MOVE_TO_RANDOM_POSITION: reciever,
             ResultTypes.MESSAGE: message,
             ResultTypes.ANIMATION: (
-                Animations.SPEED_POTION, 
+                Animations.TELEPORTATION_POTION, 
                 (reciever.x, reciever.y))})
         return results
 
