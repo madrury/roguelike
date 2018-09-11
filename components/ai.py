@@ -14,7 +14,20 @@ from components.behaviour_trees.conditions import (
 import game_objects.monsters
 
 
-class BasicMonster:
+class BaseAI:
+    """Base class for creature AI.
+    
+    Creature's behaviour is defined by a behaviour tree, stored in the tree
+    attribute.  Behaviour trees have a tick method, which is called when the
+    reature takes a turn.  The tick method returns a turn result dictionary
+    that summarizes the turn's effect on the game state.
+    """
+    def take_turn(self, target, game_map):
+        _, results = self.tree.tick(self.owner, target, game_map)
+        return results
+
+
+class BasicMonster(BaseAI):
     """Simple monster ai.
 
     When in the players POV, attempt to move towards the player.  If adjacent
@@ -34,25 +47,17 @@ class BasicMonster:
                     MoveTowardsPointInNamespace(name="target_point")),
                 TravelToRandomPosition()))
 
-    def take_turn(self, target, game_map):
-        _, results = self.tree.tick(self.owner, target, game_map)
-        return results
 
-
-class ConfusedMonster:
+class ConfusedMonster(BaseAI):
     """AI for a confused monster.
 
     Always move to a random adjacent space.
     """
     def __init__(self):
         self.tree = Root(Skitter())
-            
-    def take_turn(self, target, game_map):
-        _, results = self.tree.tick(self.owner, target, game_map)
-        return results
 
 
-class FrozenMonster:
+class FrozenMonster(BaseAI):
     """AI for a frozen monster.
 
     Always passes the turn without acting.
@@ -60,12 +65,8 @@ class FrozenMonster:
     def __init__(self):
         self.tree = Root(DoNothing())
 
-    def take_turn(self, target, game_map):
-        _, results = self.tree.tick(self.owner, target, game_map)
-        return results
 
-
-class NecromancerMonster:
+class NecromancerMonster(BaseAI):
     """AI for a necromancer.
 
     Necromancers attempt to always stay at exactly a given radius of the
@@ -85,12 +86,8 @@ class NecromancerMonster:
                     SeekTowardsLInfinityRadius(radius=seeking_radius)),
                 TravelToRandomPosition()))
 
-    def take_turn(self, target, game_map):
-        _, results = self.tree.tick(self.owner, target, game_map)
-        return results
 
-
-class HuntingMonster:
+class HuntingMonster(BaseAI):
     """A more dangerous monster.
 
     Attempts to move towards the player even if not in the players POV.
@@ -107,12 +104,8 @@ class HuntingMonster:
                     MoveTowardsTargetEntity(target_point_name="target_point")),
                 TravelToRandomPosition()))
 
-    def take_turn(self, target, game_map):
-        _, results = self.tree.tick(self.owner, target, game_map)
-        return results
 
-
-class ZombieMonster:
+class ZombieMonster(BaseAI):
     """Similar to a HuntingMonster, but will not wander."""
     def __init__(self, move_towards_radius=6):
         self.tree = Root(
@@ -124,12 +117,8 @@ class ZombieMonster:
                     WithinL2Radius(radius=move_towards_radius),
                     MoveTowardsTargetEntity(target_point_name="target_point"))))
 
-    def take_turn(self, target, game_map):
-        _, results = self.tree.tick(self.owner, target, game_map)
-        return results
 
-
-class SkitteringMonster:
+class SkitteringMonster(BaseAI):
     """An impatient monster.
 
     When close by, attempts to move towards the player.  Otherwise, moves to a
@@ -146,7 +135,3 @@ class SkitteringMonster:
                     WithinL2Radius(radius=skittering_range),
                     MoveTowardsTargetEntity(target_point_name="target_point")),
                 Skitter()))
-
-    def take_turn(self, target, game_map):
-        _, results = self.tree.tick(self.owner, target, game_map)
-        return results
