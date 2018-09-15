@@ -22,16 +22,19 @@ class BaseAI:
     reature takes a turn.  The tick method returns a turn result dictionary
     that summarizes the turn's effect on the game state.
     """
-    def take_turn(self, target, game_map):
-        _, results = self.tree.tick(self.owner, target, game_map)
+    def take_turn(self, game_map):
+        _, results = self.tree.tick(self.owner, game_map)
         return results
+
+    def set_target(self, target):
+        self.tree.namespace["target"] = target
 
 
 class BasicMonster(BaseAI):
     """Simple monster ai.
 
-    When in the players POV, attempt to move towards the player.  If adjacent
-    to the player, attack.
+    When in the targets POV, attempt to move towards the target.  If adjacent
+    to the target, attack.
     """
     def __init__(self):
         self.tree = Root(
@@ -70,7 +73,7 @@ class NecromancerMonster(BaseAI):
     """AI for a necromancer.
 
     Necromancers attempt to always stay at exactly a given radius of the
-    player.  If they fall within the radius, they will move away, if they fall
+    target.  If they fall within the radius, they will move away, if they fall
     outside the radius, they will move towards.  When they are at exactly the
     desired radius, they will spawn a zombie with a certain probability.
     """
@@ -90,7 +93,7 @@ class NecromancerMonster(BaseAI):
 class HuntingMonster(BaseAI):
     """A more dangerous monster.
 
-    Attempts to move towards the player even if not in the players POV.
+    Attempts to move towards the target even if not in the targets POV.
     """
     def __init__(self, sensing_range=12):
         self.sensing_range = sensing_range
@@ -121,7 +124,7 @@ class ZombieMonster(BaseAI):
 class SkitteringMonster(BaseAI):
     """An impatient monster.
 
-    When close by, attempts to move towards the player.  Otherwise, moves to a
+    When close by, attempts to move towards the target.  Otherwise, moves to a
     random adjacent square.
     """
     def __init__(self, skittering_range=3):

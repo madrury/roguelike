@@ -88,6 +88,19 @@ def create_player(game_map):
     return player
 
 
+def set_all_ai_targets(game_map, target, exclude=None):
+    """Set the target of all entities with an ai attribute to a given entity.
+
+    For example, this isused when inititializing the entities on a new floor to
+    set the ai to target the player.
+    """
+    if not exclude:
+        exclude = set()
+    for entity in game_map.entities:
+        if entity.ai and entity not in exclude:
+            entity.ai.set_target(target)
+
+
 def construct_inventory_data(game_state):
     if game_state == GameStates.SHOW_INVENTORY:
         invetory_message = "Press the letter next to the item to use it.\n"

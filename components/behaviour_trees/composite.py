@@ -12,9 +12,9 @@ class Sequence(Node):
             child.parent = self
         self.children = children
 
-    def tick(self, owner, target, game_map):
+    def tick(self, owner, game_map):
         for child in self.children:
-            state, results = child.tick(owner, target, game_map)
+            state, results = child.tick(owner, game_map)
             if state == TreeStates.FAILURE:
                 return state, results
         return state, results
@@ -29,9 +29,9 @@ class Selection(Node):
             child.parent = self
         self.children = children
 
-    def tick(self, owner, target, game_map):
+    def tick(self, owner, game_map):
         for child in self.children:
-            state, results = child.tick(owner, target, game_map)
+            state, results = child.tick(owner, game_map)
             if state == TreeStates.SUCCESS:
                 return state, results
         return TreeStates.FAILURE, []
@@ -43,8 +43,8 @@ class Negate(Node):
         child.parent = self
         self.child = child
 
-    def tick(self, owner, target, game_map):
-        state, results = self.child.tick(owner, target, game_map)
+    def tick(self, owner, game_map):
+        state, results = self.child.tick(owner, game_map)
         if state == TreeStates.SUCCESS:
             return TreeStates.FAILURE, results
         elif state == TreeStates.FAILURE:

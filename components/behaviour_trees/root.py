@@ -9,8 +9,8 @@ class Root:
         self.child = child
         self.child.parent = self
 
-    def tick(self, owner, target, game_map):
-        return self.child.tick(owner, target, game_map)
+    def tick(self, owner, game_map):
+        return self.child.tick(owner, game_map)
 
 
 class Node:

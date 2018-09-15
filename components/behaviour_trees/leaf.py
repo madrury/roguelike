@@ -11,7 +11,8 @@ class MoveTowardsTargetEntity(Node):
     def __init__(self, target_point_name):
         self.name = target_point_name
     
-    def tick(self, owner, target, game_map):
+    def tick(self, owner, game_map):
+        target = self.namespace.get("target")
         self.namespace[self.name] = (target.x, target.y)
         results = [{ResultTypes.MOVE_TOWARDS: (owner, target.x, target.y)}]
         return TreeStates.SUCCESS, results
@@ -22,7 +23,7 @@ class MoveTowardsPointInNamespace(Node):
     def __init__(self, name):
         self.name = name
 
-    def tick(self, owner, target, game_map):
+    def tick(self, owner, game_map):
         if not self.namespace.get(self.name):
             raise ValueError(f"{self.name} is not in tree namespace!")
         point = self.namespace.get(self.name)
@@ -41,7 +42,8 @@ class SeekTowardsLInfinityRadius(Node):
     def __init__(self, radius):
         self.radius = radius
 
-    def tick(self, owner, target, game_map):
+    def tick(self, owner, game_map):
+        target = self.namespace.get("target")
         path = get_path_to_radius_of_target(
             game_map, 
             (owner.x, owner.y),
@@ -63,7 +65,7 @@ class TravelToRandomPosition(Node):
         self.target_position = None
         self.target_path = None
 
-    def tick(self, owner, target, game_map):
+    def tick(self, owner, game_map):
         if not self.target_position:
             self.target_position = random_walkable_position(game_map, owner)
         self.path = get_shortest_path(
@@ -81,20 +83,21 @@ class TravelToRandomPosition(Node):
 
 class Skitter(Node):
     """Move the owner to a random adjacent tile."""
-    def tick(self, owner, target, game_map):
+    def tick(self, owner, game_map):
         results = [{ResultTypes.MOVE_RANDOM_ADJACENT: owner}]
         return TreeStates.SUCCESS, results
 
 
 class DoNothing(Node):
     """Take no action and pass the turn."""
-    def tick(self, owner, target, game_map):
+    def tick(self, owner, game_map):
         return TreeStates.SUCCESS, []
 
 
 class Attack(Node):
     """The owner attackes the target."""
-    def tick(self, owner, target, game_map):
+    def tick(self, owner, game_map):
+        target = self.namespace.get("target")
         if owner.attacker and target.harmable and target.harmable.hp > 0:
             return (TreeStates.SUCCESS,
                     owner.attacker.attack(game_map, target))
@@ -107,7 +110,7 @@ class SpawnEntity(Node):
     def __init__(self, maker):
         self.maker = maker
 
-    def tick(self, owner, target, game_map):
+    def tick(self, owner, game_map):
         x, y = random_adjacent((owner.x, owner.y))
         if (game_map.walkable[x, y]
             and not game_map.blocked[x, y]

@@ -33,9 +33,9 @@ from utils.utils import (
 from cursor import Cursor
 from death_functions import kill_monster, kill_player, make_corpse
 from game_loop_functions import (
-    create_map, create_player, construct_inventory_data, get_user_input,
-    process_selected_item, player_move_or_attack, pickup_entity,
-    encroach_on_all, process_damage, process_harm, apply_status,
+    create_map, create_player, set_all_ai_targets, construct_inventory_data,
+    get_user_input, process_selected_item, player_move_or_attack,
+    pickup_entity, encroach_on_all, process_damage, process_harm, apply_status,
     entity_equip_armor, entity_equip_weapon, entity_remove_armor,
     entity_remove_weapon)
 from menus import invetory_menu
@@ -84,6 +84,8 @@ def main():
         terrain_schedule=TERRAIN_SCHEDULES[0])
     player = create_player(game_maps[0])
     player.x, player.y = INITIAL_PLAYER_POSITION
+    # All monster entities initially target the player:
+    set_all_ai_targets(game_maps[0], player)
     # Track the current turn of the game.  Used for events that happen on a
     # fixed schedule.
     game_turn = 0 
@@ -108,6 +110,7 @@ def main():
                 monster_schedule=MONSTER_SCHEDULES[current_floor],
                 item_schedule=ITEM_SCHEDULES[current_floor],
                 terrain_schedule=TERRAIN_SCHEDULES[current_floor])
+            set_all_ai_targets(current_map, player)
             game_maps[current_floor] = current_map
         # If we are not on the first turn of the game, place the player at the
         # appropriate staircase.
@@ -592,8 +595,7 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
             for entity in (e for e in game_map.entities if e != player):
                 # Enemies move and attack if possible.
                 if entity.ai:
-                    enemy_turn_results.extend(entity.ai.take_turn(
-                        player, game_map))
+                    enemy_turn_results.extend(entity.ai.take_turn(game_map))
                 # If the enemy has a current status, tick it.
                 if entity.status_manager:
                     entity.status_manager.tick()
