@@ -21,10 +21,10 @@ MONSTER_GROUPS = {
 
 MONSTER_SCHEDULES = [
     [
-        (0.9, MonsterGroups.NONE),
-        (0.1*1.0, MonsterGroups.SINGLE_ORC),
-        (0.1*0.0, MonsterGroups.THREE_ORCS),
-        (0.1*0.0, MonsterGroups.SINGLE_TROLL),
+        (0.5, MonsterGroups.NONE),
+        (0.3*1.0, MonsterGroups.SINGLE_ORC),
+        (0.1*1.0, MonsterGroups.THREE_ORCS),
+        (0.1*1.0, MonsterGroups.SINGLE_TROLL),
         (0.1*0.0, MonsterGroups.TWO_ORCS_AND_TROLL),
         (0.1*0.0, MonsterGroups.KRUTHIK_SQARM),
         (0.1*0.0, MonsterGroups.PINK_JELLY),

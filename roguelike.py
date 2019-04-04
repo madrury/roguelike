@@ -595,7 +595,8 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
             for entity in (e for e in game_map.entities if e != player):
                 # Enemies move and attack if possible.
                 if entity.ai:
-                    enemy_turn_results.extend(entity.ai.take_turn(game_map))
+                    turn = entity.ai.take_turn(game_map)
+                    enemy_turn_results.extend(turn)
                 # If the enemy has a current status, tick it.
                 if entity.status_manager:
                     entity.status_manager.tick()
@@ -644,17 +645,18 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
 
             # Handle a move action
             if result_type == ResultTypes.SET_POSITION:
-               monster, x, y = result_data
-               monster.movable.set_position_if_able(game_map, x, y)
+                monster, x, y = result_data
+                monster.movable.set_position_if_able(game_map, x, y)
             # Handle a move towards action.  Move towards a target.
-            if result_type == ResultTypes.MOVE_TOWARDS:
-               monster, target_x, target_y = result_data
-               monster.movable.move_towards(game_map, target_x, target_y)
+            if result_type == ResultTypes.MOVE_TOWARDS: 
+                #import pdb; pdb.set_trace()
+                monster, target_x, target_y = result_data
+                monster.movable.move_towards(game_map, target_x, target_y)
             # Handle a move random adjacent action.  Move to a random adjacent
             # square.
             if result_type == ResultTypes.MOVE_RANDOM_ADJACENT:
-               monster = result_data
-               monster.movable.move_to_random_adjacent(game_map)
+                monster = result_data
+                monster.movable.move_to_random_adjacent(game_map)
             # Handle a simple message.
             if result_type == ResultTypes.MESSAGE:
                 message = result_data
