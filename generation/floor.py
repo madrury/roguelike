@@ -2,42 +2,34 @@ import random
 import numpy as np
 
 from generation.floor_schedule import FloorType
-from generation.room import (
-    PinnedDungeonRoom,
-    random_dungeon_room, make_pillars_room)
+from generation.room import PinnedDungeonRoom, random_dungeon_room
+from generation.special_rooms import FLOOR_CONSTRUCTORS
 from generation.tunnel import random_tunnel_between_pinned_rooms
 
 
-# TODO: Sort out the naming here, its inconsistent.
 def make_floor(floor_config, floor_schedule):
     """Create a floor of the dungon given a configuration."""
     floor_width = floor_config['width']
     floor_height = floor_config['height']
     floor_type = floor_schedule['type']
     if floor_type == FloorType.STANDARD:
-        floor = random_dungeon_floor(floor_width, floor_height,
-                                     floor_schedule=floor_schedule)
-    elif floor_type == FloorType.FIRST:
-        first_room_width = floor_schedule['first_room_width'] 
-        first_room_height = floor_schedule['first_room_height']
-        pillars_room = make_pillars_room(
-            width=first_room_width, 
-            height=first_room_height, 
-            pillars=[])#floor_schedule['pillars'])
-        pin_location = (floor_width // 2 - first_room_width // 2, 
-                        floor_height - first_room_height - 2)
-        pillars_room_pinned = PinnedDungeonRoom(pillars_room, pin_location)
-        floor = DungeonFloor(floor_width, floor_height)
-        floor.add_pinned_room(pillars_room_pinned)
-        floor = random_dungeon_floor(floor_width, floor_height,
-                                     floor_schedule=floor_schedule,
-                                     floor=floor,
-                                     room_counter_init=1)
+        rooms = make_initial_rooms(floor_schedule['rooms'])
+        floor = random_dungeon_floor(
+            floor_width,
+            floor_height,
+            floor_schedule=floor_schedule,
+            rooms=rooms,
+            room_counter_init=len(rooms))
     else:
         raise ValueError(f"Floor type {floor_type.name} not supported!")
-    if 'objects' in floor_schedule:
-        floor.objects = floor_schedule['objects']
     return floor
+
+
+def make_initial_rooms(room_type_list):
+    rooms = []
+    for room_type in room_type_list:
+        rooms.append(FLOOR_CONSTRUCTORS[room_type].make())
+    return rooms
 
 
 def random_dungeon_floor(width=80,
@@ -46,7 +38,8 @@ def random_dungeon_floor(width=80,
                          n_room_placement_trys=25,
                          floor_schedule=None,
                          floor=None,
-                         room_counter_init=0):
+                         room_counter_init=0,
+                         rooms=None):
     """Generate a random dungeon floor with given parameters.
 
     make_floor is the intended interface for this function.
@@ -76,6 +69,9 @@ def random_dungeon_floor(width=80,
       Number to initialzie the room counter to.  Used in case the process is
       seeded with some rooms already created.
 
+    rooms: List[PinnedRoom]
+      Pre-created rooms to be added to the floor.
+
     Returns
     -------
     floor: DungeonFloor object
@@ -85,6 +81,8 @@ def random_dungeon_floor(width=80,
         floor_schedule = {}
     if floor == None:
         floor = DungeonFloor(width, height)
+    for room in rooms:
+        floor.add_pinned_room(room)
     for n in range(room_counter_init, n_rooms_to_try):
         room = random_dungeon_room(**floor_schedule)
         for _ in range(n_room_placement_trys):
@@ -149,6 +147,8 @@ class DungeonFloor:
         for x, y in pinned_room:
             self.floor[x, y] = True
         self.rooms.append(pinned_room)
+        if pinned_room.objects:
+            self.objects.extend(pinned_room.objects)
 
     def add_tunnel(self, tunnel):
         for x, y in tunnel:

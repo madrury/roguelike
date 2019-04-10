@@ -27,31 +27,6 @@ def random_dungeon_room(width=18,
             break
     return room
 
-def make_pillars_room(width=16,
-                      height=25,
-                      pillars=None):
-    """Construct a rectangular room with specified pillars.
-
-    Parameters
-    ----------
-    width: int
-      The width of the room.
-
-    height: int
-      The height of the room.
-
-    pillars: List of (int, int)
-      Coordinates to add pillars.
-
-    Returns
-    -------
-    room: DungeonRoom
-    """
-    room = DungeonRoom(width, height)
-    room.add_rectangle(Rectangle(0, 0, width, height))
-    for coords in pillars:
-        room.room[coords] = False
-    return room
 
 class PinnedDungeonRoom:
     """A DungeonRoom pinned onto a position in a larger map.
@@ -85,12 +60,16 @@ class PinnedDungeonRoom:
 
     room:
       The room.
+    
+    objects:
+      Objects occupying this room that should be added to the map.
     """
-    def __init__(self, room, position):
+    def __init__(self, room, position, *, terrain=None, objects=None):
         self.x, self.y = position
         self.room = room
         self.width, self.height = room.width, room.height
-        self.terrain = None
+        self.terrain = terrain
+        self.objects = objects
 
     def contains(self, point):
         point[0] - self.x, point[1] - self.x in self.room
