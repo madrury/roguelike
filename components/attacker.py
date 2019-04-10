@@ -30,9 +30,9 @@ class Attacker:
                  target_callback=None,
                  move_callback=None):
         self.power = power
-        self.damage_transformers = []
         self.target_callback = target_callback
         self.move_callback = move_callback
+        self.damage_transformers = []
         if damage_transformers:
             for transformer in damage_transformers:
                 self.damage_transformers.append(transformer)

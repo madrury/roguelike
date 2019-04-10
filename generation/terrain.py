@@ -124,9 +124,9 @@ def grow_in_random_room(terrain, game_map, *, stay_in_room, proportion):
 # Placeable Terrain
 #-----------------------------------------------------------------------------
 class Placeable:
-    """Base class for terrain that is place.
+    """Base class for terrain that is placed.
 
-    Terrain is placed by finding squares of teh map whose local neighbourhood
+    Terrain is placed by finding squares of the map whose local neighbourhood
     matches a set of supplied masks.  For example, we may want to place stairs
     in a straight segment of wall, or a treasure chest in a corner.
     """

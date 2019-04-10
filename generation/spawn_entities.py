@@ -1,7 +1,7 @@
 from utils.utils import choose_from_list_of_tuples
 from etc.enum import RoutingOptions
 
-
+# TODO: We maybe should be using commitable here.
 def spawn_entities(schedule, group_definitions, game_map):
     for room in game_map.floor.rooms:
         group = choose_from_list_of_tuples(schedule)

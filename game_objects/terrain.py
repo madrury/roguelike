@@ -121,6 +121,7 @@ class Water:
     """
     @staticmethod
     def make(game_map, x, y):
+        # TODO: Should this happen in commitable?
         game_map.make_transparent_and_walkable(x, y)
         fg_color = random_light_water()
         bg_color = random_light_water()

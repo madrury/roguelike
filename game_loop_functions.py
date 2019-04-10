@@ -101,6 +101,7 @@ def set_all_ai_targets(game_map, target, exclude=None):
             entity.ai.set_target(target)
 
 
+# TODO: This could just be a dictionary.
 def construct_inventory_data(game_state):
     if game_state == GameStates.SHOW_INVENTORY:
         invetory_message = "Press the letter next to the item to use it.\n"
@@ -132,7 +133,12 @@ def process_selected_item(item, *,
                           game_map=None,
                           game_state=None,
                           player_turn_results=None):
-    # Check which inventory screen we are on and call the appropriate method.
+    """Called when an item has been selected on an inventory screen.
+
+    Different inventory screens lead to different behaviour from the selected
+    item.  This function contains a switch on the type of inventory screen,
+    and routes the behaviour to the associated components.
+    """
     if game_state == GameStates.SHOW_INVENTORY:
         if item.usable:
             player_turn_results.extend(item.usable.use(game_map, player))
@@ -155,31 +161,40 @@ def process_selected_item(item, *,
         player_turn_results.extend(player.inventory.drop(item))
 
 
+
+# TODO: I don't think I need the None default arguments here.
 def player_move_or_attack(move, *,
                           player=None,
                           game_map=None,
                           player_turn_results=None):
+    """Process a move input to see if the player moves or attacks."""
     dx, dy = move
     destination_x, destination_y = player.x + dx, player.y + dy
+    # TODO: Should probably have a bounds check for safety.
     if game_map.walkable[destination_x, destination_y]:
         blocker = get_blocking_entity_in_position(
             game_map, (destination_x, destination_y))
         # If you attempted to walk into a square occupied by an entity,
-        # and that entity is not yourself.
+        # and that entity is not yourself...  If the "not yourself" part
+        # is not there, then passing a turn results in the player attacking
+        # themself.
         if blocker and blocker != player:
             attack_results = player.attacker.attack(game_map, blocker)
             player_turn_results.extend(attack_results)
+        # Some weapons (like the raipier) trigger special movement options
+        # in specific curcumstances.  The move_callback handles this.
         elif player.attacker.move_callback:
-            attack_results = player.attacker.move_callback.execute(
+            callback_results = player.attacker.move_callback.execute(
                 game_map, player, (destination_x, destination_y))
-            player_turn_results.extend(attack_results)
+            player_turn_results.extend(callback_results)
         else:
             player_turn_results.append({
-                ResultTypes.END_TURN: True,
-                ResultTypes.MOVE: (dx, dy)})
+                ResultTypes.MOVE: (dx, dy),
+                ResultTypes.END_TURN: True})
 
 
 def pickup_entity(game_map, player, player_turn_results):
+    # TODO: Use get_all_entities_with_component_in_position
     for entity in game_map.entities:
         if (entity.pickupable
             and entity.x == player.x and entity.y == player.y):
