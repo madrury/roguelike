@@ -58,7 +58,7 @@ def main():
     assert len(FLOOR_SCHEDULES) == N_FLOORS
     assert len(MONSTER_SCHEDULES) == N_FLOORS
     assert len(ITEM_SCHEDULES) == N_FLOORS
-    assert len(TERRAIN_SCHEDULES) == N_FLOORS
+    #assert len(TERRAIN_SCHEDULES) == N_FLOORS
 
     tdl.set_font('fonts/consolas10x10.png', greyscale=True, altLayout=True)
     # Setup playscreen with two consoles:
@@ -80,8 +80,7 @@ def main():
         map_console, 
         floor_schedule=FLOOR_SCHEDULES[0],
         monster_schedule=MONSTER_SCHEDULES[0],
-        item_schedule=ITEM_SCHEDULES[0],
-        terrain_schedule=TERRAIN_SCHEDULES[0])
+        item_schedule=ITEM_SCHEDULES[0])
     player = create_player(game_maps[0])
     player.x, player.y = INITIAL_PLAYER_POSITION
     # All monster entities initially target the player:
@@ -103,13 +102,11 @@ def main():
         if current_map == None:
             monster_schedule = MONSTER_SCHEDULES[current_floor]
             item_schedule = ITEM_SCHEDULES[current_floor]
-            terrain_schedule = TERRAIN_SCHEDULES[current_floor]
             current_map = create_map(
                 map_console, 
                 floor_schedule=FLOOR_SCHEDULES[current_floor],
                 monster_schedule=MONSTER_SCHEDULES[current_floor],
-                item_schedule=ITEM_SCHEDULES[current_floor],
-                terrain_schedule=TERRAIN_SCHEDULES[current_floor])
+                item_schedule=ITEM_SCHEDULES[current_floor])
             set_all_ai_targets(current_map, player)
             game_maps[current_floor] = current_map
         # If we are not on the first turn of the game, place the player at the
