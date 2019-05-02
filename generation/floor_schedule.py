@@ -20,8 +20,7 @@ FIRST_FLOOR = {
     'max_rooms': 20,
 }
 
-
-BASIC_FLOOR = {
+BASIC_FLOOR_TEMPLATE = {
     'type': FloorType.STANDARD,
     'terrain_type': TerrainTypes.BASIC_FLOOR,
     'rooms': [],
@@ -34,8 +33,16 @@ BASIC_FLOOR = {
 }
 
 
+def create_floor_from_template(template, terrain_type):
+    floor_template = template.copy()
+    floor_template['terrain_type'] = terrain_type
+    return floor_template
+
+
 FLOOR_SCHEDULES = [
     FIRST_FLOOR,
-    BASIC_FLOOR,
-    BASIC_FLOOR
+    create_floor_from_template(BASIC_FLOOR_TEMPLATE, TerrainTypes.BASIC_FLOOR),
+    create_floor_from_template(BASIC_FLOOR_TEMPLATE, TerrainTypes.SHRUB_FLOOR),
+    # create_basic_floor(TerrainTypes.WATER_FLOOR),
+    # create_basic_floor(TerrainTypes.ICE_FLOOR)
 ]
