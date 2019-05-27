@@ -8,7 +8,7 @@ class TerrainTypes(Enum):
     ICE_FLOOR = auto()
 
 
-TERRAIN_SCHEDULES = {
+TERRAIN_DEFINITIONS = {
     TerrainTypes.FIRST_FLOOR: {
         'upward_stairs': False,
         'min_torches': 0,

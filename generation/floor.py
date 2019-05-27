@@ -3,7 +3,7 @@ import numpy as np
 
 from generation.floor_schedule import FloorType
 from generation.room import PinnedDungeonRoom, random_dungeon_room
-from generation.special_rooms import FLOOR_CONSTRUCTORS
+from generation.special_rooms import ROOM_CONSTRUCTORS
 from generation.tunnel import random_tunnel_between_pinned_rooms
 
 
@@ -28,7 +28,7 @@ def make_floor(floor_config, floor_schedule):
 def make_initial_rooms(room_type_list):
     rooms = []
     for room_type in room_type_list:
-        rooms.append(FLOOR_CONSTRUCTORS[room_type].make())
+        rooms.append(ROOM_CONSTRUCTORS[room_type].make())
     return rooms
 
 

@@ -19,9 +19,26 @@ MONSTER_GROUPS = {
 }
 
 
+class MonsterGroup:
+
+    def __init__(self, group_distribution=None):
+        if group_distribution:
+            self.group_distribution = group_distribution
+        else:
+            self.group_distribution = [(1.0, MonsterGroups.NONE)]
+    
+    def __or__(self, other):
+        for group in MonsterGroups:
+            # YOU ARE HERE
+            # First, you should probably convert these tuple things to dicts
+            # Then you need to combine the probability distributions.
+            pass
+        return self
+
+
 MONSTER_SCHEDULES = [
     [
-        (0.5, MonsterGroups.NONE),
+        (0.5,    MonsterGroups.NONE),
         (0.3*1.0, MonsterGroups.SINGLE_ORC),
         (0.1*1.0, MonsterGroups.THREE_ORCS),
         (0.1*1.0, MonsterGroups.SINGLE_TROLL),
@@ -33,7 +50,7 @@ MONSTER_SCHEDULES = [
         (0.1*0.0, MonsterGroups.ZOMBIE),
         (0.1*0.0, MonsterGroups.NECROMANCER)],
     [
-        (0.5, MonsterGroups.NONE),
+        (0.5,     MonsterGroups.NONE),
         (0.5*0.5, MonsterGroups.SINGLE_ORC),
         (0.5*0.3, MonsterGroups.THREE_ORCS),
         (0.5*0.1, MonsterGroups.SINGLE_TROLL),
@@ -45,7 +62,7 @@ MONSTER_SCHEDULES = [
         (0.5*0.0, MonsterGroups.ZOMBIE),
         (0.5*0.0, MonsterGroups.NECROMANCER)],
     [
-        (0.5, MonsterGroups.NONE),
+        (0.5,     MonsterGroups.NONE),
         (0.5*0.3, MonsterGroups.SINGLE_ORC),
         (0.5*0.0, MonsterGroups.THREE_ORCS),
         (0.5*0.1, MonsterGroups.SINGLE_TROLL),

@@ -56,6 +56,6 @@ def make_rectangle_room(width=16, height=25):
 class RoomType(Enum):
     FIRST_ROOM = auto()
 
-FLOOR_CONSTRUCTORS = {
+ROOM_CONSTRUCTORS = {
     RoomType.FIRST_ROOM: FirstRoom()
 }

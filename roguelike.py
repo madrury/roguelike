@@ -21,7 +21,6 @@ from etc.enum import (
 from generation.floor_schedule import FLOOR_SCHEDULES
 from generation.monster_groups import MONSTER_SCHEDULES
 from generation.item_groups import ITEM_SCHEDULES
-from generation.terrain_schedule import TERRAIN_SCHEDULES
 
 from utils.debug import highlight_array
 from utils.utils import (
