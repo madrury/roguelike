@@ -6,6 +6,12 @@ def highlight_array(array, game_map, color):
             if array[x, y]:
                 game_map.highlight_position(x, y, color)
 
+def highlight_stairs(game_map, color):
+    if game_map.upward_stairs_position:
+        game_map.highlight_position(*game_map.upward_stairs_position, color)
+    if game_map.downward_stairs_position:
+        game_map.highlight_position(*game_map.downward_stairs_position, color)
+
 def draw_dijkstra_map(dm, game_map):
     xmax, ymax = dm.dmap.shape
     for x in range(0, xmax):
