@@ -2,7 +2,7 @@ from entity import Entity
 
 from etc.colors import COLORS
 from etc.enum import (
-    RenderOrder, EntityTypes, MonsterGroups, RoutingOptions, Elements)
+    RenderOrder, EntityTypes, RoutingOptions, Elements)
 
 from components.attacker import Attacker
 from components.burnable import AliveBurnable, ZombieBurnable, WaterBloatBurnable

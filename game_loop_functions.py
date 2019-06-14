@@ -33,7 +33,6 @@ from messages import Message
 
 def create_map(map_console, *,
                floor_schedule,
-               monster_schedule,
                item_schedule):
     """Construct and return the game map.
 
@@ -43,7 +42,7 @@ def create_map(map_console, *,
     game_map = GameMap(floor, map_console)
     terrain = add_random_terrain(game_map, TERRAIN_DEFINITIONS[floor_schedule['terrain_type']])
     # TODO: game_map should be the first argument here.
-    spawn_entities(monster_schedule, MONSTER_GROUPS, game_map)
+    spawn_entities(floor_schedule['monster_schedule'], MONSTER_GROUPS, game_map)
     spawn_entities(item_schedule, ITEM_GROUPS, game_map)
     return game_map
 

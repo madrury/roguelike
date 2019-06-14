@@ -278,17 +278,3 @@ class ItemGroups(Enum):
     LEATHER_ARMOR = auto()
     LEATHER_ARMOR_OF_FIRE_RESIST = auto()
     REFLECT_SUIT = auto()
-
-
-class MonsterGroups(Enum):
-    NONE = auto()
-    SINGLE_ORC = auto()
-    THREE_ORCS = auto()
-    SINGLE_TROLL = auto()
-    TWO_ORCS_AND_TROLL = auto()
-    KRUTHIK_SQARM = auto()
-    PINK_JELLY = auto()
-    FIRE_BLOAT = auto()
-    WATER_BLOAT = auto()
-    ZOMBIE = auto()
-    NECROMANCER = auto()

@@ -32,4 +32,5 @@ def spawn_in_room(entity_type, room, game_map, max_tries=25):
         return None
 
 def entity_can_spawn_in_space(entity, x, y, game_map):
+    # Should probably be a method on entity?
     return (entity.swims or not game_map.water[x, y])

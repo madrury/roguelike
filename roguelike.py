@@ -19,7 +19,6 @@ from etc.enum import (
     INVENTORY_STATES, INPUT_STATES, CANCEL_STATES)
 
 from generation.floor_schedule import FLOOR_SCHEDULES
-from generation.monster_groups import MONSTER_SCHEDULES
 from generation.item_groups import ITEM_SCHEDULES
 
 from utils.debug import highlight_array, highlight_stairs
@@ -55,9 +54,7 @@ def main():
         is the player currently on?
     """
     assert len(FLOOR_SCHEDULES) == N_FLOORS
-    assert len(MONSTER_SCHEDULES) == N_FLOORS
     assert len(ITEM_SCHEDULES) == N_FLOORS
-    #assert len(TERRAIN_SCHEDULES) == N_FLOORS
 
     tdl.set_font('fonts/consolas10x10.png', greyscale=True, altLayout=True)
     # Setup playscreen with two consoles:
@@ -76,9 +73,8 @@ def main():
     game_maps = [None] * N_FLOORS
     # Create the map for the first floor of the dungeon and place the player.
     game_maps[0] = create_map(
-        map_console, 
+        map_console,
         floor_schedule=FLOOR_SCHEDULES[0],
-        monster_schedule=MONSTER_SCHEDULES[0],
         item_schedule=ITEM_SCHEDULES[0])
     player = create_player(game_maps[0])
     player.x, player.y = INITIAL_PLAYER_POSITION
@@ -86,7 +82,7 @@ def main():
     set_all_ai_targets(game_maps[0], player)
     # Track the current turn of the game.  Used for events that happen on a
     # fixed schedule.
-    game_turn = 0 
+    game_turn = 0
     # The current floor of the dungeon.  Starts at floor zero, hopefully the
     # player descendes far into the dungeon!
     current_floor = 0
@@ -99,12 +95,9 @@ def main():
         # so now.
         current_map = game_maps[current_floor]
         if current_map == None:
-            monster_schedule = MONSTER_SCHEDULES[current_floor]
-            item_schedule = ITEM_SCHEDULES[current_floor]
             current_map = create_map(
-                map_console, 
+                map_console,
                 floor_schedule=FLOOR_SCHEDULES[current_floor],
-                monster_schedule=MONSTER_SCHEDULES[current_floor],
                 item_schedule=ITEM_SCHEDULES[current_floor])
             set_all_ai_targets(current_map, player)
             game_maps[current_floor] = current_map
@@ -156,7 +149,7 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
     #-------------------------------------------------------------------------
     # Game State Varaibles
     #-------------------------------------------------------------------------
-    root_console, map_console, bottom_panel_console, top_panel_console = consoles
+    root_console, bottom_panel_console, top_panel_console = consoles
     # Initial values for game states
     game_state = GameStates.PLAYER_TURN
     previous_game_state = game_state
@@ -177,9 +170,6 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
     # A cursor object for allowing the user to select a space on the map, will
     # be populated when the game state is in cursor select mode.
     cursor = None
-    # A list of recently dead enemies.  We need this to defer drawing thier
-    # corpses until *after* any animations have finished.
-    dead_entities = []
     # Stacks for holding the results of player and enemy turns.
     player_turn_results = []
     enemy_turn_results = []
@@ -285,8 +275,10 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
                 skip_player_input = True
                 game_state, previous_game_state = previous_game_state, game_state
 
+        #---------------------------------------------------------------------
         # DEBUG
-        # These switched highlight the various game state arrays.
+        # These switches highlight the various game state arrays.
+        #---------------------------------------------------------------------
         # highlight_array(game_map.walkable, game_map, COLORS['cursor_tail'])
         # highlight_array(game_map.door, game_map, COLORS['cursor_tail'])
         # highlight_array(game_map.blocked, game_map, COLORS['cursor_tail'])
@@ -350,7 +342,6 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
         # if not, attack the blocking entity by putting an attack action on the
         # queue.
         #----------------------------------------------------------------------
-        # Unless the player moves, we do not need to recompute the fov.
         if move and game_state == GameStates.PLAYER_TURN:
             player_move_or_attack(move,
                                   player=player,
@@ -411,7 +402,7 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
         # empty.
         #----------------------------------------------------------------------
         while (game_state not in (GameStates.CURSOR_INPUT, GameStates.ANIMATION_PLAYING)
-              and player_turn_results != []):
+               and player_turn_results != []):
 
             # Sort the turn results stack by the priority order.
             player_turn_results = sorted(
@@ -421,6 +412,7 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
             result = player_turn_results.pop()
             result_type, result_data = unpack_single_key_dict(result)
 
+            # We were in a state where player input was locked out, restore it.
             if result_type == ResultTypes.RESTORE_PLAYER_INPUT:
                 skip_player_input = False
             # Play an animation.
@@ -437,7 +429,7 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
                 game_state, previous_game_state = (
                     GameStates.ANIMATION_PLAYING, game_state)
                 break
-            # Drop into cursor input mode.
+            # Drop into cursor input mode for targeting.
             if result_type == ResultTypes.CURSOR_MODE:
                 x, y, callback, mode = result_data
                 cursor = Cursor(player.x, player.y, game_map,
@@ -446,7 +438,7 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
                 game_state, previous_game_state = (
                     GameStates.CURSOR_INPUT, game_state)
                 break
-            # Move the player.
+            # Move the player according to some user input.
             if result_type == ResultTypes.MOVE:
                 player.movable.move(game_map, *result_data)
             # Find a random open position on the map, and move the player there
@@ -455,20 +447,21 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
                 entity = result_data
                 position = game_map.find_random_open_position()
                 entity.movable.set_position_if_able(game_map, *position)
-            # Set the player's position, used when moving more than one step or
-            # teleporting (say, due to a raipier attack or teleport staff).
+            # Set the player's position to some given coordinates, used when
+            # moving more than one step or teleporting (say, due to a raipier
+            # attack or teleport staff).
             if result_type == ResultTypes.SET_POSITION:
                entity, x, y = result_data
                entity.movable.set_position_if_able(game_map, x, y)
             # Add a message to the log.
             if result_type == ResultTypes.MESSAGE:
                 message_log.add_message(result_data)
-            # Add an item to the inventory, and remove it from the game map.
+            # Add an item to the inventory and remove it from the game map.
             if result_type == ResultTypes.ADD_ITEM_TO_INVENTORY:
                 entity, item = result_data
                 entity.inventory.add(item)
                 item.commitable.delete(game_map)
-            # Remove consumed items from inventory
+            # Remove consumed items from inventory.
             if result_type == ResultTypes.DISCARD_ITEM:
                 item, consumed = result_data
                 if consumed:
@@ -479,10 +472,11 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
                 entity.inventory.remove(item)
                 item.x, item.y = entity.x, entity.y
                 game_map.entities.append(item)
-            # Process a damage message, possibly transforming it.
+            # Process a damage message, possibly transforming it due to
+            # elemental defences or other abilities.
             if result_type == ResultTypes.DAMAGE:
                 process_damage(game_map, result_data, player_turn_results)
-            # Commit damage to an entity.
+            # Commit final processed damage to an entity.
             if result_type == ResultTypes.HARM:
                 process_harm(
                     game_map, result_data, player_turn_results, harmed_queue)
@@ -521,13 +515,14 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
             # Freeze the player
             if result_type == ResultTypes.FREEZE:
                 entity = result_data
+                # TODO: Freezing of a player is not yet implemented.
                 apply_status(entity, player, None, EnemyFrozenManager)
-            # Add a new entity to the game.
+            # Add a new entity to the game map.
             if result_type == ResultTypes.ADD_ENTITY:
                 entity = result_data
                 entity.commitable.commit(game_map)
                 player_turn_results.extend(encroach_on_all(entity, game_map))
-            # Remove an entity from the game.
+            # Remove an entity from the game map.
             if result_type == ResultTypes.REMOVE_ENTITY:
                 entity = result_data
                 entity.commitable.delete(game_map)
@@ -645,7 +640,7 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
                 monster, x, y = result_data
                 monster.movable.set_position_if_able(game_map, x, y)
             # Handle a move towards action.  Move towards a target.
-            if result_type == ResultTypes.MOVE_TOWARDS: 
+            if result_type == ResultTypes.MOVE_TOWARDS:
                 #import pdb; pdb.set_trace()
                 monster, target_x, target_y = result_data
                 monster.movable.move_towards(game_map, target_x, target_y)
@@ -691,7 +686,7 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
                     enemy_turn_results.extend(
                         kill_monster(dead_entity, game_map))
                     make_corpse(dead_entity)
-                    
+
 
         #---------------------------------------------------------------------
         # Handle meta actions,
