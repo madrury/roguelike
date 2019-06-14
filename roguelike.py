@@ -149,7 +149,7 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
     #-------------------------------------------------------------------------
     # Game State Varaibles
     #-------------------------------------------------------------------------
-    root_console, bottom_panel_console, top_panel_console = consoles
+    root_console, _, bottom_panel_console, top_panel_console = consoles
     # Initial values for game states
     game_state = GameStates.PLAYER_TURN
     previous_game_state = game_state
