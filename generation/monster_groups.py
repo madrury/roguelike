@@ -1,4 +1,3 @@
-# TODO: Move this enum into this file.
 from enum import Enum, auto
 
 from game_objects.monsters import (
@@ -13,7 +12,7 @@ class MonsterSchedule:
         if group_distribution:
             self.group_distribution = group_distribution
         else:
-            self.group_distribution = {MonsterGroups.NONE: 1.0}
+            self.group_distribution = {MonsterSpawnGroups.NONE: 1.0}
 
     def __or__(self, other):
         all_groups = set(self.group_distribution.keys()) | set(other.group_distribution.keys())
@@ -34,7 +33,7 @@ class MonsterSchedule:
         return lot
 
 
-class MonsterGroups(Enum):
+class MonsterSpawnGroups(Enum):
     NONE = auto()
     SINGLE_ORC = auto()
     THREE_ORCS = auto()
@@ -47,45 +46,56 @@ class MonsterGroups(Enum):
     ZOMBIE = auto()
     NECROMANCER = auto()
 
-MONSTER_GROUPS = {
-    MonsterGroups.NONE: [],
-    MonsterGroups.SINGLE_ORC: [Orc],
-    MonsterGroups.THREE_ORCS: [Orc, Orc, Orc],
-    MonsterGroups.SINGLE_TROLL: [Troll],
-    MonsterGroups.TWO_ORCS_AND_TROLL: [Orc, Orc, Troll],
-    MonsterGroups.KRUTHIK_SQARM: [Kruthik]*10,
-    MonsterGroups.PINK_JELLY: [PinkJelly],
-    MonsterGroups.FIRE_BLOAT: [FireBloat],
-    MonsterGroups.WATER_BLOAT: [WaterBloat],
-    MonsterGroups.ZOMBIE: [Zombie],
-    MonsterGroups.NECROMANCER: [Necromancer]
+MONSTER_SPAWN_GROUPS = {
+    MonsterSpawnGroups.NONE: [],
+    MonsterSpawnGroups.SINGLE_ORC: [Orc],
+    MonsterSpawnGroups.THREE_ORCS: [Orc, Orc, Orc],
+    MonsterSpawnGroups.SINGLE_TROLL: [Troll],
+    MonsterSpawnGroups.TWO_ORCS_AND_TROLL: [Orc, Orc, Troll],
+    MonsterSpawnGroups.KRUTHIK_SQARM: [Kruthik]*10,
+    MonsterSpawnGroups.PINK_JELLY: [PinkJelly],
+    MonsterSpawnGroups.FIRE_BLOAT: [FireBloat],
+    MonsterSpawnGroups.WATER_BLOAT: [WaterBloat],
+    MonsterSpawnGroups.ZOMBIE: [Zombie],
+    MonsterSpawnGroups.NECROMANCER: [Necromancer]
 }
 
 
-class MonsterSchedules(Enum):
+class MonsterSpawnSchedules(Enum):
     NONE = auto()
-    ORCS_AND_KRUTHIKS = auto()
+    # Atomic monster spawn schedule.  Others are from combining these
+    #  by weighting probabilities.
+    ORCS = auto()
     TROLLS = auto()
+    KRUTHIKS = auto()
     UNDEAD = auto()
     BLOATS = auto()
 
-MONSTER_SCHEDULES = {
-    MonsterSchedules.NONE: MonsterSchedule(),
-    MonsterSchedules.ORCS_AND_KRUTHIKS: MonsterSchedule({
-            MonsterGroups.NONE: 0.4,
-            MonsterGroups.SINGLE_ORC: 0.3,
-            MonsterGroups.THREE_ORCS: 0.1,
-            MonsterGroups.KRUTHIK_SQARM: 0.2}),
-    MonsterSchedules.TROLLS: MonsterSchedule({
-        MonsterGroups.NONE: 0.5,
-        MonsterGroups.SINGLE_TROLL: 0.4,
-        MonsterGroups.TWO_ORCS_AND_TROLL: 0.2}),
-    MonsterSchedules.BLOATS: MonsterSchedule({
-        MonsterGroups.NONE: 0.4,
-        MonsterGroups.FIRE_BLOAT: 0.3,
-        MonsterGroups.WATER_BLOAT: 0.3}),
-    MonsterSchedules.UNDEAD: MonsterSchedule({
-        MonsterGroups.NONE: 0.4,
-        MonsterGroups.ZOMBIE: 0.4,
-        MonsterGroups.NECROMANCER: 0.2})
+# Here we just define the atomic groups.
+MONSTER_SPAWN_SCHEDULES = {
+    MonsterSpawnSchedules.NONE: MonsterSchedule(),
+    MonsterSpawnSchedules.ORCS: MonsterSchedule({
+            MonsterSpawnGroups.NONE: 0.4,
+            MonsterSpawnGroups.SINGLE_ORC: 0.4,
+            MonsterSpawnGroups.THREE_ORCS: 0.2
+    }),
+    MonsterSpawnSchedules.KRUTHIKS: MonsterSchedule({
+        MonsterSpawnGroups.NONE: 0.7,
+        MonsterSpawnSchedules.KRUTHIKS: 0.3
+    }),
+    MonsterSpawnSchedules.TROLLS: MonsterSchedule({
+        MonsterSpawnGroups.NONE: 0.5,
+        MonsterSpawnGroups.SINGLE_TROLL: 0.4,
+        MonsterSpawnGroups.TWO_ORCS_AND_TROLL: 0.2
+    }),
+    MonsterSpawnSchedules.BLOATS: MonsterSchedule({
+        MonsterSpawnGroups.NONE: 0.4,
+        MonsterSpawnGroups.FIRE_BLOAT: 0.3,
+        MonsterSpawnGroups.WATER_BLOAT: 0.3
+    }),
+    MonsterSpawnSchedules.UNDEAD: MonsterSchedule({
+        MonsterSpawnGroups.NONE: 0.4,
+        MonsterSpawnGroups.ZOMBIE: 0.4,
+        MonsterSpawnGroups.NECROMANCER: 0.2
+    })
 }
