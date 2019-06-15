@@ -47,7 +47,7 @@ FLOOR_SCHEDULES = [
     create_floor_from_template(
         BASIC_FLOOR_TEMPLATE,
         TerrainTypes.BASIC_FLOOR,
-        MonsterSpawnSchedules.ORCS),
+        MonsterSpawnSchedules.ORCS_AND_KRUTHIKS),
     create_floor_from_template(
         BASIC_FLOOR_TEMPLATE,
         TerrainTypes.SHRUB_FLOOR,
