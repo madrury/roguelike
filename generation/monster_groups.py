@@ -3,36 +3,7 @@ from enum import Enum, auto
 from game_objects.monsters import (
     Orc, Troll, Kruthik, PinkJelly, FireBloat, WaterBloat,
     Zombie, Necromancer)
-
-class MonsterSchedule:
-    """Represent a schedule for spawning monsters on a floor, and implement
-    an algebra of monster schedules with allows for combining them.
-    """
-    def __init__(self, group_distribution=None):
-        if group_distribution:
-            self.group_distribution = group_distribution
-        else:
-            self.group_distribution = {MonsterSpawnGroups.NONE: 1.0}
-
-    def __or__(self, other):
-        all_groups = set(self.group_distribution.keys()) | set(other.group_distribution.keys())
-        total_probability = sum(
-            self.group_distribution.get(group, 0.0) + other.group_distribution.get(group, 0.0)
-            for group in all_groups
-        )
-        merged_groups = {
-            group: (
-                (self.group_distribution.get(group, 0.0)
-                + other.group_distribution.get(group, 0.0)) / total_probability)
-            for group in all_groups
-        }
-        return MonsterSchedule(group_distribution=merged_groups)
-
-    def to_list_of_tuples(self):
-        lot = []
-        for group, prob in self.group_distribution.items():
-            lot.append((prob, group))
-        return lot
+from generation.scheduler import CompositeScheduler
 
 
 class MonsterSpawnGroups(Enum):
@@ -61,6 +32,10 @@ MONSTER_SPAWN_GROUPS = {
     MonsterSpawnGroups.ZOMBIE: [Zombie],
     MonsterSpawnGroups.NECROMANCER: [Necromancer]
 }
+
+
+class MonsterSchedule(CompositeScheduler):
+    default_group = MonsterSpawnGroups.NONE
 
 
 class MonsterSpawnSchedules(Enum):
