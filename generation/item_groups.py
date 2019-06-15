@@ -1,10 +1,29 @@
-from etc.enum import ItemGroups
+from enum import Enum, auto
+
 from game_objects.items import (
     HealthPotion, PowerPotion, MagicMissileScroll, FireblastScroll,
     WaterblastScroll, ThrowingKnife, FireStaff)
 from game_objects.armor import (
     LeatherArmor, ReflectSuit)
 from game_objects.weapons import Lance, Axe, Sword
+
+
+class ItemGroups(Enum):
+    NONE = auto()
+    ONE_HEALTH_POTION = auto()
+    POWER_POTION = auto()
+    TWO_HEALTH_POTIONS = auto()
+    MAGIC_MISSILE_SCROLL = auto()
+    FIREBLAST_SCROLL = auto()
+    WATERBLAST_SCROLL = auto()
+    THROWING_KNIFE = auto()
+    FIRE_STAFF = auto()
+    LANCE = auto()
+    SWORD = auto()
+    AXE = auto()
+    LEATHER_ARMOR = auto()
+    LEATHER_ARMOR_OF_FIRE_RESIST = auto()
+    REFLECT_SUIT = auto()
 
 
 ITEM_GROUPS = {

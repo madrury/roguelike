@@ -3,6 +3,7 @@ from enum import Enum, auto
 from game_objects.monsters import (
     Orc, Troll, Kruthik, PinkJelly, FireBloat, WaterBloat,
     Zombie, Necromancer)
+
 from generation.scheduler import CompositeScheduler
 
 
@@ -18,6 +19,7 @@ class MonsterSpawnGroups(Enum):
     WATER_BLOAT = auto()
     ZOMBIE = auto()
     NECROMANCER = auto()
+
 
 MONSTER_SPAWN_GROUPS = {
     MonsterSpawnGroups.NONE: [],
@@ -53,7 +55,8 @@ class MonsterSpawnSchedules(Enum):
     ORCS_AND_BLOATS = auto()
     TROLLS_AND_BLOATS = auto()
 
-# Here we just define the atomic groups.
+
+# Define the atomic groups.
 MONSTER_SPAWN_SCHEDULES = {
     MonsterSpawnSchedules.NONE: MonsterSchedule(),
     MonsterSpawnSchedules.ORCS: MonsterSchedule({

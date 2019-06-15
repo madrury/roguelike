@@ -260,21 +260,3 @@ class RoutingOptions(Enum):
     AVOID_STAIRS = auto()
     AVOID_STEAM = auto()
     AVOID_WATER = auto()
-
-
-class ItemGroups(Enum):
-    NONE = auto()
-    ONE_HEALTH_POTION = auto()
-    POWER_POTION = auto()
-    TWO_HEALTH_POTIONS = auto()
-    MAGIC_MISSILE_SCROLL = auto()
-    FIREBLAST_SCROLL = auto()
-    WATERBLAST_SCROLL = auto()
-    THROWING_KNIFE = auto()
-    FIRE_STAFF = auto()
-    LANCE = auto()
-    SWORD = auto()
-    AXE = auto()
-    LEATHER_ARMOR = auto()
-    LEATHER_ARMOR_OF_FIRE_RESIST = auto()
-    REFLECT_SUIT = auto()

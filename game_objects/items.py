@@ -1,7 +1,7 @@
 from entity import Entity
 
 from etc.colors import COLORS
-from etc.enum import EntityTypes, RenderOrder, ItemGroups
+from etc.enum import EntityTypes, RenderOrder
 from etc.game_config import (
     THROWING_KNIFE_BASE_USES, STAFF_BASE_USES, STAFF_RECHARGE_TIME)
 
@@ -17,7 +17,7 @@ from components.usable import (
     FireblastUsable, TorchUsable, WaterblastUsable, FireStaffUsable,
     IceStaffUsable)
 from components.throwable import (
-    NullThrowable, HealthPotionThrowable, ConfusionPotionThrowable, 
+    NullThrowable, HealthPotionThrowable, ConfusionPotionThrowable,
     TeleportationPotionThrowable, SpeedPotionThrowable, ThrowingKnifeThrowable)
 
 
@@ -183,7 +183,7 @@ class FireStaff:
                       render_order=RenderOrder.ITEM,
                       commitable=BaseCommitable(),
                       consumable=FinitelyConsumable(
-                          uses=STAFF_BASE_USES, 
+                          uses=STAFF_BASE_USES,
                           discard_on_empty=False,
                           display_on_one=True),
                       floatable=Floatable(),
@@ -202,7 +202,7 @@ class IceStaff:
                       render_order=RenderOrder.ITEM,
                       commitable=BaseCommitable(),
                       consumable=FinitelyConsumable(
-                          uses=STAFF_BASE_USES, 
+                          uses=STAFF_BASE_USES,
                           discard_on_empty=False,
                           display_on_one=True),
                       floatable=Floatable(),

@@ -1,7 +1,7 @@
 from entity import Entity
 
 from etc.colors import COLORS
-from etc.enum import EntityTypes, RenderOrder, ItemGroups, Elements
+from etc.enum import EntityTypes, RenderOrder, Elements
 
 from components.commitable import BaseCommitable
 from components.equipable import ArmorEquipable
@@ -24,7 +24,7 @@ class LeatherArmor:
         base_defense = 2
         damage_modifier = base_defense + modifier
         damage_transformer = DefensiveLinearTransformer(
-             elements=elements, 
+             elements=elements,
              addend=damage_modifier)
         return Entity(x, y, '&', COLORS['violet'], name,
             entity_type=EntityTypes.ITEM,
@@ -51,7 +51,7 @@ class ReflectSuit:
         base_defense = 1
         damage_modifier = base_defense + modifier
         damage_transformer = DefensiveLinearTransformer(
-             elements=elements, 
+             elements=elements,
              addend=damage_modifier)
         return Entity(x, y, '&', COLORS['violet'], name,
             entity_type=EntityTypes.ITEM,
