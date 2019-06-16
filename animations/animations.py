@@ -128,7 +128,7 @@ class SimultaneousAnimation:
             animations.append(construct_animation(datum, game_map))
         return SimultaneousAnimation(*animations)
 
-            
+
 
 class ColorCycleAnimation:
     """Animation that cycles through a sequence of background colors for a
@@ -157,11 +157,11 @@ class ColorCycleAnimation:
         try:
             color = next(self.color_iter)
             self.game_map.draw_char(
-                self.target[0], self.target[1], self.char, 
+                self.target[0], self.target[1], self.char,
                 fg=self.fg_color, bg=color)
         except StopIteration:
             self.game_map.draw_char(
-                self.target[0], self.target[1], self.char, 
+                self.target[0], self.target[1], self.char,
                 fg=self.fg_color, bg=self.bg_color)
             return True
         return False
@@ -195,7 +195,7 @@ class ThrownPotionAnimation:
 
     def next_frame(self):
         return draw_missile(self)
-        
+
 
 class MagicMissileAnimation:
     """Animation for casting a magic missile.
@@ -250,9 +250,9 @@ class FireblastAnimation:
         self.radius_iter = iter(range(radius + 1))
 
     def next_frame(self):
-        return draw_blast(self, char='^', 
+        return draw_blast(self, char='^',
                           fg_color_callback=random_red_or_yellow,
-                          bg_color_callback=random_red_or_yellow)         
+                          bg_color_callback=random_red_or_yellow)
 
 
 class WaterblastAnimation:
@@ -267,9 +267,9 @@ class WaterblastAnimation:
         self.radius_iter = iter(range(radius + 1))
 
     def next_frame(self):
-        return draw_blast(self, char='~', 
+        return draw_blast(self, char='~',
                           fg_color_callback=random_light_blue,
-                          bg_color_callback=random_light_blue)         
+                          bg_color_callback=random_light_blue)
 
 
 class ThrowingKnifeAnimation:
@@ -347,7 +347,7 @@ class FireballAnimation:
         self.current_frame = 0
 
     def next_frame(self):
-        return draw_ball(self, head_fg_callback=random_orange, 
+        return draw_ball(self, head_fg_callback=random_orange,
                                head_bg_callback=random_red,
                                middle_fg_callback=random_yellow,
                                middle_bg_callback=random_orange,
@@ -380,7 +380,7 @@ class IceballAnimation:
         self.current_frame = 0
 
     def next_frame(self):
-        return draw_ball(self, head_fg_callback=lambda: (255, 255, 255), 
+        return draw_ball(self, head_fg_callback=lambda: (255, 255, 255),
                                head_bg_callback=random_grey,
                                middle_fg_callback=random_grey,
                                middle_bg_callback=random_light_blue,
@@ -422,7 +422,7 @@ def draw_ball(animation, *, head_fg_callback, head_bg_callback,
         animation.current_positions.appendleft(position)
     if animation.current_frame >= 3:
         p = animation.current_positions.pop()
-        animation.game_map.draw_position(p[0], p[1])
+        animation.game_map.redraw_position(p[0], p[1])
     if len(animation.current_positions) >= 1:
         x, y = animation.current_positions[0]
         if animation.game_map.fov[x, y]:
@@ -475,14 +475,14 @@ def draw_blast(animation, *, char, fg_color_callback, bg_color_callback):
             (animation.source[0], animation.source[1]), animation.radius)
         for x, y in clear_coordinates:
             if animation.game_map.within_bounds(x, y):
-                animation.game_map.draw_position(x, y)
+                animation.game_map.redraw_position(x, y)
         return True
     # Draw a circle centered at `source`.
     blast_coordinates = coordinates_within_circle(
         (animation.source[0], animation.source[1]), blast_radius)
     for x, y in blast_coordinates:
-        if (animation.game_map.within_bounds(x, y) and 
-            (animation.game_map.fov[x, y] or animation.game_map.shrub[x, y]) and 
+        if (animation.game_map.within_bounds(x, y) and
+            (animation.game_map.fov[x, y] or animation.game_map.shrub[x, y]) and
             animation.game_map.walkable[x, y]):
             animation.game_map.draw_char(
                 x, y, char, fg_color_callback(), bg_color_callback())
@@ -508,7 +508,7 @@ def draw_missile(animation, fg=None, bg=None):
     # Clear the previous frame's missile.
     if animation.current_frame >= 1:
         x, y = animation.path[animation.current_frame - 1]
-        animation.game_map.draw_position(x, y)
+        animation.game_map.redraw_position(x, y)
     # If the missile has reached the target, the animation is done.
     if missile_location == animation.target:
         return True

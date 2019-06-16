@@ -9,10 +9,7 @@ For example:
 
   - Some entities block movement into the square in which they are located.
   - Some entities block line of sight.
-
-Etc.
 """
-
 # TODO: These methods should return True of False to signal if they are successful.
 
 class BaseCommitable:

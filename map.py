@@ -110,81 +110,14 @@ class GameMap(Map):
         for entity in self.floor.objects:
             entity.commitable.commit(self)
 
-    def update_entity(self, entity):
-        if self.visible(entity.x, entity.y):
-            entity.seen = True
-            bg = (entity.bg_color if entity.bg_color
-                  else self.bg_colors[entity.x, entity.y])
-            self.update_position(entity.x, entity.y, entity.char,
-                                 fg=entity.fg_color, bg=bg)
-        elif (entity.visible_out_of_fov and entity.seen):
-            bg = (entity.dark_bg_color if entity.dark_bg_color
-                  else self.bg_colors[entity.x, entity.y])
-            self.update_position(entity.x, entity.y, entity.char,
-                                 fg=entity.dark_fg_color, bg=bg)
-
-    def draw_entity(self, entity):
-        if self.visible(entity.x, entity.y):
-            self.draw_char(entity.x, entity.y, entity.char,
-                           fg=entity.fg_color, bg=entity.bg_color)
-        elif (entity.visible_out_of_fov and entity.seen):
-            self.draw_char(entity.x, entity.y, entity.char,
-                           fg=entity.dark_fg_color, bg=entity.dark_bg_color)
-
-    def update_and_draw_entity(self, entity):
-        self.update_entity(entity)
-        self.draw_entity(entity)
-
-    def undraw_entity(self, entity):
-        self.draw_blank(entity.x, entity.y)
-
-    def remove_entity(self, entity):
-        self.fg_colors[entity.x, entity.y] = None
-        self.chars[entity.x, entity.y] = ' '
-
-    def remove_and_undraw_entity(self, entity):
-        self.remove_entity(entity)
-        self.undraw_entity(entity)
-
-    def draw_blank(self, x, y):
-        bg = self.bg_colors[x, y]
-        self.draw_char(x, y, ' ', fg=None, bg=bg)
-
-    def update_position(self, x, y, char, fg=None, bg=None):
-        self.fg_colors[x, y] = fg
-        self.bg_colors[x, y] = bg
-        self.chars[x, y] = char
-
-    def draw_char(self, x, y, char, fg=None, bg=None):
-        self.console.draw_char(x, y, char, fg, bg)
-
-    def highlight_position(self, x, y, color):
-        char = self.chars[x, y]
-        fg = self.fg_colors[x, y]
-        self.draw_char(x, y, char, fg=fg, bg=color)
-
-    def draw_position(self, x, y):
-        char = self.chars[x, y]
-        fg = self.fg_colors[x, y]
-        bg = self.bg_colors[x, y]
-        self.draw_char(x, y, char, fg=fg, bg=bg)
-
-    def update_and_draw_char(self, x, y, char, fg=None, bg=None):
-        self.update_position(x, y, char, fg, bg)
-        self.console.draw_char(x, y, char, fg, bg)
-
     def update_and_draw_all(self):
-        self.update_and_draw_layout()
+        self.update_and_draw_floor_layout()
         entities_in_render_order = sorted(
             self.entities, key=lambda x: x.render_order.value)
         for entity in entities_in_render_order:
             self.update_and_draw_entity(entity)
 
-    def undraw_all(self):
-        for entity in self.entities:
-            self.undraw_entity(entity)
-
-    def update_and_draw_layout(self):
+    def update_and_draw_floor_layout(self):
         for x, y in self:
             wall = self.is_wall(x, y)
             if self.visible(x, y):
@@ -202,6 +135,66 @@ class GameMap(Map):
                 else:
                     self.update_and_draw_char(
                         x, y, ' ', fg=None, bg=COLORS.get('dark_ground'))
+
+    def update_and_draw_entity(self, entity):
+        self.update_entity(entity)
+        self.draw_entity(entity)
+
+    def update_entity(self, entity):
+        if self.visible(entity.x, entity.y):
+            entity.seen = True
+            bg = (entity.bg_color if entity.bg_color
+                  else self.bg_colors[entity.x, entity.y])
+            self.update_visual_arrays(entity.x, entity.y, entity.char,
+                                 fg=entity.fg_color, bg=bg)
+        elif (entity.visible_out_of_fov and entity.seen):
+            bg = (entity.dark_bg_color if entity.dark_bg_color
+                  else self.bg_colors[entity.x, entity.y])
+            self.update_visual_arrays(entity.x, entity.y, entity.char,
+                                 fg=entity.dark_fg_color, bg=bg)
+
+    def draw_entity(self, entity):
+        if self.visible(entity.x, entity.y):
+            self.draw_char(entity.x, entity.y, entity.char,
+                           fg=entity.fg_color, bg=entity.bg_color)
+        elif (entity.visible_out_of_fov and entity.seen):
+            self.draw_char(entity.x, entity.y, entity.char,
+                           fg=entity.dark_fg_color, bg=entity.dark_bg_color)
+
+    def update_visual_arrays(self, x, y, char, fg=None, bg=None):
+        self.fg_colors[x, y] = fg
+        self.bg_colors[x, y] = bg
+        self.chars[x, y] = char
+
+    def draw_char(self, x, y, char, fg=None, bg=None):
+        self.console.draw_char(x, y, char, fg, bg)
+
+    def remove_entity(self, entity):
+        self.fg_colors[entity.x, entity.y] = None
+        self.chars[entity.x, entity.y] = ' '
+
+    def draw_blank(self, x, y):
+        bg = self.bg_colors[x, y]
+        self.draw_char(x, y, ' ', fg=None, bg=bg)
+
+    def highlight_position(self, x, y, color):
+        char = self.chars[x, y]
+        fg = self.fg_colors[x, y]
+        self.draw_char(x, y, char, fg=fg, bg=color)
+
+    def redraw_position(self, x, y):
+        char = self.chars[x, y]
+        fg = self.fg_colors[x, y]
+        bg = self.bg_colors[x, y]
+        self.draw_char(x, y, char, fg=fg, bg=bg)
+
+    def undraw_all(self):
+        for entity in self.entities:
+            self.draw_blank(entity.x, entity.y)
+
+    def update_and_draw_char(self, x, y, char, fg=None, bg=None):
+        self.update_visual_arrays(x, y, char, fg, bg)
+        self.console.draw_char(x, y, char, fg, bg)
 
     def make_transparent_and_walkable(self, x, y):
         self.walkable[x, y] = True

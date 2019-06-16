@@ -75,13 +75,13 @@ class Cursor:
 
     def clear(self):
         for x, y in self._path_iter():
-            self.game_map.draw_position(x, y)
+            self.game_map.redraw_position(x, y)
 
     def _position_valid(self, x, y):
         if self.cursor_type in (CursorTypes.PATH, CursorTypes.RAY):
             return self.game_map.walkable[x, y] and self.game_map.fov[x, y]
         elif self.cursor_type == CursorTypes.ADJACENT:
-            return (self.game_map.walkable[x, y] 
+            return (self.game_map.walkable[x, y]
                     and self.game_map.fov[x, y]
                     and len(self.game_map.compute_path(
                         self.source[0], self.source[1], x, y)) <= 1)
