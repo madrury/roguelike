@@ -3,8 +3,17 @@ Components governing state changes when an entity is committed to the game map.
 
 The game map has internal state that tracks where enitites are located.  When
 entities are added and remove from the map, this state must be updated.  This
-component governs this logic for each type of entity.
+component governs this logic for each type of entity, which differs by type of entity.
+
+For example:
+
+  - Some entities block movement into the square in which they are located.
+  - Some entities block line of sight.
+
+Etc.
 """
+
+# TODO: These methods should return True of False to signal if they are successful.
 
 class BaseCommitable:
     """Baseline logic for commiting a new entity to the map."""
@@ -20,6 +29,7 @@ class BlockingCommitable:
     """Commit or delete a blocking entity to/from the game map."""
     def commit(self, game_map):
         if game_map.blocked[self.owner.x, self.owner.y]:
+            # LOG: Log message.
             return
         else:
             game_map.blocked[self.owner.x, self.owner.y] = True
@@ -87,7 +97,9 @@ class SteamCommitable:
 class TerrainCommitable:
 
     def commit(self, game_map):
-        if not game_map.terrain[self.owner.x, self.owner.y]:
+        if game_map.terrain[self.owner.x, self.owner.y]:
+            return
+        else:
             game_map.terrain[self.owner.x, self.owner.y] = True
             game_map.entities.append(self.owner)
 
@@ -110,7 +122,7 @@ class TerrainCommitable:
 class BlockingTerrainCommitable:
 
     def commit(self, game_map):
-        if not (game_map.terrain[self.owner.x, self.owner.y] 
+        if not (game_map.terrain[self.owner.x, self.owner.y]
             and not game_map.blocked[self.owner.x, self.owner.y]):
             game_map.blocked[self.owner.x, self.owner.y] = True
             game_map.terrain[self.owner.x, self.owner.y] = True
@@ -165,7 +177,7 @@ class DownwardStairsCommitable:
 
 
 class WaterCommitable:
-
+    # TODO: This in unsafe, need more stringent checks.
     def commit(self, game_map):
         if not game_map.terrain[self.owner.x, self.owner.y]:
             game_map.terrain[self.owner.x, self.owner.y] = True
@@ -205,4 +217,3 @@ class ShrubCommitable(TerrainCommitable):
         super().delete(game_map)
         game_map.transparent[self.owner.x, self.owner.y] = True
         game_map.shrub[self.owner.x, self.owner.y] = False
-

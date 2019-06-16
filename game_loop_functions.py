@@ -19,7 +19,7 @@ from generation.floor import make_floor
 from generation.item_groups import ITEM_SPAWN_GROUPS
 from generation.monster_groups import MONSTER_SPAWN_GROUPS
 from generation.terrain_schedule import TERRAIN_DEFINITIONS
-from generation.spawn_entities import spawn_entities
+from generation.spawn_entities import spawn_entities_on_floor
 from generation.terrain import add_random_terrain
 
 from utils.utils import (
@@ -40,8 +40,8 @@ def create_map(map_console, *, floor_schedule):
     game_map = GameMap(floor, map_console)
     add_random_terrain(game_map, TERRAIN_DEFINITIONS[floor_schedule['terrain_type']])
     # TODO: game_map should be the first argument here.
-    spawn_entities(game_map, floor_schedule['monster_schedule'], MONSTER_SPAWN_GROUPS)
-    spawn_entities(game_map, floor_schedule['item_schedule'], ITEM_SPAWN_GROUPS)
+    spawn_entities_on_floor(game_map, floor_schedule['monster_schedule'], MONSTER_SPAWN_GROUPS)
+    spawn_entities_on_floor(game_map, floor_schedule['item_schedule'], ITEM_SPAWN_GROUPS)
     return game_map
 
 
