@@ -1,20 +1,20 @@
 from utils.utils import choose_from_list_of_tuples
 from etc.enum import RoutingOptions
 
-# TODO: We maybe should be using commitable here.
-def spawn_entities(schedule, group_definitions, game_map):
+def spawn_entities(game_map, schedule, group_definitions):
     for room in game_map.floor.rooms:
         group = choose_from_list_of_tuples(schedule)
         group_definition = group_definitions[group]
-        spawn_group(group_definition, room, game_map)
+        spawn_group(game_map, group_definition, room)
 
-def spawn_group(group_definition, room, game_map):
+def spawn_group(game_map, group_definition, room):
     for entity_type in group_definition:
-        entity = spawn_in_room(entity_type, room, game_map)
+        entity = spawn_in_room(game_map, entity_type, room)
+        # Should this use commitable?
         if entity is not None:
             game_map.entities.append(entity)
 
-def spawn_in_room(entity_type, room, game_map, max_tries=25):
+def spawn_in_room(game_map, entity_type, room, max_tries=25):
     for _ in range(max_tries):
         x, y = room.random_point()
         if not any((x, y) == (entity.x, entity.y)
@@ -23,7 +23,7 @@ def spawn_in_room(entity_type, room, game_map, max_tries=25):
             break
     else:
         entity = None
-    if entity and entity_can_spawn_in_space(entity, x, y, game_map):
+    if entity and entity_can_spawn_in_space(game_map, entity, x, y):
         if entity.blocks:
             # TODO: Use commitable to change this flag.
             game_map.blocked[x, y] = True
@@ -31,6 +31,6 @@ def spawn_in_room(entity_type, room, game_map, max_tries=25):
     else:
         return None
 
-def entity_can_spawn_in_space(entity, x, y, game_map):
-    # Should probably be a method on entity?
+def entity_can_spawn_in_space(game_map, entity, x, y):
+    # TODO: Should probably be a method on entity?
     return (entity.swims or not game_map.water[x, y])
