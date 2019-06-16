@@ -109,7 +109,7 @@ def grow_random_single_terrain(game_map, terrain_creator, *,
         terrain.extend(t.get_entities(game_map))
     return terrain
 
-def grow_in_random_room(terrain, game_map, *, stay_in_room, proportion): 
+def grow_in_random_room(terrain, game_map, *, stay_in_room, proportion):
     """Pick a random room of the game map and grow some terrain there."""
     pinned_room = random.choice(game_map.floor.rooms)
     while pinned_room.terrain != None:
@@ -119,7 +119,7 @@ def grow_in_random_room(terrain, game_map, *, stay_in_room, proportion):
     t.grow(stay_in_room=stay_in_room, proportion=proportion)
     return t
 
-           
+
 #-----------------------------------------------------------------------------
 # Placeable Terrain
 #-----------------------------------------------------------------------------
@@ -150,7 +150,7 @@ class Placeable:
     def is_placable(self, game_map, x, y):
         local_map = game_map.walkable[(x-1):(x+2), (y-1):(y+2)]
         return (game_map.within_bounds(x, y, buffer=1)
-                and not game_map.terrain[x, y] 
+                and not game_map.terrain[x, y]
                 and any((local_map == mask).all() for mask in self.masks))
 
     def make(self, game_map, x, y):
@@ -162,7 +162,7 @@ class Placeable:
 #-----------------------------------------------------------------------------
 class TorchPlaceable(Placeable):
     """Torches are placed:
-    
+
         - In straight segments of walls.
         - nestled into corners.
         - In three by three open squares in the middle of rooms.
@@ -239,7 +239,7 @@ class Growable:
     Terrain is grown by first seeding a random point in a rooma and placing
     terrain there. Then we repeatadely expand this seed by choosing a point
     adjaent to an already grown terrain, and placing a terrain there if
-    possible. 
+    possible.
 
     Parameters
     ----------
@@ -257,7 +257,7 @@ class Growable:
     def __init__(self, game_map, room):
         self.game_map = game_map
         self.room = room
-        self.coords = [] 
+        self.coords = []
 
     def seed(self):
         x, y = self.room.random_point()
@@ -268,7 +268,7 @@ class Growable:
     def grow(self, stay_in_room=False, proportion=None, n_attempts=None):
         """Grow the terrain using the algorithm described in the class
         docstring.
-        
+
         Parameters
         ----------
         stay_in_room: bool
@@ -290,7 +290,7 @@ class Growable:
             coord = random.choice(self.coords)
             x, y = random_adjacent(coord)
             is_valid = not stay_in_room or self.game_map.walkable[x, y]
-            already_occupied = self.game_map.terrain[x, y]             
+            already_occupied = self.game_map.terrain[x, y]
             within_bounds = self.game_map.within_bounds(x, y, buffer=1)
             if is_valid and not already_occupied and within_bounds:
                 self.game_map.terrain[x, y] = True
@@ -303,7 +303,7 @@ class Growable:
 
 class Pool(Growable):
     """A pool of water in a room.
-    
+
     Pools are made of water entities.  Most monsters will avoid pools of water,
     and passing through water drains the player's swim stamina.
     """
@@ -319,7 +319,7 @@ class Pool(Growable):
 
     @staticmethod
     def grow_in_random_room(game_map, proportion):
-        return grow_in_random_room(Pool, game_map, 
+        return grow_in_random_room(Pool, game_map,
                                    stay_in_room=False,
                                    proportion=proportion)
 
@@ -394,7 +394,7 @@ class River:
     Parameters
     ----------
     game_map: GameMap object
-    
+
     source_room: PinnedDungeonRoom object
       The room contining the pool to use a source of the river.
 

@@ -2,8 +2,8 @@ import random
 import numpy as np
 
 
-def random_dungeon_room(width=18, 
-                        height=18, 
+def random_dungeon_room(width=18,
+                        height=18,
                         max_rectangles=20,
                         max_rectangle_width=5,
                         max_rectangle_height=5,
@@ -30,7 +30,7 @@ def random_dungeon_room(width=18,
 
 class PinnedDungeonRoom:
     """A DungeonRoom pinned onto a position in a larger map.
-    
+
     A room comes with a coordinate system local to that room, as explained
     below.  Objects of this class are rooms that are pinned onto a larger
     coordinate system, usualy a dungeon floor.
@@ -60,7 +60,7 @@ class PinnedDungeonRoom:
 
     room:
       The room.
-    
+
     objects:
       Objects occupying this room that should be added to the map.
     """
@@ -152,10 +152,10 @@ class DungeonRoom:
 
     def __iter__(self):
         """Iterate through all the points in a room.
-        
+
         Each point is yielded by the iterator exactly one time.
         """
-        seen = set() 
+        seen = set()
         for r in self.rectangles:
             for x, y in r:
                 if (x, y) not in seen and self.room[x, y]:

@@ -14,7 +14,7 @@ def make_floor(floor_config, floor_schedule):
     floor_type = floor_schedule['type']
     if floor_type == FloorType.STANDARD:
         rooms = make_initial_rooms(floor_schedule['rooms'])
-        floor = random_dungeon_floor(
+        floor = random_rooms_and_tunnels_floor(
             floor_width,
             floor_height,
             floor_schedule=floor_schedule,
@@ -32,7 +32,7 @@ def make_initial_rooms(room_type_list):
     return rooms
 
 
-def random_dungeon_floor(width=80,
+def random_rooms_and_tunnels_floor(width=80,
                          height=41,
                          n_rooms_to_try=50,
                          n_room_placement_trys=25,
@@ -80,7 +80,7 @@ def random_dungeon_floor(width=80,
     if floor_schedule == None:
         floor_schedule = {}
     if floor == None:
-        floor = DungeonFloor(width, height)
+        floor = RoomsAndTunnelsFloor(width, height)
     for room in rooms:
         floor.add_pinned_room(room)
     for n in range(room_counter_init, n_rooms_to_try):
@@ -106,7 +106,7 @@ def random_dungeon_floor(width=80,
     return floor
 
 
-class DungeonFloor:
+class RoomsAndTunnelsFloor:
     """A Floor of a dungeon.
 
     A floor of a dungeon is made up of a collection of dungeon features.  At
