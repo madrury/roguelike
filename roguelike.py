@@ -19,7 +19,6 @@ from etc.enum import (
     INVENTORY_STATES, INPUT_STATES, CANCEL_STATES)
 
 from generation.floor_schedule import FLOOR_SCHEDULES
-from generation.item_groups import ITEM_SCHEDULES
 
 from utils.debug import highlight_array, highlight_stairs
 from utils.utils import (
@@ -53,8 +52,8 @@ def main():
       - Manages the high level game state: what is the turn number, what floor
         is the player currently on?
     """
+    # TODO: Remove N_FLOORS from config.
     assert len(FLOOR_SCHEDULES) == N_FLOORS
-    assert len(ITEM_SCHEDULES) == N_FLOORS
 
     tdl.set_font('fonts/consolas10x10.png', greyscale=True, altLayout=True)
     # Setup playscreen with two consoles:
@@ -72,10 +71,7 @@ def main():
     # TODO: 3 is number of floors, break this into a config element.
     game_maps = [None] * N_FLOORS
     # Create the map for the first floor of the dungeon and place the player.
-    game_maps[0] = create_map(
-        map_console,
-        floor_schedule=FLOOR_SCHEDULES[0],
-        item_schedule=ITEM_SCHEDULES[0])
+    game_maps[0] = create_map(map_console, floor_schedule=FLOOR_SCHEDULES[0])
     player = create_player(game_maps[0])
     player.x, player.y = INITIAL_PLAYER_POSITION
     # All monster entities initially target the player:
@@ -97,8 +93,7 @@ def main():
         if current_map == None:
             current_map = create_map(
                 map_console,
-                floor_schedule=FLOOR_SCHEDULES[current_floor],
-                item_schedule=ITEM_SCHEDULES[current_floor])
+                floor_schedule=FLOOR_SCHEDULES[current_floor])
             set_all_ai_targets(current_map, player)
             game_maps[current_floor] = current_map
         # If we are not on the first turn of the game, place the player at the
