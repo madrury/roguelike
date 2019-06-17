@@ -2,7 +2,35 @@ import random
 import numpy as np
 
 
-class PinnedMultiRectangularDungeonRoom:
+class AbstractDungeonRoom:
+    """Defines the interface for dungeon room objects. Each floor must
+    contain some number of rooms to assist in monster, item, and terain
+    generating code.
+
+    Attributes
+    ----------
+    terrain: Terrain enum entry.
+      Tracks if terrain has been added to this room. Used when procedurally
+      generating terrain for the floor.
+
+    monsters: bool
+      Tracks if monsters have been spawned in the room. Used when
+      procedurally generating monsters populating the floor.
+
+    objects:
+      Objects occupying this room that should be added to the parent floor.
+      These are added to the map when the floor is finally commited.
+    """
+    def __init__(self, *, terrain=None, monsters=None, objects=None):
+        self.monsters = monsters
+        self.objects = objects
+        self.terrain = terrain
+
+    def random_point(self):
+        raise NotImplementedError
+
+
+class PinnedMultiRectangularDungeonRoom(AbstractDungeonRoom):
     """A DungeonRoom pinned onto a position in a larger map.
 
     A room comes with a coordinate system local to that room, as explained
@@ -32,18 +60,17 @@ class PinnedMultiRectangularDungeonRoom:
     x, y: ints
       The poisting the room is pinned in the enclosing coordinate system.
 
-    room:
-      The room.
-
-    objects:
-      Objects occupying this room that should be added to the map.
+    room: MultiRectangularDungeonRoom
+      The underlying room object.
     """
-    def __init__(self, room, position, *, terrain=None, objects=None):
+    def __init__(self, room, position, *,
+                 terrain=None,
+                 monsters=None,
+                 objects=None):
+        super().__init__(terrain=terrain, monsters=monsters, objects=objects)
         self.x, self.y = position
         self.room = room
         self.width, self.height = room.width, room.height
-        self.terrain = terrain
-        self.objects = objects
 
     def contains(self, point):
         point[0] - self.x, point[1] - self.x in self.room

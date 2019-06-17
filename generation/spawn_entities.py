@@ -2,6 +2,9 @@ from utils.utils import choose_from_list_of_tuples
 from etc.enum import RoutingOptions
 
 def spawn_entities_on_floor(game_map, schedule, group_definitions):
+    # TODO: Just try to spawn monsters some number of times in random rooms.
+    # Keep a flag as part of the interface for rooms to track if monsters
+    # have already spawned there.
     for room in game_map.floor.rooms:
         group = choose_from_list_of_tuples(schedule)
         group_definition = group_definitions[group]
