@@ -2,33 +2,7 @@ import random
 import numpy as np
 
 
-def random_dungeon_room(width=18,
-                        height=18,
-                        max_rectangles=20,
-                        max_rectangle_width=5,
-                        max_rectangle_height=5,
-                        n_rectangle_trys=500,
-                        **kwargs):
-    """Generate a random dungeon room by placing random rectangles and
-    building up a connected reigon.
-    """
-    room = DungeonRoom(width, height)
-    for n in range(n_rectangle_trys):
-        rect_width = random.randint(1, max_rectangle_width)
-        rect_height = random.randint(1, max_rectangle_height)
-        x = random.randint(0, width - rect_width)
-        y = random.randint(0, height - rect_height)
-        rect = Rectangle(x, y, rect_width, rect_height)
-        if n == 0:
-            room.add_rectangle(rect)
-        elif room.intersect_rectangle(rect):
-            room.add_rectangle(rect)
-        if len(room.rectangles) >= max_rectangles:
-            break
-    return room
-
-
-class PinnedDungeonRoom:
+class PinnedMultiRectangularDungeonRoom:
     """A DungeonRoom pinned onto a position in a larger map.
 
     A room comes with a coordinate system local to that room, as explained
@@ -95,8 +69,34 @@ class PinnedDungeonRoom:
     def absolute_coordinates(self, point):
         return (self.x + point[0], self.y + point[1])
 
+    @staticmethod
+    def random(width=18,
+               height=18,
+               max_rectangles=20,
+               max_rectangle_width=5,
+               max_rectangle_height=5,
+               n_rectangle_trys=500,
+               **kwargs):
+        """Generate a random dungeon room by placing random rectangles and
+        building up a connected reigon.
+        """
+        room = MultiRectangularDungeonRoom(width, height)
+        for n in range(n_rectangle_trys):
+            rect_width = random.randint(1, max_rectangle_width)
+            rect_height = random.randint(1, max_rectangle_height)
+            x = random.randint(0, width - rect_width)
+            y = random.randint(0, height - rect_height)
+            rect = Rectangle(x, y, rect_width, rect_height)
+            if n == 0:
+                room.add_rectangle(rect)
+            elif room.intersect_rectangle(rect):
+                room.add_rectangle(rect)
+            if len(room.rectangles) >= max_rectangles:
+                break
+        return room
 
-class DungeonRoom:
+
+class MultiRectangularDungeonRoom:
     """A single room in the dungeon.
 
     A DungeonRooom is made up of a collection of rectangles, and comes
