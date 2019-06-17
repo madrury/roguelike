@@ -32,14 +32,12 @@ def make_initial_rooms(room_type_list):
     return rooms
 
 
-class RoomsAndTunnelsFloor:
-    """A Floor of a dungeon.
+class AbstractFloor:
+    """Defines the interface for dungeon floor objects. These hold the
+    metadata need for random generation of a dungeon floor layout; they hand
+    off their information to the GameMap object during actual gameplay.
 
-    A floor of a dungeon is made up of a collection of dungeon features.  At
-    the most basic level, PinnedDungeonRooms and Tunnels define the walkable
-    space.  Additional terrain features (Pools, ...) are also stored.
-
-    Parameters
+    Attributes
     ----------
     width: int
       The width of the dungeon floor.
@@ -47,44 +45,41 @@ class RoomsAndTunnelsFloor:
     height: int
       The height of the dungeon floor.
 
-    Attributes
-    ----------
-    self.rooms: list of PinnedDungeonRoom objects.
+    self.rooms: list of AbstractDungeonRoom objects.
       The rooms in the dungeon.
-
-    self.tunnels: list of Tunnel objects
-      The tunnels in the dungeon.
 
     self.objects: List[Entity]
       Static objects to populate the floor with.
-
-    self.floor: np.array of bool
-      Array of transparant tiles.  Only used for printing.
     """
     def __init__(self, width=80, height=41):
         self.width = width
         self.height = height
         self.rooms = []
-        self.tunnels = []
         self.objects = []
-        self.floor = np.zeros((width, height)).astype(bool)
 
-    def add_pinned_room(self, pinned_room):
-        for x, y in pinned_room:
-            self.floor[x, y] = True
-        self.rooms.append(pinned_room)
-        if pinned_room.objects:
-            self.objects.extend(pinned_room.objects)
+    @staticmethod
+    def random(self):
+        NotImplementedError
 
-    def add_tunnel(self, tunnel):
-        for x, y in tunnel:
-            self.floor[x, y] = True
-        self.tunnels.append(tunnel)
+    def commit_to_game_map(self, game_map):
+        NotImplementedError
 
-    def print_floor(self):
-        arr = np.array(['.', '#'])[self.floor.astype(int)].T
-        for row in arr:
-            print(''.join(row))
+
+class RoomsAndTunnelsFloor(AbstractFloor):
+    """A Floor of a dungeon.
+
+    A floor of a dungeon is made up of a collection of dungeon features.  At
+    the most basic level, PinnedDungeonRooms and Tunnels define the walkable
+    space.  Additional terrain features (Pools, ...) are also stored.
+
+    Additional Attributes
+    ---------------------
+    self.tunnels: list of Tunnel objects
+      The tunnels in the dungeon.
+    """
+    def __init__(self, width=80, height=41):
+        super().__init__(width=width, height=height)
+        self.tunnels = []
 
     @staticmethod
     def random(width=80,
@@ -160,3 +155,21 @@ class RoomsAndTunnelsFloor:
             floor.add_tunnel(t2)
         # Add a pool.
         return floor
+
+    def commit_to_game_map(self, game_map):
+        for room in self.rooms:
+            for x, y in room:
+                game_map.make_transparent_and_walkable(x, y)
+        for tunnel in self.tunnels:
+            for x, y in tunnel:
+                game_map.make_transparent_and_walkable(x, y)
+        for entity in self.objects:
+            entity.commitable.commit(game_map)
+
+    def add_pinned_room(self, pinned_room):
+        self.rooms.append(pinned_room)
+        if pinned_room.objects:
+            self.objects.extend(pinned_room.objects)
+
+    def add_tunnel(self, tunnel):
+        self.tunnels.append(tunnel)
