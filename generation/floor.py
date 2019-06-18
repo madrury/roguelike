@@ -58,7 +58,10 @@ class AbstractFloor:
         self.objects = []
 
     @staticmethod
-    def random(self):
+    def random():
+        NotImplementedError
+
+    def random_room(self):
         NotImplementedError
 
     def commit_to_game_map(self, game_map):
@@ -155,6 +158,9 @@ class RoomsAndTunnelsFloor(AbstractFloor):
             floor.add_tunnel(t2)
         # Add a pool.
         return floor
+
+    def random_room(self):
+        return random.choice(self.rooms)
 
     def commit_to_game_map(self, game_map):
         for room in self.rooms:

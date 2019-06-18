@@ -111,10 +111,10 @@ def grow_random_single_terrain(game_map, terrain_creator, *,
 
 def grow_in_random_room(terrain, game_map, *, stay_in_room, proportion):
     """Pick a random room of the game map and grow some terrain there."""
-    pinned_room = random.choice(game_map.floor.rooms)
-    while pinned_room.terrain != None:
-        pinned_room = random.choice(game_map.floor.rooms)
-    t = terrain(game_map, pinned_room)
+    room = game_map.floor.random_room()
+    while room.terrain != None:
+        room = game_map.floor.random_room()
+    t = terrain(game_map, room)
     t.seed()
     t.grow(stay_in_room=stay_in_room, proportion=proportion)
     return t
@@ -130,6 +130,8 @@ class Placeable:
     matches a set of supplied masks.  For example, we may want to place stairs
     in a straight segment of wall, or a treasure chest in a corner.
     """
+    masks = []
+
     def place_one(self, game_map):
         obj = None
         while not obj:
@@ -286,7 +288,7 @@ class Growable:
             n_attempts = int(
                 proportion * self.room.width * self.room.height)
         self.seed()
-        for i in range(n_attempts):
+        for _ in range(n_attempts):
             coord = random.choice(self.coords)
             x, y = random_adjacent(coord)
             is_valid = not stay_in_room or self.game_map.walkable[x, y]
@@ -299,6 +301,13 @@ class Growable:
     def get_entities(self, game_map):
         """Create a list of entities representing the grown terrain."""
         return [self.make(game_map, x, y) for x, y in self.coords]
+
+    @staticmethod
+    def make(game_map, x, y):
+        raise NotImplementedError
+
+    def grow_in_random_room(self, game_map, proportion):
+        raise NotImplementedError
 
 
 class Pool(Growable):
@@ -452,11 +461,11 @@ class River:
 
 def random_river(game_map):
     """Grow a river between two pools of water."""
-    r1 = random.choice(game_map.floor.rooms)
+    r1 = game_map.floor.random_room()
     while r1.terrain != Terrain.POOL:
-        r1 = random.choice(game_map.floor.rooms)
-    r2 = random.choice(game_map.floor.rooms)
+        r1 = game_map.floor.random_room()
+    r2 = game_map.floor.random_room()
     while r1 == r2 or r2.terrain != Terrain.POOL:
-        r2 = random.choice(game_map.floor.rooms)
+        r2 = game_map.floor.random_room()
     river = River(game_map, r1, r2)
     return river

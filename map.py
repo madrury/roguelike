@@ -78,7 +78,6 @@ class GameMap(Map):
     def __init__(self, floor, console):
         width, height = floor.width, floor.height
         super().__init__(width, height)
-        self.floor = floor
         self.console = console
         self.entities = EntityList(width, height)
         # TODO: Add to docstring
@@ -98,17 +97,9 @@ class GameMap(Map):
         self.fg_colors = ColorArray((width, height))
         self.bg_colors = ColorArray((width, height))
         self.chars = np.full((width, height), ' ')
-        self.blit_floor()
-
-    def blit_floor(self):
-        for room in self.floor.rooms:
-            for x, y in room:
-                self.make_transparent_and_walkable(x, y)
-        for tunnel in self.floor.tunnels:
-            for x, y in tunnel:
-                self.make_transparent_and_walkable(x, y)
-        for entity in self.floor.objects:
-            entity.commitable.commit(self)
+        # Write the floor layout to the map.
+        self.floor = floor
+        self.floor.commit_to_game_map(self)
 
     def update_and_draw_all(self):
         self.update_and_draw_floor_layout()
