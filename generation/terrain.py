@@ -434,6 +434,7 @@ class River:
 
     def thicken(self, width=1):
         for _ in range(width - 1):
+            new_coords = set()
             for river_coord in self.coords:
                 for coord in adjacent_coordinates(river_coord):
                     x, y = coord
