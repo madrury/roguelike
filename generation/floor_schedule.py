@@ -15,11 +15,11 @@ def create_floor_from_template(template, terrain_type, monster_schedule, item_sc
 
 
 class FloorType(Enum):
-    STANDARD = auto()
-
+    ROOMS_AND_TUNNELS = auto()
+    CAVE = auto()
 
 FIRST_FLOOR = {
-    'type': FloorType.STANDARD,
+    'type': FloorType.ROOMS_AND_TUNNELS,
     'terrain_type': TerrainTypes.FIRST_FLOOR,
     'monster_schedule': MONSTER_SPAWN_SCHEDULES[MonsterSpawnSchedules.NONE].to_list_of_tuples(),
     'item_schedule': ITEM_SPAWN_SCHEDULES[ItemSpawnSchedules.NONE].to_list_of_tuples(),
@@ -32,8 +32,8 @@ FIRST_FLOOR = {
     'max_rooms': 20,
 }
 
-BASIC_FLOOR_TEMPLATE = {
-    'type': FloorType.STANDARD,
+ROOMS_AND_TUNNELS_TEMPLATE = {
+    'type': FloorType.ROOMS_AND_TUNNELS,
     'terrain_type': TerrainTypes.BASIC_FLOOR,
     'rooms': [],
     'width': 15,
@@ -44,16 +44,27 @@ BASIC_FLOOR_TEMPLATE = {
     'max_rooms': 20,
 }
 
+CAVE_TEMPLATE = {
+    'type': FloorType.CAVE,
+    'terrain_type': TerrainTypes.BASIC_FLOOR,
+    'rooms': []
+}
+
 
 FLOOR_SCHEDULES = [
     FIRST_FLOOR,
     create_floor_from_template(
-        BASIC_FLOOR_TEMPLATE,
+        CAVE_TEMPLATE,
         TerrainTypes.BASIC_FLOOR,
         MonsterSpawnSchedules.ORCS_AND_KRUTHIKS,
         ItemSpawnSchedules.BASIC_POTIONS),
     create_floor_from_template(
-        BASIC_FLOOR_TEMPLATE,
+        ROOMS_AND_TUNNELS_TEMPLATE,
+        TerrainTypes.BASIC_FLOOR,
+        MonsterSpawnSchedules.ORCS_AND_KRUTHIKS,
+        ItemSpawnSchedules.BASIC_POTIONS),
+    create_floor_from_template(
+        ROOMS_AND_TUNNELS_TEMPLATE,
         TerrainTypes.SHRUB_FLOOR,
         MonsterSpawnSchedules.ORCS,
         ItemSpawnSchedules.BASIC_WEAPONS),

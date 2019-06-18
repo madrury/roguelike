@@ -53,7 +53,6 @@ def main():
         is the player currently on?
     """
     # TODO: Remove N_FLOORS from config.
-    assert len(FLOOR_SCHEDULES) == N_FLOORS
 
     tdl.set_font('fonts/consolas10x10.png', greyscale=True, altLayout=True)
     # Setup playscreen with two consoles:

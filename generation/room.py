@@ -21,13 +21,42 @@ class AbstractDungeonRoom:
       Objects occupying this room that should be added to the parent floor.
       These are added to the map when the floor is finally commited.
     """
-    def __init__(self, *, terrain=None, monsters=None, objects=None):
+    def __init__(self, width, height, *,
+                 terrain=None,
+                 monsters=None,
+                 objects=None):
+        self.width = width
+        self.height = height
         self.monsters = monsters
         self.objects = objects
         self.terrain = terrain
 
     def random_point(self):
         raise NotImplementedError
+
+
+class PinnedLayoutRoom(AbstractDungeonRoom):
+
+    def __init__(self, layout, position, *,
+                 terrain=None,
+                 monsters=None,
+                 objects=None):
+        super().__init__(
+            layout.shape[0], layout.shape[1],
+            terrain=terrain,
+            monsters=monsters,
+            objects=objects)
+        self.x, self.y = position
+        self.layout = layout.copy()
+
+    def random_point(self):
+        shape = self.layout.shape
+        point = None
+        while point == None:
+            x, y = random.randint(0, shape[0] - 1), random.randint(0, shape[1] - 1)
+            if self.layout[x, y]:
+                point = (x, y)
+        return (self.x + x, self.y + y)
 
 
 class PinnedMultiRectangularDungeonRoom(AbstractDungeonRoom):
@@ -67,7 +96,11 @@ class PinnedMultiRectangularDungeonRoom(AbstractDungeonRoom):
                  terrain=None,
                  monsters=None,
                  objects=None):
-        super().__init__(terrain=terrain, monsters=monsters, objects=objects)
+        super().__init__(
+            width=room.width, height=room.height,
+            terrain=terrain,
+            monsters=monsters,
+            objects=objects)
         self.x, self.y = position
         self.room = room
         self.width, self.height = room.width, room.height

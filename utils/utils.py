@@ -110,8 +110,45 @@ def bresenham_line(game_map, source, target):
     return ray[:target_idx]
 
 def bresenham_ray(game_map, source, target):
-    ray, last_idx, target_idx = _bresenham_ray(game_map, source, target)
+    ray, last_idx, _ = _bresenham_ray(game_map, source, target)
     return ray[:last_idx]
+
+def get_connected_components(arr):
+    """Compute the connected components of a boolean array.
+
+    Parameters
+    ----------
+    arr: np.array, shape (length, width) of ints
+      Array of zeros and ones.
+
+    Returns
+    -------
+    components: List[Set[(int, int)]]
+      A list of connected components. Each inner set contains the coordinates
+      of a single connected component.
+    """
+    elements = set()
+    for i, line in enumerate(arr):
+        for j, cell in enumerate(line):
+            if cell:
+                elements.add((i, j))
+
+    # Function to recusively traverse adjacent positions within a component
+    # until exhausted. Modifies `elements` in the enclosing scope to keep track
+    # of where we've been.
+    def traverse_component(position):
+        elements.remove(position)
+        i, j = position
+        result = {(i, j)}
+        for new_pos in [(i-1, j), (i+1, j), (i, j-1), (i, j+1)]:
+            if new_pos in elements:
+                result = result.union(traverse_component(new_pos))
+        return result
+
+    components =  [traverse_component(pos)
+                    for pos in elements.copy()
+                    if pos in elements]
+    return sorted(components, key=len, reverse=True)
 
 #-----------------------------------------------------------------------------
 # Choosing random map positions.

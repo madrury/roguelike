@@ -1,9 +1,12 @@
 import random
+import itertools
 import numpy as np
+
+from utils.utils import get_connected_components
 
 from generation.floor_schedule import FloorType
 from generation.special_rooms import ROOM_CONSTRUCTORS
-from generation.room import PinnedMultiRectangularDungeonRoom
+from generation.room import PinnedMultiRectangularDungeonRoom, PinnedLayoutRoom
 from generation.tunnel import random_tunnel_between_pinned_rooms
 
 
@@ -12,14 +15,20 @@ def make_floor(floor_config, floor_schedule):
     floor_width = floor_config['width']
     floor_height = floor_config['height']
     floor_type = floor_schedule['type']
-    if floor_type == FloorType.STANDARD:
-        rooms = make_initial_rooms(floor_schedule['rooms'])
+    rooms = make_initial_rooms(floor_schedule['rooms'])
+    if floor_type == FloorType.ROOMS_AND_TUNNELS:
         floor = RoomsAndTunnelsFloor.random(
             floor_width,
             floor_height,
             floor_schedule=floor_schedule,
             rooms=rooms,
             room_counter_init=len(rooms))
+    elif floor_type == FloorType.CAVE:
+        print(floor_width, floor_height)
+        floor = CaveFloor.random(floor_width, floor_height)
+            # TODO: Pass non-default generation parameters from the floor config.
+            #floor_schedule=floor_schedule,
+            #rooms=rooms)
     else:
         raise ValueError(f"Floor type {floor_type.name} not supported!")
     return floor
@@ -66,6 +75,70 @@ class AbstractFloor:
 
     def commit_to_game_map(self, game_map):
         NotImplementedError
+
+
+class CaveFloor(AbstractFloor):
+
+    def __init__(self, shape, *,
+                 p=0.5,
+                 destruct_num=3,
+                 construct_num=5,
+                 keep_passes=False):
+        super().__init__(width=shape[0], height=shape[1])
+        self.shape = shape
+        self.p = p
+        self.destruct_num = destruct_num
+        self.construct_num = construct_num
+        self._passes = []
+        self.layout = None
+        self.grow(keep_passes=keep_passes)
+        print(self.layout)
+
+    @staticmethod
+    def random(width=80, height=41):
+        floor = CaveFloor(shape=(width, height))
+        floor.grow()
+        return floor
+
+    def random_room(self, shape=(10, 10)):
+        # TODO: Actually implement this thing.
+        return PinnedLayoutRoom(self.layout[15:26, 15:25], (15, 15))
+
+    def commit_to_game_map(self, game_map):
+        print(self.layout.shape, game_map.walkable.shape)
+        coordinate_pairs = itertools.product(
+            range(1, self.shape[0] - 1),
+            range(1, self.shape[1] - 1))
+        for x, y in coordinate_pairs:
+            if self.layout[x, y]:
+                game_map.make_transparent_and_walkable(x, y)
+        for entity in self.objects:
+            entity.commitable.commit(game_map)
+
+    def grow(self, iterations=16, keep_passes=False):
+        x = np.random.binomial(1, self.p, size=self.shape)
+        for _ in range(iterations):
+            if keep_passes:
+                self._passes.append(x)
+            x = self.single_pass(x)
+        self.layout = x
+
+    def single_pass(self, x):
+        new = np.zeros(shape=self.shape, dtype=int)
+        coordinate_pairs = itertools.product(
+            range(1, self.shape[0] - 1),
+            range(1, self.shape[1] - 1))
+        for xidx, yidx in coordinate_pairs:
+            center = x[xidx, yidx]
+            view = x[(xidx-1):(xidx+2), (yidx-1):(yidx+2)]
+            n_boundaries_filled = np.sum(view) - center
+            if (center == 1) and n_boundaries_filled <= self.destruct_num:
+                new[xidx, yidx] = 0
+            elif (center == 0) and n_boundaries_filled >= self.construct_num:
+                new[xidx, yidx] = 1
+            else:
+                new[xidx, yidx] = center
+        return new
 
 
 class RoomsAndTunnelsFloor(AbstractFloor):

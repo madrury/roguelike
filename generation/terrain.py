@@ -34,6 +34,15 @@ def add_random_terrain(game_map, terrain_config):
     game_map by populating it with terrain.
     """
     terrain = []
+    # Place the upward and downward stairs
+    if terrain_config.get('upward_stairs', True):
+        stair_placer = UpwardsStairsPlaceable()
+        terrain.append(stair_placer.place_one(game_map))
+    print("place upwards stairs")
+    if terrain_config.get('downward_stairs', True):
+        stair_placer = DownwardsStairsPlaceable()
+        terrain.append(stair_placer.place_one(game_map))
+    print("place downward stairs")
     # Grow pools of water.
     terrain.extend(
         grow_random_single_terrain(
@@ -42,12 +51,12 @@ def add_random_terrain(game_map, terrain_config):
             max_terrains=terrain_config['max_pools'],
             terrain_proportion=terrain_config['pool_room_proportion']))
     # Grow rivers.
-    min_rivers, max_rivers = (
-        terrain_config['min_rivers'], terrain_config['max_rivers'])
-    n_rivers = random.randint(min_rivers, max_rivers)
-    for _ in range(n_rivers):
-        river = random_river(game_map)
-        terrain.extend(river.get_entities(game_map))
+    # min_rivers, max_rivers = (
+    #     terrain_config['min_rivers'], terrain_config['max_rivers'])
+    # n_rivers = random.randint(min_rivers, max_rivers)
+    # for _ in range(n_rivers):
+    #     river = random_river(game_map)
+    #     terrain.extend(river.get_entities(game_map))
     # Grow patches of grass.
     terrain.extend(
         grow_random_single_terrain(
@@ -69,13 +78,6 @@ def add_random_terrain(game_map, terrain_config):
             min_terrains=terrain_config['min_ice'],
             max_terrains=terrain_config['max_ice'],
             terrain_proportion=terrain_config['ice_room_proportion']))
-    # Place the upward and downward stairs
-    if terrain_config.get('upward_stairs', True):
-        stair_placer = UpwardsStairsPlaceable()
-        terrain.append(stair_placer.place_one(game_map))
-    if terrain_config.get('downward_stairs', True):
-        stair_placer = DownwardsStairsPlaceable()
-        terrain.append(stair_placer.place_one(game_map))
     # Place any torches
     torch_placer = TorchPlaceable()
     terrain.extend(
@@ -132,21 +134,25 @@ class Placeable:
     """
     masks = []
 
-    def place_one(self, game_map):
+    def place_one(self, game_map, n_attempts=200):
+        attempt = 0
         obj = None
-        while not obj:
+        while not obj and attempt < n_attempts:
             x = random.randint(0, game_map.width - 1)
             y = random.randint(0, game_map.height - 1)
             if self.is_placable(game_map, x, y):
                 return self.make(game_map, x, y)
+            attempt += 1
 
-    def place_many(self, game_map, min_objects, max_objects):
+    def place_many(self, game_map, min_objects, max_objects, n_attempts=200):
         objects = []
         n_objects = random.randint(min_objects, max_objects)
-        while len(objects) != n_objects:
+        attempt = 0
+        while len(objects) != n_objects and attempt < n_attempts:
             obj = self.place_one(game_map)
             if obj:
                 objects.append(obj)
+            attempt += 1
         return objects
 
     def is_placable(self, game_map, x, y):
@@ -194,13 +200,30 @@ class StairsPlacable(Placeable):
     corners.
     """
     masks = [
-        np.array([[0, 0, 1], [0, 0, 1], [0, 0, 1]]),
-        np.array([[1, 1, 1], [0, 0, 0], [0, 0, 0]]),
-        np.array([[1, 0, 0], [1, 0, 0], [1, 0, 0]]),
-        np.array([[1, 1, 0], [1, 1, 0], [0, 0, 0]]),
-        np.array([[0, 0, 0], [1, 1, 0], [1, 1, 0]]),
-        np.array([[0, 1, 1], [0, 1, 1], [0, 0, 0]]),
-        np.array([[0, 0, 0], [0, 1, 1], [0, 1, 1]])
+        np.array([[0, 0, 1],
+                  [0, 0, 1],
+                  [0, 0, 1]]),
+        np.array([[1, 1, 1],
+                  [0, 0, 0],
+                  [0, 0, 0]]),
+        np.array([[1, 0, 0],
+                  [1, 0, 0],
+                  [1, 0, 0]]),
+        np.array([[0, 0, 0],
+                  [0, 0, 0],
+                  [1, 1, 1]]),
+        np.array([[1, 1, 0],
+                  [1, 1, 0],
+                  [0, 0, 0]]),
+        np.array([[0, 0, 0],
+                  [1, 1, 0],
+                  [1, 1, 0]]),
+        np.array([[0, 1, 1],
+                  [0, 1, 1],
+                  [0, 0, 0]]),
+        np.array([[0, 0, 0],
+                  [0, 1, 1],
+                  [0, 1, 1]])
     ]
 
 class UpwardsStairsPlaceable(StairsPlacable):
@@ -261,10 +284,12 @@ class Growable:
         self.room = room
         self.coords = []
 
-    def seed(self):
+    def seed(self, n_attempts=250):
+        attempt = 0
         x, y = self.room.random_point()
-        while self.game_map.terrain[x, y]:
+        while self.game_map.terrain[x, y] and attempt < n_attempts:
             x, y = self.room.random_point()
+            attempt += 1
         self.coords.append((x, y))
 
     def grow(self, stay_in_room=False, proportion=None, n_attempts=None):

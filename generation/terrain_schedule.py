@@ -18,7 +18,7 @@ TERRAIN_DEFINITIONS = {
         'pool_room_proportion': 0.7,
         'min_rivers': 0,
         'max_rivers': 0,
-        'min_grass': 2,
+        'min_grass': 1,
         'max_grass': 6,
         'grass_room_proportion': 2.0,
         'min_shrubs': 0,
