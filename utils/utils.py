@@ -1,5 +1,6 @@
 import math
 import random
+import functools
 import numpy as np
 
 from pathfinding import make_walkable_array
@@ -149,6 +150,14 @@ def get_connected_components(arr):
                     for pos in elements.copy()
                     if pos in elements]
     return sorted(components, key=len, reverse=True)
+
+def fill_connected_components(arr, components, n_to_keep=1):
+    fill_positions = functools.reduce(set.union, components[n_to_keep:])
+    filled_layout = arr.copy()
+    for i, j in fill_positions:
+        filled_layout[i, j] = 0
+    return filled_layout
+
 
 #-----------------------------------------------------------------------------
 # Choosing random map positions.

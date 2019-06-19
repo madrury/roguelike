@@ -2,7 +2,7 @@ import random
 import itertools
 import numpy as np
 
-from utils.utils import get_connected_components
+from utils.utils import get_connected_components, fill_connected_components
 
 from generation.floor_schedule import FloorType
 from generation.special_rooms import ROOM_CONSTRUCTORS
@@ -80,7 +80,7 @@ class AbstractFloor:
 class CaveFloor(AbstractFloor):
 
     def __init__(self, shape, *,
-                 p=0.5,
+                 p=0.515,
                  destruct_num=3,
                  construct_num=5,
                  keep_passes=False):
@@ -121,6 +121,8 @@ class CaveFloor(AbstractFloor):
             if keep_passes:
                 self._passes.append(x)
             x = self.single_pass(x)
+        components = get_connected_components(x)
+        x = fill_connected_components(x, components, n_to_keep=1)
         self.layout = x
 
     def single_pass(self, x):
