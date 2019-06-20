@@ -37,7 +37,6 @@ def create_map(map_console, *, floor_schedule):
     The game map is the main object representing the state of the game.
     """
     floor = make_floor(GLOBAL_FLOOR_CONFIG, floor_schedule)
-    print("Created Floor:", floor, floor.width, floor.height)
     game_map = GameMap(floor, map_console)
     add_random_terrain(game_map, TERRAIN_DEFINITIONS[floor_schedule['terrain_type']])
     # TODO: game_map should be the first argument here.

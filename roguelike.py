@@ -20,7 +20,7 @@ from etc.enum import (
 
 from generation.floor_schedule import FLOOR_SCHEDULES
 
-from utils.debug import highlight_array, highlight_stairs
+from utils.debug import highlight_array, highlight_stairs, highlight_rooms
 from utils.utils import (
     flatten_list_of_dictionaries,
     unpack_single_key_dict,
@@ -280,7 +280,8 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
         # highlight_array(game_map.steam, game_map, COLORS['desaturated_green'])
         # highlight_array(game_map.terrain, game_map, COLORS['cursor_tail'])
         # highlight_array(game_map.water, game_map, COLORS['cursor_tail'])
-        highlight_stairs(game_map, COLORS['cursor_tail'])
+        highlight_stairs(game_map, COLORS['red'])
+        highlight_rooms(game_map, COLORS['cursor_tail'])
         # draw_dijkstra_map_of_radius(game_map, player, radius=3)
 
 

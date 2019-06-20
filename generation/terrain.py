@@ -38,11 +38,9 @@ def add_random_terrain(game_map, terrain_config):
     if terrain_config.get('upward_stairs', True):
         stair_placer = UpwardsStairsPlaceable()
         terrain.append(stair_placer.place_one(game_map))
-    print("place upwards stairs")
     if terrain_config.get('downward_stairs', True):
         stair_placer = DownwardsStairsPlaceable()
         terrain.append(stair_placer.place_one(game_map))
-    print("place downward stairs")
     # Grow pools of water.
     terrain.extend(
         grow_random_single_terrain(
@@ -51,12 +49,12 @@ def add_random_terrain(game_map, terrain_config):
             max_terrains=terrain_config['max_pools'],
             terrain_proportion=terrain_config['pool_room_proportion']))
     # Grow rivers.
-    # min_rivers, max_rivers = (
-    #     terrain_config['min_rivers'], terrain_config['max_rivers'])
-    # n_rivers = random.randint(min_rivers, max_rivers)
-    # for _ in range(n_rivers):
-    #     river = random_river(game_map)
-    #     terrain.extend(river.get_entities(game_map))
+    min_rivers, max_rivers = (
+        terrain_config['min_rivers'], terrain_config['max_rivers'])
+    n_rivers = random.randint(min_rivers, max_rivers)
+    for _ in range(n_rivers):
+        river = random_river(game_map)
+        terrain.extend(river.get_entities(game_map))
     # Grow patches of grass.
     terrain.extend(
         grow_random_single_terrain(
@@ -97,7 +95,8 @@ def add_random_terrain(game_map, terrain_config):
     game_map.terrain[:, :] = False
     game_map.water[:, :] = False
     for t in terrain:
-        t.commitable.commit(game_map)
+        if t:
+            t.commitable.commit(game_map)
 
 def grow_random_single_terrain(game_map, terrain_creator, *,
                                min_terrains, max_terrains, terrain_proportion):

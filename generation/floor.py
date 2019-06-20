@@ -24,7 +24,6 @@ def make_floor(floor_config, floor_schedule):
             rooms=rooms,
             room_counter_init=len(rooms))
     elif floor_type == FloorType.CAVE:
-        print(floor_width, floor_height)
         floor = CaveFloor.random(floor_width, floor_height)
             # TODO: Pass non-default generation parameters from the floor config.
             #floor_schedule=floor_schedule,
@@ -82,31 +81,27 @@ class CaveFloor(AbstractFloor):
     def __init__(self, shape, *,
                  p=0.515,
                  destruct_num=3,
-                 construct_num=5,
-                 keep_passes=False):
+                 construct_num=5):
         super().__init__(width=shape[0], height=shape[1])
         self.shape = shape
         self.p = p
         self.destruct_num = destruct_num
         self.construct_num = construct_num
-        self._passes = []
         self.layout = None
-        self.grow(keep_passes=keep_passes)
-        self.make_random_rooms()
-
 
     @staticmethod
     def random(width=80, height=41):
         floor = CaveFloor(shape=(width, height))
         floor.grow()
+        floor.make_random_rooms()
         return floor
 
     def random_room(self):
         return random.choice(self.rooms)
 
-    def make_random_rooms(self, n_rooms_to_make=30):
+    def make_random_rooms(self, n_rooms_to_make=20):
         for _ in range(n_rooms_to_make):
-            width, height = random.randint(2, 12), random.randint(2, 12)
+            width, height = random.randint(4, 12), random.randint(4, 12)
             room = self._make_random_room((width, height))
             # We could end up with an empty layout here, so check to avoid that.
             if np.any(room.layout):
@@ -120,7 +115,6 @@ class CaveFloor(AbstractFloor):
         return PinnedLayoutRoom(room_layout, (x_pin, y_pin))
 
     def commit_to_game_map(self, game_map):
-        print(self.layout.shape, game_map.walkable.shape)
         coordinate_pairs = itertools.product(
             range(1, self.shape[0] - 1),
             range(1, self.shape[1] - 1))

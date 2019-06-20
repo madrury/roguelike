@@ -103,6 +103,7 @@ class PinnedMultiRectangularDungeonRoom(AbstractDungeonRoom):
             objects=objects)
         self.x, self.y = position
         self.room = room
+        self.layout = room.layout.copy()
         self.width, self.height = room.width, room.height
 
     def contains(self, point):
@@ -208,7 +209,7 @@ class MultiRectangularDungeonRoom:
         self.height = height
         self.width = width
         self.rectangles = []
-        self.room = np.zeros((self.width, self.height)).astype(bool)
+        self.layout = np.zeros((self.width, self.height)).astype(bool)
 
     def __iter__(self):
         """Iterate through all the points in a room.
@@ -218,14 +219,14 @@ class MultiRectangularDungeonRoom:
         seen = set()
         for r in self.rectangles:
             for x, y in r:
-                if (x, y) not in seen and self.room[x, y]:
+                if (x, y) not in seen and self.layout[x, y]:
                     seen.add((x, y))
                     yield x, y
 
     def add_rectangle(self, rectangle):
         """Add a rectangle to a room."""
         for point in rectangle:
-            self.room[point[0], point[1]] = True
+            self.layout[point[0], point[1]] = True
         self.rectangles.append(rectangle)
 
     def intersect(self, other):
@@ -246,7 +247,7 @@ class MultiRectangularDungeonRoom:
         return any(point in r for r in self.rectangles)
 
     def print_room(self):
-        print(np.array(['.', '#'])[self.room.astype(int)])
+        print(np.array(['.', '#'])[self.layout.astype(int)])
 
     def random_rectangle(self):
         return random.choice(self.rectangles)
