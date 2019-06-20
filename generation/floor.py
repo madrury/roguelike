@@ -92,7 +92,8 @@ class CaveFloor(AbstractFloor):
         self._passes = []
         self.layout = None
         self.grow(keep_passes=keep_passes)
-        print(self.layout)
+        self.make_random_rooms()
+
 
     @staticmethod
     def random(width=80, height=41):
@@ -100,9 +101,23 @@ class CaveFloor(AbstractFloor):
         floor.grow()
         return floor
 
-    def random_room(self, shape=(10, 10)):
-        # TODO: Actually implement this thing.
-        return PinnedLayoutRoom(self.layout[15:26, 15:25], (15, 15))
+    def random_room(self):
+        return random.choice(self.rooms)
+
+    def make_random_rooms(self, n_rooms_to_make=30):
+        for _ in range(n_rooms_to_make):
+            width, height = random.randint(2, 12), random.randint(2, 12)
+            room = self._make_random_room((width, height))
+            # We could end up with an empty layout here, so check to avoid that.
+            if np.any(room.layout):
+                self.rooms.append(room)
+
+    def _make_random_room(self, shape):
+        width, height = shape
+        x_pin = random.randint(1, self.width - width - 1)
+        y_pin = random.randint(1, self.height - height - 1)
+        room_layout = self.layout[x_pin:(x_pin + width), y_pin:(y_pin + height)]
+        return PinnedLayoutRoom(room_layout, (x_pin, y_pin))
 
     def commit_to_game_map(self, game_map):
         print(self.layout.shape, game_map.walkable.shape)
