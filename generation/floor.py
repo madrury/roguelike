@@ -75,15 +75,18 @@ class AbstractFloor:
     def commit_to_game_map(self, game_map):
         NotImplementedError
 
-
+# TODO: Should the random generation parameters be passed into __init__, or
+# into random()? We've got it two different ways here, so we should make it
+# consistent.
 class CaveFloor(AbstractFloor):
-
+    """Generate a random dungeon floor by using a cellular automota seeded
+    with random noise. Ther resulting layout resembles an organic cave.
+    """
     def __init__(self, shape, *,
                  p=0.515,
                  destruct_num=3,
                  construct_num=5):
         super().__init__(width=shape[0], height=shape[1])
-        self.shape = shape
         self.p = p
         self.destruct_num = destruct_num
         self.construct_num = construct_num
@@ -91,6 +94,23 @@ class CaveFloor(AbstractFloor):
 
     @staticmethod
     def random(width=80, height=41):
+        """Generate a random cave floor by seeding a cellular automota with
+        random noise.
+
+        We seed a cellular automota with a (width, height) bernoulli random
+        noise. Then by running a CA with some simple update rules, the
+        automota converges to a nice organic layout as long as the Bernoulli
+        probability parameter is close to 0.5.
+
+        Our automita follows the following update rules:
+          - If a cell is filled, and is surrounded by <= `destruct_num`
+          filled neighbours, it becomes unfilled.
+          - If a cell is unfilled, and is surrounded by >= `construct_num`
+          filled neighbours, it becomes filled.
+
+        The inspiration for this algorithm was found on the following Reddit thread:
+            https://www.reddit.com/r/proceduralgeneration/comments/bxx6ir/procedural_cave_generation/
+        """
         floor = CaveFloor(shape=(width, height))
         floor.grow()
         floor.make_random_rooms()
@@ -99,11 +119,25 @@ class CaveFloor(AbstractFloor):
     def random_room(self):
         return random.choice(self.rooms)
 
+    def commit_to_game_map(self, game_map):
+        coordinate_pairs = itertools.product(
+            range(1, self.width - 1),
+            range(1, self.height - 1))
+        for x, y in coordinate_pairs:
+            if self.layout[x, y]:
+                game_map.make_transparent_and_walkable(x, y)
+        for entity in self.objects:
+            entity.commitable.commit(game_map)
+
     def make_random_rooms(self, n_rooms_to_make=20):
+        """Create rectangular reigons of the floor layout to designate as
+        rooms, for the purpose of game object spawning.
+        """
         for _ in range(n_rooms_to_make):
             width, height = random.randint(4, 12), random.randint(4, 12)
             room = self._make_random_room((width, height))
-            # We could end up with an empty layout here, so check to avoid that.
+            # We could end up with an empty layout here if we chose a bad
+            # rectangle, so check to avoid that.
             if np.any(room.layout):
                 self.rooms.append(room)
 
@@ -114,18 +148,9 @@ class CaveFloor(AbstractFloor):
         room_layout = self.layout[x_pin:(x_pin + width), y_pin:(y_pin + height)]
         return PinnedLayoutRoom(room_layout, (x_pin, y_pin))
 
-    def commit_to_game_map(self, game_map):
-        coordinate_pairs = itertools.product(
-            range(1, self.shape[0] - 1),
-            range(1, self.shape[1] - 1))
-        for x, y in coordinate_pairs:
-            if self.layout[x, y]:
-                game_map.make_transparent_and_walkable(x, y)
-        for entity in self.objects:
-            entity.commitable.commit(game_map)
-
-    def grow(self, iterations=16, keep_passes=False):
-        x = np.random.binomial(1, self.p, size=self.shape)
+    def grow(self, iterations=6, keep_passes=False):
+        """Run the cellular automota for multiple iterations."""
+        x = np.random.binomial(1, self.p, size=(self.width, self.height))
         for _ in range(iterations):
             x = self.single_pass(x)
         components = get_connected_components(x)
@@ -133,10 +158,11 @@ class CaveFloor(AbstractFloor):
         self.layout = x
 
     def single_pass(self, x):
-        new = np.zeros(shape=self.shape, dtype=int)
+        """Run the cellular automota for a single iteration."""
+        new = np.zeros(shape=(self.width, self.height), dtype=int)
         coordinate_pairs = itertools.product(
-            range(1, self.shape[0] - 1),
-            range(1, self.shape[1] - 1))
+            range(1, self.width - 1),
+            range(1, self.height - 1))
         for xidx, yidx in coordinate_pairs:
             center = x[xidx, yidx]
             view = x[(xidx-1):(xidx+2), (yidx-1):(yidx+2)]
@@ -151,11 +177,8 @@ class CaveFloor(AbstractFloor):
 
 
 class RoomsAndTunnelsFloor(AbstractFloor):
-    """A Floor of a dungeon.
-
-    A floor of a dungeon is made up of a collection of dungeon features.  At
-    the most basic level, PinnedDungeonRooms and Tunnels define the walkable
-    space.  Additional terrain features (Pools, ...) are also stored.
+    """A Floor of a dungeon constructed by creating multi rectangular rooms,
+    and then joining them with tunnels parallel to the horisontal and vertical axies.
 
     Additional Attributes
     ---------------------
@@ -178,7 +201,17 @@ class RoomsAndTunnelsFloor(AbstractFloor):
         """Generate a random dungeon floor in the rooms and tunnels style with
         given parameters.
 
-        make_floor is the intended public interface for this function.
+        The floor is randomly genearted by the following process.
+          - A random room shape is created by gluing together random
+          rectangles into a connected multi-rectangular reigon.
+          - The room is placed onto the floor (creating a pinned room object)
+          by choosing a random position in the floor, and checking if teh new
+          room, if placed in the chosen position, does not intersect any of
+          the previously generated rooms. If it does, we bail on this room
+          and generate another.
+          - The rooms are placed in an order, and then tunnels are built
+          between the rooms by joining random points in them by tunnels
+          parallel to the horisontal and vertical axies.
 
         Parameters
         ----------
