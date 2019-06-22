@@ -128,13 +128,13 @@ def get_connected_components(arr):
       A list of connected components. Each inner set contains the coordinates
       of a single connected component.
     """
-    # The set open coordinates in the floor layout represented by arr.
+    # The set of coordinates in the floor layout represented by arr.
     open_positions = set(zip(*np.where(arr == 1)))
 
     def traverse_component(position):
         """Depth first seach to traverse a single component."""
-        component = set()
-        stack = [position]
+        open_positions.remove(position)
+        component, stack = {position}, [position]
         while stack:
             i, j = stack.pop()
             for position in [(i-1, j), (i+1, j), (i, j-1), (i, j+1)]:

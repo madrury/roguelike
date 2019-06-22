@@ -53,7 +53,7 @@ CAVE_TEMPLATE = {
 
 
 FLOOR_SCHEDULES = [
-    FIRST_FLOOR,
+    #FIRST_FLOOR,
     create_floor_from_template(
         CAVE_TEMPLATE,
         TerrainTypes.BASIC_FLOOR,
