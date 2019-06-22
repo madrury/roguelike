@@ -110,11 +110,18 @@ def grow_random_single_terrain(game_map, terrain_creator, *,
         terrain.extend(t.get_entities(game_map))
     return terrain
 
-def grow_in_random_room(terrain, game_map, *, stay_in_room, proportion):
+def grow_in_random_room(terrain, game_map, *,
+                        stay_in_room=True,
+                        proportion=1.0,
+                        n_attempts=20):
     """Pick a random room of the game map and grow some terrain there."""
+    attempt = 0
     room = game_map.floor.random_room()
-    while room.terrain != None:
+    while room.terrain != None and attempt <= n_attempts:
         room = game_map.floor.random_room()
+        attempt += 1
+    if attempt == n_attempts:
+        return None
     t = terrain(game_map, room)
     t.seed()
     t.grow(stay_in_room=stay_in_room, proportion=proportion)

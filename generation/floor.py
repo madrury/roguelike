@@ -134,7 +134,7 @@ class CaveFloor(AbstractFloor):
         for entity in self.objects:
             entity.commitable.commit(game_map)
 
-    def make_random_rooms(self, n_rooms_to_make=20):
+    def make_random_rooms(self, n_rooms_to_make=40):
         """Create rectangular reigons of the floor layout to designate as
         rooms, for the purpose of game object spawning.
         """

@@ -281,7 +281,7 @@ def play_floor(game_map, player, consoles, *, game_turn, current_floor):
         # highlight_array(game_map.terrain, game_map, COLORS['cursor_tail'])
         # highlight_array(game_map.water, game_map, COLORS['cursor_tail'])
         highlight_stairs(game_map, COLORS['red'])
-        highlight_rooms(game_map, COLORS['cursor_tail'])
+        # highlight_rooms(game_map, COLORS['cursor_tail'])
         # draw_dijkstra_map_of_radius(game_map, player, radius=3)
 
 
