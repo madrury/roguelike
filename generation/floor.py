@@ -127,8 +127,6 @@ class CaveFloor(AbstractFloor):
     def grow(self, iterations=16, keep_passes=False):
         x = np.random.binomial(1, self.p, size=self.shape)
         for _ in range(iterations):
-            if keep_passes:
-                self._passes.append(x)
             x = self.single_pass(x)
         components = get_connected_components(x)
         x = fill_connected_components(x, components, n_to_keep=1)

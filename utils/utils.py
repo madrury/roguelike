@@ -128,27 +128,28 @@ def get_connected_components(arr):
       A list of connected components. Each inner set contains the coordinates
       of a single connected component.
     """
-    elements = set()
-    for i, line in enumerate(arr):
-        for j, cell in enumerate(line):
-            if cell:
-                elements.add((i, j))
+    # The set open coordinates in the floor layout represented by arr.
+    open_positions = set(zip(*np.where(arr == 1)))
 
-    # Function to recusively traverse adjacent positions within a component
-    # until exhausted. Modifies `elements` in the enclosing scope to keep track
-    # of where we've been.
     def traverse_component(position):
-        elements.remove(position)
-        i, j = position
-        result = {(i, j)}
-        for new_pos in [(i-1, j), (i+1, j), (i, j-1), (i, j+1)]:
-            if new_pos in elements:
-                result = result.union(traverse_component(new_pos))
-        return result
+        """Depth first seach to traverse a single component."""
+        component = set()
+        stack = [position]
+        while stack:
+            i, j = stack.pop()
+            for position in [(i-1, j), (i+1, j), (i, j-1), (i, j+1)]:
+                if position in open_positions:
+                    component.add(position)
+                    open_positions.remove(position)
+                    stack.append(position)
+        return component
 
-    components =  [traverse_component(pos)
-                    for pos in elements.copy()
-                    if pos in elements]
+    components = []
+    while open_positions:
+        # Hack to get a single element from a set.
+        position = list(open_positions)[0]
+        components.append(traverse_component(position))
+
     return sorted(components, key=len, reverse=True)
 
 def fill_connected_components(arr, components, n_to_keep=1):
