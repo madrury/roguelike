@@ -6,7 +6,7 @@ from utils.utils import get_connected_components, fill_connected_components
 
 from generation.floor_schedule import FloorType
 from generation.special_rooms import ROOM_CONSTRUCTORS
-from generation.room import PinnedMultiRectangularDungeonRoom, PinnedLayoutRoom
+from generation.room import MultiRectangularDungeonRoom, LayoutRoom
 from generation.tunnel import random_tunnel_between_pinned_rooms
 
 
@@ -146,7 +146,7 @@ class CaveFloor(AbstractFloor):
         x_pin = random.randint(1, self.width - width - 1)
         y_pin = random.randint(1, self.height - height - 1)
         room_layout = self.layout[x_pin:(x_pin + width), y_pin:(y_pin + height)]
-        return PinnedLayoutRoom(room_layout, (x_pin, y_pin))
+        return LayoutRoom(room_layout, (x_pin, y_pin))
 
     def grow(self, iterations=6, keep_passes=False):
         """Run the cellular automota for multiple iterations."""
@@ -253,11 +253,11 @@ class RoomsAndTunnelsFloor(AbstractFloor):
         for room in rooms:
             floor.add_pinned_room(room)
         for n in range(room_counter_init, n_rooms_to_try):
-            room = PinnedMultiRectangularDungeonRoom.random(**floor_schedule)
+            room = MultiRectangularDungeonRoom.random(**floor_schedule)
             for _ in range(n_room_placement_trys):
                 x_pin = random.randint(1, width - room.width - 1)
                 y_pin = random.randint(1, height - room.height - 1)
-                pinned_room = PinnedMultiRectangularDungeonRoom(room, (x_pin, y_pin))
+                pinned_room = MultiRectangularDungeonRoom(room, (x_pin, y_pin))
                 if n == 0:
                     floor.add_pinned_room(pinned_room)
                     break

@@ -2,7 +2,7 @@ from enum import Enum, auto
 
 from etc.config import GLOBAL_FLOOR_CONFIG
 from game_objects.terrain import StationaryTorch
-from generation.room import MultiRectangularDungeonRoom, PinnedMultiRectangularDungeonRoom, Rectangle
+from generation.room import LocalRectangularDungeonRoom, MultiRectangularDungeonRoom, Rectangle
 
 
 
@@ -27,10 +27,10 @@ class FirstRoom:
                 for y in range(floor_height - 6, floor_height - 9*3, -3)] + [
             StationaryTorch.make(None, floor_width_midpoint + 5, y)
                 for y in range(floor_height - 6, floor_height - 9*3, -3)]
-        room = MultiRectangularDungeonRoom(self.width, self.height)
+        room = LocalRectangularDungeonRoom(self.width, self.height)
         room.add_rectangle(Rectangle(0, 0, self.width, self.height))
         pin_location = (floor_width // 2 - self.width // 2, floor_height - self.height - 2)
-        pillars_room_pinned = PinnedMultiRectangularDungeonRoom(room, pin_location, objects=pillars)
+        pillars_room_pinned = MultiRectangularDungeonRoom(room, pin_location, objects=pillars)
         return pillars_room_pinned
 
 

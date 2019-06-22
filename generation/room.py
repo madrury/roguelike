@@ -7,64 +7,14 @@ class AbstractDungeonRoom:
     contain some number of rooms to assist in monster, item, and terain
     generating code.
 
-    Attributes
-    ----------
-    terrain: Terrain enum entry.
-      Tracks if terrain has been added to this room. Used when procedurally
-      generating terrain for the floor.
+    A room represents the open positions in a rectangular reigon of the game
+    space, and is used to spawn game objects (additionally, for some types of
+    game floors rooms are used internally when procedurally generating the
+    floor layout).
 
-    monsters: bool
-      Tracks if monsters have been spawned in the room. Used when
-      procedurally generating monsters populating the floor.
-
-    objects:
-      Objects occupying this room that should be added to the parent floor.
-      These are added to the map when the floor is finally commited.
-    """
-    def __init__(self, width, height, *,
-                 terrain=None,
-                 monsters=None,
-                 objects=None):
-        self.width = width
-        self.height = height
-        self.monsters = monsters
-        self.objects = objects
-        self.terrain = terrain
-
-    def random_point(self):
-        raise NotImplementedError
-
-
-class PinnedLayoutRoom(AbstractDungeonRoom):
-
-    def __init__(self, layout, position, *,
-                 terrain=None,
-                 monsters=None,
-                 objects=None):
-        super().__init__(
-            layout.shape[0], layout.shape[1],
-            terrain=terrain,
-            monsters=monsters,
-            objects=objects)
-        self.x, self.y = position
-        self.layout = layout.copy()
-
-    def random_point(self):
-        shape = self.layout.shape
-        point = None
-        while point == None:
-            x, y = random.randint(0, shape[0] - 1), random.randint(0, shape[1] - 1)
-            if self.layout[x, y]:
-                point = (x, y)
-        return (self.x + x, self.y + y)
-
-
-class PinnedMultiRectangularDungeonRoom(AbstractDungeonRoom):
-    """A DungeonRoom pinned onto a position in a larger map.
-
-    A room comes with a coordinate system local to that room, as explained
-    below.  Objects of this class are rooms that are pinned onto a larger
-    coordinate system, usualy a dungeon floor.
+    Rooms have their own local coordinate system used internally for random
+    generation, and a transformation from the local coordinates of the room
+    to the global coordinates of the game map.
 
       A Dungeon Floor.
     +-----------------------------------------------+
@@ -86,25 +36,90 @@ class PinnedMultiRectangularDungeonRoom(AbstractDungeonRoom):
 
     Attributes
     ----------
+    x, y: int, int
+      The position of the room on the game map.
+
+    width, height: int, int
+      The width and height of the room.
+
+    terrain: Terrain enum entry.
+      Tracks if terrain has been added to this room. Used when procedurally
+      generating terrain for the floor.
+
+    monsters: bool
+      Tracks if monsters have been spawned in the room. Used when
+      procedurally generating monsters populating the floor.
+
+    objects:
+      Objects occupying this room that should be added to the parent floor.
+      These are added to the map when the floor is finally commited.
+    """
+    def __init__(self, position, shape, *,
+                 terrain=None,
+                 monsters=None,
+                 objects=None):
+        self.x, self.y = position
+        self.width, self.height = shape
+        self.monsters = monsters
+        self.objects = objects
+        self.terrain = terrain
+
+    def random_point(self):
+        raise NotImplementedError
+
+
+class LayoutRoom(AbstractDungeonRoom):
+    """A room that is defined only by its layout, and where it is positioned
+    on the game map.
+    """
+    def __init__(self, layout, position, *,
+                 terrain=None,
+                 monsters=None,
+                 objects=None):
+        super().__init__(
+            position=position,
+            shape=layout.shape,
+            terrain=terrain,
+            monsters=monsters,
+            objects=objects)
+        self.x, self.y = position
+        self.layout = layout.copy()
+
+    def random_point(self):
+        shape = self.layout.shape
+        point = None
+        while point == None:
+            x, y = random.randint(0, shape[0] - 1), random.randint(0, shape[1] - 1)
+            if self.layout[x, y]:
+                point = (x, y)
+        return (self.x + x, self.y + y)
+
+
+class MultiRectangularDungeonRoom(AbstractDungeonRoom):
+    """A Room constructed by glueing together rectangular reigons, pinned
+    onto a position on the game map.
+
+    Attributes
+    ----------
     x, y: ints
       The poisting the room is pinned in the enclosing coordinate system.
 
-    room: MultiRectangularDungeonRoom
-      The underlying room object.
+    room: LocalMultiRectangularDungeonRoom
+      An underlying room object.
     """
     def __init__(self, room, position, *,
                  terrain=None,
                  monsters=None,
                  objects=None):
         super().__init__(
-            width=room.width, height=room.height,
+            position=position,
+            shape = (room.width, room.height),
             terrain=terrain,
             monsters=monsters,
             objects=objects)
         self.x, self.y = position
         self.room = room
         self.layout = room.layout.copy()
-        self.width, self.height = room.width, room.height
 
     def contains(self, point):
         point[0] - self.x, point[1] - self.x in self.room
@@ -141,7 +156,7 @@ class PinnedMultiRectangularDungeonRoom(AbstractDungeonRoom):
         """Generate a random dungeon room by placing random rectangles and
         building up a connected reigon.
         """
-        room = MultiRectangularDungeonRoom(width, height)
+        room = LocalRectangularDungeonRoom(width, height)
         for n in range(n_rectangle_trys):
             rect_width = random.randint(1, max_rectangle_width)
             rect_height = random.randint(1, max_rectangle_height)
@@ -157,7 +172,7 @@ class PinnedMultiRectangularDungeonRoom(AbstractDungeonRoom):
         return room
 
 
-class MultiRectangularDungeonRoom:
+class LocalRectangularDungeonRoom:
     """A single room in the dungeon.
 
     A DungeonRooom is made up of a collection of rectangles, and comes
