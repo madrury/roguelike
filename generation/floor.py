@@ -24,7 +24,10 @@ def make_floor(floor_config, floor_schedule):
             rooms=rooms,
             room_counter_init=len(rooms))
     elif floor_type == FloorType.CAVE:
-        floor = CaveFloor.random(floor_width, floor_height)
+        floor = CaveFloor.random(
+            floor_width,
+            floor_height,
+            floor_schedule=floor_schedule)
             # TODO: Pass non-default generation parameters from the floor config.
             #floor_schedule=floor_schedule,
             #rooms=rooms)
@@ -83,7 +86,7 @@ class CaveFloor(AbstractFloor):
     with random noise. Ther resulting layout resembles an organic cave.
     """
     def __init__(self, shape, *,
-                 p=0.515,
+                 p=0.5,
                  destruct_num=3,
                  construct_num=5):
         super().__init__(width=shape[0], height=shape[1])
@@ -93,7 +96,7 @@ class CaveFloor(AbstractFloor):
         self.layout = None
 
     @staticmethod
-    def random(width=80, height=41):
+    def random(width=80, height=41, *, floor_schedule):
         """Generate a random cave floor by seeding a cellular automota with
         random noise.
 
@@ -111,7 +114,9 @@ class CaveFloor(AbstractFloor):
         The inspiration for this algorithm was found on the following Reddit thread:
             https://www.reddit.com/r/proceduralgeneration/comments/bxx6ir/procedural_cave_generation/
         """
-        floor = CaveFloor(shape=(width, height))
+        floor = CaveFloor(
+            shape=(width, height),
+            p = floor_schedule.get('p', 0.5))
         floor.grow()
         floor.make_random_rooms()
         return floor

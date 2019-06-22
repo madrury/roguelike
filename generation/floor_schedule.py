@@ -47,7 +47,8 @@ ROOMS_AND_TUNNELS_TEMPLATE = {
 CAVE_TEMPLATE = {
     'type': FloorType.CAVE,
     'terrain_type': TerrainTypes.BASIC_FLOOR,
-    'rooms': []
+    'rooms': [],
+    'p': 0.5
 }
 
 
